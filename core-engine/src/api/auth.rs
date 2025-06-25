@@ -33,6 +33,7 @@ pub struct AuthResponse {
     pub user: User,
 }
 
+#[axum::debug_handler]
 pub async fn register_handler(
     State(pool): State<PgPool>,
     Json(payload): Json<RegisterRequest>,
@@ -41,21 +42,21 @@ pub async fn register_handler(
     payload.validate().map_err(|e| crate::error::AppError::Validation(e.to_string()))?;
 
     // Hash password
-    let password_hash = argon2::hash_encoded(
-        payload.password.as_bytes(),
-        b"salt", // In production, use a proper salt
-        &argon2::Config::default(),
-    ).map_err(|e| crate::error::AppError::Internal(e.to_string()))?;
+    use argon2::{Argon2, PasswordHasher};
+    use argon2::password_hash::{PasswordHash, PasswordVerifier, SaltString};
+    use rand_core::OsRng;
+    
+    let salt = SaltString::generate(&mut OsRng);
+    let argon2 = Argon2::default();
+    let password_hash = argon2.hash_password(payload.password.as_bytes(), &salt)
+        .map_err(|e| crate::error::AppError::Internal(e.to_string()))?;
+    let password_hash = password_hash.to_string();
 
     // Create user
     let user = User::create(
         &pool,
-        CreateUser {
-            email: payload.email,
-            password: payload.password,
-            name: payload.name,
-        },
-        password_hash,
+        &payload.email,
+        &password_hash,
     ).await?;
 
     // Generate JWT token
@@ -64,6 +65,7 @@ pub async fn register_handler(
     Ok(Json(AuthResponse { token, user }))
 }
 
+#[axum::debug_handler]
 pub async fn login_handler(
     State(pool): State<PgPool>,
     Json(payload): Json<LoginRequest>,
@@ -74,10 +76,13 @@ pub async fn login_handler(
         .ok_or_else(|| crate::error::AppError::Auth("Invalid email or password".into()))?;
 
     // Verify password
-    let is_valid = argon2::verify_encoded(
-        &user.password_hash,
-        payload.password.as_bytes(),
-    ).map_err(|e| crate::error::AppError::Internal(e.to_string()))?;
+    use argon2::{Argon2, PasswordVerifier};
+    use argon2::password_hash::PasswordHash;
+    
+    let parsed_hash = PasswordHash::new(&user.password_hash)
+        .map_err(|e| crate::error::AppError::Internal(e.to_string()))?;
+    let argon2 = Argon2::default();
+    let is_valid = argon2.verify_password(payload.password.as_bytes(), &parsed_hash).is_ok();
 
     if !is_valid {
         return Err(crate::error::AppError::Auth("Invalid email or password".into()));

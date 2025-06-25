@@ -17,10 +17,12 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    exp: i64,
-    iat: i64,
+pub struct Claims {
+    pub sub: String,      // User ID
+    pub exp: i64,         // Expiration time
+    pub iat: i64,         // Issued at time
+    pub role: String,     // User role
+    pub jti: String,      // JWT ID (for token revocation)
 }
 
 #[derive(Debug)]
@@ -46,10 +48,14 @@ where
             .ok_or_else(|| AppError::Auth("Missing authorization header".into()).into_response())?;
 
         // Decode and validate the token
+        let mut validation = Validation::default();
+        validation.validate_exp = true;
+        validation.leeway = 60; // 1 minute leeway for clock skew
+        
         let claims = decode::<Claims>(
             auth_header,
-            &DecodingKey::from_secret(b"your-secret-key"), // In production, use proper secret
-            &Validation::default(),
+            &DecodingKey::from_secret(std::env::var("JWT_SECRET").unwrap_or_else(|_| "your-secret-key".to_string()).as_bytes()),
+            &validation
         )
         .map_err(|_| AppError::Auth("Invalid token".into()).into_response())?
         .claims;
@@ -77,10 +83,14 @@ where
 
 // Utility function to verify access token
 pub async fn verify_token(token: &str) -> AppResult<Claims> {
+    let mut validation = Validation::default();
+    validation.validate_exp = true;
+    validation.leeway = 60; // 1 minute leeway for clock skew
+    
     let claims = decode::<Claims>(
         token,
-        &DecodingKey::from_secret(b"your-secret-key"), // In production, use proper secret
-        &Validation::default(),
+        &DecodingKey::from_secret(std::env::var("JWT_SECRET").unwrap_or_else(|_| "your-secret-key".to_string()).as_bytes()),
+        &validation
     )
     .map_err(|_| AppError::Auth("Invalid token".into()))?
     .claims;

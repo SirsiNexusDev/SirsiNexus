@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, PgPool};
-use time::OffsetDateTime;
+use sqlx::{FromRow, postgres::PgPool};
+use time::PrimitiveDateTime;
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::error::AppResult;
+use crate::error::{Result, Error};
 
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct Project {
@@ -13,11 +13,11 @@ pub struct Project {
     pub description: Option<String>,
     pub status: ProjectStatus,
     pub owner_id: Uuid,
-    pub created_at: OffsetDateTime,
-    pub updated_at: OffsetDateTime,
+    pub created_at: PrimitiveDateTime,
+    pub updated_at: PrimitiveDateTime,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::Type)]
+#[derive(Debug, Serialize, Deserialize, Clone, sqlx::Type)]
 #[sqlx(type_name = "VARCHAR", rename_all = "lowercase")]
 pub enum ProjectStatus {
     Active,
@@ -35,7 +35,7 @@ pub struct CreateProject {
 }
 
 impl Project {
-    pub async fn create(pool: &PgPool, new_project: CreateProject) -> AppResult<Self> {
+    pub async fn create(pool: &PgPool, new_project: CreateProject) -> Result<Self> {
         let project = sqlx::query_as!(Self,
             r#"INSERT INTO projects (name, description, status, owner_id)
             VALUES ($1, $2, $3, $4)
@@ -47,12 +47,12 @@ impl Project {
         )
         .fetch_one(pool)
         .await
-        .map_err(crate::error::AppError::Database)?;
+        .map_err(Error::Database)?;
 
         Ok(project)
     }
 
-    pub async fn find_by_id(pool: &PgPool, id: Uuid) -> AppResult<Option<Self>> {
+    pub async fn find_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Self>> {
         let project = sqlx::query_as!(Self,
             r#"SELECT id, name, description, status as "status: ProjectStatus", owner_id, created_at, updated_at
             FROM projects WHERE id = $1"#,
@@ -60,12 +60,12 @@ impl Project {
         )
         .fetch_optional(pool)
         .await
-        .map_err(crate::error::AppError::Database)?;
+        .map_err(Error::Database)?;
 
         Ok(project)
     }
 
-    pub async fn find_by_owner(pool: &PgPool, owner_id: Uuid) -> AppResult<Vec<Self>> {
+    pub async fn find_by_owner(pool: &PgPool, owner_id: Uuid) -> Result<Vec<Self>> {
         let projects = sqlx::query_as!(Self,
             r#"SELECT id, name, description, status as "status: ProjectStatus", owner_id, created_at, updated_at
             FROM projects WHERE owner_id = $1
@@ -74,38 +74,37 @@ impl Project {
         )
         .fetch_all(pool)
         .await
-        .map_err(crate::error::AppError::Database)?;
+        .map_err(Error::Database)?;
 
         Ok(projects)
     }
 
-    pub async fn update(&self, pool: &PgPool) -> AppResult<()> {
+    pub async fn update(&self, pool: &PgPool) -> Result<()> {
         sqlx::query!(
             "UPDATE projects
             SET name = $1, description = $2, status = $3
             WHERE id = $4",
             self.name,
             self.description,
-            self.status as ProjectStatus,
+            self.status.clone() as ProjectStatus,
             self.id
         )
         .execute(pool)
         .await
-        .map_err(crate::error::AppError::Database)?;
+        .map_err(Error::Database)?;
 
         Ok(())
     }
 
-    pub async fn delete(pool: &PgPool, id: Uuid) -> AppResult<()> {
+    pub async fn delete(pool: &PgPool, id: Uuid) -> Result<()> {
         sqlx::query!("DELETE FROM projects WHERE id = $1", id)
             .execute(pool)
             .await
-            .map_err(crate::error::AppError::Database)?;
+            .map_err(Error::Database)?;
 
         Ok(())
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

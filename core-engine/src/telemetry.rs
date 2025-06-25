@@ -1,92 +1,82 @@
-use opentelemetry::{
-    global,
-    sdk::{
-        metrics::selectors,
-        resource::{OsResourceDetector, ProcessResourceDetector, ResourceDetector},
-        trace, Resource,
-    },
-    KeyValue,
-};
-use opentelemetry_otlp::{WithExportConfig, OTEL_EXPORTER_OTLP_ENDPOINT};
-use opentelemetry_semantic_conventions::resource::{DEPLOYMENT_ENVIRONMENT, SERVICE_NAME, SERVICE_VERSION};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Layer};
+use opentelemetry::{global, KeyValue};
+use opentelemetry_sdk::{runtime, trace, Resource};
+use opentelemetry_otlp::WithExportConfig;
+use opentelemetry_semantic_conventions as semconv;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use crate::config::AppConfig;
+use crate::error::{Error, Result};
 
-pub fn init_telemetry(config: &AppConfig) -> anyhow::Result<()> {
-    // Configure OpenTelemetry
+pub struct TelemetryGuard;
+
+pub async fn init(config: &AppConfig) -> Result<()> {
+    let resource = Resource::new(vec![
+        KeyValue::new(semconv::resource::SERVICE_NAME, config.telemetry.service_name.clone()),
+        KeyValue::new(semconv::resource::SERVICE_VERSION, env!("CARGO_PKG_VERSION")),
+        KeyValue::new(semconv::resource::DEPLOYMENT_ENVIRONMENT, config.telemetry.environment.clone()),
+    ]);
+
     let tracer = opentelemetry_otlp::new_pipeline()
         .tracing()
         .with_exporter(
             opentelemetry_otlp::new_exporter()
                 .tonic()
-                .with_endpoint(&config.telemetry.tracing_endpoint),
+                .with_endpoint(&config.telemetry.otlp_endpoint)
         )
-        .with_trace_config(trace::config().with_resource(create_resource()))
-        .install_batch(opentelemetry::runtime::Tokio)?;
-
-    let meter = opentelemetry_otlp::new_pipeline()
-        .metrics()
-        .with_exporter(
-            opentelemetry_otlp::new_exporter()
-                .tonic()
-                .with_endpoint(&config.telemetry.tracing_endpoint),
+        .with_trace_config(
+            trace::config()
+                .with_resource(resource)
+                .with_sampler(trace::Sampler::AlwaysOn)
         )
-        .with_resource(create_resource())
-        .with_aggregator_selector(selectors::simple::Selector::Exact)
-        .build()?;
+        .install_batch(runtime::Tokio)
+        .map_err(|e| Error::Internal(e.to_string()))?;
 
-    // Configure tracing subscriber
     let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
     
-    let env_filter = EnvFilter::try_from_default_env()
-        .or_else(|_| EnvFilter::try_new(&config.telemetry.log_level))
-        .unwrap_or_else(|_| EnvFilter::new("info"));
-
     tracing_subscriber::registry()
         .with(telemetry)
-        .with(
-            tracing_subscriber::fmt::layer()
-                .with_target(false)
-                .compact(),
-        )
-        .with(env_filter)
-        .try_init()?;
+        .with(EnvFilter::from_default_env())
+        .try_init()
+        .map_err(|e| Error::Internal(e.to_string()))?;
 
     Ok(())
 }
 
-fn create_resource() -> Resource {
-    Resource::from_detectors(
-        std::time::Duration::from_secs(3),
-        vec![
-            Box::new(OsResourceDetector),
-            Box::new(ProcessResourceDetector),
-        ],
-    )
-    .merge(&Resource::new(vec![
-        KeyValue::new(SERVICE_NAME, "sirsi-core"),
-        KeyValue::new(SERVICE_VERSION, env!("CARGO_PKG_VERSION")),
-        KeyValue::new(DEPLOYMENT_ENVIRONMENT, std::env::var("RUN_MODE").unwrap_or_else(|_| "development".into())),
-    ]))
-}
-
-pub fn shutdown_telemetry() {
-    global::shutdown_tracer_provider();
+impl Drop for TelemetryGuard {
+    fn drop(&mut self) {
+        global::shutdown_tracer_provider();
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TelemetryConfig;
+    use crate::config::{AppConfig, TelemetryConfig, DatabaseConfig, ServerConfig, JwtConfig};
+    use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-    #[test]
-    fn test_create_resource() {
-        let resource = create_resource();
-        let attributes = resource.into_attributes();
+    #[tokio::test]
+    async fn test_telemetry_init() {
+        let config = AppConfig {
+            database: DatabaseConfig {
+                url: "postgres://localhost:5432/test".to_string(),
+                max_connections: 5,
+            },
+            server: ServerConfig {
+                http_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080),
+                grpc_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 50051),
+            },
+            jwt: JwtConfig {
+                secret: "test-secret".to_string(),
+                expiration: 60,
+            },
+            telemetry: TelemetryConfig {
+                service_name: "test-service".to_string(),
+                environment: "test".to_string(),
+                otlp_endpoint: "http://localhost:4317".to_string(),
+            },
+        };
 
-        assert!(attributes.iter().any(|kv| kv.key == SERVICE_NAME));
-        assert!(attributes.iter().any(|kv| kv.key == SERVICE_VERSION));
-        assert!(attributes.iter().any(|kv| kv.key == DEPLOYMENT_ENVIRONMENT));
+        let result = init(&config).await;
+        assert!(result.is_ok());
     }
 }

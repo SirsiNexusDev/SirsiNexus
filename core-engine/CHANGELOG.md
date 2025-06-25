@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Routing imports in api/mod.rs
-- Argon2 password hashing implementation
+- Argon2 password hashing implementation updated to modern API
 - Debug handler attributes for all API endpoints
 - Authentication handler error handling
 - Project and resource authorization checks
@@ -41,6 +41,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Database connection pooling and timeouts
 - Database migration system
 - Project status enum handling in SQLx
+- DateTime type mismatches (chrono vs time crate)
+- Missing AppError and AppResult type aliases
+- Project module visibility in models
+- Clone trait implementation for ProjectStatus enum
+- User::create method signature and parameter handling
+- Password verification using modern Argon2 API
+- Workspace configuration conflicts between root and core-engine
 
 ### Security
 - Implemented secure password hashing with Argon2

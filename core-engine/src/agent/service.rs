@@ -1,12 +1,15 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tonic::{Request, Response, Status};
+use tonic::{Request, Response, Status, transport::Server};
 use uuid::Uuid;
 
 use crate::agent::manager::AgentManager;
+use crate::proto::sirsi::agent::v1::agent_service_server::{AgentService as AgentServiceTrait, AgentServiceServer};
+use crate::proto::sirsi::agent::v1::{AgentRequest, AgentResponse};
 
 tonic::include_proto!("sirsi.agent.v1");
 
+#[derive(Clone)]
 pub struct AgentService {
     manager: Arc<RwLock<AgentManager>>,
 }
@@ -18,7 +21,7 @@ impl AgentService {
 }
 
 #[tonic::async_trait]
-impl agent_service_server::AgentService for AgentService {
+impl AgentServiceTrait for AgentService {
     async fn start_session(
         &self,
         request: Request<StartSessionRequest>,

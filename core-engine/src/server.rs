@@ -1,6 +1,7 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tonic::transport::Server as TonicServer;
+use axum::Server as AxumServer;
 use tracing::info;
 
 use crate::{
@@ -23,29 +24,22 @@ impl Server {
     }
 
     pub async fn run(&self) -> anyhow::Result<()> {
-        // Initialize telemetry
-        crate::telemetry::init_telemetry(&self.config)?;
+// Initialize telemetry
+crate::telemetry::init(&self.config).await?;
 
         // Create database pool
         let db_pool = db::create_pool(&self.config.database).await?;
 
-        // Create HTTP server
-        let http_addr = format!(
-            "{}:{}",
-            self.config.server.host, self.config.server.port
-        ).parse()?;
+// Create HTTP server
+        let http_addr = self.config.server.http_addr;
 
-        let http_server = axum::Server::bind(&http_addr)
+let http_server = AxumServer::bind(&http_addr)
             .serve(crate::api::create_router(db_pool).into_make_service());
 
         info!("HTTP server listening on {}", http_addr);
 
-        // Create gRPC server
-        let grpc_addr = format!(
-            "{}:{}",
-            self.config.server.host,
-            self.config.server.port + 1, // Use next port for gRPC
-        ).parse()?;
+// Create gRPC server
+        let grpc_addr = self.config.server.grpc_addr;
 
         let agent_service = AgentService::new(self.agent_manager.clone());
         
@@ -74,8 +68,8 @@ impl Server {
             }
         }
 
-        // Shutdown telemetry
-        crate::telemetry::shutdown_telemetry();
+// Create telemetry guard to ensure proper shutdown
+        let _guard = crate::telemetry::TelemetryGuard;
 
         Ok(())
     }

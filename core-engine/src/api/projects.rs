@@ -28,6 +28,7 @@ pub struct UpdateProjectRequest {
     pub status: Option<ProjectStatus>,
 }
 
+#[axum::debug_handler]
 pub async fn list_projects_handler(
     State(pool): State<PgPool>,
     auth: AuthUser,
@@ -36,6 +37,7 @@ pub async fn list_projects_handler(
     Ok(Json(projects))
 }
 
+#[axum::debug_handler]
 pub async fn create_project_handler(
     State(pool): State<PgPool>,
     auth: AuthUser,
@@ -57,6 +59,7 @@ pub async fn create_project_handler(
     Ok(Json(project))
 }
 
+#[axum::debug_handler]
 pub async fn get_project_handler(
     State(pool): State<PgPool>,
     auth: AuthUser,
@@ -74,6 +77,7 @@ pub async fn get_project_handler(
     Ok(Json(project))
 }
 
+#[axum::debug_handler]
 pub async fn update_project_handler(
     State(pool): State<PgPool>,
     auth: AuthUser,
@@ -109,6 +113,7 @@ pub async fn update_project_handler(
     Ok(Json(project))
 }
 
+#[axum::debug_handler]
 pub async fn delete_project_handler(
     State(pool): State<PgPool>,
     auth: AuthUser,
