@@ -1,0 +1,651 @@
+syntax = "proto3";
+
+package sirsi.container.v1;
+
+service ContainerService {
+  // Registry Management
+  rpc ConfigureRegistry(ConfigureRegistryRequest) returns (ConfigureRegistryResponse);
+  rpc GetRegistryStatus(GetRegistryStatusRequest) returns (GetRegistryStatusResponse);
+  rpc ScanImage(ScanImageRequest) returns (ScanImageResponse);
+  rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
+  rpc TagImage(TagImageRequest) returns (TagImageResponse);
+
+  // Container Platform
+  rpc ConfigurePlatform(ConfigurePlatformRequest) returns (ConfigurePlatformResponse);
+  rpc GetPlatformStatus(GetPlatformStatusRequest) returns (GetPlatformStatusResponse);
+  rpc ListClusters(ListClustersRequest) returns (ListClustersResponse);
+  rpc GetClusterResources(GetClusterResourcesRequest) returns (GetClusterResourcesResponse);
+
+  // Deployment Management
+  rpc CreateDeployment(CreateDeploymentRequest) returns (CreateDeploymentResponse);
+  rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
+  rpc RollbackDeployment(RollbackDeploymentRequest) returns (RollbackDeploymentResponse);
+  rpc GetDeploymentStatus(GetDeploymentStatusRequest) returns (GetDeploymentStatusResponse);
+  rpc ListDeployments(ListDeploymentsRequest) returns (ListDeploymentsResponse);
+
+  // Service Mesh
+  rpc ConfigureServiceMesh(ConfigureServiceMeshRequest) returns (ConfigureServiceMeshResponse);
+  rpc GetServiceMeshStatus(GetServiceMeshStatusRequest) returns (GetServiceMeshStatusResponse);
+  rpc ApplyTrafficPolicy(ApplyTrafficPolicyRequest) returns (ApplyTrafficPolicyResponse);
+  rpc GetServiceTopology(GetServiceTopologyRequest) returns (GetServiceTopologyResponse);
+}
+
+// Registry Messages
+message RegistryConfig {
+  string id = 1;
+  string name = 2;
+  RegistryType type = 3;
+  string endpoint = 4;
+  map<string, string> credentials = 5;
+  repeated string allowed_patterns = 6;
+  repeated string denied_patterns = 7;
+  ScanConfig scan_config = 8;
+  ReplicationConfig replication_config = 9;
+}
+
+enum RegistryType {
+  REGISTRY_TYPE_UNSPECIFIED = 0;
+  REGISTRY_TYPE_DOCKER = 1;
+  REGISTRY_TYPE_HARBOR = 2;
+  REGISTRY_TYPE_ECR = 3;
+  REGISTRY_TYPE_GCR = 4;
+  REGISTRY_TYPE_ACR = 5;
+}
+
+message ScanConfig {
+  bool enabled = 1;
+  string scanner = 2;
+  int32 severity_threshold = 3;
+  repeated string ignored_vulnerabilities = 4;
+  map<string, string> scanner_config = 5;
+}
+
+message ReplicationConfig {
+  bool enabled = 1;
+  repeated string target_registries = 2;
+  repeated string included_patterns = 3;
+  repeated string excluded_patterns = 4;
+  bool trigger_on_push = 5;
+  string schedule = 6;
+}
+
+message ConfigureRegistryRequest {
+  RegistryConfig config = 1;
+}
+
+message ConfigureRegistryResponse {
+  RegistryConfig config = 1;
+}
+
+message GetRegistryStatusRequest {
+  string registry_id = 1;
+}
+
+message GetRegistryStatusResponse {
+  RegistryConfig config = 1;
+  int32 image_count = 2;
+  int64 storage_used = 3;
+  map<string, int32> vulnerability_counts = 4;
+  repeated string warnings = 5;
+}
+
+message Image {
+  string id = 1;
+  string name = 2;
+  string tag = 3;
+  string digest = 4;
+  int64 size = 5;
+  map<string, string> labels = 6;
+  repeated Vulnerability vulnerabilities = 7;
+  int64 created_at = 8;
+  int64 pushed_at = 9;
+}
+
+message Vulnerability {
+  string id = 1;
+  string package = 2;
+  string version = 3;
+  string fixed_version = 4;
+  string severity = 5;
+  string description = 6;
+  repeated string references = 7;
+}
+
+message ScanImageRequest {
+  string registry_id = 1;
+  string image = 2;
+  string tag = 3;
+  optional ScanConfig override_config = 4;
+}
+
+message ScanImageResponse {
+  Image image = 1;
+  repeated Vulnerability vulnerabilities = 2;
+  map<string, string> metadata = 3;
+}
+
+message ListImagesRequest {
+  string registry_id = 1;
+  optional string filter = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListImagesResponse {
+  repeated Image images = 1;
+  string next_page_token = 2;
+}
+
+message TagImageRequest {
+  string registry_id = 1;
+  string source_image = 2;
+  string source_tag = 3;
+  string target_tag = 4;
+}
+
+message TagImageResponse {
+  Image image = 1;
+}
+
+// Platform Messages
+message PlatformConfig {
+  string id = 1;
+  string name = 2;
+  PlatformType type = 3;
+  map<string, string> credentials = 4;
+  repeated ClusterConfig clusters = 5;
+  NetworkConfig network_config = 6;
+  StorageConfig storage_config = 7;
+  MonitoringConfig monitoring_config = 8;
+}
+
+enum PlatformType {
+  PLATFORM_TYPE_UNSPECIFIED = 0;
+  PLATFORM_TYPE_KUBERNETES = 1;
+  PLATFORM_TYPE_OPENSHIFT = 2;
+  PLATFORM_TYPE_EKS = 3;
+  PLATFORM_TYPE_GKE = 4;
+  PLATFORM_TYPE_AKS = 5;
+}
+
+message ClusterConfig {
+  string id = 1;
+  string name = 2;
+  string endpoint = 3;
+  map<string, string> credentials = 4;
+  repeated string node_pools = 5;
+  repeated string namespaces = 6;
+  map<string, string> labels = 7;
+}
+
+message NetworkConfig {
+  string cni_plugin = 1;
+  string service_cidr = 2;
+  string pod_cidr = 3;
+  repeated string dns_servers = 4;
+  bool network_policy_enabled = 5;
+}
+
+message StorageConfig {
+  repeated StorageClass storage_classes = 1;
+  map<string, string> volume_types = 2;
+  repeated string storage_nodes = 3;
+}
+
+message StorageClass {
+  string name = 1;
+  string provisioner = 2;
+  map<string, string> parameters = 3;
+  string reclaim_policy = 4;
+  bool default_class = 5;
+}
+
+message MonitoringConfig {
+  bool prometheus_enabled = 1;
+  bool grafana_enabled = 2;
+  bool alertmanager_enabled = 3;
+  map<string, string> scrape_configs = 4;
+  repeated string alert_rules = 5;
+}
+
+message ConfigurePlatformRequest {
+  PlatformConfig config = 1;
+}
+
+message ConfigurePlatformResponse {
+  PlatformConfig config = 1;
+}
+
+message GetPlatformStatusRequest {
+  string platform_id = 1;
+}
+
+message GetPlatformStatusResponse {
+  PlatformConfig config = 1;
+  repeated ClusterStatus clusters = 2;
+  map<string, ResourceMetrics> resource_usage = 3;
+  repeated string warnings = 4;
+}
+
+message ClusterStatus {
+  string cluster_id = 1;
+  string status = 2;
+  int32 ready_nodes = 3;
+  int32 total_nodes = 4;
+  map<string, int32> pod_counts = 5;
+  map<string, string> conditions = 6;
+}
+
+message ResourceMetrics {
+  double cpu_usage = 1;
+  double memory_usage = 2;
+  double storage_usage = 3;
+  double network_in = 4;
+  double network_out = 5;
+}
+
+message ListClustersRequest {
+  string platform_id = 1;
+  optional string filter = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListClustersResponse {
+  repeated ClusterConfig clusters = 1;
+  string next_page_token = 2;
+}
+
+message GetClusterResourcesRequest {
+  string cluster_id = 1;
+  optional string namespace = 2;
+  repeated string resource_types = 3;
+}
+
+message GetClusterResourcesResponse {
+  map<string, ResourceList> resources = 1;
+}
+
+message ResourceList {
+  repeated Resource items = 1;
+}
+
+message Resource {
+  string kind = 1;
+  string name = 2;
+  string namespace = 3;
+  map<string, string> labels = 4;
+  map<string, string> annotations = 5;
+  string status = 6;
+  int64 created_at = 7;
+}
+
+// Deployment Messages
+message Deployment {
+  string id = 1;
+  string name = 2;
+  string cluster_id = 3;
+  string namespace = 4;
+  repeated Container containers = 5;
+  DeploymentStrategy strategy = 6;
+  map<string, string> labels = 7;
+  map<string, string> annotations = 8;
+  repeated Volume volumes = 9;
+  NetworkPolicy network_policy = 10;
+  ResourceRequirements resources = 11;
+  HealthCheck health_check = 12;
+  map<string, string> environment = 13;
+  repeated Secret secrets = 14;
+  DeploymentStatus status = 15;
+}
+
+message Container {
+  string name = 1;
+  string image = 2;
+  string tag = 3;
+  repeated string command = 4;
+  repeated string args = 5;
+  repeated PortMapping ports = 6;
+  repeated VolumeMount volume_mounts = 7;
+  ResourceRequirements resources = 8;
+  repeated EnvVar environment = 9;
+  HealthCheck health_check = 10;
+}
+
+message PortMapping {
+  string name = 1;
+  int32 container_port = 2;
+  optional int32 host_port = 3;
+  string protocol = 4;
+}
+
+message Volume {
+  string name = 1;
+  VolumeSource source = 2;
+}
+
+message VolumeSource {
+  oneof source {
+    EmptyDir empty_dir = 1;
+    ConfigMap config_map = 2;
+    Secret secret = 3;
+    PersistentVolumeClaim persistent_volume_claim = 4;
+  }
+}
+
+message VolumeMount {
+  string name = 1;
+  string mount_path = 2;
+  bool read_only = 3;
+}
+
+message EmptyDir {
+  optional string size_limit = 1;
+}
+
+message ConfigMap {
+  string name = 1;
+  repeated KeyToPath items = 2;
+}
+
+message Secret {
+  string name = 1;
+  repeated KeyToPath items = 2;
+}
+
+message KeyToPath {
+  string key = 1;
+  string path = 2;
+  optional int32 mode = 3;
+}
+
+message PersistentVolumeClaim {
+  string claim_name = 1;
+  bool read_only = 2;
+}
+
+message NetworkPolicy {
+  repeated string ingress_rules = 1;
+  repeated string egress_rules = 2;
+  map<string, string> pod_selector = 3;
+}
+
+message ResourceRequirements {
+  map<string, string> requests = 1;
+  map<string, string> limits = 2;
+}
+
+message HealthCheck {
+  oneof check {
+    HttpProbe http = 1;
+    TcpProbe tcp = 2;
+    ExecProbe exec = 3;
+  }
+  int32 initial_delay_seconds = 4;
+  int32 period_seconds = 5;
+  int32 timeout_seconds = 6;
+  int32 success_threshold = 7;
+  int32 failure_threshold = 8;
+}
+
+message HttpProbe {
+  string path = 1;
+  int32 port = 2;
+  string scheme = 3;
+  map<string, string> headers = 4;
+}
+
+message TcpProbe {
+  int32 port = 1;
+}
+
+message ExecProbe {
+  repeated string command = 1;
+}
+
+message EnvVar {
+  string name = 1;
+  oneof value {
+    string literal = 2;
+    EnvVarSource source = 3;
+  }
+}
+
+message EnvVarSource {
+  oneof source {
+    ConfigMapKeyRef config_map = 1;
+    SecretKeyRef secret = 2;
+    FieldRef field = 3;
+  }
+}
+
+message ConfigMapKeyRef {
+  string name = 1;
+  string key = 2;
+}
+
+message SecretKeyRef {
+  string name = 1;
+  string key = 2;
+}
+
+message FieldRef {
+  string field_path = 1;
+}
+
+enum DeploymentStrategy {
+  DEPLOYMENT_STRATEGY_UNSPECIFIED = 0;
+  DEPLOYMENT_STRATEGY_RECREATE = 1;
+  DEPLOYMENT_STRATEGY_ROLLING_UPDATE = 2;
+  DEPLOYMENT_STRATEGY_BLUE_GREEN = 3;
+  DEPLOYMENT_STRATEGY_CANARY = 4;
+}
+
+message DeploymentStatus {
+  string phase = 1;
+  string message = 2;
+  int32 replicas = 3;
+  int32 ready_replicas = 4;
+  int32 updated_replicas = 5;
+  int32 available_replicas = 6;
+  repeated string conditions = 7;
+}
+
+message CreateDeploymentRequest {
+  Deployment deployment = 1;
+}
+
+message CreateDeploymentResponse {
+  Deployment deployment = 1;
+}
+
+message UpdateDeploymentRequest {
+  string deployment_id = 1;
+  Deployment deployment = 2;
+}
+
+message UpdateDeploymentResponse {
+  Deployment deployment = 1;
+}
+
+message RollbackDeploymentRequest {
+  string deployment_id = 1;
+  string revision = 2;
+}
+
+message RollbackDeploymentResponse {
+  Deployment deployment = 1;
+}
+
+message GetDeploymentStatusRequest {
+  string deployment_id = 1;
+}
+
+message GetDeploymentStatusResponse {
+  DeploymentStatus status = 1;
+  repeated Event events = 2;
+  map<string, string> metrics = 3;
+}
+
+message Event {
+  string type = 1;
+  string reason = 2;
+  string message = 3;
+  int64 timestamp = 4;
+  map<string, string> metadata = 5;
+}
+
+message ListDeploymentsRequest {
+  string cluster_id = 1;
+  optional string namespace = 2;
+  optional string filter = 3;
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListDeploymentsResponse {
+  repeated Deployment deployments = 1;
+  string next_page_token = 2;
+}
+
+// Service Mesh Messages
+message ServiceMeshConfig {
+  string id = 1;
+  string name = 2;
+  ServiceMeshType type = 3;
+  map<string, string> credentials = 4;
+  repeated string namespaces = 5;
+  MeshPolicy mesh_policy = 6;
+  TelemetryConfig telemetry_config = 7;
+  SecurityConfig security_config = 8;
+}
+
+enum ServiceMeshType {
+  SERVICE_MESH_TYPE_UNSPECIFIED = 0;
+  SERVICE_MESH_TYPE_ISTIO = 1;
+  SERVICE_MESH_TYPE_LINKERD = 2;
+  SERVICE_MESH_TYPE_CONSUL = 3;
+}
+
+message MeshPolicy {
+  bool mtls_enabled = 1;
+  repeated string authorized_services = 2;
+  repeated string denied_services = 3;
+  map<string, string> traffic_rules = 4;
+  map<string, string> retry_config = 5;
+}
+
+message TelemetryConfig {
+  bool tracing_enabled = 1;
+  string tracing_backend = 2;
+  bool metrics_enabled = 3;
+  string metrics_backend = 4;
+  bool logging_enabled = 5;
+  string logging_backend = 6;
+}
+
+message SecurityConfig {
+  bool authorization_enabled = 1;
+  repeated string jwt_providers = 2;
+  repeated string rbac_rules = 3;
+  map<string, string> security_policies = 4;
+}
+
+message ConfigureServiceMeshRequest {
+  ServiceMeshConfig config = 1;
+}
+
+message ConfigureServiceMeshResponse {
+  ServiceMeshConfig config = 1;
+}
+
+message GetServiceMeshStatusRequest {
+  string mesh_id = 1;
+}
+
+message GetServiceMeshStatusResponse {
+  ServiceMeshConfig config = 1;
+  map<string, string> metrics = 2;
+  repeated string warnings = 3;
+}
+
+message TrafficPolicy {
+  string id = 1;
+  string name = 2;
+  string source_service = 3;
+  string destination_service = 4;
+  repeated TrafficRule rules = 5;
+}
+
+message TrafficRule {
+  repeated RouteDestination routes = 1;
+  repeated string methods = 2;
+  repeated HeaderMatch headers = 3;
+  RetryPolicy retry = 4;
+  TimeoutPolicy timeout = 5;
+  CircuitBreaker circuit_breaker = 6;
+}
+
+message RouteDestination {
+  string host = 1;
+  optional int32 port = 2;
+  int32 weight = 3;
+  map<string, string> headers = 4;
+}
+
+message HeaderMatch {
+  string name = 1;
+  string value = 2;
+  string match_type = 3;
+}
+
+message RetryPolicy {
+  int32 attempts = 1;
+  int32 per_try_timeout_ms = 2;
+  repeated string retry_on = 3;
+}
+
+message TimeoutPolicy {
+  int32 timeout_ms = 1;
+}
+
+message CircuitBreaker {
+  int32 max_connections = 1;
+  int32 max_pending_requests = 2;
+  int32 max_requests = 3;
+  int32 max_retries = 4;
+}
+
+message ApplyTrafficPolicyRequest {
+  TrafficPolicy policy = 1;
+}
+
+message ApplyTrafficPolicyResponse {
+  TrafficPolicy policy = 1;
+}
+
+message GetServiceTopologyRequest {
+  string mesh_id = 1;
+  optional string namespace = 2;
+}
+
+message GetServiceTopologyResponse {
+  repeated ServiceNode nodes = 1;
+  repeated ServiceEdge edges = 2;
+}
+
+message ServiceNode {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string version = 4;
+  map<string, string> metadata = 5;
+  map<string, double> metrics = 6;
+}
+
+message ServiceEdge {
+  string source = 1;
+  string target = 2;
+  string protocol = 3;
+  map<string, double> metrics = 4;
+}
