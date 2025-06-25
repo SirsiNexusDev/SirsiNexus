@@ -28,17 +28,15 @@ pub struct Claims {
 #[derive(Debug)]
 pub struct AuthUser {
     pub user: User,
+    pub user_id: Uuid,
 }
 
 #[async_trait]
-impl<S> FromRequestParts<S> for AuthUser
-where
-    S: Send + Sync,
-    PgPool: FromRequestParts<S>,
+impl FromRequestParts<PgPool> for AuthUser
 {
     type Rejection = Response;
 
-    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+    async fn from_request_parts(parts: &mut Parts, pool: &PgPool) -> Result<Self, Self::Rejection> {
         // Extract the token from the Authorization header
         let auth_header = parts
             .headers
@@ -64,20 +62,13 @@ where
         let user_id = Uuid::parse_str(&claims.sub)
             .map_err(|_| AppError::Auth("Invalid user ID".into()).into_response())?;
 
-        // Get the database pool from the state
-        let pool = PgPool::from_request_parts(parts, state)
-            .await
-            .map_err(|e| {
-                AppError::Internal("Database connection error".into()).into_response()
-            })?;
-
         // Get the user from the database
-        let user = User::find_by_id(&pool, user_id)
+        let user = User::find_by_id(pool, user_id)
             .await
             .map_err(|e| e.into_response())?
             .ok_or_else(|| AppError::Auth("User not found".into()).into_response())?;
 
-        Ok(AuthUser { user })
+        Ok(AuthUser { user, user_id })
     }
 }
 

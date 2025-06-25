@@ -1,6 +1,7 @@
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde_json::json;
 use thiserror::Error;
+use validator::ValidationErrors;
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -39,6 +40,29 @@ impl IntoResponse for Error {
         }));
 
         (status, body).into_response()
+    }
+}
+
+impl From<ValidationErrors> for Error {
+    fn from(errors: ValidationErrors) -> Self {
+        let error_messages: Vec<String> = errors
+            .field_errors()
+            .iter()
+            .map(|(field, errors)| {
+                let messages: Vec<String> = errors
+                    .iter()
+                    .map(|error| {
+                        error.message
+                            .as_ref()
+                            .map(|msg| msg.to_string())
+                            .unwrap_or_else(|| format!("Invalid {}", field))
+                    })
+                    .collect();
+                format!("{}: {}", field, messages.join(", "))
+            })
+            .collect();
+        
+        Error::Validation(error_messages.join("; "))
     }
 }
 

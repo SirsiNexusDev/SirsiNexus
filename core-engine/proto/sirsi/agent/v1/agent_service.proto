@@ -1,0 +1,195 @@
+syntax = "proto3";
+
+package sirsi.agent.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+// AgentService provides the core interface for AI agent interactions
+service AgentService {
+    // Start a new agent session
+    rpc StartSession(StartSessionRequest) returns (StartSessionResponse);
+    
+    // Spawn a new sub-agent of specific type
+    rpc SpawnSubAgent(SpawnSubAgentRequest) returns (SpawnSubAgentResponse);
+    
+    // Send a message to an agent
+    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+    
+    // Get suggestions from an agent
+    rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsResponse);
+    
+    // Get status of a sub-agent
+    rpc GetSubAgentStatus(GetSubAgentStatusRequest) returns (GetSubAgentStatusResponse);
+    
+    // Stop an agent session
+    rpc StopSession(StopSessionRequest) returns (StopSessionResponse);
+    
+    // Stream real-time agent events
+    rpc StreamEvents(StreamEventsRequest) returns (stream AgentEvent);
+}
+
+// Session management
+message StartSessionRequest {
+    string user_id = 1;
+    string context = 2;
+    map<string, string> metadata = 3;
+}
+
+message StartSessionResponse {
+    string session_id = 1;
+    string status = 2;
+    google.protobuf.Timestamp created_at = 3;
+}
+
+message StopSessionRequest {
+    string session_id = 1;
+}
+
+message StopSessionResponse {
+    string status = 1;
+    google.protobuf.Timestamp stopped_at = 2;
+}
+
+// Sub-agent management
+message SpawnSubAgentRequest {
+    string session_id = 1;
+    AgentType agent_type = 2;
+    map<string, string> config = 3;
+    string context = 4;
+}
+
+message SpawnSubAgentResponse {
+    string agent_id = 1;
+    AgentType agent_type = 2;
+    string status = 3;
+    google.protobuf.Timestamp created_at = 4;
+}
+
+message GetSubAgentStatusRequest {
+    string agent_id = 1;
+}
+
+message GetSubAgentStatusResponse {
+    string agent_id = 1;
+    AgentType agent_type = 2;
+    AgentStatus status = 3;
+    map<string, string> metrics = 4;
+    google.protobuf.Timestamp last_activity = 5;
+}
+
+// Message handling
+message SendMessageRequest {
+    string session_id = 1;
+    string agent_id = 2; // Optional: specific agent, otherwise session agent
+    string message = 3;
+    MessageType message_type = 4;
+    map<string, string> context = 5;
+}
+
+message SendMessageResponse {
+    string response_id = 1;
+    string agent_id = 2;
+    string response = 3;
+    MessageType response_type = 4;
+    repeated Suggestion suggestions = 5;
+    google.protobuf.Timestamp timestamp = 6;
+}
+
+message GetSuggestionsRequest {
+    string session_id = 1;
+    string agent_id = 2;
+    string context = 3;
+    SuggestionType suggestion_type = 4;
+}
+
+message GetSuggestionsResponse {
+    repeated Suggestion suggestions = 1;
+    string context = 2;
+    google.protobuf.Timestamp generated_at = 3;
+}
+
+// Event streaming
+message StreamEventsRequest {
+    string session_id = 1;
+    repeated EventType event_types = 2;
+}
+
+message AgentEvent {
+    string event_id = 1;
+    string session_id = 2;
+    string agent_id = 3;
+    EventType event_type = 4;
+    google.protobuf.Any payload = 5;
+    google.protobuf.Timestamp timestamp = 6;
+}
+
+// Common types
+message Suggestion {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    SuggestionType type = 4;
+    string action = 5;
+    map<string, string> parameters = 6;
+    float confidence = 7;
+}
+
+// Enums
+enum AgentType {
+    AGENT_TYPE_UNSPECIFIED = 0;
+    AGENT_TYPE_GENERAL = 1;
+    AGENT_TYPE_AWS = 2;
+    AGENT_TYPE_AZURE = 3;
+    AGENT_TYPE_GCP = 4;
+    AGENT_TYPE_VSPHERE = 5;
+    AGENT_TYPE_MIGRATION = 6;
+    AGENT_TYPE_SECURITY = 7;
+    AGENT_TYPE_REPORTING = 8;
+    AGENT_TYPE_SCRIPTING = 9;
+    AGENT_TYPE_TUTORIAL = 10;
+    AGENT_TYPE_IDENTITY = 11;
+    AGENT_TYPE_KEY_MANAGEMENT = 12;
+    AGENT_TYPE_CONTAINER = 13;
+    AGENT_TYPE_COMPUTE = 14;
+    AGENT_TYPE_ACCESS = 15;
+}
+
+enum AgentStatus {
+    AGENT_STATUS_UNSPECIFIED = 0;
+    AGENT_STATUS_INITIALIZING = 1;
+    AGENT_STATUS_READY = 2;
+    AGENT_STATUS_BUSY = 3;
+    AGENT_STATUS_ERROR = 4;
+    AGENT_STATUS_STOPPED = 5;
+}
+
+enum MessageType {
+    MESSAGE_TYPE_UNSPECIFIED = 0;
+    MESSAGE_TYPE_TEXT = 1;
+    MESSAGE_TYPE_COMMAND = 2;
+    MESSAGE_TYPE_QUERY = 3;
+    MESSAGE_TYPE_CODE = 4;
+    MESSAGE_TYPE_DIAGNOSTIC = 5;
+}
+
+enum SuggestionType {
+    SUGGESTION_TYPE_UNSPECIFIED = 0;
+    SUGGESTION_TYPE_ACTION = 1;
+    SUGGESTION_TYPE_OPTIMIZATION = 2;
+    SUGGESTION_TYPE_SECURITY = 3;
+    SUGGESTION_TYPE_CODE = 4;
+    SUGGESTION_TYPE_TUTORIAL = 5;
+    SUGGESTION_TYPE_TROUBLESHOOTING = 6;
+}
+
+enum EventType {
+    EVENT_TYPE_UNSPECIFIED = 0;
+    EVENT_TYPE_AGENT_SPAWNED = 1;
+    EVENT_TYPE_AGENT_STOPPED = 2;
+    EVENT_TYPE_MESSAGE_RECEIVED = 3;
+    EVENT_TYPE_MESSAGE_SENT = 4;
+    EVENT_TYPE_SUGGESTION_GENERATED = 5;
+    EVENT_TYPE_ERROR_OCCURRED = 6;
+    EVENT_TYPE_STATUS_CHANGED = 7;
+}
