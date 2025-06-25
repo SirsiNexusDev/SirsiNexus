@@ -286,7 +286,7 @@ message ListSecretsResponse {
 message UpdateSecretRequest {
   string id = 1;
   bytes value = 2;
-  optional map<string, string> metadata = 3;
+  map<string, string> metadata = 3;
 }
 
 message UpdateSecretResponse {
@@ -386,7 +386,7 @@ message BackupVaultResponse {
 
 message RestoreVaultRequest {
   string backup_id = 1;
-  optional map<string, string> restore_options = 2;
+  map<string, string> restore_options = 2;
 }
 
 message RestoreVaultResponse {

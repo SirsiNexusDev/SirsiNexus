@@ -63,5 +63,9 @@ serial_test = "3.0"
 
 [workspace]
 members = [
-    "crates/*"
+    "crates/key-vault",
+    "crates/aws-agent",
+    "crates/container-manager",
+    "crates/compute-manager",
+    "crates/identity-manager"
 ]

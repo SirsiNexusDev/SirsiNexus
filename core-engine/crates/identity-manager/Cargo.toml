@@ -5,14 +5,13 @@ edition = "2021"
 
 [dependencies]
 # Authentication & Authorization
-openidconnect = "3.3"
+openidconnect = "3.5"
 jsonwebtoken = "9.2"
 argon2 = "0.5"
 ldap3 = "0.11"
 
 # RBAC & Policy
-casbin = "2.0"
-casbin-redis-adapter = "1.0"
+casbin = { version = "2.0", features = ["runtime-tokio", "logging"] }
 
 # Async runtime
 tokio = { version = "1.35", features = ["full"] }
@@ -23,7 +22,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 # Database
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json"] }
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json"] }
 
 # Error handling
 thiserror = "1.0"
@@ -31,8 +30,8 @@ anyhow = "1.0"
 
 # Logging and metrics
 tracing = "0.1"
-opentelemetry = { version = "0.20", features = ["trace"] }
-opentelemetry-semantic-conventions = "0.12"
+opentelemetry = { version = "0.21", features = ["trace"] }
+opentelemetry-semantic-conventions = "0.13"
 
 # gRPC
 tonic = { version = "0.10", features = ["transport", "tls"] }
@@ -44,7 +43,7 @@ redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
 # Utilities
 async-trait = "0.1"
 uuid = { version = "1.6", features = ["v4", "serde"] }
-validator = { version = "0.16", features = ["derive"] }
+validator = { version = "0.17", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 [dev-dependencies]
