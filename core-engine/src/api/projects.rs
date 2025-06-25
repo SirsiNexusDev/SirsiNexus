@@ -3,7 +3,7 @@ use axum::{
     Json,
 };
 use serde::Deserialize;
-use sqlx::PgPool;
+use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
 use uuid::Uuid;
 use validator::Validate;
 
@@ -144,12 +144,12 @@ mod tests {
         routing::{get, post},
         Router,
     };
-    use sqlx::postgres::PgPoolOptions;
+use sqlx::postgres::PgPoolOptions; // CockroachDB connection
     use tower::ServiceExt;
 
     async fn setup() -> PgPool {
         let db_url = std::env::var("DATABASE_URL")
-            .unwrap_or_else(|_| "postgres://postgres:postgres@localhost:5432/sirsi_test".to_string());
+            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
         
         let pool = PgPoolOptions::new()
             .max_connections(5)

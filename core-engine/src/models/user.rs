@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 use crate::error::Result;
-use sqlx::PgPool;
+use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Serialize, Deserialize, FromRow)]

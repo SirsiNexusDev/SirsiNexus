@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, postgres::PgPool};
+use sqlx::{FromRow, postgres::PgPool}; // CockroachDB uses PostgreSQL protocol
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 use validator::Validate;

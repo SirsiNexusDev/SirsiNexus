@@ -2,7 +2,7 @@ use axum::{
     routing::{get, post, put, delete},
     Router,
 };
-use sqlx::PgPool;
+use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
 
 mod auth;
 mod projects;

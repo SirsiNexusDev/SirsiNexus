@@ -59,9 +59,9 @@ mod tests {
         let config = AppConfig {
             database: DatabaseConfig {
                 host: "localhost".to_string(),
-                port: 5432,
-                username: "postgres".to_string(),
-                password: "postgres".to_string(),
+                port: 26257,
+                username: "root".to_string(),
+                password: "".to_string(),
                 database: "test".to_string(),
                 max_connections: 5,
                 ssl_ca_cert: None,

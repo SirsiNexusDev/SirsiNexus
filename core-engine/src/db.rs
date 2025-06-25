@@ -1,8 +1,8 @@
-use sqlx::postgres::{PgPool, PgPoolOptions};
+use sqlx::postgres::{PgPool, PgPoolOptions}; // CockroachDB uses PostgreSQL protocol
 use std::time::Duration;
 use crate::config::DatabaseConfig;
 
-pub type DbPool = PgPool;
+pub type DbPool = PgPool; // CockroachDB connection pool
 
 pub async fn create_pool(config: &DatabaseConfig) -> Result<DbPool, sqlx::Error> {
     // CockroachDB uses PostgreSQL-compatible driver

@@ -36,7 +36,7 @@ opentelemetry-otlp = { version = "0.13", features = ["tonic", "tls", "tls-roots"
 opentelemetry-semantic-conventions = "0.12"
 tracing-opentelemetry = "0.20"
 
-# Database
+# Database (CockroachDB uses PostgreSQL protocol)
 sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json", "chrono"] }
 
 # Async runtime
