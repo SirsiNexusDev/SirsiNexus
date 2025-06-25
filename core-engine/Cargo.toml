@@ -1,0 +1,67 @@
+[package]
+name = "sirsi-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Web framework
+axum = { version = "0.7", features = ["macros"] }
+tower = { version = "0.4", features = ["timeout", "limit"] }
+tower-http = { version = "0.5", features = ["trace", "cors", "limit"] }
+
+# gRPC and Protobuf
+tonic = { version = "0.10", features = ["transport", "tls"] }
+tonic-reflection = "0.10"
+tokio-stream = "0.1"
+prost = "0.12"
+prost-types = "0.12"
+
+# OpenTelemetry
+opentelemetry = { version = "0.20", features = ["trace", "metrics"] }
+opentelemetry-otlp = { version = "0.13", features = ["grpc-tonic", "metrics"] }
+opentelemetry-semantic-conventions = "0.12"
+tracing-opentelemetry = "0.21"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json"] }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging and metrics
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Configuration
+config = { version = "0.13", features = ["yaml"] }
+
+# Authentication
+jsonwebtoken = "9.2"
+argon2 = "0.5"
+
+# Utilities
+time = { version = "0.3", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+validator = { version = "0.16", features = ["derive"] }
+futures = "0.3"
+
+[build-dependencies]
+tonic-build = "0.10"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockall = "0.12"
+serial_test = "3.0"
+
+[workspace]
+members = [
+    "crates/*"
+]
