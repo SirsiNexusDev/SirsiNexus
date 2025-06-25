@@ -1,0 +1,444 @@
+syntax = "proto3";
+
+package sirsi.identity.v1;
+
+service IdentityService {
+  // Identity Provider Management
+  rpc ConfigureIdP(ConfigureIdPRequest) returns (ConfigureIdPResponse);
+  rpc ListIdPs(ListIdPsRequest) returns (ListIdPsResponse);
+  rpc UpdateIdP(UpdateIdPRequest) returns (UpdateIdPResponse);
+  rpc DeleteIdP(DeleteIdPRequest) returns (DeleteIdPResponse);
+
+  // Role Management
+  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse);
+  rpc GetRole(GetRoleRequest) returns (GetRoleResponse);
+  rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse);
+  rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse);
+  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse);
+  rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse);
+  rpc UnassignRole(UnassignRoleRequest) returns (UnassignRoleResponse);
+
+  // Access Management
+  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse);
+  rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse);
+  rpc UpdatePolicy(UpdatePolicyRequest) returns (UpdatePolicyResponse);
+  rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse);
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse);
+  rpc AttachPolicy(AttachPolicyRequest) returns (AttachPolicyResponse);
+  rpc DetachPolicy(DetachPolicyRequest) returns (DetachPolicyResponse);
+
+  // Privilege Management
+  rpc RequestPrivilegeEscalation(RequestPrivilegeEscalationRequest) returns (RequestPrivilegeEscalationResponse);
+  rpc ApprovePrivilegeEscalation(ApprovePrivilegeEscalationRequest) returns (ApprovePrivilegeEscalationResponse);
+  rpc RevokePrivilege(RevokePrivilegeRequest) returns (RevokePrivilegeResponse);
+
+  // Access Review
+  rpc InitiateAccessReview(InitiateAccessReviewRequest) returns (InitiateAccessReviewResponse);
+  rpc GetAccessReviewStatus(GetAccessReviewStatusRequest) returns (GetAccessReviewStatusResponse);
+  rpc SubmitAccessReview(SubmitAccessReviewRequest) returns (SubmitAccessReviewResponse);
+
+  // Audit & Compliance
+  rpc GetAccessLogs(GetAccessLogsRequest) returns (GetAccessLogsResponse);
+  rpc GetPrivilegeUsage(GetPrivilegeUsageRequest) returns (GetPrivilegeUsageResponse);
+  rpc GetComplianceReport(GetComplianceReportRequest) returns (GetComplianceReportResponse);
+}
+
+// Identity Provider Messages
+message IdentityProvider {
+  string id = 1;
+  string name = 2;
+  IdPType type = 3;
+  map<string, string> config = 4;
+  repeated string scopes = 5;
+  IdPStatus status = 6;
+  repeated string domains = 7;
+  map<string, string> attributes = 8;
+}
+
+enum IdPType {
+  IDP_TYPE_UNSPECIFIED = 0;
+  IDP_TYPE_OIDC = 1;
+  IDP_TYPE_SAML = 2;
+  IDP_TYPE_LDAP = 3;
+  IDP_TYPE_LOCAL = 4;
+}
+
+enum IdPStatus {
+  IDP_STATUS_UNSPECIFIED = 0;
+  IDP_STATUS_ACTIVE = 1;
+  IDP_STATUS_INACTIVE = 2;
+  IDP_STATUS_ERROR = 3;
+}
+
+message ConfigureIdPRequest {
+  IdentityProvider provider = 1;
+}
+
+message ConfigureIdPResponse {
+  IdentityProvider provider = 1;
+}
+
+message ListIdPsRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListIdPsResponse {
+  repeated IdentityProvider providers = 1;
+  string next_page_token = 2;
+}
+
+message UpdateIdPRequest {
+  string id = 1;
+  IdentityProvider provider = 2;
+  repeated string update_mask = 3;
+}
+
+message UpdateIdPResponse {
+  IdentityProvider provider = 1;
+}
+
+message DeleteIdPRequest {
+  string id = 1;
+}
+
+message DeleteIdPResponse {}
+
+// Role Management Messages
+message Role {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string permissions = 4;
+  map<string, string> metadata = 5;
+  repeated string assigned_policies = 6;
+  RoleType type = 7;
+}
+
+enum RoleType {
+  ROLE_TYPE_UNSPECIFIED = 0;
+  ROLE_TYPE_SYSTEM = 1;
+  ROLE_TYPE_CUSTOM = 2;
+  ROLE_TYPE_TEMPORARY = 3;
+}
+
+message CreateRoleRequest {
+  Role role = 1;
+}
+
+message CreateRoleResponse {
+  Role role = 1;
+}
+
+message GetRoleRequest {
+  string id = 1;
+}
+
+message GetRoleResponse {
+  Role role = 1;
+}
+
+message UpdateRoleRequest {
+  string id = 1;
+  Role role = 2;
+  repeated string update_mask = 3;
+}
+
+message UpdateRoleResponse {
+  Role role = 1;
+}
+
+message DeleteRoleRequest {
+  string id = 1;
+}
+
+message DeleteRoleResponse {}
+
+message ListRolesRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+  string next_page_token = 2;
+}
+
+message AssignRoleRequest {
+  string role_id = 1;
+  string principal_id = 2;
+  optional int32 duration_seconds = 3;
+}
+
+message AssignRoleResponse {
+  string assignment_id = 1;
+  int64 expiry_time = 2;
+}
+
+message UnassignRoleRequest {
+  string assignment_id = 1;
+}
+
+message UnassignRoleResponse {}
+
+// Policy Management Messages
+message Policy {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string effect = 4;
+  repeated string actions = 5;
+  repeated string resources = 6;
+  repeated string conditions = 7;
+  map<string, string> metadata = 8;
+  PolicyType type = 9;
+}
+
+enum PolicyType {
+  POLICY_TYPE_UNSPECIFIED = 0;
+  POLICY_TYPE_IDENTITY = 1;
+  POLICY_TYPE_RESOURCE = 2;
+  POLICY_TYPE_PERMISSION = 3;
+}
+
+message CreatePolicyRequest {
+  Policy policy = 1;
+}
+
+message CreatePolicyResponse {
+  Policy policy = 1;
+}
+
+message GetPolicyRequest {
+  string id = 1;
+}
+
+message GetPolicyResponse {
+  Policy policy = 1;
+}
+
+message UpdatePolicyRequest {
+  string id = 1;
+  Policy policy = 2;
+  repeated string update_mask = 3;
+}
+
+message UpdatePolicyResponse {
+  Policy policy = 1;
+}
+
+message DeletePolicyRequest {
+  string id = 1;
+}
+
+message DeletePolicyResponse {}
+
+message ListPoliciesRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListPoliciesResponse {
+  repeated Policy policies = 1;
+  string next_page_token = 2;
+}
+
+message AttachPolicyRequest {
+  string policy_id = 1;
+  string target_id = 2;
+  string target_type = 3;
+}
+
+message AttachPolicyResponse {}
+
+message DetachPolicyRequest {
+  string policy_id = 1;
+  string target_id = 2;
+  string target_type = 3;
+}
+
+message DetachPolicyResponse {}
+
+// Privilege Management Messages
+message PrivilegeEscalationRequest {
+  string id = 1;
+  string requester_id = 2;
+  string role_id = 3;
+  string reason = 4;
+  int32 duration_minutes = 5;
+  repeated string approvers = 6;
+  EscalationStatus status = 7;
+}
+
+enum EscalationStatus {
+  ESCALATION_STATUS_UNSPECIFIED = 0;
+  ESCALATION_STATUS_PENDING = 1;
+  ESCALATION_STATUS_APPROVED = 2;
+  ESCALATION_STATUS_REJECTED = 3;
+  ESCALATION_STATUS_EXPIRED = 4;
+}
+
+message RequestPrivilegeEscalationRequest {
+  string role_id = 1;
+  string reason = 2;
+  int32 duration_minutes = 3;
+}
+
+message RequestPrivilegeEscalationResponse {
+  PrivilegeEscalationRequest request = 1;
+}
+
+message ApprovePrivilegeEscalationRequest {
+  string request_id = 1;
+  string approver_id = 2;
+  string comment = 3;
+}
+
+message ApprovePrivilegeEscalationResponse {
+  PrivilegeEscalationRequest request = 1;
+}
+
+message RevokePrivilegeRequest {
+  string request_id = 1;
+  string revoked_by = 2;
+  string reason = 3;
+}
+
+message RevokePrivilegeResponse {}
+
+// Access Review Messages
+message AccessReview {
+  string id = 1;
+  string reviewer_id = 2;
+  repeated string subjects = 3;
+  repeated string roles = 4;
+  AccessReviewStatus status = 5;
+  int64 start_time = 6;
+  int64 end_time = 7;
+  repeated AccessReviewFinding findings = 8;
+}
+
+enum AccessReviewStatus {
+  ACCESS_REVIEW_STATUS_UNSPECIFIED = 0;
+  ACCESS_REVIEW_STATUS_IN_PROGRESS = 1;
+  ACCESS_REVIEW_STATUS_COMPLETED = 2;
+  ACCESS_REVIEW_STATUS_FAILED = 3;
+}
+
+message AccessReviewFinding {
+  string id = 1;
+  string subject_id = 2;
+  string role_id = 3;
+  FindingSeverity severity = 4;
+  string description = 5;
+  repeated string recommendations = 6;
+}
+
+enum FindingSeverity {
+  FINDING_SEVERITY_UNSPECIFIED = 0;
+  FINDING_SEVERITY_LOW = 1;
+  FINDING_SEVERITY_MEDIUM = 2;
+  FINDING_SEVERITY_HIGH = 3;
+  FINDING_SEVERITY_CRITICAL = 4;
+}
+
+message InitiateAccessReviewRequest {
+  repeated string subjects = 1;
+  repeated string roles = 2;
+}
+
+message InitiateAccessReviewResponse {
+  AccessReview review = 1;
+}
+
+message GetAccessReviewStatusRequest {
+  string review_id = 1;
+}
+
+message GetAccessReviewStatusResponse {
+  AccessReview review = 1;
+}
+
+message SubmitAccessReviewRequest {
+  string review_id = 1;
+  repeated AccessReviewFinding findings = 2;
+}
+
+message SubmitAccessReviewResponse {
+  AccessReview review = 1;
+}
+
+// Audit & Compliance Messages
+message AccessLog {
+  string id = 1;
+  string principal_id = 2;
+  string resource_id = 3;
+  string action = 4;
+  int64 timestamp = 5;
+  string status = 6;
+  map<string, string> metadata = 7;
+}
+
+message PrivilegeUsage {
+  string role_id = 1;
+  string principal_id = 2;
+  int32 usage_count = 3;
+  int64 last_used = 4;
+  repeated string resources = 5;
+}
+
+message ComplianceReport {
+  string id = 1;
+  string type = 2;
+  int64 generated_at = 3;
+  map<string, int32> metrics = 4;
+  repeated ComplianceViolation violations = 5;
+  repeated string recommendations = 6;
+}
+
+message ComplianceViolation {
+  string id = 1;
+  string policy_id = 2;
+  string description = 3;
+  string severity = 4;
+  repeated string affected_resources = 5;
+}
+
+message GetAccessLogsRequest {
+  optional string principal_id = 1;
+  optional string resource_id = 2;
+  optional string action = 3;
+  int64 start_time = 4;
+  int64 end_time = 5;
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+message GetAccessLogsResponse {
+  repeated AccessLog logs = 1;
+  string next_page_token = 2;
+}
+
+message GetPrivilegeUsageRequest {
+  optional string role_id = 1;
+  optional string principal_id = 2;
+  int64 start_time = 3;
+  int64 end_time = 4;
+}
+
+message GetPrivilegeUsageResponse {
+  repeated PrivilegeUsage usage = 1;
+}
+
+message GetComplianceReportRequest {
+  string report_type = 1;
+  int64 start_time = 2;
+  int64 end_time = 3;
+}
+
+message GetComplianceReportResponse {
+  ComplianceReport report = 1;
+}
