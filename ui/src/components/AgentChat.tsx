@@ -144,6 +144,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({ contextualHints = [], onSe
                 <button
                   onClick={handleSend}
                   disabled={isLoading || !inputValue.trim()}
+                  aria-label="Send message"
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-sirsi-500 text-white disabled:opacity-50"
                 >
                   <Send size={20} />
