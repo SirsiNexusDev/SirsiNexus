@@ -1,0 +1,410 @@
+syntax = "proto3";
+
+package sirsi.keyvault.v1;
+
+service KeyVaultService {
+  // Certificate Management
+  rpc CreateCertificate(CreateCertificateRequest) returns (CreateCertificateResponse);
+  rpc GetCertificate(GetCertificateRequest) returns (GetCertificateResponse);
+  rpc ListCertificates(ListCertificatesRequest) returns (ListCertificatesResponse);
+  rpc RevokeCertificate(RevokeCertificateRequest) returns (RevokeCertificateResponse);
+  rpc RenewCertificate(RenewCertificateRequest) returns (RenewCertificateResponse);
+
+  // Key Management
+  rpc CreateKey(CreateKeyRequest) returns (CreateKeyResponse);
+  rpc GetKey(GetKeyRequest) returns (GetKeyResponse);
+  rpc ListKeys(ListKeysRequest) returns (ListKeysResponse);
+  rpc RotateKey(RotateKeyRequest) returns (RotateKeyResponse);
+  rpc RevokeKey(RevokeKeyRequest) returns (RevokeKeyResponse);
+
+  // Secret Management
+  rpc CreateSecret(CreateSecretRequest) returns (CreateSecretResponse);
+  rpc GetSecret(GetSecretRequest) returns (GetSecretResponse);
+  rpc ListSecrets(ListSecretsRequest) returns (ListSecretsResponse);
+  rpc UpdateSecret(UpdateSecretRequest) returns (UpdateSecretResponse);
+  rpc DeleteSecret(DeleteSecretRequest) returns (DeleteSecretResponse);
+
+  // HSM Management
+  rpc ConfigureHSM(ConfigureHSMRequest) returns (ConfigureHSMResponse);
+  rpc GetHSMStatus(GetHSMStatusRequest) returns (GetHSMStatusResponse);
+  rpc SyncHSM(SyncHSMRequest) returns (SyncHSMResponse);
+
+  // Backup & Recovery
+  rpc BackupVault(BackupVaultRequest) returns (BackupVaultResponse);
+  rpc RestoreVault(RestoreVaultRequest) returns (RestoreVaultResponse);
+  rpc GetBackupStatus(GetBackupStatusRequest) returns (GetBackupStatusResponse);
+}
+
+// Certificate Messages
+message Certificate {
+  string id = 1;
+  string name = 2;
+  bytes data = 3;
+  CertificateType type = 4;
+  CertificateStatus status = 5;
+  int64 not_before = 6;
+  int64 not_after = 7;
+  string issuer = 8;
+  string subject = 9;
+  repeated string san = 10;
+  repeated string key_usage = 11;
+  repeated string extended_key_usage = 12;
+  bool is_ca = 13;
+  map<string, string> metadata = 14;
+  int64 created_at = 15;
+  int64 updated_at = 16;
+}
+
+enum CertificateType {
+  CERTIFICATE_TYPE_UNSPECIFIED = 0;
+  CERTIFICATE_TYPE_SERVER = 1;
+  CERTIFICATE_TYPE_CLIENT = 2;
+  CERTIFICATE_TYPE_CA = 3;
+  CERTIFICATE_TYPE_INTERMEDIATE = 4;
+}
+
+enum CertificateStatus {
+  CERTIFICATE_STATUS_UNSPECIFIED = 0;
+  CERTIFICATE_STATUS_ACTIVE = 1;
+  CERTIFICATE_STATUS_EXPIRED = 2;
+  CERTIFICATE_STATUS_REVOKED = 3;
+  CERTIFICATE_STATUS_PENDING = 4;
+}
+
+message CreateCertificateRequest {
+  string name = 1;
+  CertificateType type = 2;
+  CertificateOptions options = 3;
+  map<string, string> metadata = 4;
+}
+
+message CertificateOptions {
+  string subject = 1;
+  repeated string san = 2;
+  repeated string key_usage = 3;
+  repeated string extended_key_usage = 4;
+  bool is_ca = 5;
+  int32 validity_months = 6;
+  string key_type = 7;
+  int32 key_bits = 8;
+}
+
+message CreateCertificateResponse {
+  Certificate certificate = 1;
+}
+
+message GetCertificateRequest {
+  string id = 1;
+}
+
+message GetCertificateResponse {
+  Certificate certificate = 1;
+}
+
+message ListCertificatesRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListCertificatesResponse {
+  repeated Certificate certificates = 1;
+  string next_page_token = 2;
+}
+
+message RevokeCertificateRequest {
+  string id = 1;
+  string reason = 2;
+}
+
+message RevokeCertificateResponse {
+  Certificate certificate = 1;
+}
+
+message RenewCertificateRequest {
+  string id = 1;
+  optional CertificateOptions options = 2;
+}
+
+message RenewCertificateResponse {
+  Certificate certificate = 1;
+}
+
+// Key Messages
+message Key {
+  string id = 1;
+  string name = 2;
+  KeyType type = 3;
+  KeyStatus status = 4;
+  string algorithm = 5;
+  int32 key_size = 6;
+  bool exportable = 7;
+  map<string, string> metadata = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+  optional int64 rotation_date = 11;
+  repeated KeyVersion versions = 12;
+}
+
+message KeyVersion {
+  string id = 1;
+  int64 created_at = 2;
+  KeyStatus status = 3;
+}
+
+enum KeyType {
+  KEY_TYPE_UNSPECIFIED = 0;
+  KEY_TYPE_RSA = 1;
+  KEY_TYPE_EC = 2;
+  KEY_TYPE_AES = 3;
+  KEY_TYPE_ED25519 = 4;
+}
+
+enum KeyStatus {
+  KEY_STATUS_UNSPECIFIED = 0;
+  KEY_STATUS_ENABLED = 1;
+  KEY_STATUS_DISABLED = 2;
+  KEY_STATUS_ARCHIVED = 3;
+}
+
+message CreateKeyRequest {
+  string name = 1;
+  KeyType type = 2;
+  string algorithm = 3;
+  int32 key_size = 4;
+  bool exportable = 5;
+  map<string, string> metadata = 6;
+  optional int32 rotation_period_days = 7;
+}
+
+message CreateKeyResponse {
+  Key key = 1;
+}
+
+message GetKeyRequest {
+  string id = 1;
+  optional string version_id = 2;
+}
+
+message GetKeyResponse {
+  Key key = 1;
+}
+
+message ListKeysRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListKeysResponse {
+  repeated Key keys = 1;
+  string next_page_token = 2;
+}
+
+message RotateKeyRequest {
+  string id = 1;
+}
+
+message RotateKeyResponse {
+  Key key = 1;
+}
+
+message RevokeKeyRequest {
+  string id = 1;
+  string reason = 2;
+}
+
+message RevokeKeyResponse {
+  Key key = 1;
+}
+
+// Secret Messages
+message Secret {
+  string id = 1;
+  string name = 2;
+  SecretType type = 3;
+  SecretStatus status = 4;
+  map<string, string> metadata = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
+  repeated SecretVersion versions = 8;
+}
+
+message SecretVersion {
+  string id = 1;
+  int64 created_at = 2;
+  SecretStatus status = 3;
+}
+
+enum SecretType {
+  SECRET_TYPE_UNSPECIFIED = 0;
+  SECRET_TYPE_PASSWORD = 1;
+  SECRET_TYPE_API_KEY = 2;
+  SECRET_TYPE_TOKEN = 3;
+  SECRET_TYPE_CREDENTIAL = 4;
+}
+
+enum SecretStatus {
+  SECRET_STATUS_UNSPECIFIED = 0;
+  SECRET_STATUS_ENABLED = 1;
+  SECRET_STATUS_DISABLED = 2;
+  SECRET_STATUS_ARCHIVED = 3;
+}
+
+message CreateSecretRequest {
+  string name = 1;
+  SecretType type = 2;
+  bytes value = 3;
+  map<string, string> metadata = 4;
+}
+
+message CreateSecretResponse {
+  Secret secret = 1;
+}
+
+message GetSecretRequest {
+  string id = 1;
+  optional string version_id = 2;
+}
+
+message GetSecretResponse {
+  Secret secret = 1;
+  bytes value = 2;
+}
+
+message ListSecretsRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListSecretsResponse {
+  repeated Secret secrets = 1;
+  string next_page_token = 2;
+}
+
+message UpdateSecretRequest {
+  string id = 1;
+  bytes value = 2;
+  optional map<string, string> metadata = 3;
+}
+
+message UpdateSecretResponse {
+  Secret secret = 1;
+}
+
+message DeleteSecretRequest {
+  string id = 1;
+}
+
+message DeleteSecretResponse {}
+
+// HSM Messages
+message HSMConfig {
+  string id = 1;
+  string name = 2;
+  HSMType type = 3;
+  string endpoint = 4;
+  map<string, string> credentials = 5;
+  HSMStatus status = 6;
+  map<string, string> metadata = 7;
+  repeated string slots = 8;
+  repeated string partitions = 9;
+}
+
+enum HSMType {
+  HSM_TYPE_UNSPECIFIED = 0;
+  HSM_TYPE_SOFTHSM = 1;
+  HSM_TYPE_YUBIHSM = 2;
+  HSM_TYPE_PKCS11 = 3;
+  HSM_TYPE_CLOUDHSM = 4;
+}
+
+enum HSMStatus {
+  HSM_STATUS_UNSPECIFIED = 0;
+  HSM_STATUS_ACTIVE = 1;
+  HSM_STATUS_INACTIVE = 2;
+  HSM_STATUS_ERROR = 3;
+}
+
+message ConfigureHSMRequest {
+  HSMConfig config = 1;
+}
+
+message ConfigureHSMResponse {
+  HSMConfig config = 1;
+}
+
+message GetHSMStatusRequest {
+  string id = 1;
+}
+
+message GetHSMStatusResponse {
+  HSMConfig config = 1;
+  map<string, string> metrics = 2;
+  repeated string warnings = 3;
+}
+
+message SyncHSMRequest {
+  string id = 1;
+  bool force = 2;
+}
+
+message SyncHSMResponse {
+  HSMConfig config = 1;
+  int32 synced_keys = 2;
+  int32 synced_certs = 3;
+  repeated string errors = 4;
+}
+
+// Backup Messages
+message BackupConfig {
+  string id = 1;
+  BackupType type = 2;
+  string location = 3;
+  map<string, string> credentials = 4;
+  int32 retention_days = 5;
+  string encryption_key = 6;
+}
+
+enum BackupType {
+  BACKUP_TYPE_UNSPECIFIED = 0;
+  BACKUP_TYPE_FULL = 1;
+  BACKUP_TYPE_INCREMENTAL = 2;
+}
+
+message BackupVaultRequest {
+  BackupConfig config = 1;
+}
+
+message BackupVaultResponse {
+  string backup_id = 1;
+  int64 timestamp = 2;
+  string location = 3;
+  int64 size_bytes = 4;
+}
+
+message RestoreVaultRequest {
+  string backup_id = 1;
+  optional map<string, string> restore_options = 2;
+}
+
+message RestoreVaultResponse {
+  string restore_id = 1;
+  int32 restored_items = 2;
+  repeated string warnings = 3;
+}
+
+message GetBackupStatusRequest {
+  string backup_id = 1;
+}
+
+message GetBackupStatusResponse {
+  string backup_id = 1;
+  BackupType type = 2;
+  string status = 3;
+  int64 timestamp = 4;
+  int64 size_bytes = 5;
+  map<string, int32> item_counts = 6;
+  repeated string warnings = 7;
+}

@@ -1,0 +1,63 @@
+[package]
+name = "sirsi-key-vault"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Crypto & Key Management
+openssl = { version = "0.10", features = ["vendored"] }
+ring = "0.17"
+x509-parser = "0.15"
+pkcs8 = { version = "0.10", features = ["pem", "pkcs5", "encryption"] }
+ed25519-dalek = "2.0"
+argon2 = "0.5"
+
+# HSM Integration
+pkcs11 = "0.5"
+yubihsm = "0.42"
+
+# Certificate Management
+rcgen = "0.11"
+rustls = "0.21"
+webpki = "0.22"
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging and metrics
+tracing = "0.1"
+opentelemetry = { version = "0.20", features = ["trace"] }
+opentelemetry-semantic-conventions = "0.12"
+
+# gRPC
+tonic = { version = "0.10", features = ["transport", "tls"] }
+prost = "0.12"
+
+# Cache & Rotation
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
+# Utilities
+async-trait = "0.1"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+validator = { version = "0.16", features = ["derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockall = "0.12"
+tempfile = "3.8"
+
+[build-dependencies]
+tonic-build = "0.10"
