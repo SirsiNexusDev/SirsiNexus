@@ -108,16 +108,59 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
         Ok(config)
     }
 
-    async fn update_fleet(&self, _config: FleetConfig) -> ComputeResult<FleetConfig> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn update_fleet(&self, config: FleetConfig) -> ComputeResult<FleetConfig> {
+        let mig_name = config.annotations.get("gcp.compute.instanceGroup")
+            .ok_or_else(|| ComputeError::Provider("Fleet not found".into()))?;
+
+        // Update managed instance group
+        self.compute_client
+            .instance_groups()
+            .update_managed(mig_name)
+            .template_name(&format!("{}-template", config.name))
+            .target_size(config.capacity.unwrap_or(1))
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to update managed instance group: {}", e)))?;
+
+        Ok(config)
     }
 
-    async fn delete_fleet(&self, _fleet_id: &str) -> ComputeResult<()> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn delete_fleet(&self, fleet_id: &str) -> ComputeResult<()> {
+        // Delete managed instance group
+        self.compute_client
+            .instance_groups()
+            .delete(fleet_id)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to delete fleet: {}", e)))?;
+
+        // Delete instance template
+        self.compute_client
+            .instance_templates()
+            .delete(&format!("{}-template", fleet_id))
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to delete instance template: {}", e)))?;
+
+        Ok(())
     }
 
-    async fn get_fleet(&self, _fleet_id: &str) -> ComputeResult<FleetConfig> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn get_fleet(&self, fleet_id: &str) -> ComputeResult<FleetConfig> {
+        let mig = self.compute_client
+            .instance_groups()
+            .get(fleet_id)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to get fleet: {}", e)))?;
+
+        let mut config = FleetConfig::new(
+            mig.name().to_string(),
+            mig.description().unwrap_or("").to_string(),
+        );
+
+        config.capacity = Some(mig.target_size());
+        config.annotations.insert(
+            "gcp.compute.instanceGroup".to_string(),
+            mig.name().to_string(),
+        );
+
+        Ok(config)
     }
 
     async fn list_fleets(&self) -> ComputeResult<Vec<FleetConfig>> {
@@ -125,8 +168,28 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
     }
 
     // Instance Group Management
-    async fn create_instance_group(&self, _fleet_id: &str, _group: InstanceGroup) -> ComputeResult<InstanceGroup> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn create_instance_group(&self, fleet_id: &str, group: InstanceGroup) -> ComputeResult<InstanceGroup> {
+        let zone = self.compute_client
+            .zones()
+            .get(&group.name)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to get zone: {}", e)))?;
+
+        let mig = self.compute_client
+            .instance_groups()
+            .create_unmanaged(&group.name)
+            .zone(zone.name())
+            .named_ports(vec![])
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to create instance group: {}", e)))?;
+
+        let mut group = group;
+        group.annotations.insert(
+            "gcp.compute.instanceGroup".to_string(),
+            mig.name().to_string(),
+        );
+
+        Ok(group)
     }
 
     async fn update_instance_group(&self, _fleet_id: &str, _group: InstanceGroup) -> ComputeResult<InstanceGroup> {
@@ -146,12 +209,22 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
     }
 
     // Instance Operations
-    async fn start_instance(&self, _instance_id: &str) -> ComputeResult<()> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn start_instance(&self, instance_id: &str) -> ComputeResult<()> {
+        self.compute_client
+            .instances()
+            .start(instance_id)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to start instance: {}", e)))?;
+        Ok(())
     }
 
-    async fn stop_instance(&self, _instance_id: &str) -> ComputeResult<()> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn stop_instance(&self, instance_id: &str) -> ComputeResult<()> {
+        self.compute_client
+            .instances()
+            .stop(instance_id)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to stop instance: {}", e)))?;
+        Ok(())
     }
 
     async fn restart_instance(&self, _instance_id: &str) -> ComputeResult<()> {
@@ -162,8 +235,34 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
         unimplemented!("GCP provider not yet implemented")
     }
 
-    async fn get_instance(&self, _instance_id: &str) -> ComputeResult<Instance> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn get_instance(&self, instance_id: &str) -> ComputeResult<Instance> {
+        let gcp_instance = self.compute_client
+            .instances()
+            .get(instance_id)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to get instance: {}", e)))?;
+
+        let state = match gcp_instance.status().as_str() {
+            "RUNNING" => super::Instance::Status::Running,
+            "STOPPED" => super::Instance::Status::Stopped,
+            "TERMINATED" => super::Instance::Status::Terminated,
+            _ => super::Instance::Status::Unknown,
+        };
+
+        Ok(Instance {
+            id: gcp_instance.id().to_string(),
+            name: gcp_instance.name().to_string(),
+            instance_type: gcp_instance.machine_type().to_string(),
+            state,
+            private_ip: gcp_instance.network_interfaces().first()
+                .map(|iface| iface.network_ip().to_string()),
+            public_ip: gcp_instance.network_interfaces().first()
+                .and_then(|iface| iface.access_configs().first())
+                .map(|config| config.nat_ip().to_string()),
+            launch_time: gcp_instance.creation_timestamp(),
+            tags: gcp_instance.labels().clone(),
+            zone: gcp_instance.zone().to_string(),
+        })
     }
 
     async fn list_instances(&self, _fleet_id: &str, _group_id: Option<&str>) -> ComputeResult<Vec<Instance>> {
@@ -200,8 +299,31 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
         })
     }
 
-    async fn update_function(&self, _config: FunctionConfig) -> ComputeResult<Function> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn update_function(&self, config: FunctionConfig) -> ComputeResult<Function> {
+        let service = self.run_client
+            .update_service(&config.name)
+            .image(format!("gcr.io/{}/function-{}", self.project_id, config.name))
+            .memory(format!("{}Mi", config.memory_mb))
+            .timeout(config.timeout_sec)
+            .env_vars(config.environment)
+            .vpc_connector(config.vpc_config.as_ref().map(|vpc| vpc.subnet_ids.join(",")))
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to update Cloud Run service: {}", e)))?;
+
+        Ok(Function {
+            name: service.name().to_string(),
+            runtime: config.runtime,
+            handler: config.handler,
+            description: config.description,
+            memory_mb: config.memory_mb,
+            timeout_sec: config.timeout_sec,
+            environment: config.environment,
+            labels: service.labels().clone(),
+            annotations: service.annotations().clone(),
+            state: super::serverless::FunctionState::Pending,
+            metrics: None,
+            vpc_config: config.vpc_config,
+        })
     }
 
     async fn delete_function(&self, _function_id: &str) -> ComputeResult<()> {
@@ -363,8 +485,16 @@ async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
         Ok(metrics)
     }
 
-    async fn get_logs(&self, _resource_id: &str, _start_time: i64, _end_time: i64) -> ComputeResult<Vec<String>> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn get_logs(&self, resource_id: &str, start_time: i64, end_time: i64) -> ComputeResult<Vec<String>> {
+        let logs = self.monitoring_client
+            .logs()
+            .filter(format!("resource.type = \"gce_instance\" AND resource.labels.instance_id = \"{}\"", resource_id))
+            .start_time(chrono::DateTime::from_timestamp(start_time, 0).unwrap())
+            .end_time(chrono::DateTime::from_timestamp(end_time, 0).unwrap())
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to get logs: {}", e)))?;
+
+        Ok(logs.entries().iter().map(|e| e.text_payload().to_string()).collect())
     }
 }
 
