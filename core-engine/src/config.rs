@@ -11,6 +11,23 @@ pub struct DatabaseConfig {
     pub database: String,
     pub max_connections: u32,
     pub ssl_ca_cert: Option<String>,
+    // CockroachDB-specific settings
+    pub sslmode: Option<String>,
+}
+
+impl Default for DatabaseConfig {
+    fn default() -> Self {
+        Self {
+            host: "localhost".to_string(),
+            port: 26257, // CockroachDB default port
+            username: "root".to_string(),
+            password: "".to_string(), // CockroachDB default (empty for insecure mode)
+            database: "sirsi_nexus".to_string(),
+            max_connections: 20,
+            ssl_ca_cert: None,
+            sslmode: Some("require".to_string()),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]

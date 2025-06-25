@@ -54,7 +54,7 @@ A dense, end-to-end specification for a production-ready, agent-embedded migrati
   - ✅ Password verification using modern Argon2 API
   - ✅ Token generation and validation
 - ✅ **Database Integration**
-  - ✅ PostgreSQL connection setup with SQLx
+  - ✅ CockroachDB connection setup with SQLx
   - ✅ User model with proper datetime handling
   - ✅ Project model with status enum and Clone trait
   - ✅ Type-safe queries with sqlx macros
@@ -204,7 +204,7 @@ To keep the interface "alive" during early development, the project begins by sc
 ### Phase 1: Core Engine & API Foundation ✅ COMPLETED
 - ✅ Rust core engine with Axum framework
 - ✅ Authentication system with JWT and Argon2
-- ✅ PostgreSQL database integration with SQLx
+- ✅ CockroachDB database integration with SQLx
 - ✅ Basic API endpoints for users and projects
 - ✅ Error handling and type safety
 
@@ -446,15 +446,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:15
+      cockroachdb:
+        image: cockroachdb/cockroach:latest
         env:
-          POSTGRES_PASSWORD: postgres
+          COCKROACH_DATABASE: sirsi_test
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "cockroach sql --insecure --execute='SELECT 1;'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 26257:26257
     steps:
       - uses: actions/checkout@v4
       - name: Rust Tests
@@ -545,7 +547,7 @@ jobs:
 ### Core Technologies
 - **Backend**: Rust (Axum, SQLx, Tokio)
 - **Frontend**: React (Next.js, TypeScript, Tailwind CSS)
-- **Database**: PostgreSQL with Redis for caching
+- **Database**: CockroachDB with Redis for caching
 - **Messaging**: Kafka/NATS for event streaming
 - **Observability**: OpenTelemetry, Prometheus, Grafana
 

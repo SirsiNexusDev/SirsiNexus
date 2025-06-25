@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Technology stack documentation
 - ✅ **Core Engine Foundation (Rust)**
   - Axum web framework setup with modular routing
-  - PostgreSQL database integration with SQLx
+  - CockroachDB database integration with SQLx
   - Authentication system with Argon2 password hashing
   - JWT-based token management
   - Type-safe error handling with thiserror
@@ -103,6 +103,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Async/await throughout
   - Efficient request handling
   - Proper error propagation
+
+### Database Migration
+- ✅ **CockroachDB Integration**
+  - Migrated from PostgreSQL to CockroachDB
+  - Updated connection strings and configurations
+  - Adapted SQLx queries for CockroachDB compatibility
+  - Updated default ports and SSL configuration
+  - Modified test database URLs
+  - Updated CI/CD pipeline for CockroachDB
 
 ### Dependencies
 - ✅ **Core Dependencies**

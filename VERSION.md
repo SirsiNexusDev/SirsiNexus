@@ -10,7 +10,7 @@ This release marks the completion of the core infrastructure foundation for Sirs
 
 **Phase 1: Core Infrastructure** ✅ **COMPLETED**
 - Rust core engine with Axum framework
-- PostgreSQL database integration
+- CockroachDB database integration
 - Authentication system with modern security
 - Basic API endpoints and routing
 - Error handling and type safety
@@ -27,7 +27,7 @@ This release marks the completion of the core infrastructure foundation for Sirs
 **Backend Stack:**
 - **Language**: Rust 1.75+
 - **Framework**: Axum 0.6.20
-- **Database**: PostgreSQL with SQLx 0.8
+- **Database**: CockroachDB with SQLx 0.8
 - **Authentication**: JWT + Argon2 password hashing
 - **Runtime**: Tokio 1.35 (async)
 
@@ -114,7 +114,7 @@ This release marks the completion of the core infrastructure foundation for Sirs
 #### 🔄 **Integration Points**
 
 **Database Integration:**
-- PostgreSQL connection pooling
+- CockroachDB connection pooling
 - Migration system foundation
 - Type-safe query macros
 - Transaction support
