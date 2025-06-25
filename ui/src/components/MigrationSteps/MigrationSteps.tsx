@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlanStep } from './steps/PlanStep';
 import { SpecifyStep } from './steps/SpecifyStep';
+import { TestStep } from './steps/TestStep';
+import { BuildStep } from './steps/BuildStep';
+import { TransferStep } from './steps/TransferStep';
+import { ValidateStep } from './steps/ValidateStep';
+import { OptimizeStep } from './steps/OptimizeStep';
+import { SupportStep } from './steps/SupportStep';
 import {
   CheckCircle,
   Clock,
@@ -164,7 +170,42 @@ export const MigrationSteps: React.FC<MigrationStepsProps> = ({
                         }}
                       />
                     )}
-                    {/* Add other step components here */}
+                    {step === 'test' && (
+                      <TestStep
+                        key="test"
+                        onComplete={() => onStepClick('build')}
+                      />
+                    )}
+                    {step === 'build' && (
+                      <BuildStep
+                        key="build"
+                        onComplete={() => onStepClick('transfer')}
+                      />
+                    )}
+                    {step === 'transfer' && (
+                      <TransferStep
+                        key="transfer"
+                        onComplete={() => onStepClick('validate')}
+                      />
+                    )}
+                    {step === 'validate' && (
+                      <ValidateStep
+                        key="validate"
+                        onComplete={() => onStepClick('optimize')}
+                      />
+                    )}
+                    {step === 'optimize' && (
+                      <OptimizeStep
+                        key="optimize"
+                        onComplete={() => onStepClick('support')}
+                      />
+                    )}
+                    {step === 'support' && (
+                      <SupportStep
+                        key="support"
+                        onComplete={() => console.log('Migration completed!')}
+                      />
+                    )}
                   </AnimatePresence>
                 </motion.div>
               )}
