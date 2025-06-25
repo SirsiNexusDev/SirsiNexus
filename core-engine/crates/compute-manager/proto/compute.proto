@@ -1,0 +1,427 @@
+syntax = "proto3";
+
+package sirsi.compute.v1;
+
+service ComputeService {
+  // Fleet Management
+  rpc ConfigureFleet(ConfigureFleetRequest) returns (ConfigureFleetResponse);
+  rpc GetFleetStatus(GetFleetStatusRequest) returns (GetFleetStatusResponse);
+  rpc ProvisionInstance(ProvisionInstanceRequest) returns (ProvisionInstanceResponse);
+  rpc TerminateInstance(TerminateInstanceRequest) returns (TerminateInstanceResponse);
+  rpc ListInstances(ListInstancesRequest) returns (ListInstancesResponse);
+
+  // Serverless Management
+  rpc DeployFunction(DeployFunctionRequest) returns (DeployFunctionResponse);
+  rpc UpdateFunction(UpdateFunctionRequest) returns (UpdateFunctionResponse);
+  rpc DeleteFunction(DeleteFunctionRequest) returns (DeleteFunctionResponse);
+  rpc ListFunctions(ListFunctionsRequest) returns (ListFunctionsResponse);
+  rpc GetFunctionMetrics(GetFunctionMetricsRequest) returns (GetFunctionMetricsResponse);
+
+  // Auto-scaling
+  rpc ConfigureAutoScaling(ConfigureAutoScalingRequest) returns (ConfigureAutoScalingResponse);
+  rpc GetAutoScalingStatus(GetAutoScalingStatusRequest) returns (GetAutoScalingStatusResponse);
+  rpc UpdateScalingPolicy(UpdateScalingPolicyRequest) returns (UpdateScalingPolicyResponse);
+  rpc GetScalingHistory(GetScalingHistoryRequest) returns (GetScalingHistoryResponse);
+
+  // Resource Optimization
+  rpc AnalyzeResources(AnalyzeResourcesRequest) returns (AnalyzeResourcesResponse);
+  rpc OptimizeResources(OptimizeResourcesRequest) returns (OptimizeResourcesResponse);
+  rpc GetOptimizationRecommendations(GetOptimizationRecommendationsRequest) returns (GetOptimizationRecommendationsResponse);
+}
+
+// Fleet Management Messages
+message FleetConfig {
+  string id = 1;
+  string name = 2;
+  string provider = 3;
+  string region = 4;
+  map<string, string> tags = 5;
+  repeated InstanceGroup instance_groups = 6;
+  NetworkConfig network_config = 7;
+  StorageConfig storage_config = 8;
+  MonitoringConfig monitoring_config = 9;
+}
+
+message InstanceGroup {
+  string id = 1;
+  string name = 2;
+  InstanceType instance_type = 3;
+  int32 min_size = 4;
+  int32 max_size = 5;
+  int32 desired_size = 6;
+  repeated string subnet_ids = 7;
+  repeated string security_groups = 8;
+  map<string, string> metadata = 9;
+}
+
+message InstanceType {
+  string family = 1;
+  string size = 2;
+  int32 vcpu = 3;
+  int32 memory_gb = 4;
+  repeated string capabilities = 5;
+  map<string, string> attributes = 6;
+}
+
+message NetworkConfig {
+  string vpc_id = 1;
+  repeated string subnet_ids = 2;
+  repeated string security_groups = 3;
+  bool assign_public_ip = 4;
+}
+
+message StorageConfig {
+  repeated Volume volumes = 1;
+  string root_volume_type = 2;
+  int32 root_volume_size = 3;
+}
+
+message Volume {
+  string device = 1;
+  string volume_type = 2;
+  int32 size_gb = 3;
+  bool encrypted = 4;
+  string snapshot_id = 5;
+}
+
+message MonitoringConfig {
+  bool detailed_monitoring = 1;
+  int32 metric_resolution = 2;
+  repeated string metric_namespaces = 3;
+  map<string, string> alert_thresholds = 4;
+}
+
+message ConfigureFleetRequest {
+  FleetConfig config = 1;
+}
+
+message ConfigureFleetResponse {
+  FleetConfig config = 1;
+}
+
+message GetFleetStatusRequest {
+  string fleet_id = 1;
+}
+
+message GetFleetStatusResponse {
+  FleetConfig config = 1;
+  repeated InstanceStatus instances = 2;
+  map<string, ResourceMetrics> resource_usage = 3;
+  repeated string warnings = 4;
+}
+
+message InstanceStatus {
+  string instance_id = 1;
+  string state = 2;
+  string health_status = 3;
+  map<string, double> metrics = 4;
+  repeated string events = 5;
+}
+
+message ResourceMetrics {
+  double cpu_utilization = 1;
+  double memory_utilization = 2;
+  double disk_utilization = 3;
+  double network_in = 4;
+  double network_out = 5;
+}
+
+message ProvisionInstanceRequest {
+  string fleet_id = 1;
+  string instance_group_id = 2;
+  map<string, string> metadata = 3;
+}
+
+message ProvisionInstanceResponse {
+  string instance_id = 1;
+  string private_ip = 2;
+  optional string public_ip = 3;
+}
+
+message TerminateInstanceRequest {
+  string instance_id = 1;
+  bool force = 2;
+}
+
+message TerminateInstanceResponse {}
+
+message ListInstancesRequest {
+  string fleet_id = 1;
+  optional string instance_group_id = 2;
+  optional string filter = 3;
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListInstancesResponse {
+  repeated Instance instances = 1;
+  string next_page_token = 2;
+}
+
+message Instance {
+  string id = 1;
+  string name = 2;
+  string state = 3;
+  string private_ip = 4;
+  optional string public_ip = 5;
+  string launch_time = 6;
+  map<string, string> tags = 7;
+  InstanceType instance_type = 8;
+  map<string, double> metrics = 9;
+}
+
+// Serverless Management Messages
+message Function {
+  string id = 1;
+  string name = 2;
+  string runtime = 3;
+  string handler = 4;
+  int32 memory_mb = 5;
+  int32 timeout_seconds = 6;
+  map<string, string> environment = 7;
+  string source_code = 8;
+  repeated string triggers = 9;
+  map<string, string> tags = 10;
+}
+
+message DeployFunctionRequest {
+  Function function = 1;
+}
+
+message DeployFunctionResponse {
+  Function function = 1;
+  string endpoint = 2;
+}
+
+message UpdateFunctionRequest {
+  string function_id = 1;
+  Function function = 2;
+}
+
+message UpdateFunctionResponse {
+  Function function = 1;
+}
+
+message DeleteFunctionRequest {
+  string function_id = 1;
+}
+
+message DeleteFunctionResponse {}
+
+message ListFunctionsRequest {
+  optional string filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListFunctionsResponse {
+  repeated Function functions = 1;
+  string next_page_token = 2;
+}
+
+message GetFunctionMetricsRequest {
+  string function_id = 1;
+  int64 start_time = 2;
+  int64 end_time = 3;
+  repeated string metric_names = 4;
+}
+
+message GetFunctionMetricsResponse {
+  map<string, TimeSeriesData> metrics = 1;
+}
+
+message TimeSeriesData {
+  repeated TimeSeriesPoint points = 1;
+  string unit = 2;
+}
+
+message TimeSeriesPoint {
+  int64 timestamp = 1;
+  double value = 2;
+}
+
+// Auto-scaling Messages
+message AutoScalingConfig {
+  string id = 1;
+  string name = 2;
+  ScalingStrategy strategy = 3;
+  map<string, ScalingPolicy> policies = 4;
+  ScheduleConfig schedule = 5;
+  PredictiveConfig predictive = 6;
+}
+
+enum ScalingStrategy {
+  SCALING_STRATEGY_UNSPECIFIED = 0;
+  SCALING_STRATEGY_TARGET_TRACKING = 1;
+  SCALING_STRATEGY_STEP = 2;
+  SCALING_STRATEGY_PREDICTIVE = 3;
+}
+
+message ScalingPolicy {
+  string metric_name = 1;
+  double target_value = 2;
+  int32 scale_in_cooldown = 3;
+  int32 scale_out_cooldown = 4;
+  repeated ScalingStep steps = 5;
+}
+
+message ScalingStep {
+  double lower_bound = 1;
+  double upper_bound = 2;
+  int32 adjustment = 3;
+}
+
+message ScheduleConfig {
+  repeated ScalingSchedule schedules = 1;
+}
+
+message ScalingSchedule {
+  string cron = 1;
+  int32 min_size = 2;
+  int32 max_size = 3;
+  int32 desired_capacity = 4;
+}
+
+message PredictiveConfig {
+  bool enabled = 1;
+  int32 forecast_horizon = 2;
+  double confidence_threshold = 3;
+  repeated string features = 4;
+}
+
+message ConfigureAutoScalingRequest {
+  AutoScalingConfig config = 1;
+}
+
+message ConfigureAutoScalingResponse {
+  AutoScalingConfig config = 1;
+}
+
+message GetAutoScalingStatusRequest {
+  string config_id = 1;
+}
+
+message GetAutoScalingStatusResponse {
+  AutoScalingConfig config = 1;
+  repeated ScalingActivity activities = 2;
+  map<string, double> current_metrics = 3;
+  repeated string recommendations = 4;
+}
+
+message ScalingActivity {
+  string id = 1;
+  string description = 2;
+  string cause = 3;
+  int32 adjustment = 4;
+  string status = 5;
+  int64 start_time = 6;
+  int64 end_time = 7;
+}
+
+message UpdateScalingPolicyRequest {
+  string config_id = 1;
+  string policy_name = 2;
+  ScalingPolicy policy = 3;
+}
+
+message UpdateScalingPolicyResponse {
+  AutoScalingConfig config = 1;
+}
+
+message GetScalingHistoryRequest {
+  string config_id = 1;
+  int64 start_time = 2;
+  int64 end_time = 3;
+}
+
+message GetScalingHistoryResponse {
+  repeated ScalingActivity activities = 1;
+  map<string, TimeSeriesData> metrics = 2;
+}
+
+// Resource Optimization Messages
+message AnalyzeResourcesRequest {
+  repeated string resource_ids = 1;
+  int64 analysis_period = 2;
+  repeated string analysis_types = 3;
+}
+
+message AnalyzeResourcesResponse {
+  repeated ResourceAnalysis analyses = 1;
+  repeated OptimizationOpportunity opportunities = 2;
+  map<string, double> potential_savings = 3;
+}
+
+message ResourceAnalysis {
+  string resource_id = 1;
+  map<string, UsagePattern> usage_patterns = 2;
+  double utilization = 3;
+  double cost = 4;
+  repeated string bottlenecks = 5;
+}
+
+message UsagePattern {
+  repeated TimeSeriesPoint values = 1;
+  double mean = 2;
+  double peak = 3;
+  double p95 = 4;
+  repeated string patterns = 5;
+}
+
+message OptimizationOpportunity {
+  string id = 1;
+  string resource_id = 2;
+  string type = 3;
+  string description = 4;
+  double impact_score = 5;
+  double estimated_savings = 6;
+  repeated string recommendations = 7;
+}
+
+message OptimizeResourcesRequest {
+  repeated string resource_ids = 1;
+  OptimizationStrategy strategy = 2;
+  map<string, string> constraints = 3;
+}
+
+message OptimizationStrategy {
+  string objective = 1;
+  double target_value = 2;
+  repeated string constraints = 3;
+  map<string, double> weights = 4;
+}
+
+message OptimizeResourcesResponse {
+  repeated OptimizationAction actions = 1;
+  map<string, double> projected_metrics = 2;
+  repeated string warnings = 3;
+}
+
+message OptimizationAction {
+  string id = 1;
+  string resource_id = 2;
+  string action_type = 3;
+  map<string, string> parameters = 4;
+  double impact_score = 5;
+  map<string, double> projected_changes = 6;
+}
+
+message GetOptimizationRecommendationsRequest {
+  repeated string resource_ids = 1;
+  repeated string recommendation_types = 2;
+}
+
+message GetOptimizationRecommendationsResponse {
+  repeated OptimizationRecommendation recommendations = 1;
+  map<string, double> potential_improvements = 2;
+}
+
+message OptimizationRecommendation {
+  string id = 1;
+  string resource_id = 2;
+  string type = 3;
+  string description = 4;
+  double confidence = 5;
+  repeated string justification = 6;
+  map<string, double> metrics = 7;
+}
