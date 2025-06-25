@@ -1,3 +1,4 @@
+import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -76,10 +77,12 @@ describe('useProjects', () => {
       data: mockProjects,
     });
 
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result, waitForNextUpdate } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     await waitForNextUpdate();
@@ -124,10 +127,12 @@ describe('useProjects', () => {
       data: createdProject,
     });
 
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     let response;
@@ -177,10 +182,12 @@ describe('useProjects', () => {
       data: updatedProject,
     });
 
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     let response;
@@ -199,10 +206,12 @@ describe('useProjects', () => {
       success: true,
     });
 
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     let response;
@@ -219,10 +228,12 @@ describe('useProjects', () => {
     const error = 'API Error';
     (projectsApi.list as jest.Mock).mockRejectedValueOnce(new Error(error));
 
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result, waitForNextUpdate } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     await waitForNextUpdate();
@@ -232,10 +243,12 @@ describe('useProjects', () => {
   });
 
   it('updates filters', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     act(() => {
@@ -246,10 +259,12 @@ describe('useProjects', () => {
   });
 
   it('updates sort', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(Provider, { store }, children)
+    );
+
     const { result } = renderHook(() => useProjects(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>{children}</Provider>
-      ),
+      wrapper,
     });
 
     act(() => {

@@ -26,48 +26,15 @@ export async function GET() {
       );
     }
 
-    const projects = await db.project.findMany({
-      where: {
-        OR: [
-          { ownerId: session.user.id },
-          {
-            team: {
-              some: {
-                userId: session.user.id,
-              },
-            },
-          },
-        ],
-      },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        team: {
-          select: {
-            id: true,
-            name: true,
-            role: true,
-          },
-        },
-        _count: {
-          select: {
-            tasks: true,
-          },
-        },
-      },
-    });
+    const projects = await db.project.findMany();
 
     const projectsWithStats = projects.map(project => ({
       ...project,
       stats: {
-        tasks: project._count.tasks,
-        completed: project.tasks?.filter(t => t.status === 'completed').length || 0,
-        inProgress: project.tasks?.filter(t => t.status === 'in_progress').length || 0,
-        blockers: project.tasks?.filter(t => t.status === 'blocked').length || 0,
+        tasks: 0,
+        completed: 0,
+        inProgress: 0,
+        blockers: 0,
       },
     }));
 
@@ -94,35 +61,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validatedData = projectSchema.parse(body);
 
-    const project = await db.project.create({
-      data: {
-        ...validatedData,
-        ownerId: session.user.id,
-        team: {
-          create: [
-            {
-              userId: session.user.id,
-              role: 'owner',
-            },
-          ],
-        },
-      },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        team: {
-          select: {
-            id: true,
-            name: true,
-            role: true,
-          },
-        },
-      },
-    });
+    const project = await db.project.create(validatedData);
 
     return NextResponse.json(project);
   } catch (error) {

@@ -48,15 +48,14 @@ export const ProjectTeam: React.FC<ProjectTeamProps> = ({ projectId }) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <AvatarImage src={member.user?.image} />
+                    <AvatarImage src="" />
                     <AvatarFallback>
-                      {member.user?.name?.slice(0, 2).toUpperCase()}
+                      {member.name?.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{member.user?.name}</p>
-                    <p className="text-sm text-gray-600">{member.user?.email}</p>
-                    <p className="text-xs text-gray-500 capitalize">{member.role}</p>
+                    <p className="font-medium">{member.name}</p>
+                    <p className="text-sm text-gray-600">{member.role}</p>
                   </div>
                 </div>
 

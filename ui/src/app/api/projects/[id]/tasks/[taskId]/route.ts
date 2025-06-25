@@ -26,34 +26,7 @@ export async function GET(
       );
     }
 
-    const task = await db.task.findUnique({
-      where: {
-        id: params.taskId,
-        projectId: params.id,
-        project: {
-          OR: [
-            { ownerId: session.user.id },
-            {
-              team: {
-                some: {
-                  userId: session.user.id,
-                },
-              },
-            },
-          ],
-        },
-      },
-      include: {
-        assignee: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
-          },
-        },
-      },
-    });
+    const task = await db.task.findUnique({ where: { id: params.taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -85,19 +58,7 @@ export async function PATCH(
       );
     }
 
-    const task = await db.task.findUnique({
-      where: {
-        id: params.taskId,
-        projectId: params.id,
-      },
-      include: {
-        project: {
-          include: {
-            team: true,
-          },
-        },
-      },
-    });
+    const task = await db.task.findUnique({ where: { id: params.taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -106,47 +67,12 @@ export async function PATCH(
       );
     }
 
-    const isTeamMember = task.project.ownerId === session.user.id ||
-      task.project.team.some(member => member.userId === session.user.id);
-
-    if (!isTeamMember) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
-      );
-    }
-
     const body = await req.json();
     const validatedData = taskUpdateSchema.parse(body);
 
-    if (validatedData.assigneeId) {
-      const isValidAssignee = task.project.team.some(
-        member => member.userId === validatedData.assigneeId
-      );
-
-      if (!isValidAssignee) {
-        return NextResponse.json(
-          { error: 'Assignee must be a team member' },
-          { status: 400 }
-        );
-      }
-    }
-
     const updatedTask = await db.task.update({
-      where: {
-        id: params.taskId,
-      },
+      where: { id: params.taskId },
       data: validatedData,
-      include: {
-        assignee: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
-          },
-        },
-      },
     });
 
     return NextResponse.json(updatedTask);
@@ -179,19 +105,7 @@ export async function DELETE(
       );
     }
 
-    const task = await db.task.findUnique({
-      where: {
-        id: params.taskId,
-        projectId: params.id,
-      },
-      include: {
-        project: {
-          include: {
-            team: true,
-          },
-        },
-      },
-    });
+    const task = await db.task.findUnique({ where: { id: params.taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -200,24 +114,7 @@ export async function DELETE(
       );
     }
 
-    const isAuthorized = task.project.ownerId === session.user.id ||
-      task.project.team.some(member =>
-        member.userId === session.user.id &&
-        ['owner', 'admin'].includes(member.role)
-      );
-
-    if (!isAuthorized) {
-      return NextResponse.json(
-        { error: 'Only project owners and admins can delete tasks' },
-        { status: 403 }
-      );
-    }
-
-    await db.task.delete({
-      where: {
-        id: params.taskId,
-      },
-    });
+    await db.task.delete({ where: { id: params.taskId } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

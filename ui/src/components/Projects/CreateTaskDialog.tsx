@@ -77,6 +77,7 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
   const onSubmit = async (data: TaskFormData) => {
     const task = await createTask({
       ...data,
+      projectId: projectId || '',
       dueDate: data.dueDate?.toISOString(),
     });
 
@@ -229,8 +230,8 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                     </FormControl>
                     <SelectContent>
                       {project?.team.map(member => (
-                        <SelectItem key={member.id} value={member.userId}>
-                          {member.user?.name}
+                        <SelectItem key={member.id} value={member.id}>
+                          {member.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

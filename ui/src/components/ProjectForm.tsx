@@ -56,7 +56,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
 
   // Real-time AI tips based on form state
   const getAITip = () => {
-    const tips = [];
+    const tips: string[] = [];
     if (selectedSourceType === 'aws') {
       tips.push('Ensure you have appropriate IAM roles configured for cross-account access.');
     } else if (selectedSourceType === 'azure') {

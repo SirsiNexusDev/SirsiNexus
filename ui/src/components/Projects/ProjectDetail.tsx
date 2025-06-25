@@ -142,9 +142,9 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
             <div className="flex -space-x-2">
               {project.team.slice(0, 5).map(member => (
                 <Avatar key={member.id}>
-                  <AvatarImage src={member.user?.image} />
+                  <AvatarImage src="" />
                   <AvatarFallback>
-                    {member.user?.name?.slice(0, 2).toUpperCase()}
+                    {member.name?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               ))}

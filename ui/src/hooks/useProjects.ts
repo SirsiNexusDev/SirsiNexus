@@ -28,7 +28,7 @@ export const useProjects = () => {
     error,
     filters,
     sort,
-  } = useSelector((state: RootState) => state.project);
+  } = useSelector((state: RootState) => state.projects);
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -39,10 +39,11 @@ export const useProjects = () => {
         dispatch(setProjects(response.data));
         dispatch(setError(null));
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to fetch projects';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
       }
@@ -73,10 +74,11 @@ export const useProjects = () => {
         });
         return response.data;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to create project';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
         return null;
@@ -109,10 +111,11 @@ export const useProjects = () => {
         });
         return response.data;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to update project';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
         return null;
@@ -145,10 +148,11 @@ export const useProjects = () => {
         });
         return true;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to delete project';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
         return false;
@@ -173,7 +177,8 @@ export const useProjects = () => {
       const response = await projectsApi.addTeamMember(projectId, memberId, role);
       
       if (response.success) {
-        dispatch(addTeamMemberAction({ projectId, member: response.data }));
+        const member = { id: memberId, name: 'New Member', role };
+        dispatch(addTeamMemberAction({ projectId, member }));
         dispatch(setError(null));
         toast({
           title: 'Success',
@@ -181,10 +186,11 @@ export const useProjects = () => {
         });
         return true;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to add team member';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
         return false;
@@ -217,10 +223,11 @@ export const useProjects = () => {
         });
         return true;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to remove team member';
+        dispatch(setError(errorMsg));
         toast({
           title: 'Error',
-          description: response.error,
+          description: errorMsg,
           variant: 'destructive',
         });
         return false;
@@ -249,7 +256,8 @@ export const useProjects = () => {
         dispatch(setError(null));
         return true;
       } else {
-        dispatch(setError(response.error));
+        const errorMsg = 'Failed to update project stats';
+        dispatch(setError(errorMsg));
         return false;
       }
     } catch (err) {

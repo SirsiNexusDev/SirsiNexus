@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { User } from '@prisma/client';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+}
 
 export const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);

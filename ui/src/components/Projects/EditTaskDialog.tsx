@@ -232,8 +232,8 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                     </FormControl>
                     <SelectContent>
                       {project?.team.map(member => (
-                        <SelectItem key={member.id} value={member.userId}>
-                          {member.user?.name}
+                        <SelectItem key={member.id} value={member.id}>
+                          {member.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
