@@ -21,8 +21,8 @@ pub struct ResourceResponse {
     pub data: serde_json::Value,
     pub owner_id: Uuid,
     pub project_id: Uuid,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub created_at: Option<time::OffsetDateTime>,
+    pub updated_at: Option<time::OffsetDateTime>,
 }
 
 impl From<Resource> for ResourceResponse {

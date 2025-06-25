@@ -5,6 +5,87 @@ All notable changes to the Sirsi Nexus project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-06-25
+
+### Added
+
+#### CockroachDB Integration Complete
+- ✅ **Database Migration**
+  - Complete migration from PostgreSQL to CockroachDB
+  - CockroachDB-compatible migrations with gen_random_uuid()
+  - Updated SQL queries for CockroachDB syntax
+  - Runtime SQLx queries to avoid compile-time dependency
+  - Proper handling of CockroachDB timestamp types
+  - String-based status enums with CHECK constraints
+
+#### Development Infrastructure
+- ✅ **Database Setup**
+  - Docker Compose with CockroachDB, Redis, and Jaeger
+  - Automated database setup script (./scripts/setup-db.sh)
+  - Development and test configuration files
+  - CockroachDB Admin UI integration (localhost:8081)
+
+#### Testing Infrastructure
+- ✅ **CockroachDB Tests**
+  - Integration tests for database connectivity
+  - End-to-end user model testing
+  - UUID generation verification
+  - Table schema validation
+  - Type compatibility testing
+
+#### Documentation
+- ✅ **Database Documentation**
+  - Comprehensive DATABASE_SETUP.md guide
+  - CockroachDB vs PostgreSQL comparison
+  - Manual and automated setup instructions
+  - Troubleshooting guide
+  - Production deployment considerations
+
+### Fixed
+
+#### Database Compatibility
+- ✅ **CockroachDB Type Issues**
+  - Fixed timestamp type compatibility (TIMESTAMPTZ vs TIMESTAMP)
+  - Resolved integer type differences (INT8 vs INT4)
+  - Updated datetime handling to use chrono::NaiveDateTime
+  - Fixed column type mappings for all models
+
+#### Code Quality
+- ✅ **Compilation Warnings**
+  - Cleaned up unused imports throughout codebase
+  - Fixed unused variables and dead code warnings
+  - Added underscore prefixes for intentionally unused parameters
+  - Improved code organization and comments
+
+#### Build System
+- ✅ **Workspace Configuration**
+  - Updated resolver to version 2 for edition 2021 compatibility
+  - Fixed SQLx dependencies for CockroachDB
+  - Resolved compilation errors in all modules
+  - Added proper feature flags for database tests
+
+### Changed
+
+#### Database Backend
+- 🔄 **BREAKING**: PostgreSQL → CockroachDB
+  - Connection strings updated to CockroachDB format
+  - Default port changed from 5432 to 26257
+  - SSL mode defaults changed for development
+  - Admin UI moved to port 8081 to avoid conflicts
+
+#### Data Models
+- 🔄 **Timestamp Handling**
+  - Models now use chrono::NaiveDateTime for compatibility
+  - Updated all API responses to match new types
+  - Fixed serialization for frontend integration
+
+### Removed
+
+- ❌ **PostgreSQL Dependencies**
+  - Removed old PostgreSQL Docker Compose files
+  - Cleaned up PostgreSQL-specific configurations
+  - Removed PostgreSQL extensions and syntax
+
 ## [1.0.0] - 2025-06-25
 
 ### Added

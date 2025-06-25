@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, postgres::PgPool}; // CockroachDB uses PostgreSQL protocol
-use chrono::{DateTime, Utc};
+use time::OffsetDateTime;
 use uuid::Uuid;
 use validator::Validate;
 use serde_json::Value;
@@ -16,8 +16,8 @@ pub struct Resource {
     pub data: Value,
     pub owner_id: Uuid,
     pub project_id: Uuid,
-    pub created_at: Option<DateTime<Utc>>,
-    pub updated_at: Option<DateTime<Utc>>,
+    pub created_at: Option<OffsetDateTime>,
+    pub updated_at: Option<OffsetDateTime>,
 }
 
 #[derive(Debug, Validate, Deserialize)]
