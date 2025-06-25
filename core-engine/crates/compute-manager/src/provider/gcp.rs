@@ -8,15 +8,25 @@ use crate::autoscaling::AutoScalingConfig;
 use crate::optimization::OptimizationStrategy;
 use super::{Provider, ProviderConfig, ProviderType};
 
+use google_cloud_compute::client::Client as ComputeClient;
+use google_cloud_run::client::Client as RunClient;
+use google_cloud_autoscaling::client::Client as AutoscalingClient;
+use google_cloud_monitoring::client::Client as MonitoringClient;
+use serde_json::Value;
+
 pub struct GcpProvider {
     project_id: String,
     region: String,
     config: ProviderConfig,
+    compute_client: ComputeClient,
+    run_client: RunClient,
+    autoscaling_client: AutoscalingClient,
+    monitoring_client: MonitoringClient,
 }
 
 #[async_trait]
 impl Provider for GcpProvider {
-    async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
+async fn init(config: ProviderConfig) -> ComputeResult<Box<dyn Provider>> {
         if config.provider_type != ProviderType::Gcp {
             return Err(ComputeError::Config("Invalid provider type".into()));
         }
@@ -25,16 +35,77 @@ impl Provider for GcpProvider {
             .as_ref()
             .ok_or_else(|| ComputeError::Config("GCP project ID required".into()))?;
 
+        let json_key = config.credentials.json_key
+            .as_ref()
+            .ok_or_else(|| ComputeError::Config("GCP JSON key required".into()))?;
+
+        // Initialize GCP clients
+        let compute_client = ComputeClient::new(
+            project_id,
+            json_key,
+            &config.region,
+        ).await.map_err(|e| ComputeError::Provider(format!("Failed to create Compute client: {}", e)))?;
+
+        let run_client = RunClient::new(
+            project_id,
+            json_key,
+            &config.region,
+        ).await.map_err(|e| ComputeError::Provider(format!("Failed to create Cloud Run client: {}", e)))?;
+
+        let autoscaling_client = AutoscalingClient::new(
+            project_id,
+            json_key,
+            &config.region,
+        ).await.map_err(|e| ComputeError::Provider(format!("Failed to create Autoscaling client: {}", e)))?;
+
+        let monitoring_client = MonitoringClient::new(
+            project_id,
+            json_key,
+            &config.region,
+        ).await.map_err(|e| ComputeError::Provider(format!("Failed to create Monitoring client: {}", e)))?;
+
         Ok(Box::new(Self {
             project_id: project_id.clone(),
             region: config.region.clone(),
             config,
+            compute_client,
+            run_client,
+            autoscaling_client,
+            monitoring_client,
         }))
     }
 
     // Fleet Management
-    async fn create_fleet(&self, _config: FleetConfig) -> ComputeResult<FleetConfig> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn create_fleet(&self, config: FleetConfig) -> ComputeResult<FleetConfig> {
+        // Create instance template
+        let template_name = format!("{}-template", config.name);
+        let template = self.compute_client
+            .instance_templates()
+            .create(&template_name)
+            .machine_type("n1-standard-2")
+            .network(self.config.network_config.vpc_id.as_deref().unwrap_or("default"))
+            .subnetwork(self.config.network_config.subnet_ids.first().unwrap_or(&"default".to_string()))
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to create instance template: {}", e)))?;
+
+        // Create managed instance group
+        let mig_name = &config.name;
+        let mig = self.compute_client
+            .instance_groups()
+            .create_managed(mig_name)
+            .template(template.name())
+            .target_size(1)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to create managed instance group: {}", e)))?;
+
+        // Update fleet config with GCP-specific details
+        let mut config = config;
+        config.annotations.insert(
+            "gcp.compute.instanceGroup".to_string(),
+            mig.name().to_string(),
+        );
+
+        Ok(config)
     }
 
     async fn update_fleet(&self, _config: FleetConfig) -> ComputeResult<FleetConfig> {
@@ -100,8 +171,33 @@ impl Provider for GcpProvider {
     }
 
     // Serverless Functions
-    async fn create_function(&self, _config: FunctionConfig) -> ComputeResult<Function> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn create_function(&self, config: FunctionConfig) -> ComputeResult<Function> {
+        // Create Cloud Run service
+        let service = self.run_client
+            .create_service(&config.name)
+            .image(format!("gcr.io/{}/function-{}", self.project_id, config.name))
+            .memory(format!("{}Mi", config.memory_mb))
+            .timeout(config.timeout_sec)
+            .env_vars(config.environment)
+            .vpc_connector(config.vpc_config.as_ref().map(|vpc| vpc.subnet_ids.join(",")))
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to create Cloud Run service: {}", e)))?;
+
+        // Convert GCP service to our Function type
+        Ok(Function {
+            name: service.name().to_string(),
+            runtime: config.runtime,
+            handler: config.handler,
+            description: config.description,
+            memory_mb: config.memory_mb,
+            timeout_sec: config.timeout_sec,
+            environment: config.environment,
+            labels: service.labels().clone(),
+            annotations: service.annotations().clone(),
+            state: super::serverless::FunctionState::Pending,
+            metrics: None,
+            vpc_config: config.vpc_config,
+        })
     }
 
     async fn update_function(&self, _config: FunctionConfig) -> ComputeResult<Function> {
@@ -125,8 +221,28 @@ impl Provider for GcpProvider {
     }
 
     // Auto-scaling
-    async fn configure_auto_scaling(&self, _config: AutoScalingConfig) -> ComputeResult<AutoScalingConfig> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn configure_auto_scaling(&self, config: AutoScalingConfig) -> ComputeResult<AutoScalingConfig> {
+        // Create autoscaling policy for instance group
+        let policy = self.autoscaling_client
+            .create_policy(&config.id)
+            .target_cpu_utilization(0.6) // Default target CPU utilization
+            .min_num_replicas(config.min_capacity)
+            .max_num_replicas(config.max_capacity)
+            .cooldown_period(config.cooldown_seconds)
+            .await
+            .map_err(|e| ComputeError::Provider(format!("Failed to create autoscaling policy: {}", e)))?;
+
+        // Add custom metrics if specified
+        for metric in &config.metrics {
+            self.autoscaling_client
+                .add_metric_to_policy(&policy.name)
+                .metric_name(&metric.name)
+                .target_value(metric.target_value)
+                .await
+                .map_err(|e| ComputeError::Provider(format!("Failed to add metric to policy: {}", e)))?;
+        }
+
+        Ok(config)
     }
 
     async fn update_auto_scaling(&self, _config: AutoScalingConfig) -> ComputeResult<AutoScalingConfig> {
@@ -146,8 +262,73 @@ impl Provider for GcpProvider {
     }
 
     // Resource Optimization
-    async fn analyze_resources(&self, _resource_ids: Vec<String>) -> ComputeResult<Vec<OptimizationStrategy>> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn analyze_resources(&self, resource_ids: Vec<String>) -> ComputeResult<Vec<OptimizationStrategy>> {
+        let mut strategies = Vec::new();
+
+        for resource_id in resource_ids {
+            // Get CPU utilization metrics
+            let cpu_metrics = self.get_metrics(
+                &resource_id,
+                vec!["compute.googleapis.com/instance/cpu/utilization".to_string()]
+            ).await?;
+
+            if let Some((_, cpu_util)) = cpu_metrics.first() {
+                // Analyze CPU utilization and suggest optimization
+                if *cpu_util < 0.2 { // Low utilization
+                    // Find a smaller machine type
+                    let instance = self.compute_client
+                        .instances()
+                        .get(&resource_id)
+                        .await
+                        .map_err(|e| ComputeError::Provider(format!("Failed to get instance: {}", e)))?;
+
+                    let current_type = instance.machine_type();
+                    let recommended_type = self.recommend_machine_type(current_type, *cpu_util)?;
+
+                    strategies.push(OptimizationStrategy::ResizeInstance {
+                        instance_id: resource_id.clone(),
+                        new_type: recommended_type,
+                    });
+                } else if *cpu_util > 0.8 { // High utilization
+                    // Suggest auto-scaling if not already configured
+                    let asg_config = self.get_auto_scaling(&resource_id).await;
+                    if asg_config.is_err() {
+                        strategies.push(OptimizationStrategy::AdjustAutoScaling {
+                            config: AutoScalingConfig {
+                                id: format!("asg-{}", resource_id),
+                                name: format!("asg-{}", resource_id),
+                                resource_id: resource_id.clone(),
+                                resource_type: super::autoscaling::ResourceType::Instance,
+                                min_capacity: 1,
+                                max_capacity: 3,
+                                desired_capacity: 2,
+                                cooldown_seconds: 300,
+                                metrics: vec![],
+                                schedules: vec![],
+                                labels: Default::default(),
+                                annotations: Default::default(),
+                            },
+                        });
+                    }
+                }
+            }
+
+            // Check for sustained spot instance eligibility
+            let stability_metrics = self.get_metrics(
+                &resource_id,
+                vec!["compute.googleapis.com/instance/uptime".to_string()]
+            ).await?;
+
+            if let Some((_, uptime)) = stability_metrics.first() {
+                if *uptime > 24.0 * 7.0 { // More than a week of stable uptime
+                    strategies.push(OptimizationStrategy::ConvertToSpot {
+                        instance_ids: vec![resource_id.clone()],
+                    });
+                }
+            }
+        }
+
+        Ok(strategies)
     }
 
     async fn apply_optimization(&self, _strategy: OptimizationStrategy) -> ComputeResult<()> {
@@ -159,8 +340,27 @@ impl Provider for GcpProvider {
     }
 
     // Monitoring
-    async fn get_metrics(&self, _resource_id: &str, _metric_names: Vec<String>) -> ComputeResult<Vec<(String, f64)>> {
-        unimplemented!("GCP provider not yet implemented")
+    async fn get_metrics(&self, resource_id: &str, metric_names: Vec<String>) -> ComputeResult<Vec<(String, f64)>> {
+        let mut metrics = Vec::new();
+        let end_time = chrono::Utc::now();
+        let start_time = end_time - chrono::Duration::hours(1);
+
+        for metric_name in metric_names {
+            let timeseries = self.monitoring_client
+                .time_series()
+                .filter(format!("resource.type = \"gce_instance\" AND resource.labels.instance_id = \"{}\"", resource_id))
+                .metric(&metric_name)
+                .start_time(start_time)
+                .end_time(end_time)
+                .await
+                .map_err(|e| ComputeError::Provider(format!("Failed to get metrics: {}", e)))?;
+
+            if let Some(latest_point) = timeseries.points().first() {
+                metrics.push((metric_name, latest_point.value()));
+            }
+        }
+
+        Ok(metrics)
     }
 
     async fn get_logs(&self, _resource_id: &str, _start_time: i64, _end_time: i64) -> ComputeResult<Vec<String>> {
