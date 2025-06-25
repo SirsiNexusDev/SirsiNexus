@@ -1,11 +1,10 @@
 use axum::{
     async_trait,
-    extract::{FromRequestParts, State},
-    http::{request::Parts, StatusCode},
+    extract::FromRequestParts,
+    http::request::Parts,
     response::{IntoResponse, Response},
-    RequestPartsExt,
 };
-use http::header::AUTHORIZATION;
+use axum::http::header::AUTHORIZATION;
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -123,7 +122,7 @@ mod tests {
             .with_state(pool.clone());
 
         // Create a test request without auth header
-        let response = app
+        let response = app.clone()
             .oneshot(
                 Request::builder()
                     .uri("/protected")
@@ -135,12 +134,12 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 
-        // Create a test request with invalid auth header
+        // Test with invalid token
         let response = app
             .oneshot(
                 Request::builder()
                     .uri("/protected")
-                    .header(AUTHORIZATION, "Bearer invalid_token")
+                    .header("Authorization", "Bearer invalid_token")
                     .body(Body::empty())
                     .unwrap(),
             )
@@ -150,7 +149,7 @@ mod tests {
         assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
     }
 
-    async fn protected_handler(auth: AuthUser) -> &'static str {
+    async fn protected_handler(_auth: AuthUser) -> &'static str {
         "Protected content"
     }
 }

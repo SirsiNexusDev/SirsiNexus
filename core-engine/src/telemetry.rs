@@ -58,8 +58,14 @@ mod tests {
     async fn test_telemetry_init() {
         let config = AppConfig {
             database: DatabaseConfig {
-                url: "postgres://localhost:5432/test".to_string(),
+                host: "localhost".to_string(),
+                port: 5432,
+                username: "postgres".to_string(),
+                password: "postgres".to_string(),
+                database: "test".to_string(),
                 max_connections: 5,
+                ssl_ca_cert: None,
+                sslmode: Some("disable".to_string()),
             },
             server: ServerConfig {
                 http_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080),

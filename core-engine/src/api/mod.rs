@@ -29,7 +29,7 @@ pub fn create_router(db: PgPool) -> Router {
         .with_state(db)
 }
 
-async fn health_check() -> &'static str {
+pub async fn health_check() -> &'static str {
     "OK"
 }
 

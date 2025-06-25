@@ -8,25 +8,24 @@ use validator::Validate;
 
 use crate::{
     error::AppResult,
-    models::user::{CreateUser, User},
+    models::user::User,
 };
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, Clone)]
 pub struct RegisterRequest {
+    #[validate(length(min = 1))]
+    pub name: String,
     #[validate(email)]
     pub email: String,
     #[validate(length(min = 8))]
     pub password: String,
-    #[validate(length(min = 1))]
-    pub name: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
 }
-
 #[derive(Debug, Serialize)]
 pub struct AuthResponse {
     pub token: String,
@@ -43,8 +42,8 @@ pub async fn register_handler(
 
     // Hash password
     use argon2::{Argon2, PasswordHasher};
-    use argon2::password_hash::{PasswordHash, PasswordVerifier, SaltString};
-    use rand_core::OsRng;
+    use argon2::password_hash::SaltString;
+    use argon2::password_hash::rand_core::OsRng;
     
     let salt = SaltString::generate(&mut OsRng);
     let argon2 = Argon2::default();
@@ -55,6 +54,7 @@ pub async fn register_handler(
     // Create user
     let user = User::create(
         &pool,
+        &payload.name,
         &payload.email,
         &password_hash,
     ).await?;
@@ -141,7 +141,7 @@ mod tests {
             .expect("Failed to connect to database");
 
         // Clear test database
-        sqlx::query!("TRUNCATE users CASCADE")
+        sqlx::query("TRUNCATE users CASCADE")
             .execute(&pool)
             .await
             .expect("Failed to clear test database");

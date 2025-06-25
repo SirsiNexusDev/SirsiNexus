@@ -1,3 +1,3 @@
 pub mod auth;
 
-pub use auth::{AuthUser, verify_token};
+pub use auth::AuthUser;

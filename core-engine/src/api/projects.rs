@@ -2,7 +2,7 @@ use axum::{
     extract::{Path, State},
     Json,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use sqlx::PgPool;
 use uuid::Uuid;
 use validator::Validate;
@@ -158,7 +158,7 @@ mod tests {
             .expect("Failed to connect to database");
 
         // Clear test database
-        sqlx::query!("TRUNCATE projects CASCADE")
+        sqlx::query("TRUNCATE projects CASCADE")
             .execute(&pool)
             .await
             .expect("Failed to clear test database");
@@ -170,7 +170,7 @@ mod tests {
     async fn test_create_project() {
         let pool = setup().await;
         
-        let app = Router::new()
+        let app: Router<()> = Router::new()
             .route("/projects", post(create_project_handler))
             .with_state(pool.clone());
 
@@ -186,7 +186,7 @@ mod tests {
     async fn test_list_projects() {
         let pool = setup().await;
         
-        let app = Router::new()
+        let app: Router<()> = Router::new()
             .route("/projects", get(list_projects_handler))
             .with_state(pool.clone());
 

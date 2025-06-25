@@ -3,11 +3,20 @@ name = "sirsi-core"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "sirsi-core"
+path = "src/main.rs"
+
+[lib]
+name = "sirsi_core"
+path = "src/lib.rs"
+
 [dependencies]
 # Web framework
 axum = { version = "0.6.20", features = ["macros", "headers"] }
 axum-core = "0.3.4"
 axum-macros = "0.3.8"
+hyper = { version = "0.14" }
 k8s-openapi = { version = "0.20", features = ["v1_27"] }
 tower = { version = "0.4", features = ["timeout", "limit"] }
 tower-http = { version = "0.5", features = ["trace", "cors", "limit"] }
@@ -58,7 +67,6 @@ uuid = { version = "1.7", features = ["v4", "serde"] }
 validator = { version = "0.20", features = ["derive"] }
 futures = "0.3"
 http = "1.0"
-rand_core = { version = "0.9.3", features = ["os_rng"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 [build-dependencies]

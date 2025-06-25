@@ -1,10 +1,9 @@
 use std::collections::HashMap;
-use tokio::sync::RwLock;
 use uuid::Uuid;
 
 use crate::{
     error::{AppError, AppResult},
-    agent::service::Suggestion,
+    proto::sirsi::agent::v1::Suggestion,
 };
 
 pub struct AgentManager {
@@ -13,13 +12,13 @@ pub struct AgentManager {
 }
 
 struct SessionState {
-    user_id: String,
+    _user_id: String,
     agent_ids: Vec<String>,
-    context: HashMap<String, String>,
+    _context: HashMap<String, String>,
 }
 
 struct AgentState {
-    agent_type: String,
+    _agent_type: String,
     status: String,
     metrics: HashMap<String, String>,
     capabilities: Vec<String>,
@@ -52,7 +51,7 @@ impl AgentManager {
         &mut self,
         session_id: &str,
         agent_type: &str,
-        config: HashMap<String, String>,
+        _config: HashMap<String, String>,
     ) -> AppResult<String> {
         let agent_id = Uuid::new_v4().to_string();
 
@@ -63,7 +62,7 @@ impl AgentManager {
 
         // Create agent state
         let agent_state = AgentState {
-            agent_type: agent_type.to_string(),
+            _agent_type: agent_type.to_string(),
             status: "running".to_string(),
             metrics: HashMap::new(),
             capabilities: vec![
@@ -85,7 +84,7 @@ impl AgentManager {
         session_id: &str,
         agent_id: &str,
         message: &str,
-        context: HashMap<String, String>,
+        _context: HashMap<String, String>,
     ) -> AppResult<(String, String, Vec<Suggestion>)> {
         // Verify session and agent exist
         self.verify_session_and_agent(session_id, agent_id)?;
@@ -98,8 +97,9 @@ impl AgentManager {
                 id: Uuid::new_v4().to_string(),
                 title: "Sample suggestion".to_string(),
                 description: "This is a sample suggestion".to_string(),
-                action_type: "command".to_string(),
-                action_params: HashMap::new(),
+                r#type: 1, // SUGGESTION_TYPE_ACTION
+                action: "command".to_string(),
+                parameters: HashMap::new(),
                 confidence: 0.9,
             },
         ];
@@ -112,7 +112,7 @@ impl AgentManager {
         session_id: &str,
         agent_id: &str,
         context_type: &str,
-        context: HashMap<String, String>,
+        _context: HashMap<String, String>,
     ) -> AppResult<Vec<Suggestion>> {
         // Verify session and agent exist
         self.verify_session_and_agent(session_id, agent_id)?;
@@ -123,8 +123,9 @@ impl AgentManager {
                 id: Uuid::new_v4().to_string(),
                 title: format!("Suggestion for {}", context_type),
                 description: "This is a contextual suggestion".to_string(),
-                action_type: "command".to_string(),
-                action_params: HashMap::new(),
+                r#type: 1, // SUGGESTION_TYPE_ACTION
+                action: "command".to_string(),
+                parameters: HashMap::new(),
                 confidence: 0.8,
             },
         ])
@@ -180,9 +181,9 @@ mod tests {
         // Create a session
         let session_id = "test-session".to_string();
         manager.sessions.insert(session_id.clone(), SessionState {
-            user_id: "test-user".to_string(),
+            _user_id: "test-user".to_string(),
             agent_ids: Vec::new(),
-            context: HashMap::new(),
+            _context: HashMap::new(),
         });
 
         // Spawn an agent
@@ -193,7 +194,7 @@ mod tests {
         ).await.unwrap();
 
         // Get agent status
-        let (status, metrics, capabilities) = manager.get_agent_status(
+        let (status, _metrics, capabilities) = manager.get_agent_status(
             &session_id,
             &agent_id,
         ).await.unwrap();

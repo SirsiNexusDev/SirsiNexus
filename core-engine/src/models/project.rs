@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, postgres::PgPool};
-use time::PrimitiveDateTime;
+use chrono::{DateTime, Utc};
 use uuid::Uuid;
 use validator::Validate;
 
@@ -13,8 +13,8 @@ pub struct Project {
     pub description: Option<String>,
     pub status: ProjectStatus,
     pub owner_id: Uuid,
-    pub created_at: PrimitiveDateTime,
-    pub updated_at: PrimitiveDateTime,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, sqlx::Type)]
@@ -26,7 +26,7 @@ pub enum ProjectStatus {
     Archived,
 }
 
-#[derive(Debug, Validate)]
+#[derive(Debug, Validate, Clone)]
 pub struct CreateProject {
     #[validate(length(min = 1, max = 255))]
     pub name: String,
@@ -36,15 +36,15 @@ pub struct CreateProject {
 
 impl Project {
     pub async fn create(pool: &PgPool, new_project: CreateProject) -> Result<Self> {
-        let project = sqlx::query_as!(Self,
+        let project = sqlx::query_as::<_, Self>(
             r#"INSERT INTO projects (name, description, status, owner_id)
             VALUES ($1, $2, $3, $4)
-            RETURNING id, name, description, status as "status: ProjectStatus", owner_id, created_at, updated_at"#,
-            new_project.name,
-            new_project.description,
-            ProjectStatus::Active as ProjectStatus,
-            new_project.owner_id,
+            RETURNING id, name, description, status, owner_id, created_at, updated_at"#
         )
+        .bind(&new_project.name)
+        .bind(&new_project.description)
+        .bind(ProjectStatus::Active)
+        .bind(new_project.owner_id)
         .fetch_one(pool)
         .await
         .map_err(Error::Database)?;
@@ -53,11 +53,11 @@ impl Project {
     }
 
     pub async fn find_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Self>> {
-        let project = sqlx::query_as!(Self,
-            r#"SELECT id, name, description, status as "status: ProjectStatus", owner_id, created_at, updated_at
-            FROM projects WHERE id = $1"#,
-            id
+        let project = sqlx::query_as::<_, Self>(
+            r#"SELECT id, name, description, status, owner_id, created_at, updated_at
+            FROM projects WHERE id = $1"#
         )
+        .bind(id)
         .fetch_optional(pool)
         .await
         .map_err(Error::Database)?;
@@ -66,12 +66,12 @@ impl Project {
     }
 
     pub async fn find_by_owner(pool: &PgPool, owner_id: Uuid) -> Result<Vec<Self>> {
-        let projects = sqlx::query_as!(Self,
-            r#"SELECT id, name, description, status as "status: ProjectStatus", owner_id, created_at, updated_at
+        let projects = sqlx::query_as::<_, Self>(
+            r#"SELECT id, name, description, status, owner_id, created_at, updated_at
             FROM projects WHERE owner_id = $1
-            ORDER BY created_at DESC"#,
-            owner_id
+            ORDER BY created_at DESC"#
         )
+        .bind(owner_id)
         .fetch_all(pool)
         .await
         .map_err(Error::Database)?;
@@ -80,15 +80,15 @@ impl Project {
     }
 
     pub async fn update(&self, pool: &PgPool) -> Result<()> {
-        sqlx::query!(
+        sqlx::query(
             "UPDATE projects
             SET name = $1, description = $2, status = $3
-            WHERE id = $4",
-            self.name,
-            self.description,
-            self.status.clone() as ProjectStatus,
-            self.id
+            WHERE id = $4"
         )
+        .bind(&self.name)
+        .bind(&self.description)
+        .bind(&self.status)
+        .bind(self.id)
         .execute(pool)
         .await
         .map_err(Error::Database)?;
@@ -97,7 +97,8 @@ impl Project {
     }
 
     pub async fn delete(pool: &PgPool, id: Uuid) -> Result<()> {
-        sqlx::query!("DELETE FROM projects WHERE id = $1", id)
+        sqlx::query("DELETE FROM projects WHERE id = $1")
+            .bind(id)
             .execute(pool)
             .await
             .map_err(Error::Database)?;
@@ -121,7 +122,7 @@ mod tests {
             .expect("Failed to connect to database");
 
         // Clear test database
-        sqlx::query!("TRUNCATE projects CASCADE")
+        sqlx::query("TRUNCATE projects CASCADE")
             .execute(&pool)
             .await
             .expect("Failed to clear test database");

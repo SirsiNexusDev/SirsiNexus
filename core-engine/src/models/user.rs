@@ -3,15 +3,16 @@ use sqlx::FromRow;
 use uuid::Uuid;
 use crate::error::Result;
 use sqlx::PgPool;
-use time::PrimitiveDateTime;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct User {
     pub id: Uuid,
+    pub name: String,
     pub email: String,
     pub password_hash: String,
-    pub created_at: PrimitiveDateTime,
-    pub updated_at: PrimitiveDateTime,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -38,19 +39,16 @@ pub enum UserRole {
 }
 
 impl User {
-    pub async fn create(pool: &PgPool, email: &str, password_hash: &str) -> Result<Self> {
-        let now = time::OffsetDateTime::now_utc();
-        let now_primitive = time::PrimitiveDateTime::new(now.date(), now.time());
-        let user = sqlx::query_as!(Self,
-            r#"INSERT INTO users (id, email, password_hash, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING id, email, password_hash, created_at, updated_at"#,
-            Uuid::new_v4(),
-            email,
-            password_hash,
-            now_primitive,
-            now_primitive
+    pub async fn create(pool: &PgPool, name: &str, email: &str, password_hash: &str) -> Result<Self> {
+        let user = sqlx::query_as::<_, Self>(
+            r#"INSERT INTO users (id, name, email, password_hash, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, DEFAULT, DEFAULT)
+            RETURNING id, name, email, password_hash, created_at, updated_at"#
         )
+        .bind(Uuid::new_v4())
+        .bind(name)
+        .bind(email)
+        .bind(password_hash)
         .fetch_one(pool)
         .await?;
 
@@ -58,11 +56,11 @@ impl User {
     }
 
     pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<Option<Self>> {
-        let user = sqlx::query_as!(Self,
-            r#"SELECT id, email, password_hash, created_at, updated_at
-            FROM users WHERE email = $1"#,
-            email
+        let user = sqlx::query_as::<_, Self>(
+            r#"SELECT id, name, email, password_hash, created_at, updated_at
+            FROM users WHERE email = $1"#
         )
+        .bind(email)
         .fetch_optional(pool)
         .await?;
 
@@ -70,11 +68,11 @@ impl User {
     }
 
     pub async fn find_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Self>> {
-        let user = sqlx::query_as!(Self,
-            r#"SELECT id, email, password_hash, created_at, updated_at
-            FROM users WHERE id = $1"#,
-            id
+        let user = sqlx::query_as::<_, Self>(
+            r#"SELECT id, name, email, password_hash, created_at, updated_at
+            FROM users WHERE id = $1"#
         )
+        .bind(id)
         .fetch_optional(pool)
         .await?;
 
