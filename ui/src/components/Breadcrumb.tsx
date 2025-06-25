@@ -24,13 +24,13 @@ export const Breadcrumb: React.FC = () => {
             href="/"
             className="flex items-center text-sm text-gray-600 hover:text-sirsi-500 dark:text-gray-400 dark:hover:text-sirsi-400"
           >
-            <Home className="mr-1 h-4 w-4" />
+              <Home className="mr-1 h-4 w-4" title="Home" />
             Home
           </Link>
         </li>
         {segments.map((segment, index) => (
           <React.Fragment key={segment.path}>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="h-4 w-4 text-gray-400" title="Chevron Right" />
             <li>
               <Link
                 href={segment.path}
