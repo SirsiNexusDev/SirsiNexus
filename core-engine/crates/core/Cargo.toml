@@ -16,10 +16,12 @@ thiserror = "2.0"
 anyhow = "1.0"
 
 # HTTP
-axum = { version = "0.7", features = ["macros"] }
+axum = { version = "0.7", features = ["macros", "http2"] }
 hyper = { version = "1.0", features = ["full"] }
 tower = { version = "0.4", features = ["full"] }
 tower-http = { version = "0.5", features = ["full"] }
+tokio-stream = "0.1"
+http = "1.0"
 
 # gRPC
 tonic = { version = "0.10", features = ["transport", "tls"] }
@@ -28,20 +30,21 @@ prost-types = "0.12"
 
 # Crypto
 jsonwebtoken = "9.2"
-argon2 = { version = "0.5", features = ["std"] }
+argon2 = { version = "0.5", features = ["password-hash"] }
 
 # Async Runtime
 tokio = { version = "1.35", features = ["full"] }
-futures = "0.3"
+futures = { version = "0.3", features = ["std"] }
 
 # Configuration
 config = "0.15"
 dotenvy = "0.15"
 
 # Telemetry
-opentelemetry = { version = "0.21", features = ["trace", "rt-tokio"] }
+opentelemetry = { version = "0.21", features = ["trace", "rt-tokio", "metrics"] }
+opentelemetry-api = { version = "0.20", features = ["metrics"] }
 opentelemetry-semantic-conventions = "0.13"
-opentelemetry-otlp = { version = "0.14", features = ["metrics", "trace"] }
+opentelemetry-otlp = { version = "0.14", features = ["metrics", "trace", "tonic", "grpc-tonic"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-opentelemetry = "0.22"

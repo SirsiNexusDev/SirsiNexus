@@ -1,7 +1,7 @@
 use anyhow::Result;
 use opentelemetry::{
     sdk::{
-        metrics::selectors,
+metrics::selectors::exact,
         resource::{OsResourceDetector, ProcessResourceDetector, ResourceDetector},
     },
     KeyValue,
@@ -28,7 +28,7 @@ pub fn init_telemetry() -> Result<()> {
                 .with_timeout(std::time::Duration::from_secs(5)),
         )
         .with_resource(create_resource())
-        .with_aggregation_selector(selectors::simple::Selector::Exact)
+.with_aggregation_selector(selectors::simple::Selector::Exact)
         .build()?;
 
     // Create tracing subscriber with OTLP layer

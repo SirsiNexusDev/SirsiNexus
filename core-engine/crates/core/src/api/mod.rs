@@ -1,5 +1,5 @@
-use axum::{
-    routing::{delete, get, post, put},
+use axum::{handler::Handler,
+    routing::{get, post, put, delete},
     Router,
 };
 use sqlx::PgPool;

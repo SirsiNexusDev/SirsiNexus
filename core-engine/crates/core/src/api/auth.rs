@@ -1,3 +1,5 @@
+use argon2::{Argon2, PasswordHash, PasswordVerifier, PasswordHasher};
+use rand_core::OsRng;
 use axum::{
     extract::State,
     Json,
@@ -15,7 +17,8 @@ pub async fn register_handler(
     State(pool): State<PgPool>,
     Json(create_user): Json<CreateUser>,
 ) -> Result<Json<User>, AppError> {
-    let password_hash = argon2::hash_password(
+        let salt = argon2::password_hash::SaltString::generate(&mut OsRng);
+        let password_hash = Argon2::default().hash_password(new_user.password.as_bytes(), &salt)?.to_string();
         create_user.password.as_bytes(),
         &argon2::PasswordHasher::default(),
     )?.to_string();
@@ -31,7 +34,10 @@ pub async fn login_handler(
 ) -> Result<Json<String>, AppError> {
     let user = User::get_by_email(&pool, &login.email).await?;
 
-    let is_valid = argon2::verify_password(
+    let is_valid = {
+        let parsed_hash = PasswordHash::new(&user.password_hash)?;
+        Argon2::default().verify_password(login.password.as_bytes(), &parsed_hash)
+    };
         login.password.as_bytes(),
         &argon2::PasswordHash::new(&user.password_hash)?,
     ).is_ok();

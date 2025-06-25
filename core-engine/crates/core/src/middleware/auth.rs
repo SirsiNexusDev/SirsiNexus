@@ -5,7 +5,7 @@ use axum::{
     response::{IntoResponse, Response},
     RequestPartsExt,
 };
-use http::header::AUTHORIZATION;
+use axum::http::header::AUTHORIZATION;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
