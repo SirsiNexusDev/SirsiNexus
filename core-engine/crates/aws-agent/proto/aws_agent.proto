@@ -1,0 +1,242 @@
+syntax = "proto3";
+
+package sirsi.aws.v1;
+
+service AwsAgent {
+  // Resource discovery
+  rpc DiscoverResources(DiscoverResourcesRequest) returns (DiscoverResourcesResponse);
+  
+  // Resource analysis
+  rpc AnalyzeResources(AnalyzeResourcesRequest) returns (AnalyzeResourcesResponse);
+  
+  // Migration planning
+  rpc GenerateMigrationPlan(GenerateMigrationPlanRequest) returns (GenerateMigrationPlanResponse);
+  
+  // Cost estimation
+  rpc EstimateCosts(EstimateCostsRequest) returns (EstimateCostsResponse);
+}
+
+message DiscoverResourcesRequest {
+  string session_id = 1;
+  repeated string resource_types = 2;  // ec2, rds, s3, etc.
+  map<string, string> filters = 3;
+  ResourceScope scope = 4;
+}
+
+message DiscoverResourcesResponse {
+  repeated Resource resources = 1;
+  map<string, ResourceCount> resource_counts = 2;
+  repeated string warnings = 3;
+}
+
+message Resource {
+  string id = 1;
+  string type = 2;
+  string name = 3;
+  string region = 4;
+  string arn = 5;
+  map<string, string> tags = 6;
+  ResourceMetadata metadata = 7;
+  repeated ResourceDependency dependencies = 8;
+  ResourceStatus status = 9;
+}
+
+message ResourceMetadata {
+  oneof details {
+    Ec2Instance ec2_instance = 1;
+    RdsInstance rds_instance = 2;
+    S3Bucket s3_bucket = 3;
+    IamRole iam_role = 4;
+    EksCluster eks_cluster = 5;
+  }
+}
+
+message Ec2Instance {
+  string instance_type = 1;
+  string platform = 2;
+  repeated string security_groups = 3;
+  repeated string subnet_ids = 4;
+  string vpc_id = 5;
+  map<string, string> network_interfaces = 6;
+  repeated string volume_ids = 7;
+}
+
+message RdsInstance {
+  string engine = 1;
+  string engine_version = 2;
+  string instance_class = 3;
+  int64 allocated_storage = 4;
+  bool multi_az = 5;
+  repeated string subnet_ids = 6;
+  string vpc_id = 7;
+}
+
+message S3Bucket {
+  string region = 1;
+  int64 size_bytes = 2;
+  int64 object_count = 3;
+  bool versioning_enabled = 4;
+  repeated string lifecycle_rules = 5;
+}
+
+message IamRole {
+  string path = 1;
+  repeated string policy_arns = 2;
+  string assume_role_policy = 3;
+}
+
+message EksCluster {
+  string version = 1;
+  repeated string node_groups = 2;
+  string vpc_id = 3;
+  repeated string subnet_ids = 4;
+}
+
+message ResourceDependency {
+  string resource_id = 1;
+  string dependency_type = 2;
+  bool required = 3;
+}
+
+message ResourceCount {
+  int32 total = 1;
+  int32 active = 2;
+  map<string, int32> by_status = 3;
+}
+
+message ResourceScope {
+  repeated string regions = 1;
+  repeated string vpc_ids = 2;
+  repeated string tags = 3;
+}
+
+enum ResourceStatus {
+  RESOURCE_STATUS_UNSPECIFIED = 0;
+  RESOURCE_STATUS_ACTIVE = 1;
+  RESOURCE_STATUS_INACTIVE = 2;
+  RESOURCE_STATUS_PENDING = 3;
+  RESOURCE_STATUS_FAILED = 4;
+}
+
+message AnalyzeResourcesRequest {
+  string session_id = 1;
+  repeated Resource resources = 2;
+  AnalysisType analysis_type = 3;
+}
+
+message AnalyzeResourcesResponse {
+  repeated ResourceAnalysis analyses = 1;
+  repeated RiskFactor risks = 2;
+  repeated string recommendations = 3;
+}
+
+message ResourceAnalysis {
+  string resource_id = 1;
+  double complexity_score = 2;
+  repeated string compatibility_issues = 3;
+  repeated string optimization_opportunities = 4;
+  repeated Dependency dependencies = 5;
+}
+
+message RiskFactor {
+  string category = 1;
+  string description = 2;
+  RiskLevel risk_level = 3;
+  repeated string affected_resources = 4;
+  repeated string mitigation_steps = 5;
+}
+
+enum RiskLevel {
+  RISK_LEVEL_UNSPECIFIED = 0;
+  RISK_LEVEL_LOW = 1;
+  RISK_LEVEL_MEDIUM = 2;
+  RISK_LEVEL_HIGH = 3;
+  RISK_LEVEL_CRITICAL = 4;
+}
+
+enum AnalysisType {
+  ANALYSIS_TYPE_UNSPECIFIED = 0;
+  ANALYSIS_TYPE_MIGRATION = 1;
+  ANALYSIS_TYPE_SECURITY = 2;
+  ANALYSIS_TYPE_COST = 3;
+  ANALYSIS_TYPE_PERFORMANCE = 4;
+}
+
+message Dependency {
+  string name = 1;
+  string type = 2;
+  string source = 3;
+  string target = 4;
+  bool critical = 5;
+}
+
+message GenerateMigrationPlanRequest {
+  string session_id = 1;
+  repeated Resource resources = 2;
+  MigrationStrategy strategy = 3;
+  map<string, string> constraints = 4;
+}
+
+message GenerateMigrationPlanResponse {
+  MigrationPlan plan = 1;
+  repeated MigrationPhase phases = 2;
+  repeated string prerequisites = 3;
+  map<string, string> estimated_metrics = 4;
+}
+
+message MigrationPlan {
+  string id = 1;
+  string name = 2;
+  MigrationStrategy strategy = 3;
+  repeated MigrationPhase phases = 4;
+  repeated string dependencies = 5;
+  map<string, string> parameters = 6;
+}
+
+message MigrationPhase {
+  string id = 1;
+  string name = 2;
+  repeated MigrationTask tasks = 3;
+  repeated string dependencies = 4;
+  int32 order = 5;
+}
+
+message MigrationTask {
+  string id = 1;
+  string name = 2;
+  string resource_id = 3;
+  string task_type = 4;
+  map<string, string> parameters = 5;
+  repeated string dependencies = 6;
+  int32 estimated_duration_minutes = 7;
+}
+
+enum MigrationStrategy {
+  MIGRATION_STRATEGY_UNSPECIFIED = 0;
+  MIGRATION_STRATEGY_REHOST = 1;
+  MIGRATION_STRATEGY_REPLATFORM = 2;
+  MIGRATION_STRATEGY_REFACTOR = 3;
+  MIGRATION_STRATEGY_REBUILD = 4;
+}
+
+message EstimateCostsRequest {
+  string session_id = 1;
+  repeated Resource resources = 2;
+  int32 duration_months = 3;
+  map<string, string> assumptions = 4;
+}
+
+message EstimateCostsResponse {
+  repeated CostEstimate estimates = 1;
+  map<string, double> total_by_service = 2;
+  repeated string cost_factors = 3;
+  repeated string optimization_suggestions = 4;
+}
+
+message CostEstimate {
+  string resource_id = 1;
+  string service = 2;
+  double monthly_cost = 3;
+  map<string, double> cost_breakdown = 4;
+  repeated string assumptions = 5;
+}
