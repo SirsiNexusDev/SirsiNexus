@@ -1,0 +1,13 @@
+{
+  "name": "sirsi-nexus",
+  "private": true,
+  "workspaces": [
+    "ui",
+    "cli"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
+  }
+}
