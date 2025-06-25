@@ -233,7 +233,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Upcoming Releases
 
-### [1.1.0] - Planned
+### [1.2.0] - Planned
 - ⏳ **Agent System Framework**
   - AgentService gRPC implementation
   - Sub-agent manager
@@ -245,7 +245,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ⏳ **Cloud Connectors**
   - AWS agent implementation
   - Azure agent implementation
+  - GCP agent implementation
   - Resource discovery system
+- ⏳ **Infrastructure as Code Templates**
+  - Bicep template generation for Azure
+  - Terraform modules for multi-cloud
+  - Pulumi programs for type-safe infrastructure
+  - CloudFormation templates for AWS
+- ⏳ **Optimization & Pricing**
+  - Predictive scaling recommendations
+  - Real-time cost analysis
+  - Resource right-sizing automation
+  - Discoverable pricing from cloud providers
+  - Ongoing optimization agents
 
 ### [2.0.0] - Planned
 - ⏳ **Full AI Integration**

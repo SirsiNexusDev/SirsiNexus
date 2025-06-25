@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { AlertCircle, Database, Server, Network, Clock } from 'lucide-react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  AlertCircle, Database, Server, Network, Clock, Bot, 
+  Sparkles, TrendingUp, Shield, DollarSign, Zap, CheckCircle 
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { Resource, RiskAssessment } from '@/types/migration';
 
 interface SpecifyStepProps {
@@ -31,6 +37,14 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
     },
     schedulePreference: 'weekend',
     compliance: ['GDPR', 'SOC2'],
+  });
+  
+  const [showAssessmentAgent, setShowAssessmentAgent] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [costEstimate, setCostEstimate] = useState({
+    oneTime: 12500,
+    monthly: 2800,
+    savings: 15,
   });
 
   const [riskAssessment, setRiskAssessment] = useState<RiskAssessment>({
@@ -239,8 +253,121 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
           </div>
         </div>
 
+        {/* AI Assessment Agent Panel */}
+        <div className="rounded-lg border border-sirsi-200 bg-sirsi-50 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-8 h-8 bg-sirsi-500 rounded-full">
+                <Bot className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-sirsi-900">Assessment Agent</h4>
+                <p className="text-sm text-sirsi-600">AI-powered cost and risk analysis</p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowAssessmentAgent(!showAssessmentAgent)}
+            >
+              {showAssessmentAgent ? 'Hide Analysis' : 'Show Analysis'}
+            </Button>
+          </div>
+          
+          <AnimatePresence>
+            {showAssessmentAgent && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-6"
+              >
+                {/* Cost Estimation */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <DollarSign className="h-5 w-5 text-green-500" />
+                      <span className="font-medium text-gray-900">One-time Cost</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">${costEstimate.oneTime.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Migration execution</p>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <TrendingUp className="h-5 w-5 text-blue-500" />
+                      <span className="font-medium text-gray-900">Monthly Cost</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">${costEstimate.monthly.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Infrastructure running</p>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Sparkles className="h-5 w-5 text-purple-500" />
+                      <span className="font-medium text-gray-900">Savings</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{costEstimate.savings}%</p>
+                    <p className="text-sm text-gray-600">Estimated reduction</p>
+                  </div>
+                </div>
+                
+                {/* AI Recommendations */}
+                <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <Zap className="h-5 w-5 text-yellow-500" />
+                    <span className="font-medium text-gray-900">AI Recommendations</span>
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                      <p>Consider using spot instances for development workloads to reduce costs by 60%</p>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                      <p>Schedule migration during weekend hours to minimize business impact</p>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                      <p>Enable auto-scaling to optimize resource utilization and costs</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Performance Insights */}
+                <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <Shield className="h-5 w-5 text-blue-500" />
+                    <span className="font-medium text-gray-900">Performance & Security Insights</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <h6 className="font-medium text-gray-900 mb-1">Performance</h6>
+                      <p className="text-gray-700">Current configuration will handle 2x traffic growth</p>
+                      <p className="text-gray-700">Expected 25% performance improvement</p>
+                    </div>
+                    <div>
+                      <h6 className="font-medium text-gray-900 mb-1">Security</h6>
+                      <p className="text-gray-700">Encryption at rest and in transit enabled</p>
+                      <p className="text-gray-700">Compliance requirements satisfied</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={() => setShowAssessmentAgent(!showAssessmentAgent)}
+            className="flex items-center space-x-2"
+          >
+            <Bot className="h-4 w-4" />
+            <span>AI Assessment</span>
+          </Button>
+          
           <button
             type="submit"
             className="rounded-md bg-sirsi-500 px-4 py-2 text-white hover:bg-sirsi-600"

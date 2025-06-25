@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -95,6 +97,34 @@ export const SupportStep: React.FC<SupportStepProps> = ({ onComplete }) => {
         {
           name: 'Disaster Recovery',
           value: 'Cross-region backup replication',
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: 'optimization',
+      name: 'Ongoing Optimization',
+      description: 'Continuous resource sizing, scaling, and cost management',
+      status: 'pending',
+      options: [
+        {
+          name: 'Predictive Scaling',
+          value: 'ML-based autoscaling recommendations and automated adjustments',
+          enabled: true,
+        },
+        {
+          name: 'Cost Optimization',
+          value: 'Real-time cost analysis with optimization suggestions',
+          enabled: true,
+        },
+        {
+          name: 'Resource Right-sizing',
+          value: 'Automated instance type and configuration recommendations',
+          enabled: true,
+        },
+        {
+          name: 'Discoverable Pricing',
+          value: 'Live pricing feeds from cloud providers with predictable cost estimates',
           enabled: true,
         },
       ],

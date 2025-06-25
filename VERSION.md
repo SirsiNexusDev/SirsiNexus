@@ -159,6 +159,20 @@ This release completes the database migration from PostgreSQL to CockroachDB, es
 - CockroachDB monitoring dashboard
 - Performance analytics integration
 
+**Infrastructure as Code Templates (v1.2.0)**
+- Bicep template generation for Azure Resource Manager
+- Terraform modules for AWS, Azure, and GCP
+- Pulumi programs for type-safe infrastructure definitions
+- CloudFormation templates for AWS-native deployments
+- Cross-cloud provider optimization templates
+
+**Optimization & Cost Management (v1.2.0)**
+- Predictive scaling with ML-based recommendations
+- Real-time cost analysis and optimization suggestions
+- Resource right-sizing automation
+- Discoverable pricing feeds from cloud providers
+- Ongoing optimization agents for continuous improvement
+
 #### 📊 **Updated Development Statistics**
 
 **Lines of Code:**
@@ -327,10 +341,12 @@ This release marks the completion of the core infrastructure foundation for Sirs
 - Enhanced UI components
 
 **Cloud Connectors (v1.2.0)**
-- AWS agent implementation
-- Azure agent implementation
-- GCP agent implementation
-- Resource discovery system
+- AWS agent implementation with Bicep/CloudFormation integration
+- Azure agent implementation with native Bicep template support
+- GCP agent implementation with Terraform and Pulumi modules
+- vSphere agent implementation for hybrid cloud scenarios
+- Resource discovery system with cost estimation
+- Multi-cloud pricing API integration
 
 #### 📊 **Development Statistics**
 

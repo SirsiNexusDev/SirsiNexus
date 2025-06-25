@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Loader, XCircle, Play, RefreshCw, Network, Shield } from 'lucide-react';
+import { CheckCircle, Loader, XCircle, Play, RefreshCw, Network, Shield, Server, Database, Cloud, Settings } from 'lucide-react';
 
 interface BuildTask {
   id: string;
@@ -106,49 +108,15 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
 
   return (
     <div className="space-y-6">
-/* Build Control */}
-<Card>
-  <CardHeader>
-    <CardTitle>Infrastructure Build/CardTitle>
-    <CardDescription>
-      Deploy and configure infrastructure components/CardDescription>
-  /CardHeader>
-  <CardContent>
-    <div className="flex justify-between items-center">
-      <div className="space-y-1">
-        <div className="text-sm font-medium">Build Status/div>
-        <div className="text-sm text-gray-500">
-          {isBuilding
-            ? 'Building infrastructure components...'
-            : 'Ready to start build'}
-        /div>
-      /div>
-      <Button
-        onClick={startBuild}
-        disabled={isBuilding}
-        className="w-[150px]"
-      >
-        {isBuilding ? (
-          <>
-            <RefreshCw className="mr-2 h-4 w-4 animate-spin"/>
-            Building...
-          <>
-        ) : (
-          <>
-            <Play className="mr-2 h-4 w-4"/>
-            Start Build
-          <>
-        )}
-      /Button
-    /div>
-  /CardContent>
-/Card>
-
-/* Task Grid */}
-<div className="grid grid-cols-2 gap-4"><Card className="col-span-1"><CardHeader><CardTitle>Build Tasks/CardTitle>
-/CardHeader>
-<CardContent><div className="space-y-4">
-          <h3 className="text-lg font-medium">Infrastructure Build</h3>
+      {/* Infrastructure Build */}
+      <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">Infrastructure Build</h3>
+            <p className="text-sm text-gray-600">
+              Deploy and configure infrastructure components
+            </p>
+          </div>
           <button
             onClick={startBuild}
             disabled={isBuilding}
@@ -211,34 +179,8 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
         </div>
       </div>
 
-{/* Alerts */
-<AnimatePresence>
-  {alerts.map((alert, index) => (
-    motion.div
-      key={index}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="mb-2"
-    >
-      <Alert
-        variant={
-          alert.type === 'error'
-            ? 'destructive'
-            : alert.type === 'warning'
-            ? 'default'
-            : 'default'
-        }
-      >
-        <AlertCircle className="h-4 w-4">/>
-        <AlertTitle>{alert.type.charAt(0).toUpperCase() + alert.type.slice(1)}/AlertTitle>
-        <AlertDescription>{alert.message}/AlertDescription>
-      /Alert>
-    /motion.div>
-  ))}
-/AnimatePresence>
-
-/* Continue Button */
+      {/* Continue Button */}
+      <div className="flex justify-end">
         <button
           onClick={onComplete}
           disabled={!canProceed}

@@ -219,8 +219,9 @@ A dense, end-to-end specification for a production-ready, agent-embedded migrati
 1. **Full-Stack AI Integration**: Every component embeds an agent for contextual assistance, code generation, and workflow optimization.
 2. **Multi-Cloud Discovery**: Automated resource enumeration and relationship mapping across AWS, Azure, GCP, and vSphere.
 3. **Risk-Aware Planning**: ML-powered assessment of migration complexity, cost, and security implications.
-4. **Infrastructure as Code**: Automated generation and validation of Terraform, Bicep, and Pulumi templates.
-5. **Event-Driven Architecture**: Kafka/NATS backbone for real-time progress tracking and agent coordination.
+4. **Infrastructure as Code**: Automated generation and validation of Terraform, Bicep, and Pulumi templates with multi-cloud provider support.
+5. **Multi-Cloud Native Support**: Direct integration with AWS, Azure, and GCP APIs with discoverable pricing models and predictive cost optimization.
+6. **Event-Driven Architecture**: Kafka/NATS backbone for real-time progress tracking and agent coordination.
 6. **Enterprise-Grade CI/CD & Testing**: Comprehensive GitHub Actions/Azure Pipelines setup for linting, testing, security scans, and performance monitoring.
 
 ---
@@ -237,7 +238,12 @@ sirsi-nexus/
 ├── subagents/                 # Shared logic for spawning and communicating with specialized agents
 ├── security/                  # OPA policies, SPIFFE/SPIRE configs, Vault templates
 ├── pipeline/                  # Kafka/NATS setup, OpenTelemetry collector, event schemas
-├── migration-templates/       # Terraform, Bicep, Pulumi .tpl files for infrastructure generation
+├── migration-templates/       # Infrastructure as Code templates
+│   ├── terraform/            # Terraform modules for AWS, Azure, GCP
+│   ├── bicep/               # Azure Bicep templates and modules
+│   ├── pulumi/              # Pulumi programs for multi-cloud
+│   ├── cloudformation/      # AWS CloudFormation templates
+│   └── shared/              # Common configurations and variables
 ├── testing/                   # Testcontainers definitions, Cypress specs, performance scripts
 ├── ci/                        # Pipeline definitions, code coverage, security scans
 └── deploy/                    # Helm charts, GitOps manifests, desktop bundle configs
@@ -320,10 +326,15 @@ To keep the interface "alive" during early development, the project begins by sc
 
 ### Phase 5: Migration Planning & Scripting Sub-Agent ⏳ PENDING
 - Template engine (Jinja2/Tera) for IaC generation
-- Terraform, Bicep, Pulumi template filling
-- ScriptingAgent with inline code suggestions
+- Terraform, Bicep, and Pulumi template filling with cloud-specific optimizations
+- Multi-cloud infrastructure templates:
+  - **Bicep Templates**: Azure Resource Manager templates with native Azure services
+  - **Terraform Modules**: Cross-cloud provider modules (AWS, Azure, GCP)
+  - **Pulumi Programs**: Type-safe infrastructure definitions
+  - **Cloud Formation**: AWS-native stack templates
+- ScriptingAgent with inline code suggestions and cloud provider best practices
 - API endpoints for planning and diagram generation
-- Mermaid diagram visualization
+- Mermaid diagram visualization with cost estimation overlays
 
 ### Phase 6: Core User Flows & Agent Use Cases ⏳ PENDING
 
@@ -347,7 +358,12 @@ To keep the interface "alive" during early development, the project begins by sc
 2. **Dynamic Tutorials**: Contextual popovers and walkthroughs
 3. **Monitoring Dashboards**: Grafana + Prometheus with AI summaries
 4. **Alerts & Notifications**: Multi-channel alerts with triage suggestions
-5. **Feedback Loop**: Telemetry-driven model retraining
+5. **Ongoing Optimization**: Continuous resource sizing, scaling, and cost optimization
+   - **Predictive Scaling**: ML-based autoscaling recommendations
+   - **Cost Optimization**: Real-time cost analysis with optimization suggestions
+   - **Resource Right-sizing**: Automated instance type and configuration recommendations
+   - **Discoverable Pricing**: Live pricing feeds from cloud providers
+6. **Feedback Loop**: Telemetry-driven model retraining
 
 ### Phase 8: Hardening, Packaging & Release ⏳ PENDING
 1. **Security Hardening**

@@ -2,6 +2,10 @@ import '@testing-library/jest-dom';
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
+  readonly root: Element | null = null;
+  readonly rootMargin: string = '0px';
+  readonly thresholds: ReadonlyArray<number> = [];
+  
   constructor() {}
   observe() {
     return null;
@@ -12,7 +16,10 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {
     return null;
   }
-};
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+} as any;
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
