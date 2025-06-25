@@ -1,16 +1,18 @@
 import { Breadcrumb } from '@/components/Breadcrumb';
-import {
-  ArrowUpRight,
-  Download,
-  BarChart2,
-  Clock,
-  DollarSign,
-  Cpu,
-  Database,
-  Server,
-} from 'lucide-react';
+import { Suspense } from 'react';
+import { ProjectAnalytics } from '@/components/Analytics/ProjectAnalytics';
+import { ProjectAnalyticsSkeleton } from '@/components/Analytics/ProjectAnalyticsSkeleton';
 
-const mockMetrics = [
+export default function AnalyticsPage() {
+  return (
+    <div>
+      <Breadcrumb />
+      <Suspense fallback={<ProjectAnalyticsSkeleton />}>
+        <ProjectAnalytics />
+      </Suspense>
+    </div>
+  );
+}
   {
     name: 'Total Migrations',
     value: '156',
@@ -35,8 +37,8 @@ const mockMetrics = [
     change: '+25% vs last month',
     trend: 'up',
   },
-];
-
+  ];
+}
 const mockReports = [
   {
     id: '1',

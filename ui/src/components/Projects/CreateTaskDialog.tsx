@@ -31,6 +31,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { useTasks } from '@/hooks/useTasks';
 import { useProjects } from '@/hooks/useProjects';
+import { Task } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import {
@@ -61,7 +62,7 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
   open,
   onOpenChange,
 }) => {
-  const { createTask } = useTasks(projectId);
+  const { createTask, loading, error } = useTasks(projectId);
   const { projects } = useProjects();
   const project = projects.find(p => p.id === projectId);
 
@@ -92,6 +93,9 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
           <DialogTitle>Create Task</DialogTitle>
           <DialogDescription>
             Add a new task to your project.
+            {error && (
+              <p className="text-sm text-destructive mt-2">{error}</p>
+            )}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -244,7 +248,16 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
               >
                 Cancel
               </Button>
-              <Button type="submit">Create Task</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="mr-2">Creating...</span>
+                    <div className="h-4 w-4 border-t-2 border-b-2 border-current rounded-full animate-spin" role="progressbar" />
+                  </>
+                ) : (
+                  'Create Task'
+                )}
+              </Button>
             </div>
           </form>
         </Form>

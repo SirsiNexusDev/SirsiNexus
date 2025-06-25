@@ -62,7 +62,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
   open,
   onOpenChange,
 }) => {
-  const { updateTask } = useTasks(task.projectId);
+  const { updateTask, loading, error } = useTasks(task.projectId);
   const { projects } = useProjects();
   const project = projects.find(p => p.id === task.projectId);
 
@@ -96,6 +96,9 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
           <DialogTitle>Edit Task</DialogTitle>
           <DialogDescription>
             Update your task details.
+            {error && (
+              <p className="text-sm text-destructive mt-2">{error}</p>
+            )}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -248,7 +251,16 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               >
                 Cancel
               </Button>
-              <Button type="submit">Update Task</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="mr-2">Updating...</span>
+                    <div className="h-4 w-4 border-t-2 border-b-2 border-current rounded-full animate-spin" role="progressbar" />
+                  </>
+                ) : (
+                  'Update Task'
+                )}
+              </Button>
             </div>
           </form>
         </Form>
