@@ -22,6 +22,21 @@ pub enum Error {
     
     #[error("Validation error: {0}")]
     Validation(String),
+    
+    #[error("Configuration error: {0}")]
+    Configuration(String),
+    
+    #[error("Connection error: {0}")]
+    Connection(String),
+    
+    #[error("Serialization error: {0}")]
+    Serialization(String),
+    
+    #[error("External service error: {0}")]
+    ExternalService(String),
+    
+    #[error("Server error: {0}")]
+    Server(String),
 }
 
 impl IntoResponse for Error {
@@ -33,6 +48,11 @@ impl IntoResponse for Error {
             Error::NotFound(msg) => (StatusCode::NOT_FOUND, msg),
             Error::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
             Error::Validation(msg) => (StatusCode::BAD_REQUEST, msg),
+            Error::Configuration(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
+            Error::Connection(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
+            Error::Serialization(msg) => (StatusCode::BAD_REQUEST, msg),
+            Error::ExternalService(msg) => (StatusCode::BAD_GATEWAY, msg),
+            Error::Server(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
         };
 
         let body = Json(json!({

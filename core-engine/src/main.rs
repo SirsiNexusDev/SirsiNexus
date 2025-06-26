@@ -10,15 +10,18 @@ mod server;
 mod telemetry;
 
 use crate::config::AppConfig;
+use crate::server::start_grpc_server;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Load configuration
     let config = AppConfig::load()?;
 
-    // Create and run server
-    let server = server::Server::new(config);
-    server.run().await?;
+    // Initialize telemetry
+    telemetry::init(&config).await?;
+
+    // Start gRPC server
+    start_grpc_server(config.server.grpc_addr.port(), &config.redis.url).await?;
 
     Ok(())
 }

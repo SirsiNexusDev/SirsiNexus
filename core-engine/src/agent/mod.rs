@@ -1,4 +1,6 @@
-mod manager;
+pub mod connectors;
+pub mod context;
+pub mod manager;
 pub mod service;
 
 pub use manager::AgentManager;

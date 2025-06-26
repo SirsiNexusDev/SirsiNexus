@@ -50,11 +50,25 @@ pub struct TelemetryConfig {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct RedisConfig {
+    pub url: String,
+}
+
+impl Default for RedisConfig {
+    fn default() -> Self {
+        Self {
+            url: "redis://127.0.0.1:6379".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
 pub struct AppConfig {
     pub database: DatabaseConfig,
     pub server: ServerConfig,
     pub jwt: JwtConfig,
     pub telemetry: TelemetryConfig,
+    pub redis: RedisConfig,
 }
 
 impl AppConfig {

@@ -1,9 +1,9 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tonic::{Request, Response, Status};
-use uuid::Uuid;
 
 use crate::agent::manager::AgentManager;
+use crate::agent::context::ContextStore;
 use crate::proto::sirsi::agent::v1::agent_service_server::AgentService as AgentServiceTrait;
 use crate::proto::sirsi::agent::v1::*;
 
@@ -13,11 +13,12 @@ pub use crate::proto::sirsi::agent::v1::FILE_DESCRIPTOR_SET;
 #[derive(Clone)]
 pub struct AgentService {
     manager: Arc<RwLock<AgentManager>>,
+    context_store: Arc<ContextStore>,
 }
 
 impl AgentService {
-    pub fn new(manager: Arc<RwLock<AgentManager>>) -> Self {
-        Self { manager }
+    pub fn new(manager: Arc<RwLock<AgentManager>>, context_store: Arc<ContextStore>) -> Self {
+        Self { manager, context_store }
     }
 }
 
@@ -29,11 +30,12 @@ impl AgentServiceTrait for AgentService {
     ) -> Result<Response<StartSessionResponse>, Status> {
         let _req = request.into_inner();
         
-        let session_id = Uuid::new_v4().to_string();
-        // let manager = self.manager.read().await;
+        let context = self.context_store
+            .create_session_context(&_req.user_id, _req.metadata)
+            .await
+            .map_err(|e| Status::internal(e.to_string()))?;
         
-        // TODO: Initialize session in manager
-        
+        let session_id = context.session_id.clone();
         Ok(Response::new(StartSessionResponse {
             session_id,
             status: "active".to_string(),
@@ -61,11 +63,13 @@ impl AgentServiceTrait for AgentService {
             _ => "general",
         };
 
-        let mut manager = self.manager.write().await;
-        let agent_id = manager
-            .spawn_agent(&req.session_id, agent_type_str, req.config)
+        let _manager = self.manager.write().await;
+        let agent_context = self.context_store
+            .create_agent_context(&req.session_id, agent_type_str, req.config)
             .await
             .map_err(|e| Status::internal(e.to_string()))?;
+
+        let agent_id = agent_context.agent_id.clone();
 
         Ok(Response::new(SpawnSubAgentResponse {
             agent_id,
@@ -84,6 +88,11 @@ impl AgentServiceTrait for AgentService {
         let manager = self.manager.read().await;
         let (response_id, response, suggestions) = manager
             .send_message(&req.session_id, &req.agent_id, &req.message, req.context)
+            .await
+            .map_err(|e| Status::internal(e.to_string()))?;
+
+        self.context_store
+            .add_conversation_entry(&req.agent_id, &req.message, &response, vec![])
             .await
             .map_err(|e| Status::internal(e.to_string()))?;
 
@@ -136,14 +145,14 @@ impl AgentServiceTrait for AgentService {
     ) -> Result<Response<GetSubAgentStatusResponse>, Status> {
         let req = request.into_inner();
         
-        let manager = self.manager.read().await;
-        let (status_str, metrics, _capabilities) = manager
-            .get_agent_status("", &req.agent_id) // Session ID not needed for this call
+        let _manager = self.manager.read().await;
+        let agent_context = self.context_store
+            .get_agent_context(&req.agent_id)
             .await
             .map_err(|e| Status::internal(e.to_string()))?;
 
         // Convert status string to enum
-        let status = match status_str.as_str() {
+        let status = match agent_context.status.as_str() {
             "initializing" => 1, // AGENT_STATUS_INITIALIZING
             "ready" => 2,        // AGENT_STATUS_READY
             "busy" => 3,         // AGENT_STATUS_BUSY
@@ -151,6 +160,8 @@ impl AgentServiceTrait for AgentService {
             "stopped" => 5,      // AGENT_STATUS_STOPPED
             _ => 2,               // AGENT_STATUS_READY
         };
+
+        let metrics = agent_context.metadata.clone();
 
         Ok(Response::new(GetSubAgentStatusResponse {
             agent_id: req.agent_id.clone(),

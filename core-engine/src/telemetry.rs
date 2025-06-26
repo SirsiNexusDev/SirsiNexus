@@ -51,7 +51,7 @@ impl Drop for TelemetryGuard {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::{AppConfig, TelemetryConfig, DatabaseConfig, ServerConfig, JwtConfig};
+    use crate::config::{AppConfig, TelemetryConfig, DatabaseConfig, ServerConfig, JwtConfig, RedisConfig};
     use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
     #[tokio::test]
@@ -79,6 +79,9 @@ mod tests {
                 service_name: "test-service".to_string(),
                 environment: "test".to_string(),
                 otlp_endpoint: "http://localhost:4317".to_string(),
+            },
+            redis: RedisConfig {
+                url: "redis://127.0.0.1:6379".to_string(),
             },
         };
 

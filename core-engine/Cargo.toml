@@ -7,6 +7,10 @@ edition = "2021"
 name = "sirsi-core"
 path = "src/main.rs"
 
+[[bin]]
+name = "agent-server"
+path = "src/bin/agent-server.rs"
+
 [lib]
 name = "sirsi_core"
 path = "src/lib.rs"
@@ -68,6 +72,24 @@ validator = { version = "0.20", features = ["derive"] }
 futures = "0.3"
 http = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
+
+# Redis for agent context storage
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
+# Agent Framework Dependencies
+aws-sdk-ec2 = "1.66"
+aws-sdk-s3 = "1.66"
+aws-config = "1.1"
+reqwest = { version = "0.11", features = ["json"] }
+once_cell = "1.19"
+tokio-util = "0.7"
+clap = { version = "4.4", features = ["derive"] }
+
+# Azure SDK Dependencies (placeholder - using mock implementation)
+# Note: Azure API integration to be implemented later with proper SDK
+
+# GCP SDK Dependencies (placeholder - using mock implementation)
+# Note: GCP API integration to be implemented later with proper SDK
 
 [build-dependencies]
 tonic-build = { version = "0.10", features = ["prost"] }
