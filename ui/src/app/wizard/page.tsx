@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, Download, FileText, Trophy, Sparkles, Clock, ChevronRight, Search, Server, Database, Cloud, Settings, TestTube, Wrench, ArrowLeftRight, BarChart, Shield, Play, Loader, RefreshCw, AlertTriangle, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Download, FileText, Trophy, Sparkles, Clock, ChevronRight, Search, Server, Database, Cloud, Settings, TestTube, Wrench, ArrowLeftRight, BarChart, Shield, Play, Loader, RefreshCw, AlertTriangle, Info, Cpu, HardDrive, Network, Users, Lock, Building, Globe } from 'lucide-react';
 import { PlanStep } from '@/components/MigrationSteps/steps/PlanStep';
 import { SpecifyStep } from '@/components/MigrationSteps/steps/SpecifyStep';
 import { TestStep } from '@/components/MigrationSteps/steps/TestStep';
@@ -81,6 +81,7 @@ export default function WizardPage() {
   });
   const [completedSteps, setCompletedSteps] = useState<Set<MigrationStep>>(new Set());
   const [artifacts, setArtifacts] = useState<StepArtifact[]>([]);
+  const [discoveredResources, setDiscoveredResources] = useState<any[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
 
   const steps = Object.keys(STEPS) as MigrationStep[];
@@ -89,8 +90,13 @@ export default function WizardPage() {
     setCurrentStep(step);
   };
 
-  const handleStepComplete = (step: MigrationStep, artifact?: {name: string; type: string; size: string; content?: string}) => {
+  const handleStepComplete = (step: MigrationStep, artifact?: {name: string; type: string; size: string; content?: string}, resources?: any[]) => {
     console.log(`Step ${step} completed`);
+    
+    // Store discovered resources from plan step for use in subsequent steps
+    if (step === 'plan' && resources) {
+      setDiscoveredResources(resources);
+    }
     
     // Mark step as completed
     setCompletedSteps(prev => new Set([...prev, step]));
@@ -233,7 +239,7 @@ export default function WizardPage() {
           <p className="text-lg text-gray-600">Complete your migration step by step</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Step Navigation */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -289,6 +295,40 @@ export default function WizardPage() {
                 })}
               </div>
             </div>
+
+            {/* Artifacts Panel */}
+            {artifacts.length > 0 && (
+              <div className="mt-6 bg-gray-50 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Generated Artifacts ({artifacts.length})
+                </h3>
+                <div className="space-y-2">
+                  {artifacts.slice(-3).map((artifact) => (
+                    <div
+                      key={artifact.id}
+                      className="flex items-center justify-between p-2 bg-white rounded border text-xs"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="font-medium truncate">{artifact.name}</span>
+                      </div>
+                      <button
+                        onClick={() => downloadArtifact(artifact)}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                      >
+                        <Download className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {artifacts.length > 3 && (
+                    <div className="text-xs text-gray-500 text-center pt-1">
+                      +{artifacts.length - 3} more artifacts
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Step Content */}
@@ -312,8 +352,16 @@ export default function WizardPage() {
                 </div>
               </div>
 
-              <div className="space-y-6">
-                {/* Step-specific content - Using proper step components */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-6"
+                >
+                  {/* Step-specific content - Using proper step components */}
                 {currentStep === 'plan' && (
                   <PlanStep 
                     onComplete={(artifact) => {
@@ -325,7 +373,7 @@ export default function WizardPage() {
 
                 {currentStep === 'specify' && (
                   <SpecifyStep 
-                    resources={[
+                    resources={discoveredResources.length > 0 ? discoveredResources : [
                       {
                         id: '1',
                         name: 'prod-db-01',
@@ -398,6 +446,82 @@ export default function WizardPage() {
                     }}
                   />
                 )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Artifacts Detail Panel */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <FileText className="h-5 w-5 mr-2" />
+                Migration Artifacts
+              </h2>
+              
+              {artifacts.length === 0 ? (
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-sm text-gray-500 mb-2">No artifacts generated yet</p>
+                  <p className="text-xs text-gray-400">Complete migration steps to generate artifacts</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {artifacts.map((artifact) => (
+                    <motion.div
+                      key={artifact.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
+                            <FileText className="h-4 w-4 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-900 text-sm">{artifact.name}</h4>
+                            <p className="text-xs text-gray-500">{artifact.step} Step</p>
+                          </div>
+                        </div>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          {artifact.type}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">{artifact.size}</span>
+                        <button
+                          onClick={() => downloadArtifact(artifact)}
+                          className="flex items-center space-x-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-1 rounded"
+                        >
+                          <Download className="h-3 w-3" />
+                          <span>Download</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Migration Progress */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Progress</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Steps Completed</span>
+                    <span>{completedSteps.size}/{steps.length}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(completedSteps.size / steps.length) * 100}%` }}
+                    ></div>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {completedSteps.size === steps.length ? 'Migration Complete!' : `${steps.length - completedSteps.size} steps remaining`}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
