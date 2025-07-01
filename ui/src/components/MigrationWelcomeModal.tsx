@@ -118,7 +118,7 @@ export const MigrationWelcomeModal: React.FC<MigrationWelcomeModalProps> = ({ is
               <div className="mb-6">
                 <p className="text-lg text-slate-800 font-medium flex items-center gap-2">
                   <span className="text-xl">👋</span>
-                  Welcome! This is an overview of our proven 7-step migration process. When you're ready, I'll guide you through each step interactively in the Migration Wizard.
+                  Welcome! This is an overview of our proven 7-step migration process. When you&apos;re ready, I&apos;ll guide you through each step interactively in the Migration Wizard.
                 </p>
               </div>
 

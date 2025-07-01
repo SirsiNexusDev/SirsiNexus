@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { AgentChat } from './AgentChat';
-import { WelcomeModal } from './WelcomeModal';
+import { MigrationWelcomeModal } from './MigrationWelcomeModal';
 import { AuthModal } from './AuthModal';
 
 interface RootLayoutProps {
@@ -37,7 +37,7 @@ export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         }}
       />
 
-      <WelcomeModal
+      <MigrationWelcomeModal
         isOpen={showWelcome}
         onClose={() => {
           setShowWelcome(false);

@@ -16,10 +16,11 @@ interface ResourceTypeCount {
 }
 
 interface PlanStepProps {
-  onComplete: () => void;
+  onComplete: (artifact?: {name: string; type: string; size: string; content?: string}) => void;
 }
 
 export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
+  console.log('PlanStep: Component rendered with onComplete:', onComplete);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [agentMessage, setAgentMessage] = useState('');
@@ -817,10 +818,12 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
         
         <Button
           onClick={() => {
+            alert('BUTTON CLICKED! Continue button is working!');
             console.log('PlanStep: Continue to Requirements clicked');
             console.log('PlanStep: resources count:', resources.length);
             console.log('PlanStep: isDiscovering:', isDiscovering);
             console.log('PlanStep: onComplete function exists:', typeof onComplete === 'function');
+            console.log('PlanStep: onComplete function:', onComplete);
             
             // Force completion if discovery is still running or no resources found
             if (isDiscovering || resources.length === 0) {
@@ -859,7 +862,13 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
             // Always call onComplete to proceed
             console.log('PlanStep: Calling onComplete...');
             try {
-              onComplete();
+              const artifact = {
+                name: 'Migration Assessment Report',
+                type: 'PDF',
+                size: '2.4 MB',
+                content: `Demo content for Migration Assessment Report.\nTotal Resources: ${resources.length || 2}`
+              };
+              onComplete(artifact);
               console.log('PlanStep: onComplete called successfully');
             } catch (error) {
               console.error('PlanStep: Error calling onComplete:', error);

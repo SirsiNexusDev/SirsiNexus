@@ -11,7 +11,7 @@ import type { Resource, RiskAssessment } from '@/types/migration';
 
 interface SpecifyStepProps {
   resources: Resource[];
-  onComplete: (requirements: MigrationRequirements) => void;
+  onComplete: (artifact?: {name: string; type: string; size: string; content?: string}) => void;
 }
 
 interface MigrationRequirements {
@@ -68,7 +68,13 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onComplete(requirements);
+    const artifact = {
+      name: 'Requirements Specification',
+      type: 'JSON',
+      size: '156 KB',
+      content: JSON.stringify(requirements, null, 2)
+    };
+    onComplete(artifact);
   };
 
   return (
