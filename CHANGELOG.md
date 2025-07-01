@@ -5,6 +5,70 @@ All notable changes to the Sirsi Nexus project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2025-01-07
+
+### Added
+
+#### 🚀 MILESTONE: Environment Setup & Semantic Routes
+- ✅ **Environment Setup Step Integration**
+  - Reusable EnvironmentSetupStep component for credential management across all wizards
+  - First step in Migration, Optimization, and Scaling wizards for proper credential configuration
+  - Wizard-specific configurations: Migration requires source + target credentials, others only source
+  - Smart validation with best practice warnings (different regions recommended, unique credentials)
+  - Security transparency with clear notices about credential handling and permissions
+  - Artifact generation with environment configuration details for subsequent steps
+  - Support for AWS, Azure, GCP, and vSphere credentials with provider-specific validation
+
+#### Enhanced Credential Management
+- ✅ **CredentialSelector Component**
+  - Reusable credential selection interface with cloud provider icons and details
+  - Real-time credential status display with last used timestamps and permission scopes
+  - Quick link to credentials management page for adding new credentials
+  - Responsive design working across desktop and mobile layouts
+  - Type-safe credential selection with proper TypeScript interfaces
+
+#### Route Restructuring for Semantic Clarity
+- ✅ **Migration Wizard Route Rename**
+  - Renamed /wizard to /migration for semantic clarity and proper function representation
+  - Updated all navigation links, sidebar references, and quick actions
+  - Migration Wizard now properly reflects its infrastructure migration purpose
+  - Homepage and demos page updated with correct routing
+
+#### Updated Wizard Flow Architecture
+- ✅ **Migration Wizard** (/migration)
+  - Environment Setup → Plan → Specify → Test → Build → Transfer → Validate → Optimize → Support
+  - Credential configuration as mandatory first step before resource discovery
+- ✅ **Optimization Wizard** (/optimization)
+  - Environment Setup → Analyze → Discover → Recommend → Configure → Validate → Optimize
+  - Single environment credential required for optimization analysis
+- ✅ **Auto-Scaling Wizard** (/scaling)
+  - Environment Setup → Monitor → Define → Configure → Test → Protect → Activate
+  - Single environment credential required for scaling configuration
+
+### Enhanced
+- 🔄 **Wizard Page Headers and Branding**
+  - Migration Wizard: "Seamlessly migrate your infrastructure to the cloud"
+  - Clear step descriptions and progress indicators
+  - Consistent branding across all wizard types
+- 🔄 **Navigation Components**
+  - Sidebar wizard section updated with /migration route
+  - Quick actions "Start New Migration" points to /migration
+  - Demo scenarios route to appropriate wizard based on selection
+
+### Fixed
+- ✅ **Route Consistency**
+  - All internal links and navigation updated to use /migration instead of /wizard
+  - Demo page routing now properly directs to /migration for migration scenarios
+  - Homepage "Start Migration" button navigates to correct route
+
+### Documentation
+- ✅ **Updated Project Documentation**
+  - README.md reflects new Environment Setup capabilities and route structure
+  - CHANGELOG.md updated with comprehensive change documentation
+  - Route structure clearly documented in README
+
+---
+
 ## [0.3.1] - 2025-01-07
 
 ### Added

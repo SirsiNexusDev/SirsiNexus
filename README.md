@@ -29,7 +29,7 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **UI**: Next.js + React frontend with Tailwind and shadcn/ui
 - **CLI**: Tauri + Rust-based command-line interface
 
-## 🎯 **Current Status: v0.3.1 - Enhanced Error Handling System**
+## 🎯 **Current Status: v0.3.2 - Environment Setup & Semantic Routes**
 
 ### ✅ **Agent Framework Foundation (100% Complete)**
 - **Core Engine**: Rust-based AI Hypervisor with gRPC services
@@ -50,7 +50,16 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **Visual Error Indicators**: Clear UI feedback with actionable guidance
 - **Production-Ready Patterns**: Enterprise-grade error handling implementations
 
-### ✅ **Enhanced Demo Capabilities (NEW)**
+### ✅ **Environment Setup & Credential Management (NEW)**
+- **Environment Setup Step**: First step in all wizards for credential configuration
+- **Credential Selector Component**: Reusable component for cloud credential selection
+- **Multi-Cloud Support**: AWS, Azure, GCP, vSphere credential management
+- **Wizard-Specific Configuration**: Migration (source + target), Optimization/Scaling (source only)
+- **Smart Validation**: Prevents common configuration errors with best practice warnings
+- **Security Transparency**: Clear security notices about credential handling and permissions
+- **Artifact Generation**: Environment configuration artifacts for subsequent steps
+
+### ✅ **Enhanced Demo Capabilities**
 - **Dynamic Resource Generation**: Business-specific infrastructure based on entity & journey
 - **Multi-Scenario Support**: TVfone (Media), Kulturio (Healthcare), UniEdu (Education)
 - **Journey-Specific Flows**: Migration, Optimization, Scale-Up demo scenarios
@@ -58,7 +67,16 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **Interactive Error Handling**: Live demonstration of error resolution workflows
 - **Real-World Simulation**: Authentic failure scenarios with guided recovery
 
-### ✅ **UI/UX Improvements (NEW)**
+### ✅ **Semantic Routes & Navigation (NEW)**
+- **Route Restructuring**: `/wizard` → `/migration` for semantic clarity
+- **Wizard-Specific URLs**: 
+  - `/migration` - Infrastructure migration to cloud
+  - `/optimization` - Cost & performance optimization  
+  - `/scaling` - Auto-scaling configuration
+- **Updated Navigation**: All sidebar links, quick actions, and demo flows updated
+- **Consistent Branding**: Each wizard properly reflects its specific function
+
+### ✅ **UI/UX Improvements**
 - **Accurate Modal Naming**: Components renamed to reflect actual function
   - `WelcomeModal` → `MigrationWelcomeModal` (migration journey introduction)
   - `JourneySelectionModal` → `PathSelectionModal` (user path selection)
@@ -178,7 +196,7 @@ cd connectors/aws && go run main.go --help
 # Planner
 cd planner && python planner.py --help
 
-# UI
+# UI (Migration Wizard now at /migration)
 cd ui && npm run dev
 
 # CLI
