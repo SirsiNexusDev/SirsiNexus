@@ -122,7 +122,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black bg-opacity-75 backdrop-blur-sm"
+            className="absolute inset-0 bg-white backdrop-blur-md"
             onClick={onClose}
           />
           

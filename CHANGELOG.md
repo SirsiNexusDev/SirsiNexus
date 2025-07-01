@@ -154,6 +154,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Test success verification across all cloud integrations
   - Preparation documentation for Phase 3: Advanced Features and MCP Integration
 
+### Improved
+
+#### Modal Component Naming
+- **Modal Component Naming**: Renamed modals to accurately reflect their function
+  - `WelcomeModal` → `MigrationWelcomeModal` (specifically for migration journey introduction)
+  - `JourneySelectionModal` → `PathSelectionModal` (for selecting user paths/journeys)
+  - Maintained `OptimizationWelcomeModal` and `ScalingWelcomeModal` for consistency
+- **Authentication UI**: Fixed background content visibility during login
+  - Login modal now properly hides dashboard content with solid white backdrop
+  - Prevents content bleed-through during authentication flow
+- **Journey Selection Logic**: Improved modal flow behavior
+  - Cloud migration modal only shows when migration path is explicitly selected
+  - Skipping journey selection no longer auto-selects migration
+  - Added `markAsNotFirstTime` action for proper state management
+
 ### Changed
 
 #### Version Advancement

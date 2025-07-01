@@ -58,6 +58,14 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **Interactive Error Handling**: Live demonstration of error resolution workflows
 - **Real-World Simulation**: Authentic failure scenarios with guided recovery
 
+### ✅ **UI/UX Improvements (NEW)**
+- **Accurate Modal Naming**: Components renamed to reflect actual function
+  - `WelcomeModal` → `MigrationWelcomeModal` (migration journey introduction)
+  - `JourneySelectionModal` → `PathSelectionModal` (user path selection)
+- **Fixed Authentication UI**: Proper background hiding during login with solid white backdrop
+- **Improved Journey Flow**: Cloud migration modal only shows when explicitly selected
+- **Enhanced Navigation**: No forced journey selection when users skip initial setup
+
 ### 🔧 **Next Phase: Real Cloud SDK Integration**
 - Replace Azure mock with real Azure SDK
 - Replace GCP mock with real Google Cloud SDK

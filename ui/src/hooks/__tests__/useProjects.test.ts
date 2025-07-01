@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useProjects } from '../useProjects';
@@ -67,8 +67,8 @@ describe('useProjects', () => {
       stats: {
         tasks: 0,
         completed: 0,
-        inProgress: 0,
-        blockers: 0,
+        pending: 0,
+        blocked: 0,
       },
     }];
 
@@ -110,8 +110,8 @@ describe('useProjects', () => {
       stats: {
         tasks: 0,
         completed: 0,
-        inProgress: 0,
-        blockers: 0,
+        pending: 0,
+        blocked: 0,
       },
     };
 
@@ -172,8 +172,8 @@ describe('useProjects', () => {
       stats: {
         tasks: 0,
         completed: 0,
-        inProgress: 0,
-        blockers: 0,
+        pending: 0,
+        blocked: 0,
       },
     };
 

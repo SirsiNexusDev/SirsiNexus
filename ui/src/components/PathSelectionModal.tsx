@@ -11,10 +11,10 @@ import {
   Sparkles
 } from 'lucide-react';
 
-interface JourneySelectionModalProps {
+interface PathSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectJourney: (journey: 'migration' | 'optimization' | 'scaling') => void;
+  onSelectPath: (path: 'migration' | 'optimization' | 'scaling') => void;
 }
 
 const journeyOptions = [
@@ -59,10 +59,10 @@ const journeyOptions = [
   }
 ];
 
-export const JourneySelectionModal: React.FC<JourneySelectionModalProps> = ({ 
+export const PathSelectionModal: React.FC<PathSelectionModalProps> = ({ 
   isOpen, 
   onClose, 
-  onSelectJourney 
+  onSelectPath 
 }) => {
   return (
     <AnimatePresence>
@@ -133,7 +133,7 @@ export const JourneySelectionModal: React.FC<JourneySelectionModalProps> = ({
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: journeyOptions.indexOf(journey) * 0.1 }}
-                      onClick={() => onSelectJourney(journey.id)}
+                      onClick={() => onSelectPath(journey.id)}
                       className={`
                         group relative p-6 rounded-xl border-2 transition-all duration-300
                         ${journey.bgColor} ${journey.borderColor}

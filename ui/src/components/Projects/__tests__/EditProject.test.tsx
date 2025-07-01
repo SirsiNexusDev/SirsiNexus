@@ -36,12 +36,12 @@ const mockProject: Project = {
     notifications: true,
   },
   tags: ['test', 'mock'],
-  stats: {
-    tasks: 0,
-    completed: 0,
-    inProgress: 0,
-    blockers: 0,
-  },
+    stats: {
+      tasks: 0,
+      completed: 0,
+      pending: 0,
+      blocked: 0,
+    },
 };
 
 describe('EditProject', () => {

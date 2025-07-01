@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SignInModal } from '@/components/SignInModal';
-import { WelcomeModal } from '@/components/WelcomeModal';
-import { JourneySelectionModal } from '@/components/JourneySelectionModal';
+import { MigrationWelcomeModal } from '@/components/MigrationWelcomeModal';
+import { PathSelectionModal } from '@/components/PathSelectionModal';
 import { OptimizationWelcomeModal } from '@/components/OptimizationWelcomeModal';
 import { ScalingWelcomeModal } from '@/components/ScalingWelcomeModal';
 import { CreateProjectModal } from '@/components/CreateProjectModal';
 import { useAppSelector, useAppDispatch } from '@/store';
-import { setModalState, selectJourney } from '@/store/slices/uiSlice';
+import { setModalState, selectJourney, markAsNotFirstTime } from '@/store/slices/uiSlice';
 import { login } from '@/store/slices/authSlice';
 import {
   BarChart,
@@ -197,9 +197,9 @@ export default function DashboardPage() {
     console.log('Starting scaling journey');
   };
 
-  // Only show dashboard content if user has completed onboarding or no modal is open
+  // Only show dashboard content if user is authenticated and has completed onboarding
   const showBackdrop = journeySelectionModalOpen || authModalOpen || welcomeModalOpen || optimizationWelcomeModalOpen || scalingWelcomeModalOpen;
-  const hideMainContent = journeySelectionModalOpen || (!isAuthenticated && authModalOpen);
+  const hideMainContent = !isAuthenticated || authModalOpen || journeySelectionModalOpen;
 
   return (
     <div>
@@ -307,12 +307,12 @@ export default function DashboardPage() {
                 {stat.value}
               </h3>
               
-cp className="text-sm font-medium text-slate-800"e
+              <p className="text-sm font-medium text-slate-800">
                 {stat.name}
-              c/pe
-              cp className="text-xs text-slate-700" font-medium mt-1"e
+              </p>
+              <p className="text-xs text-slate-700 font-medium mt-1">
                 {stat.description}
-              c/pe
+              </p>
             </div>
           );
         })}
@@ -341,9 +341,9 @@ export default function DashboardPage() {
                 <h4 className="font-semibold text-slate-800">
                   {activity.project}
                 </h4>
-              cp className="text-sm font-medium text-slate-800"e
+                <p className="text-sm font-medium text-slate-800">
                   {activity.timestamp}
-              c/pe
+                </p>
               </div>
               <span
                 className={`rounded-full px-3 py-1 text-sm font-semibold ${
@@ -364,17 +364,17 @@ export default function DashboardPage() {
       )}
       
       {/* Modals */}
-      <JourneySelectionModal
+      <PathSelectionModal
         isOpen={journeySelectionModalOpen}
         onClose={() => {
-          console.log('Closing journey selection modal');
+          console.log('Closing path selection modal - user skipped');
           dispatch(setModalState({ modal: 'journeySelection', visible: false }));
-          // Also mark as not first time to prevent reopening
+          // Mark as not first time but don't select any journey when skipping
           if (userJourney.isFirstTime) {
-            dispatch(selectJourney('migration')); // Default selection to close the modal
+            dispatch(markAsNotFirstTime());
           }
         }}
-        onSelectJourney={handleJourneySelection}
+        onSelectPath={handleJourneySelection}
       />
       
       <SignInModal
@@ -385,7 +385,7 @@ export default function DashboardPage() {
         onOAuthLogin={handleOAuthLogin}
       />
       
-      <WelcomeModal
+      <MigrationWelcomeModal
         isOpen={welcomeModalOpen}
         onClose={() => dispatch(setModalState({ modal: 'welcome', visible: false }))}
         onStartMigration={handleStartMigration}

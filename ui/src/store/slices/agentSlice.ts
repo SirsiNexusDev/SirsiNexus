@@ -28,6 +28,7 @@ interface AgentState {
   isTyping: boolean;
   currentContext: AgentContext | null;
   activeAgents: string[];
+  status: 'idle' | 'thinking' | 'responding' | 'error';
   error: string | null;
 }
 
@@ -37,6 +38,7 @@ const initialState: AgentState = {
   isTyping: false,
   currentContext: null,
   activeAgents: [],
+  status: 'idle',
   error: null,
 };
 
@@ -72,6 +74,9 @@ const agentSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    setAgentStatus: (state, action: PayloadAction<'idle' | 'thinking' | 'responding' | 'error'>) => {
+      state.status = action.payload;
+    },
   },
 });
 
@@ -84,6 +89,7 @@ export const {
   removeActiveAgent,
   clearMessages,
   setError,
+  setAgentStatus,
 } = agentSlice.actions;
 
 export default agentSlice.reducer;

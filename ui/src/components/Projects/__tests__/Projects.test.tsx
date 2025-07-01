@@ -39,8 +39,8 @@ const mockStore = configureStore({
           stats: {
             tasks: 5,
             completed: 2,
-            inProgress: 2,
-            blockers: 1,
+            pending: 2,
+            blocked: 1,
           },
         },
       ],

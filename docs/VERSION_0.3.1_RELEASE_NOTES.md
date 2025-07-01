@@ -35,6 +35,12 @@ Version 0.3.1 represents a significant enhancement to the existing Sirsi Nexus m
 - **Journey-specific flows: Migration, Optimization, Scale-Up**
 - **Interactive error handling demonstrations**
 
+### ✅ User Experience Improvements
+- **Accurate modal naming reflecting actual function**
+- **Fixed authentication UI with proper background hiding**
+- **Improved journey selection flow with no forced selections**
+- **Enhanced modal component architecture for clarity**
+
 ---
 
 ## 🛠️ Technical Enhancements

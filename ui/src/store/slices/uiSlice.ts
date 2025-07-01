@@ -97,7 +97,8 @@ const uiSlice = createSlice({
       state.userJourney.isFirstTime = false;
       state.modals.journeySelection = false;
       
-      // Open the appropriate welcome modal
+      // Only open the appropriate welcome modal if this is the first time selecting this journey
+      // and the user specifically selected migration
       if (action.payload === 'migration') {
         state.modals.welcome = true;
       } else if (action.payload === 'optimization') {
@@ -120,6 +121,9 @@ const uiSlice = createSlice({
       state.userJourney.completedTutorials = [];
       state.modals.journeySelection = true;
     },
+    markAsNotFirstTime: (state) => {
+      state.userJourney.isFirstTime = false;
+    },
   },
 });
 
@@ -135,6 +139,7 @@ export const {
   selectJourney,
   markTutorialComplete,
   resetFirstTimeExperience,
+  markAsNotFirstTime,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

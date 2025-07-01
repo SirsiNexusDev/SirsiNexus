@@ -15,7 +15,7 @@ import {
   Rocket
 } from 'lucide-react';
 
-interface WelcomeModalProps {
+interface MigrationWelcomeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onStartMigration?: () => void;
@@ -73,7 +73,7 @@ const migrationSteps = [
   }
 ];
 
-export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose, onStartMigration }) => {
+export const MigrationWelcomeModal: React.FC<MigrationWelcomeModalProps> = ({ isOpen, onClose, onStartMigration }) => {
   return (
     <AnimatePresence>
       {isOpen && (
