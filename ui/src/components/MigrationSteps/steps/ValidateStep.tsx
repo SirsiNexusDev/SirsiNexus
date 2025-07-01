@@ -11,7 +11,10 @@ import {
   Shield,
   Database,
   Network,
+  RefreshCw,
+  Info,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ValidationCheck {
   id: string;
@@ -34,6 +37,8 @@ interface ValidateStepProps {
 
 export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
   const [isValidating, setIsValidating] = useState(false);
+  const [validationError, setValidationError] = useState<{ checkId: string; message: string } | null>(null);
+  const [showErrorResolution, setShowErrorResolution] = useState(false);
   const [validationChecks, setValidationChecks] = useState<ValidationCheck[]>([
     {
       id: 'perf-1',
@@ -138,34 +143,102 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
     pending: 'text-gray-400',
   };
 
-  const startValidation = async () => {
-    setIsValidating(true);
-
-    for (const check of validationChecks) {
-      // Update check status to running
-      setValidationChecks((prev) =>
-        prev.map((c) =>
-          c.id === check.id ? { ...c, status: 'running' } : c
-        )
-      );
-
-      // Simulate validation check
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Update check status to final state
-      setValidationChecks((prev) =>
-        prev.map((c) =>
-          c.id === check.id
-            ? {
-                ...c,
-                status: Math.random() > 0.2 ? 'passed' : Math.random() > 0.5 ? 'warning' : 'failed',
-              }
-            : c
-        )
-      );
-    }
-
+  const handleValidationError = (checkId: string, error: string) => {
+    setValidationError({ checkId, message: error });
+    setShowErrorResolution(true);
     setIsValidating(false);
+    
+    // Mark the failed check
+    setValidationChecks((prev) =>
+      prev.map((c) =>
+        c.id === checkId ? { ...c, status: 'failed' } : c
+      )
+    );
+  };
+
+  const retryCheck = (checkId: string) => {
+    setValidationError(null);
+    setShowErrorResolution(false);
+    
+    // Reset check status and retry
+    setValidationChecks((prev) =>
+      prev.map((c) =>
+        c.id === checkId ? { ...c, status: 'pending' } : c
+      )
+    );
+    
+    // Restart validation from this check
+    startValidationFromCheck(checkId);
+  };
+
+  const bypassCheck = (checkId: string) => {
+    setValidationError(null);
+    setShowErrorResolution(false);
+    
+    // Mark check as warning (bypassed)
+    setValidationChecks((prev) =>
+      prev.map((c) =>
+        c.id === checkId ? { ...c, status: 'warning' } : c
+      )
+    );
+  };
+
+  const startValidationFromCheck = async (startCheckId: string) => {
+    setIsValidating(true);
+    const startIndex = validationChecks.findIndex(c => c.id === startCheckId);
+    const checksToRun = validationChecks.slice(startIndex);
+    await continueWithChecks(checksToRun);
+  };
+
+  const continueWithChecks = async (checksToRun: ValidationCheck[]) => {
+    for (const check of checksToRun) {
+      try {
+        // Update check status to running
+        setValidationChecks((prev) =>
+          prev.map((c) =>
+            c.id === check.id ? { ...c, status: 'running' } : c
+          )
+        );
+
+        // Simulate validation check with potential failure
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        
+        // Simulate potential validation failures
+        if (Math.random() < 0.3) { // 30% chance of failure
+          const errorMessages = {
+            'perf-1': 'Performance validation failed. Response times exceed acceptable thresholds.',
+            'sec-1': 'Security validation failed. SSL/TLS configuration or access control issues detected.',
+            'data-1': 'Data integrity validation failed. Checksum mismatch or missing records found.',
+            'net-1': 'Network validation failed. DNS resolution or firewall configuration issues.',
+          };
+          throw new Error(errorMessages[check.id as keyof typeof errorMessages] || 'Unknown validation error occurred.');
+        }
+
+        // Update check status to final state
+        setValidationChecks((prev) =>
+          prev.map((c) =>
+            c.id === check.id
+              ? {
+                  ...c,
+                  status: Math.random() > 0.2 ? 'passed' : 'warning',
+                }
+              : c
+          )
+        );
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown validation error occurred.';
+        handleValidationError(check.id, errorMessage);
+        return; // Stop validation on error
+      }
+    }
+    
+    setIsValidating(false);
+  };
+
+  const startValidation = async () => {
+    setValidationError(null);
+    setShowErrorResolution(false);
+    await continueWithChecks(validationChecks);
   };
 
   const getStatusBadge = (status: ValidationCheck['status']) => {
@@ -218,16 +291,44 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                 transition={{ delay: index * 0.1 }}
                 className="rounded-lg border border-gray-100 bg-gray-50 p-4"
               >
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <CategoryIcon className="mr-3 h-5 w-5 text-sirsi-500" />
-                    <div>
-                      <h4 className="font-medium">{check.name}</h4>
-                      <p className="text-sm text-gray-600">{check.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <CategoryIcon className="mr-3 h-5 w-5 text-sirsi-500" />
+                      <div>
+                        <h4 className="font-medium">{check.name}</h4>
+                        <p className="text-sm text-gray-600">{check.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {getStatusBadge(check.status)}
+                      {check.status === 'failed' && validationError?.checkId === check.id && (
+                        <div className="flex space-x-2">
+                          <Button onClick={() => retryCheck(check.id)} size="sm" variant="outline">
+                            <RefreshCw className="h-4 w-4 mr-1" />
+                            Retry
+                          </Button>
+                          <Button onClick={() => bypassCheck(check.id)} size="sm" variant="outline" className="text-orange-600">
+                            <Info className="h-4 w-4 mr-1" />
+                            Bypass
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {getStatusBadge(check.status)}
-                </div>
+
+                  {check.status === 'failed' && validationError?.checkId === check.id && (
+                    <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <AlertTriangle className="h-5 w-5 text-red-500" />
+                        <span className="text-sm font-medium text-red-900">Validation Error</span>
+                      </div>
+                      <p className="text-sm text-red-800">{validationError.message}</p>
+                      <div className="mt-3 text-xs text-red-600">
+                        <p>• Retry: Attempts the failed validation again</p>
+                        <p>• Bypass: Skips this validation with a warning (may indicate issues)</p>
+                      </div>
+                    </div>
+                  )}
 
                 {check.metrics && (
                   <div className="mt-4 grid grid-cols-2 gap-4">
@@ -286,6 +387,37 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Error Summary */}
+      {showErrorResolution && validationError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+          <div className="flex items-center space-x-2 mb-4">
+            <AlertTriangle className="h-6 w-6 text-red-500" />
+            <h3 className="text-lg font-medium text-red-900">Validation Failed</h3>
+          </div>
+          <p className="text-red-800 mb-4">
+            A validation check failed during the migration verification process.
+            You can retry the failed check or bypass it to continue.
+          </p>
+          <div className="flex space-x-3">
+            <Button
+              onClick={() => retryCheck(validationError.checkId)}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry Failed Check
+            </Button>
+            <Button
+              onClick={() => bypassCheck(validationError.checkId)}
+              variant="outline"
+              className="border-orange-300 text-orange-700 hover:bg-orange-50"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              Bypass and Continue
+            </Button>
           </div>
         </div>
       )}

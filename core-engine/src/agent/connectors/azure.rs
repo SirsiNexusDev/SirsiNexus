@@ -36,6 +36,7 @@ pub struct AzureDiscoveryResult {
 pub struct AzureAgent {
     config: AzureConfig,
     http_client: Option<HttpClient>,
+    azure_authenticated: bool,
 }
 
 impl AzureAgent {
@@ -43,15 +44,28 @@ impl AzureAgent {
         Self {
             config,
             http_client: None,
+            azure_authenticated: false,
         }
     }
 
     pub async fn initialize(&mut self) -> AppResult<()> {
-        // Initialize HTTP client for Azure APIs
+        // Initialize HTTP client
         self.http_client = Some(HttpClient::new());
         
-        // TODO: Implement proper Azure authentication
-        // For now, this is a placeholder that assumes credentials are handled externally
+        // Check if we have authentication credentials for real Azure API calls
+        if let (Some(_tenant_id), Some(_client_id), Some(_client_secret)) = (
+            &self.config.tenant_id,
+            &self.config.client_id,
+            &self.config.client_secret,
+        ) {
+            // TODO: Implement real Azure SDK authentication in future iteration
+            // For now, mark as authenticated for testing purposes
+            self.azure_authenticated = true;
+            println!("Azure credentials provided - real SDK integration will be implemented in Phase 2.2");
+        } else {
+            // No credentials provided - using mock mode
+            println!("Azure credentials not provided - using mock mode for resource discovery");
+        }
         
         Ok(())
     }
@@ -289,13 +303,19 @@ impl AzureAgent {
     }
 
     pub async fn health_check(&self) -> AppResult<()> {
-        // TODO: Implement real Azure health check
-        // For now, just check if we have an HTTP client
-        if self.http_client.is_none() {
-            return Err(AppError::Configuration("Azure client not initialized".into()));
+        // Check if we have HTTP client initialized
+        if self.http_client.is_some() {
+            if self.azure_authenticated {
+                // TODO: Perform actual Azure API health check (e.g., list subscriptions)
+                println!("Azure health check: Ready for real SDK integration");
+            } else {
+                // In mock mode (no credentials), we still consider it healthy
+                println!("Azure health check: Running in mock mode");
+            }
+            Ok(())
+        } else {
+            Err(AppError::Configuration("Azure client not initialized".into()))
         }
-        
-        Ok(())
     }
 }
 

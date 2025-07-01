@@ -2,6 +2,10 @@ use std::collections::HashMap;
 use aws_config::{BehaviorVersion, Region};
 use aws_sdk_ec2::{Client as Ec2Client, types::Instance};
 use aws_sdk_s3::{Client as S3Client, types::Bucket};
+use aws_sdk_rds::{Client as RdsClient, types::DbInstance};
+use aws_sdk_lambda::{Client as LambdaClient, types::FunctionConfiguration};
+use aws_sdk_ecs::{Client as EcsClient};
+use aws_sdk_pricing::{Client as PricingClient};
 use serde::{Deserialize, Serialize};
 
 use crate::error::{AppError, AppResult};
@@ -39,6 +43,10 @@ pub struct AwsAgent {
     config: AwsConfig,
     ec2_client: Option<Ec2Client>,
     s3_client: Option<S3Client>,
+    rds_client: Option<RdsClient>,
+    lambda_client: Option<LambdaClient>,
+    ecs_client: Option<EcsClient>,
+    pricing_client: Option<PricingClient>,
 }
 
 impl AwsAgent {
@@ -47,6 +55,10 @@ impl AwsAgent {
             config,
             ec2_client: None,
             s3_client: None,
+            rds_client: None,
+            lambda_client: None,
+            ecs_client: None,
+            pricing_client: None,
         }
     }
 
@@ -75,6 +87,18 @@ impl AwsAgent {
         // Initialize service clients
         self.ec2_client = Some(Ec2Client::new(&aws_config));
         self.s3_client = Some(S3Client::new(&aws_config));
+        self.rds_client = Some(RdsClient::new(&aws_config));
+        self.lambda_client = Some(LambdaClient::new(&aws_config));
+        self.ecs_client = Some(EcsClient::new(&aws_config));
+        
+        // Initialize pricing client (needs to be in us-east-1 for pricing API)
+        let pricing_config = aws_config::defaults(BehaviorVersion::latest())
+            .region(Region::new("us-east-1"))
+            .load()
+            .await;
+        self.pricing_client = Some(PricingClient::new(&pricing_config));
+        
+        println!("AWS enhanced integration initialized with EC2, S3, RDS, Lambda, ECS, and Pricing support");
 
         Ok(())
     }
@@ -96,6 +120,24 @@ impl AwsAgent {
                     match self.discover_s3_buckets().await {
                         Ok(mut s3_resources) => resources.append(&mut s3_resources),
                         Err(e) => errors.push(format!("S3 discovery failed: {}", e)),
+                    }
+                }
+                "rds" => {
+                    match self.discover_rds_instances().await {
+                        Ok(mut rds_resources) => resources.append(&mut rds_resources),
+                        Err(e) => errors.push(format!("RDS discovery failed: {}", e)),
+                    }
+                }
+                "lambda" => {
+                    match self.discover_lambda_functions().await {
+                        Ok(mut lambda_resources) => resources.append(&mut lambda_resources),
+                        Err(e) => errors.push(format!("Lambda discovery failed: {}", e)),
+                    }
+                }
+                "ecs" => {
+                    match self.discover_ecs_services().await {
+                        Ok(mut ecs_resources) => resources.append(&mut ecs_resources),
+                        Err(e) => errors.push(format!("ECS discovery failed: {}", e)),
                     }
                 }
                 _ => {
@@ -151,6 +193,76 @@ impl AwsAgent {
         for bucket in resp.buckets() {
             let resource = self.bucket_to_resource(bucket).await;
             resources.push(resource);
+        }
+
+        Ok(resources)
+    }
+
+    async fn discover_rds_instances(&self) -> AppResult<Vec<AwsResource>> {
+        let rds_client = self.rds_client.as_ref()
+            .ok_or_else(|| AppError::Configuration("RDS client not initialized".into()))?;
+
+        let resp = rds_client
+            .describe_db_instances()
+            .send()
+            .await
+            .map_err(|e| AppError::ExternalService(format!("RDS API error: {}", e)))?;
+
+        let mut resources = Vec::new();
+
+        for db_instance in resp.db_instances() {
+            let resource = self.rds_instance_to_resource(db_instance);
+            resources.push(resource);
+        }
+
+        Ok(resources)
+    }
+
+    async fn discover_lambda_functions(&self) -> AppResult<Vec<AwsResource>> {
+        let lambda_client = self.lambda_client.as_ref()
+            .ok_or_else(|| AppError::Configuration("Lambda client not initialized".into()))?;
+
+        let resp = lambda_client
+            .list_functions()
+            .send()
+            .await
+            .map_err(|e| AppError::ExternalService(format!("Lambda API error: {}", e)))?;
+
+        let mut resources = Vec::new();
+
+        for function in resp.functions() {
+            let resource = self.lambda_function_to_resource(function);
+            resources.push(resource);
+        }
+
+        Ok(resources)
+    }
+
+    async fn discover_ecs_services(&self) -> AppResult<Vec<AwsResource>> {
+        let ecs_client = self.ecs_client.as_ref()
+            .ok_or_else(|| AppError::Configuration("ECS client not initialized".into()))?;
+
+        // First, list clusters
+        let clusters_resp = ecs_client
+            .list_clusters()
+            .send()
+            .await
+            .map_err(|e| AppError::ExternalService(format!("ECS API error: {}", e)))?;
+
+        let mut resources = Vec::new();
+
+        for cluster_arn in clusters_resp.cluster_arns() {
+            // List services in each cluster
+            if let Ok(services_resp) = ecs_client
+                .list_services()
+                .cluster(cluster_arn)
+                .send()
+                .await {
+                for service_arn in services_resp.service_arns() {
+                    let resource = self.ecs_service_to_resource(service_arn, cluster_arn);
+                    resources.push(resource);
+                }
+            }
         }
 
         Ok(resources)
@@ -250,6 +362,96 @@ impl AwsAgent {
         }
     }
 
+    fn rds_instance_to_resource(&self, db_instance: &DbInstance) -> AwsResource {
+        let tags = HashMap::new();
+        let mut metadata = HashMap::new();
+
+        // Extract metadata
+        metadata.insert("db_instance_class".to_string(),
+            db_instance.db_instance_class().unwrap_or_default().to_string());
+        metadata.insert("engine".to_string(),
+            db_instance.engine().unwrap_or_default().to_string());
+        metadata.insert("engine_version".to_string(),
+            db_instance.engine_version().unwrap_or_default().to_string());
+        metadata.insert("db_instance_status".to_string(),
+            db_instance.db_instance_status().unwrap_or_default().to_string());
+        metadata.insert("availability_zone".to_string(),
+            db_instance.availability_zone().unwrap_or_default().to_string());
+        if let Some(allocated_storage) = db_instance.allocated_storage() {
+            metadata.insert("allocated_storage".to_string(), allocated_storage.to_string());
+        }
+
+        let db_instance_identifier = db_instance.db_instance_identifier().unwrap_or_default();
+
+        AwsResource {
+            resource_type: "rds:db-instance".to_string(),
+            resource_id: db_instance_identifier.to_string(),
+            name: Some(db_instance_identifier.to_string()),
+            arn: db_instance.db_instance_arn().map(|s| s.to_string()),
+            region: self.config.region.clone(),
+            tags,
+            metadata,
+            cost_estimate: None,
+        }
+    }
+
+    fn lambda_function_to_resource(&self, function: &FunctionConfiguration) -> AwsResource {
+        let mut tags = HashMap::new();
+        let mut metadata = HashMap::new();
+
+        // Extract metadata
+        metadata.insert("runtime".to_string(),
+            function.runtime().map(|r| r.as_str().to_string()).unwrap_or_default());
+        metadata.insert("handler".to_string(),
+            function.handler().unwrap_or_default().to_string());
+        if let Some(memory_size) = function.memory_size() {
+            metadata.insert("memory_size".to_string(), memory_size.to_string());
+        }
+        if let Some(timeout) = function.timeout() {
+            metadata.insert("timeout".to_string(), timeout.to_string());
+        }
+        metadata.insert("state".to_string(),
+            function.state().map(|s| s.as_str().to_string()).unwrap_or_default());
+        metadata.insert("code_size".to_string(), function.code_size().to_string());
+
+        let function_name = function.function_name().unwrap_or_default();
+
+        AwsResource {
+            resource_type: "lambda:function".to_string(),
+            resource_id: function_name.to_string(),
+            name: Some(function_name.to_string()),
+            arn: function.function_arn().map(|s| s.to_string()),
+            region: self.config.region.clone(),
+            tags,
+            metadata,
+            cost_estimate: None,
+        }
+    }
+
+    fn ecs_service_to_resource(&self, service_arn: &str, cluster_arn: &str) -> AwsResource {
+        let tags = HashMap::new();
+        let mut metadata = HashMap::new();
+
+        // Extract service name from ARN
+        let service_name = service_arn.split('/').last().unwrap_or("unknown-service");
+        let cluster_name = cluster_arn.split('/').last().unwrap_or("unknown-cluster");
+
+        metadata.insert("cluster_arn".to_string(), cluster_arn.to_string());
+        metadata.insert("cluster_name".to_string(), cluster_name.to_string());
+        metadata.insert("service_type".to_string(), "ECS_SERVICE".to_string());
+
+        AwsResource {
+            resource_type: "ecs:service".to_string(),
+            resource_id: service_name.to_string(),
+            name: Some(service_name.to_string()),
+            arn: Some(service_arn.to_string()),
+            region: self.config.region.clone(),
+            tags,
+            metadata,
+            cost_estimate: None,
+        }
+    }
+
     pub async fn estimate_migration_cost(&self, resources: &[AwsResource]) -> AppResult<HashMap<String, f64>> {
         // TODO: Implement actual cost estimation using AWS Pricing API
         let mut cost_estimates = HashMap::new();
@@ -263,12 +465,42 @@ impl AwsAgent {
                         Some(instance_type) if instance_type.contains("t3.small") => 17.52,
                         Some(instance_type) if instance_type.contains("m5.large") => 70.08,
                         Some(instance_type) if instance_type.contains("m5.xlarge") => 140.16,
+                        Some(instance_type) if instance_type.contains("c5.large") => 62.56,
+                        Some(instance_type) if instance_type.contains("r5.large") => 86.40,
                         _ => 50.0, // Default estimation
                     }
                 }
                 "s3:bucket" => {
                     // Simple estimation for S3 storage
                     25.0 // ~$25/month for average bucket
+                }
+                "rds:db-instance" => {
+                    // Simple estimation based on RDS instance class
+                    match resource.metadata.get("db_instance_class") {
+                        Some(class) if class.contains("db.t3.micro") => 15.84, // ~$15.84/month
+                        Some(class) if class.contains("db.t3.small") => 31.68,
+                        Some(class) if class.contains("db.m5.large") => 139.32,
+                        Some(class) if class.contains("db.m5.xlarge") => 278.64,
+                        Some(class) if class.contains("db.r5.large") => 172.80,
+                        _ => 100.0, // Default estimation
+                    }
+                }
+                "lambda:function" => {
+                    // Simple estimation based on memory and execution time
+                    let memory_mb: f64 = resource.metadata.get("memory_size")
+                        .and_then(|s| s.parse().ok())
+                        .unwrap_or(128.0);
+                    
+                    // Estimated monthly cost for moderate usage (1M requests, 1s avg duration)
+                    let gb_seconds = (memory_mb / 1024.0) * 1_000_000.0; // 1M invocations * 1s each
+                    let compute_cost = gb_seconds * 0.0000166667; // $0.0000166667 per GB-second
+                    let request_cost = 1_000_000.0 * 0.0000002; // $0.0000002 per request
+                    compute_cost + request_cost
+                }
+                "ecs:service" => {
+                    // Simple estimation for ECS service (assuming 1 task running 24/7)
+                    // Based on EC2 pricing for underlying compute
+                    50.0 // ~$50/month for basic ECS service
                 }
                 _ => 0.0,
             };

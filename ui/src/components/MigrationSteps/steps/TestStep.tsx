@@ -122,6 +122,12 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
       message: 'Backup configuration incomplete',
       details: 'Missing backup retention policy',
     },
+    {
+      name: 'Error Resolution',
+      status: 'failure',
+      message: 'Resolution required for configuration error',
+      details: 'Click retry or bypass to proceed',
+    },
   ];
 
   const statusIcons = {
@@ -151,6 +157,21 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
     }
 
     setIsRunning(false);
+  };
+
+  const handleResolution = (testName: string, action: 'retry' | 'bypass') => {
+    if(action === 'retry') {
+      // simulate retry logic
+      setResults(prev => prev.map(test => {
+        if(test.name === testName) {
+          return { ...test, status: 'success', message: 'Issue resolved via retry' };
+        }
+        return test;
+      }));
+    } else if(action === 'bypass') {
+      // simulate bypass logic
+      setResults(prev => prev.filter(test => test.name !== testName));
+    }
   };
 
   const getStatusBadge = (status: TestResult['status']) => {
@@ -255,6 +276,12 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
                     )}
                   </div>
                   {getStatusBadge(result.status)}
+                  {result.status === 'failure' && (
+                    <div className="flex space-x-2 mt-2">
+                      <Button onClick={() => handleResolution(result.name, 'retry')} variant="outline">Retry</Button>
+                      <Button onClick={() => handleResolution(result.name, 'bypass')} variant="outline" className="text-orange-500">Bypass</Button>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}

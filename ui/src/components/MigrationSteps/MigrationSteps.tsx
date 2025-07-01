@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlanStep } from './steps/PlanStep';
@@ -78,11 +80,11 @@ const statusIcons: Record<MigrationStatus, React.ElementType> = {
 };
 
 const statusColors: Record<MigrationStatus, string> = {
-  not_started: 'text-gray-400',
-  in_progress: 'text-blue-500',
-  completed: 'text-green-500',
-  failed: 'text-red-500',
-  warning: 'text-yellow-500',
+  not_started: 'text-slate-600',
+  in_progress: 'text-blue-600',
+  completed: 'text-green-600',
+  failed: 'text-red-600',
+  warning: 'text-yellow-600',
 };
 
 interface MigrationStepsProps {
@@ -91,11 +93,35 @@ interface MigrationStepsProps {
   onStepClick: (step: MigrationStep) => void;
 }
 
-export const MigrationSteps: React.FC<MigrationStepsProps> = ({
+interface ExtendedMigrationStepsProps extends MigrationStepsProps {
+  onStepComplete?: (step: MigrationStep) => void;
+}
+
+export const MigrationSteps: React.FC<ExtendedMigrationStepsProps> = ({
   currentStep,
   stepStatuses,
   onStepClick,
+  onStepComplete,
 }) => {
+  
+  const handleStepComplete = (step: MigrationStep) => {
+    console.log('MigrationSteps: Step completed:', step);
+    
+    // First call the external completion handler if provided
+    if (onStepComplete) {
+      console.log('MigrationSteps: Calling external onStepComplete');
+      onStepComplete(step);
+    } else {
+      // Fallback auto-advance if no external handler
+      console.log('MigrationSteps: No external handler, auto-advancing');
+      const steps = Object.keys(STEPS) as MigrationStep[];
+      const currentIndex = steps.indexOf(step);
+      if (currentIndex < steps.length - 1) {
+        const nextStep = steps[currentIndex + 1];
+        onStepClick(nextStep);
+      }
+    }
+  };
   const steps = Object.keys(STEPS) as MigrationStep[];
 
   return (
@@ -123,8 +149,8 @@ export const MigrationSteps: React.FC<MigrationStepsProps> = ({
                 <div className="flex items-center space-x-4">
                   <StatusIcon className={`h-6 w-6 ${colorClass}`} />
                   <div>
-                    <h3 className="font-medium text-gray-900">{config.title}</h3>
-                    <p className="text-sm text-gray-500">{config.description}</p>
+                    <h3 className="text-xl font-bold text-slate-900">{config.title}</h3>
+                    <p className="text-lg text-slate-800 font-medium">{config.description}</p>
                   </div>
                 </div>
                 <ChevronRight
@@ -145,7 +171,10 @@ export const MigrationSteps: React.FC<MigrationStepsProps> = ({
                     {step === 'plan' && (
                       <PlanStep
                         key="plan"
-                        onComplete={() => onStepClick('specify')}
+                        onComplete={() => {
+                          console.log('Plan step completed');
+                          handleStepComplete('plan');
+                        }}
                       />
                     )}
                     {step === 'specify' && (
@@ -166,44 +195,47 @@ export const MigrationSteps: React.FC<MigrationStepsProps> = ({
                         ]}
                         onComplete={(requirements) => {
                           console.log('Requirements:', requirements);
-                          onStepClick('test');
+                          handleStepComplete('specify');
                         }}
                       />
                     )}
                     {step === 'test' && (
                       <TestStep
                         key="test"
-                        onComplete={() => onStepClick('build')}
+                        onComplete={() => handleStepComplete('test')}
                       />
                     )}
                     {step === 'build' && (
                       <BuildStep
                         key="build"
-                        onComplete={() => onStepClick('transfer')}
+                        onComplete={() => handleStepComplete('build')}
                       />
                     )}
                     {step === 'transfer' && (
                       <TransferStep
                         key="transfer"
-                        onComplete={() => onStepClick('validate')}
+                        onComplete={() => handleStepComplete('transfer')}
                       />
                     )}
                     {step === 'validate' && (
                       <ValidateStep
                         key="validate"
-                        onComplete={() => onStepClick('optimize')}
+                        onComplete={() => handleStepComplete('validate')}
                       />
                     )}
                     {step === 'optimize' && (
                       <OptimizeStep
                         key="optimize"
-                        onComplete={() => onStepClick('support')}
+                        onComplete={() => handleStepComplete('optimize')}
                       />
                     )}
                     {step === 'support' && (
                       <SupportStep
                         key="support"
-                        onComplete={() => console.log('Migration completed!')}
+                        onComplete={() => {
+                          handleStepComplete('support');
+                          console.log('Migration completed!');
+                        }}
                       />
                     )}
                   </AnimatePresence>

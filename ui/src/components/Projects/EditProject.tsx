@@ -61,7 +61,7 @@ export const EditProject: React.FC<EditProjectProps> = ({
       name: project.name,
       description: project.description,
       status: project.status,
-      visibility: project.settings.visibility,
+      visibility: project.settings?.visibility || 'private',
       tags: project.tags.join(', '),
     },
   });
@@ -72,7 +72,7 @@ export const EditProject: React.FC<EditProjectProps> = ({
         name: project.name,
         description: project.description,
         status: project.status,
-        visibility: project.settings.visibility,
+        visibility: project.settings?.visibility || 'private',
         tags: project.tags.join(', '),
       });
     }
@@ -84,6 +84,8 @@ export const EditProject: React.FC<EditProjectProps> = ({
       description: data.description,
       status: data.status,
       settings: {
+        allowComments: true,
+        notifications: true,
         ...project.settings,
         visibility: data.visibility,
       },

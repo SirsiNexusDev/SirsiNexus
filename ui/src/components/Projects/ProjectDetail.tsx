@@ -124,11 +124,11 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Active Tasks</span>
-                <span>{project.stats.inProgress}</span>
+                <span>{project.stats.pending}</span>
               </div>
               <div className="flex justify-between">
                 <span>Blockers</span>
-                <span>{project.stats.blockers}</span>
+                <span>{project.stats.blocked}</span>
               </div>
             </div>
           </CardContent>
@@ -140,17 +140,19 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
           </CardHeader>
           <CardContent>
             <div className="flex -space-x-2">
-              {project.team.slice(0, 5).map(member => (
+              {project.team?.slice(0, 5).map(member => (
                 <Avatar key={member.id}>
                   <AvatarImage src="" />
                   <AvatarFallback>
                     {member.name?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-              ))}
-              {project.team.length > 5 && (
+              )) || (
+                <p className="text-sm text-gray-500">No team members yet</p>
+              )}
+              {(project.team?.length || 0) > 5 && (
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm">
-                  +{project.team.length - 5}
+                  +{(project.team?.length || 0) - 5}
                 </div>
               )}
             </div>

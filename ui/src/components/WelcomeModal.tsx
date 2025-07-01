@@ -1,175 +1,185 @@
+'use client';
+
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Button } from './ui/button';
-import { ChevronRight, Sparkles, Shield, Zap, Clock, CheckCircle } from 'lucide-react';
-
-interface Step {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  features?: string[];
-  cta?: string;
-}
-
-const welcomeSteps: Step[] = [
-  {
-    title: 'Welcome to Sirsi Nexus',
-    description: 'Your AI-powered migration and infrastructure management platform that transforms complex cloud operations into simple, guided experiences.',
-    icon: <Sparkles className="h-12 w-12 text-sirsi-500" />, 
-    features: ['AI-Powered Automation', 'Enterprise Security', 'Multi-Cloud Support'],
-    cta: 'Get Started',
-  },
-  {
-    title: 'Meet Your AI Agent Team',
-    description: 'Specialized AI agents work together to discover, assess, plan, and execute your migrations with precision and intelligence.',
-    icon: <div className="relative">
-      <Zap className="h-12 w-12 text-blue-500" />
-    </div>,
-    features: ['Discovery Agent', 'Assessment Agent', 'Planning Agent', 'Execution Agent'],
-    cta: 'Meet the Team',
-  },
-  {
-    title: 'Enterprise-Grade Security',
-    description: 'Built with zero-trust architecture, end-to-end encryption, and comprehensive audit trails for enterprise compliance.',
-    icon: <Shield className="h-12 w-12 text-green-600" />, 
-    features: ['Zero-Trust Architecture', 'End-to-End Encryption', 'Compliance Ready'],
-    cta: 'Learn Security',
-  },
-  {
-    title: 'Start Your Migration Journey',
-    description: 'Begin with automated discovery or jump into planning. Our AI agents will guide you through every step of the process.',
-    icon: <Clock className="h-12 w-12 text-purple-500" />, 
-    features: ['Automated Discovery', 'Risk Assessment', 'Cost Estimation', 'Migration Planning'],
-    cta: 'Start Migration',
-  },
-];
+import { 
+  X, 
+  Clipboard,
+  Settings,
+  TestTube,
+  Wrench,
+  Cloud,
+  ArrowLeftRight,
+  CheckCircle,
+  Sparkles,
+  Rocket
+} from 'lucide-react';
 
 interface WelcomeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartMigration?: () => void;
 }
 
-export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) => {
-  const [currentStep, setCurrentStep] = React.useState(0);
+const migrationSteps = [
+  {
+    number: 1,
+    title: 'Plan',
+    description: "We'll help you understand what you have and create a migration plan.",
+    icon: Clipboard,
+    color: 'text-blue-600 bg-blue-100'
+  },
+  {
+    number: 2,
+    title: 'Specify',
+    description: 'Design your new cloud setup based on your current systems.',
+    icon: Settings,
+    color: 'text-purple-600 bg-purple-100'
+  },
+  {
+    number: 3,
+    title: 'Test',
+    description: 'Test everything works before we move your real data.',
+    icon: TestTube,
+    color: 'text-green-600 bg-green-100'
+  },
+  {
+    number: 4,
+    title: 'Build',
+    description: 'Build your new cloud environment ready for migration.',
+    icon: Wrench,
+    color: 'text-orange-600 bg-orange-100'
+  },
+  {
+    number: 5,
+    title: 'Sample Test',
+    description: 'Simulate a real data migration to catch any hidden issues.',
+    icon: Cloud,
+    color: 'text-cyan-600 bg-cyan-100'
+  },
+  {
+    number: 6,
+    title: 'Transfer',
+    description: 'Move your real data to the cloud safely.',
+    icon: ArrowLeftRight,
+    color: 'text-indigo-600 bg-indigo-100'
+  },
+  {
+    number: 7,
+    title: 'Validate',
+    description: 'Make sure everything works perfectly in the cloud.',
+    icon: CheckCircle,
+    color: 'text-emerald-600 bg-emerald-100'
+  }
+];
 
-  const nextStep = () => {
-    if (currentStep < welcomeSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      onClose();
-    }
-  };
-
+export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose, onStartMigration }) => {
   return (
-    <Dialog.Root open={isOpen}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content
-          className="fixed left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-xl"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="text-center"
-            >
-              <motion.div 
-                className="mb-6 flex justify-center"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-              >
-                {welcomeSteps[currentStep].icon}
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Dialog.Title className="mb-3 text-2xl font-bold text-gray-900">
-                  {welcomeSteps[currentStep].title}
-                </Dialog.Title>
-                <Dialog.Description className="mb-6 text-gray-600 leading-relaxed">
-                  {welcomeSteps[currentStep].description}
-                </Dialog.Description>
-              </motion.div>
-
-              {/* Feature highlights */}
-              {welcomeSteps[currentStep].features && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mb-6 space-y-2"
-                >
-                  {welcomeSteps[currentStep].features!.map((feature, index) => (
-                    <motion.div
-                      key={feature}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                      className="flex items-center justify-center space-x-2 text-sm text-gray-700"
-                    >
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>{feature}</span>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Progress and Navigation */}
-          <motion.div 
-            className="mt-8 flex items-center justify-between"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-white/80 backdrop-blur-md"
+            onClick={onClose}
+          />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl max-h-[90vh] glass-ultra shadow-intense rounded-xl overflow-hidden text-slate-800"
           >
-            <div className="flex space-x-2">
-              {welcomeSteps.map((_, index) => (
-                <motion.div
-                  key={index}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentStep 
-                      ? 'w-8 bg-sirsi-500' 
-                      : index < currentStep 
-                      ? 'w-2 bg-sirsi-400'
-                      : 'w-2 bg-gray-200'
-                  }`}
-                  layoutId={`progress-${index}`}
-                />
-              ))}
-            </div>
-            
-            <div className="flex space-x-3">
-              {currentStep > 0 && (
-                <Button 
-                  variant="outline" 
-                  onClick={() => setCurrentStep(currentStep - 1)}
-                  className="px-4 py-2"
-                >
-                  Back
-                </Button>
-              )}
-              <Button
-                onClick={nextStep}
-                className="flex items-center space-x-2 px-4 py-2 bg-sirsi-500 hover:bg-sirsi-600"
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-300">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Welcome to Cloud Migration!
+                </h2>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-white/20 transition-colors"
               >
-                <span>
-                  {currentStep === welcomeSteps.length - 1 ? 'Get Started' : welcomeSteps[currentStep].cta || 'Next'}
-                </span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+                <X className="h-5 w-5 text-slate-600 hover:text-slate-800" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+              <div className="mb-6">
+                <p className="text-lg text-slate-800 font-medium flex items-center gap-2">
+                  <span className="text-xl">👋</span>
+                  Welcome! This is an overview of our proven 7-step migration process. When you're ready, I'll guide you through each step interactively in the Migration Wizard.
+                </p>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-slate-900 mb-6">
+                  Overview of our 7-step migration process:
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {migrationSteps.map((step) => {
+                    const Icon = step.icon;
+                    return (
+                      <motion.div
+                        key={step.number}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: step.number * 0.1 }}
+                        className="flex items-start gap-4 p-4 rounded-lg border border-slate-300 hover:border-slate-400 transition-colors bg-white/60"
+                      >
+                        <div className={`p-3 rounded-lg ${step.color} flex-shrink-0`}>
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg font-bold text-slate-900">
+                              {step.number}. {step.title}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-700 font-medium leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-slate-300">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-2 text-slate-600 hover:text-slate-800 font-medium transition-colors"
+                >
+                  SKIP TUTORIAL
+                </button>
+                <button
+                  onClick={() => {
+                    onStartMigration?.();
+                    onClose();
+                  }}
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-all"
+                >
+                  <Rocket className="h-5 w-5" />
+                  OPEN MIGRATION WIZARD
+                </button>
+              </div>
             </div>
           </motion.div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };

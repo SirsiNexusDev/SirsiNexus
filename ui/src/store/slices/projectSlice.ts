@@ -7,16 +7,13 @@ export interface Project {
   status: 'active' | 'completed' | 'archived';
   createdAt: string;
   updatedAt: string;
-  owner: {
+  team?: Array<{
     id: string;
     name: string;
-  };
-  team: Array<{
-    id: string;
-    name: string;
-    role: 'owner' | 'admin' | 'member';
+    role: 'admin' | 'member';
+    avatar?: string;
   }>;
-  settings: {
+  settings?: {
     visibility: 'public' | 'private';
     allowComments: boolean;
     notifications: boolean;
@@ -25,8 +22,8 @@ export interface Project {
   stats: {
     tasks: number;
     completed: number;
-    inProgress: number;
-    blockers: number;
+    pending: number;
+    blocked: number;
   };
 }
 
@@ -108,20 +105,22 @@ const projectSlice = createSlice({
         state.currentProject = null;
       }
     },
-    addTeamMember: (state, action: PayloadAction<{ projectId: string; member: Project['team'][0] }>) => {
+    addTeamMember: (state, action: PayloadAction<{ projectId: string; member: NonNullable<Project['team']>[0] }>) => {
       const project = state.projects.find((p) => p.id === action.payload.projectId);
       if (project) {
+        project.team = project.team || [];
         project.team.push(action.payload.member);
         if (state.currentProject?.id === action.payload.projectId) {
+          state.currentProject.team = state.currentProject.team || [];
           state.currentProject.team.push(action.payload.member);
         }
       }
     },
     removeTeamMember: (state, action: PayloadAction<{ projectId: string; memberId: string }>) => {
       const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
+      if (project && project.team) {
         project.team = project.team.filter((m) => m.id !== action.payload.memberId);
-        if (state.currentProject?.id === action.payload.projectId) {
+        if (state.currentProject?.id === action.payload.projectId && state.currentProject.team) {
           state.currentProject.team = state.currentProject.team.filter(
             (m) => m.id !== action.payload.memberId
           );

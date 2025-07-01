@@ -30,7 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { v4 as uuidv4 } from 'uuid';
 
 const projectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
@@ -63,16 +62,12 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onSuccess }) => {
 
   const onSubmit = (data: ProjectFormData) => {
     const newProject = {
-      id: uuidv4(),
+      id: Date.now().toString(),
       name: data.name,
       description: data.description,
       status: data.status,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      owner: {
-        id: '1', // TODO: Get from auth state
-        name: 'John Doe',
-      },
       team: [],
       settings: {
         visibility: data.visibility,
@@ -83,8 +78,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onSuccess }) => {
       stats: {
         tasks: 0,
         completed: 0,
-        inProgress: 0,
-        blockers: 0,
+        pending: 0,
+        blocked: 0,
       },
     };
 

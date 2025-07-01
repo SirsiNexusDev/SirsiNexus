@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Loader, XCircle, Play, RefreshCw, Network, Shield, Server, Database, Cloud, Settings } from 'lucide-react';
+import { CheckCircle, Loader, XCircle, Play, RefreshCw, Network, Shield, Server, Database, Cloud, Settings, AlertTriangle, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface BuildTask {
   id: string;
@@ -58,37 +59,115 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
   ]);
 
   const [isBuilding, setIsBuilding] = useState(false);
+  const [buildError, setBuildError] = useState<{ taskId: string; message: string } | null>(null);
+  const [showErrorResolution, setShowErrorResolution] = useState(false);
 
-  const startBuild = async () => {
+  const handleBuildError = (taskId: string, error: string) => {
+    setBuildError({ taskId, message: error });
+    setShowErrorResolution(true);
+    setIsBuilding(false);
+    
+    // Mark the failed task
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, status: 'failed' } : t
+      )
+    );
+  };
+
+  const retryTask = (taskId: string) => {
+    setBuildError(null);
+    setShowErrorResolution(false);
+    
+    // Reset task status and continue building
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, status: 'pending', progress: 0 } : t
+      )
+    );
+    
+    // Restart build from this task
+    startBuildFromTask(taskId);
+  };
+
+  const bypassTask = (taskId: string) => {
+    setBuildError(null);
+    setShowErrorResolution(false);
+    
+    // Mark task as completed with warning
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, status: 'completed', progress: 100 } : t
+      )
+    );
+    
+    // Continue with remaining tasks
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    if (taskIndex < tasks.length - 1) {
+      const remainingTasks = tasks.slice(taskIndex + 1);
+      continueWithTasks(remainingTasks);
+    }
+  };
+
+  const startBuildFromTask = async (startTaskId: string) => {
     setIsBuilding(true);
+    const startIndex = tasks.findIndex(t => t.id === startTaskId);
+    const tasksToRun = tasks.slice(startIndex);
+    await continueWithTasks(tasksToRun);
+  };
 
-    for (const task of tasks) {
-      // Update task status to running
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === task.id ? { ...t, status: 'running' } : t
-        )
-      );
-
-      // Simulate progress updates
-      for (let progress = 0; progress <= 100; progress += 10) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+  const continueWithTasks = async (tasksToRun: BuildTask[]) => {
+    for (const task of tasksToRun) {
+      try {
+        // Update task status to running
         setTasks((prev) =>
           prev.map((t) =>
-            t.id === task.id ? { ...t, progress } : t
+            t.id === task.id ? { ...t, status: 'running' } : t
           )
         );
+
+        // Simulate progress updates with potential failure
+        for (let progress = 0; progress <= 100; progress += 10) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          
+          // Simulate potential build failures
+          if (progress === 50 && Math.random() < 0.25) { // 25% chance of failure at 50%
+            const errorMessages = {
+              network: 'Failed to create VPC. Insufficient IP address space or conflicting routes detected.',
+              storage: 'Storage provisioning failed. Quota exceeded or invalid volume configuration.',
+              compute: 'Instance launch failed. Insufficient capacity in selected availability zone.',
+              monitoring: 'Monitoring setup failed. CloudWatch permissions or configuration issues.',
+            };
+            throw new Error(errorMessages[task.id as keyof typeof errorMessages] || 'Unknown build error occurred.');
+          }
+          
+          setTasks((prev) =>
+            prev.map((t) =>
+              t.id === task.id ? { ...t, progress } : t
+            )
+          );
+        }
+
+        // Mark task as completed
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.id === task.id ? { ...t, status: 'completed' } : t
+          )
+        );
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown build error occurred.';
+        handleBuildError(task.id, errorMessage);
+        return; // Stop building on error
       }
-
-      // Mark task as completed
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === task.id ? { ...t, status: 'completed' } : t
-        )
-      );
     }
-
+    
     setIsBuilding(false);
+  };
+
+  const startBuild = async () => {
+    setBuildError(null);
+    setShowErrorResolution(false);
+    await continueWithTasks(tasks);
   };
 
   const getStatusIcon = (status: BuildTask['status']) => {
@@ -98,7 +177,7 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
       case 'running':
         return <Loader className="h-5 w-5 animate-spin text-blue-500" />;
       case 'failed':
-        return <Settings className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-red-500" />;
       default:
         return <Settings className="h-5 w-5 text-gray-400" />;
     }
@@ -144,6 +223,18 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
                   </div>
                 </div>
                 {getStatusIcon(task.status)}
+                {task.status === 'failed' && buildError?.taskId === task.id && (
+                  <div className="flex space-x-2 ml-4">
+                    <Button onClick={() => retryTask(task.id)} size="sm" variant="outline">
+                      <RefreshCw className="h-4 w-4 mr-1" />
+                      Retry
+                    </Button>
+                    <Button onClick={() => bypassTask(task.id)} size="sm" variant="outline" className="text-orange-600">
+                      <Info className="h-4 w-4 mr-1" />
+                      Bypass
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {task.status !== 'pending' && (
@@ -154,11 +245,27 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
                   </div>
                   <div className="mt-1 h-2 rounded-full bg-gray-200">
                     <motion.div
-                      className="h-full rounded-full bg-sirsi-500"
+                      className={`h-full rounded-full ${
+                        task.status === 'failed' ? 'bg-red-500' : 'bg-sirsi-500'
+                      }`}
                       initial={{ width: '0%' }}
                       animate={{ width: `${task.progress}%` }}
                       transition={{ duration: 0.5 }}
                     />
+                  </div>
+                </div>
+              )}
+
+              {task.status === 'failed' && buildError?.taskId === task.id && (
+                <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <AlertTriangle className="h-5 w-5 text-red-500" />
+                    <span className="text-sm font-medium text-red-900">Build Error</span>
+                  </div>
+                  <p className="text-sm text-red-800">{buildError.message}</p>
+                  <div className="mt-3 text-xs text-red-600">
+                    <p>• Retry: Attempts the failed task again with current settings</p>
+                    <p>• Bypass: Skips this task and continues with a warning (may affect functionality)</p>
                   </div>
                 </div>
               )}
@@ -178,6 +285,37 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
           ))}
         </div>
       </div>
+
+      {/* Error Summary */}
+      {showErrorResolution && buildError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+          <div className="flex items-center space-x-2 mb-4">
+            <AlertTriangle className="h-6 w-6 text-red-500" />
+            <h3 className="text-lg font-medium text-red-900">Build Failed</h3>
+          </div>
+          <p className="text-red-800 mb-4">
+            The infrastructure build encountered an error during the {buildError.taskId} phase.
+            You can retry the failed task or bypass it to continue with the migration.
+          </p>
+          <div className="flex space-x-3">
+            <Button
+              onClick={() => retryTask(buildError.taskId)}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry Failed Task
+            </Button>
+            <Button
+              onClick={() => bypassTask(buildError.taskId)}
+              variant="outline"
+              className="border-orange-300 text-orange-700 hover:bg-orange-50"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              Bypass and Continue
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Continue Button */}
       <div className="flex justify-end">

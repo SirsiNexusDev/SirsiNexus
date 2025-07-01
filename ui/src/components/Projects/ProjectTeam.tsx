@@ -42,7 +42,7 @@ export const ProjectTeam: React.FC<ProjectTeamProps> = ({ projectId }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {project.team.map(member => (
+        {project.team?.map(member => (
           <Card key={member.id}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -59,7 +59,7 @@ export const ProjectTeam: React.FC<ProjectTeamProps> = ({ projectId }) => {
                   </div>
                 </div>
 
-                {member.role !== 'owner' && (
+                {member.role !== 'admin' && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm">

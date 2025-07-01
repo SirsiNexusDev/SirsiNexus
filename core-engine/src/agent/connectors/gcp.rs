@@ -37,6 +37,10 @@ pub struct GcpDiscoveryResult {
 pub struct GcpAgent {
     config: GcpConfig,
     http_client: Option<HttpClient>,
+    gcp_authenticated: bool,
+    // TODO: Add real GCP SDK clients when implementing real integration
+    // compute_client: Option<ComputeClient>,
+    // storage_client: Option<StorageClient>,
 }
 
 impl GcpAgent {
@@ -44,6 +48,7 @@ impl GcpAgent {
         Self {
             config,
             http_client: None,
+            gcp_authenticated: false,
         }
     }
 
@@ -51,8 +56,25 @@ impl GcpAgent {
         // Initialize HTTP client for Google Cloud APIs
         self.http_client = Some(HttpClient::new());
         
-        // TODO: Implement proper GCP authentication
-        // For now, this is a placeholder that assumes credentials are handled externally
+        // Check if we have GCP credentials for real API calls
+        if let Some(credentials_path) = &self.config.credentials_path {
+            // TODO: Implement real GCP service account authentication
+            // For now, mark as authenticated for testing purposes
+            if std::path::Path::new(credentials_path).exists() {
+                self.gcp_authenticated = true;
+                println!("GCP credentials file found - real SDK integration will be implemented in Phase 2.2");
+            } else {
+                println!("GCP credentials file not found at {} - using mock mode", credentials_path);
+            }
+        } else {
+            // Check for default credential sources (service account metadata, gcloud CLI, etc.)
+            if std::env::var("GOOGLE_APPLICATION_CREDENTIALS").is_ok() {
+                self.gcp_authenticated = true;
+                println!("GCP credentials found via GOOGLE_APPLICATION_CREDENTIALS - ready for real SDK");
+            } else {
+                println!("No GCP credentials provided - using mock mode for resource discovery");
+            }
+        }
         
         Ok(())
     }
@@ -319,13 +341,19 @@ impl GcpAgent {
     }
 
     pub async fn health_check(&self) -> AppResult<()> {
-        // TODO: Implement real GCP health check
-        // For now, just check if we have an HTTP client
-        if self.http_client.is_none() {
-            return Err(AppError::Configuration("GCP client not initialized".into()));
+        // Check if we have HTTP client initialized
+        if self.http_client.is_some() {
+            if self.gcp_authenticated {
+                // TODO: Perform actual GCP API health check (e.g., list projects)
+                println!("GCP health check: Ready for real SDK integration");
+            } else {
+                // In mock mode (no credentials), we still consider it healthy
+                println!("GCP health check: Running in mock mode");
+            }
+            Ok(())
+        } else {
+            Err(AppError::Configuration("GCP client not initialized".into()))
         }
-        
-        Ok(())
     }
 }
 

@@ -19,7 +19,15 @@ interface UIState {
     welcome: boolean;
     auth: boolean;
     settings: boolean;
+    journeySelection: boolean;
+    optimizationWelcome: boolean;
+    scalingWelcome: boolean;
     [key: string]: boolean;
+  };
+  userJourney: {
+    isFirstTime: boolean;
+    selectedJourney: 'migration' | 'optimization' | 'scaling' | null;
+    completedTutorials: string[];
   };
 }
 
@@ -31,9 +39,17 @@ const initialState: UIState = {
   currentContextualHints: [],
   loadingStates: {},
   modals: {
-    welcome: true,
+    welcome: false,
     auth: false,
     settings: false,
+    journeySelection: false,
+    optimizationWelcome: false,
+    scalingWelcome: false,
+  },
+  userJourney: {
+    isFirstTime: true,
+    selectedJourney: null,
+    completedTutorials: [],
   },
 };
 
@@ -73,6 +89,37 @@ const uiSlice = createSlice({
     ) => {
       state.modals[action.payload.modal] = action.payload.visible;
     },
+    selectJourney: (
+      state,
+      action: PayloadAction<'migration' | 'optimization' | 'scaling'>
+    ) => {
+      state.userJourney.selectedJourney = action.payload;
+      state.userJourney.isFirstTime = false;
+      state.modals.journeySelection = false;
+      
+      // Open the appropriate welcome modal
+      if (action.payload === 'migration') {
+        state.modals.welcome = true;
+      } else if (action.payload === 'optimization') {
+        state.modals.optimizationWelcome = true;
+      } else if (action.payload === 'scaling') {
+        state.modals.scalingWelcome = true;
+      }
+    },
+    markTutorialComplete: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      if (!state.userJourney.completedTutorials.includes(action.payload)) {
+        state.userJourney.completedTutorials.push(action.payload);
+      }
+    },
+    resetFirstTimeExperience: (state) => {
+      state.userJourney.isFirstTime = true;
+      state.userJourney.selectedJourney = null;
+      state.userJourney.completedTutorials = [];
+      state.modals.journeySelection = true;
+    },
   },
 });
 
@@ -85,6 +132,9 @@ export const {
   setContextualHints,
   setLoadingState,
   setModalState,
+  selectJourney,
+  markTutorialComplete,
+  resetFirstTimeExperience,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
