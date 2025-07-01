@@ -170,11 +170,11 @@ export default function DemosPage() {
       console.log('Starting demo:', { entity: selectedEntity.id, type: selectedDemoType });
       
       // Route to the appropriate wizard based on demo type
-      let wizardPath = '/wizard'; // Default to migration wizard
+      let wizardPath = '/migration'; // Default to migration wizard
       
       switch (selectedDemoType) {
         case 'migration':
-          wizardPath = '/wizard';
+          wizardPath = '/migration';
           break;
         case 'optimization':
           wizardPath = '/optimization';

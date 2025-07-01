@@ -25,11 +25,17 @@ import {
   Zap
 } from 'lucide-react';
 import { OptimizeStep } from '@/components/MigrationSteps/steps/OptimizeStep';
+import { EnvironmentSetupStep } from '@/components/MigrationSteps/steps/EnvironmentSetupStep';
 
-type OptimizationStep = 'analyze' | 'discover' | 'recommend' | 'configure' | 'validate' | 'optimize';
+type OptimizationStep = 'environment' | 'analyze' | 'discover' | 'recommend' | 'configure' | 'validate' | 'optimize';
 type OptimizationStatus = 'not_started' | 'in_progress' | 'completed' | 'failed' | 'warning';
 
 const OPTIMIZATION_STEPS: Record<OptimizationStep, { title: string; description: string; icon: React.ElementType }> = {
+  environment: {
+    title: 'Environment Setup',
+    description: 'Configure environment credentials for optimization',
+    icon: Lock,
+  },
   analyze: {
     title: 'Analyze Resources',
     description: 'Deep dive into resource usage and cost patterns',
@@ -72,8 +78,9 @@ interface OptimizationArtifact {
 }
 
 export default function OptimizationWizardPage() {
-  const [currentStep, setCurrentStep] = useState<OptimizationStep>('analyze');
+  const [currentStep, setCurrentStep] = useState<OptimizationStep>('environment');
   const [stepStatuses, setStepStatuses] = useState<Record<OptimizationStep, OptimizationStatus>>({
+    environment: 'not_started',
     analyze: 'not_started',
     discover: 'not_started',
     recommend: 'not_started',
@@ -292,6 +299,16 @@ export default function OptimizationWizardPage() {
                   className="space-y-6"
                 >
                   {/* Step-specific content - Using existing step components or custom optimization steps */}
+                  {currentStep === 'environment' && (
+                    <EnvironmentSetupStep 
+                      wizardType="optimization"
+                      onComplete={(artifact) => {
+                        console.log('EnvironmentSetupStep completed with artifact:', artifact);
+                        handleStepComplete(currentStep, artifact);
+                      }}
+                    />
+                  )}
+
                   {currentStep === 'optimize' && (
                     <OptimizeStep 
                       onComplete={(artifact) => {
@@ -302,7 +319,7 @@ export default function OptimizationWizardPage() {
                   )}
                   
                   {/* Custom optimization step content for other steps */}
-                  {currentStep !== 'optimize' && (
+                  {currentStep !== 'optimize' && currentStep !== 'environment' && (
                     <div className="space-y-6">
                       {/* Business Entity Context */}
                       {optimizationData && (

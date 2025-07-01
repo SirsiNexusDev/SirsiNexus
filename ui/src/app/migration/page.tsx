@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Download, FileText, Trophy, Sparkles, Clock, ChevronRight, Search, Server, Database, Cloud, Settings, TestTube, Wrench, ArrowLeftRight, BarChart, Shield, Play, Loader, RefreshCw, AlertTriangle, Info, Cpu, HardDrive, Network, Users, Lock, Building, Globe } from 'lucide-react';
+import { EnvironmentSetupStep } from '@/components/MigrationSteps/steps/EnvironmentSetupStep';
 import { PlanStep } from '@/components/MigrationSteps/steps/PlanStep';
 import { SpecifyStep } from '@/components/MigrationSteps/steps/SpecifyStep';
 import { TestStep } from '@/components/MigrationSteps/steps/TestStep';
@@ -12,10 +13,15 @@ import { ValidateStep } from '@/components/MigrationSteps/steps/ValidateStep';
 import { OptimizeStep } from '@/components/MigrationSteps/steps/OptimizeStep';
 import { SupportStep } from '@/components/MigrationSteps/steps/SupportStep';
 
-type MigrationStep = 'plan' | 'specify' | 'test' | 'build' | 'transfer' | 'validate' | 'optimize' | 'support';
+type MigrationStep = 'environment' | 'plan' | 'specify' | 'test' | 'build' | 'transfer' | 'validate' | 'optimize' | 'support';
 type MigrationStatus = 'not_started' | 'in_progress' | 'completed' | 'failed' | 'warning';
 
 const STEPS: Record<MigrationStep, { title: string; description: string; icon: React.ElementType }> = {
+  environment: {
+    title: 'Environment Setup',
+    description: 'Configure source and destination credentials',
+    icon: Lock,
+  },
   plan: {
     title: 'Plan Migration',
     description: 'Discover resources and create migration strategy',
@@ -68,8 +74,9 @@ interface StepArtifact {
 }
 
 export default function WizardPage() {
-  const [currentStep, setCurrentStep] = useState<MigrationStep>('plan');
+  const [currentStep, setCurrentStep] = useState<MigrationStep>('environment');
   const [stepStatuses, setStepStatuses] = useState<Record<MigrationStep, MigrationStatus>>({
+    environment: 'not_started',
     plan: 'not_started',
     specify: 'not_started',
     test: 'not_started',
@@ -165,7 +172,7 @@ export default function WizardPage() {
             transition={{ delay: 0.3 }}
             className="text-3xl font-bold text-gray-900 mb-4"
           >
-            Migration Completed Successfully!
+Migration Completed Successfully!
           </motion.h1>
           
           <motion.p 
@@ -223,7 +230,7 @@ export default function WizardPage() {
               onClick={() => window.location.reload()}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
             >
-              Start New Migration
+Start New Migration
             </button>
           </motion.div>
         </motion.div>
@@ -236,7 +243,7 @@ export default function WizardPage() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Migration Wizard</h1>
-          <p className="text-lg text-gray-600">Complete your migration step by step</p>
+          <p className="text-lg text-gray-600">Seamlessly migrate your infrastructure to the cloud</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -362,6 +369,16 @@ export default function WizardPage() {
                   className="space-y-6"
                 >
                   {/* Step-specific content - Using proper step components */}
+                {currentStep === 'environment' && (
+                  <EnvironmentSetupStep 
+                    wizardType="migration"
+                    onComplete={(artifact) => {
+                      console.log('EnvironmentSetupStep completed with artifact:', artifact);
+                      handleStepComplete(currentStep, artifact);
+                    }}
+                  />
+                )}
+
                 {currentStep === 'plan' && (
                   <PlanStep 
                     onComplete={(artifact) => {

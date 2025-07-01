@@ -23,11 +23,17 @@ import {
   TrendingUp,
   Settings
 } from 'lucide-react';
+import { EnvironmentSetupStep } from '@/components/MigrationSteps/steps/EnvironmentSetupStep';
 
-type ScalingStep = 'monitor' | 'define' | 'configure' | 'test' | 'protect' | 'activate';
+type ScalingStep = 'environment' | 'monitor' | 'define' | 'configure' | 'test' | 'protect' | 'activate';
 type ScalingStatus = 'not_started' | 'in_progress' | 'completed' | 'failed' | 'warning';
 
 const SCALING_STEPS: Record<ScalingStep, { title: string; description: string; icon: React.ElementType }> = {
+  environment: {
+    title: 'Environment Setup',
+    description: 'Configure environment credentials for auto-scaling',
+    icon: Lock,
+  },
   monitor: {
     title: 'Setup Monitoring',
     description: 'Comprehensive monitoring for application metrics and performance',
@@ -70,8 +76,9 @@ interface ScalingArtifact {
 }
 
 export default function ScalingWizardPage() {
-  const [currentStep, setCurrentStep] = useState<ScalingStep>('monitor');
+  const [currentStep, setCurrentStep] = useState<ScalingStep>('environment');
   const [stepStatuses, setStepStatuses] = useState<Record<ScalingStep, ScalingStatus>>({
+    environment: 'not_started',
     monitor: 'not_started',
     define: 'not_started',
     configure: 'not_started',
@@ -434,8 +441,19 @@ export default function ScalingWizardPage() {
                   transition={{ duration: 0.3 }}
                   className="space-y-6"
                 >
+                  {/* Environment Setup Step */}
+                  {currentStep === 'environment' && (
+                    <EnvironmentSetupStep 
+                      wizardType="scaling"
+                      onComplete={(artifact) => {
+                        console.log('EnvironmentSetupStep completed with artifact:', artifact);
+                        handleStepComplete(currentStep, artifact);
+                      }}
+                    />
+                  )}
+
                   {/* Business Entity Context */}
-                  {scalingData && (
+                  {currentStep !== 'environment' && scalingData && (
                     <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">Scaling Overview</h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -469,6 +487,7 @@ export default function ScalingWizardPage() {
                   )}
                   
                   {/* Step-specific content */}
+                  {currentStep !== 'environment' && (
                   <div className="bg-white rounded-lg border border-gray-200 p-6">
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -496,6 +515,7 @@ export default function ScalingWizardPage() {
                       </button>
                     </div>
                   </div>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>

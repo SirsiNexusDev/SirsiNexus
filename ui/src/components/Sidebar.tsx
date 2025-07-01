@@ -15,6 +15,9 @@ import {
   Play,
   ChevronDown,
   ChevronRight,
+  TrendingUp,
+  Zap,
+  ArrowRight,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -26,7 +29,6 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { label: 'Overview', icon: Home, path: '/' },
   { label: 'Demo Scenarios', icon: Play, path: '/demos' },
-  { label: 'Migration Wizard', icon: Wand2, path: '/wizard' },
   { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
   { label: 'Projects', icon: Folder, path: '/projects' },
   { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
@@ -39,6 +41,7 @@ const sidebarItems: SidebarItem[] = [
 export const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState('/');
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
+  const [wizardsExpanded, setWizardsExpanded] = React.useState(false);
   
   const migrationSteps = [
     { label: 'PLAN', path: '/migration/plan' },
@@ -50,13 +53,69 @@ export const Sidebar: React.FC = () => {
     { label: 'SUPPORT', path: '/migration/support' },
   ];
 
+  const wizards = [
+    { label: 'Migration Wizard', icon: ArrowRight, path: '/migration', description: 'Complete infrastructure migration' },
+    { label: 'Optimization Wizard', icon: TrendingUp, path: '/optimization', description: 'Cost and performance optimization' },
+    { label: 'Auto-Scaling Wizard', icon: Zap, path: '/scaling', description: 'Configure intelligent auto-scaling' },
+  ];
+
   return (
     <motion.div
       initial={{ x: -300 }}
       animate={{ x: 0 }}
       className="sidebar-glass fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block"
     >
-      <nav className="p-4 space-y-1">
+    <nav className="p-4 space-y-1">
+        {/* Wizards Section */}
+        <div className="mb-4">
+          <button
+            onClick={() => setWizardsExpanded(!wizardsExpanded)}
+            className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all text-slate-700 hover:card-3d hover:shadow-glow hover:scale-105"
+          >
+            <div className="flex items-center">
+              <Wand2 className="mr-3 h-5 w-5 text-slate-500" />
+              Wizards
+            </div>
+            {wizardsExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </button>
+          
+          {wizardsExpanded && (
+            <div className="ml-6 mt-2 space-y-1">
+              {wizards.map((wizard) => {
+                const WizardIcon = wizard.icon;
+                const isActive = activeItem === wizard.path;
+                return (
+                  <a
+                    key={wizard.path}
+                    href={wizard.path}
+                    onClick={() => {
+                      setActiveItem(wizard.path);
+                      window.location.href = wizard.path;
+                    }}
+                    className={`flex items-start px-3 py-2 text-sm rounded-lg transition-all ${
+                      isActive
+                        ? 'bg-sirsi-50 text-sirsi-700 border border-sirsi-200'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-gray-50'
+                    }`}
+                  >
+                    <WizardIcon className={`mr-3 h-4 w-4 mt-0.5 flex-shrink-0 ${
+                      isActive ? 'text-sirsi-600' : 'text-slate-400'
+                    }`} />
+                    <div>
+                      <div className="font-medium">{wizard.label}</div>
+                      <div className="text-xs text-slate-500 mt-0.5">{wizard.description}</div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.path;
@@ -149,7 +208,7 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="space-y-1">
             <button 
-              onClick={() => window.location.href = '/wizard'}
+              onClick={() => window.location.href = '/migration'}
               className="w-full flex items-center px-3 py-2 text-sm text-slate-700 hover:card-3d hover:shadow-glow rounded-lg transition-all"
             >
               <Play className="mr-3 h-4 w-4 text-gray-400" />

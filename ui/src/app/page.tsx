@@ -179,8 +179,8 @@ export default function DashboardPage() {
   };
 
   const handleStartMigration = () => {
-    // Navigate to wizard or create new project
-    window.location.href = '/wizard';
+    // Navigate to migration wizard or create new project
+    window.location.href = '/migration';
   };
 
   const handleJourneySelection = (journey: 'migration' | 'optimization' | 'scaling') => {
