@@ -188,13 +188,15 @@ export default function DashboardPage() {
   };
 
   const handleStartOptimization = () => {
-    // Navigate to optimization workflow
+    // Navigate to optimization wizard
     console.log('Starting optimization journey');
+    window.location.href = '/optimization';
   };
 
   const handleStartScaling = () => {
-    // Navigate to scaling workflow
+    // Navigate to scaling wizard
     console.log('Starting scaling journey');
+    window.location.href = '/scaling';
   };
 
   // Only show dashboard content if user is authenticated and has completed onboarding

@@ -169,8 +169,22 @@ export default function DemosPage() {
       localStorage.setItem('selectedJourney', selectedDemoType);
       console.log('Starting demo:', { entity: selectedEntity.id, type: selectedDemoType });
       
-      // Route to the wizard with demo context
-      window.location.href = `/wizard?entity=${selectedEntity.id}&demo=${selectedDemoType}`;
+      // Route to the appropriate wizard based on demo type
+      let wizardPath = '/wizard'; // Default to migration wizard
+      
+      switch (selectedDemoType) {
+        case 'migration':
+          wizardPath = '/wizard';
+          break;
+        case 'optimization':
+          wizardPath = '/optimization';
+          break;
+        case 'scaleUp':
+          wizardPath = '/scaling';
+          break;
+      }
+      
+      window.location.href = `${wizardPath}?entity=${selectedEntity.id}&demo=${selectedDemoType}`;
     }
   };
 
