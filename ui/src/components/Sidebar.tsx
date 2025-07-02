@@ -61,55 +61,70 @@ export const Sidebar: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ x: -300 }}
-      animate={{ x: 0 }}
-      className="sidebar-glass fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block"
+      initial={{ x: -300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="sidebar-glass fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block"
     >
-    <nav className="p-4 space-y-1">
+    <nav className="p-6 space-y-2">
         {/* Wizards Section */}
-        <div className="mb-4">
-          <button
+        <div className="mb-6">
+          <motion.button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all text-slate-700 hover:card-3d hover:shadow-glow hover:scale-105"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-gray-900 card-professional hover-lift"
           >
             <div className="flex items-center">
-              <Wand2 className="mr-3 h-5 w-5 text-slate-500" />
-              Wizards
+              <div className="p-2 card-gradient rounded-lg mr-4">
+                <Wand2 className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-gradient">Wizards</span>
             </div>
-            {wizardsExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            <motion.div
+              animate={{ rotate: wizardsExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="h-5 w-5 text-gray-600" />
+            </motion.div>
           </button>
           
           {wizardsExpanded && (
-            <div className="ml-6 mt-2 space-y-1">
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="ml-4 mt-4 space-y-3"
+            >
               {wizards.map((wizard) => {
                 const WizardIcon = wizard.icon;
                 const isActive = activeItem === wizard.path;
                 return (
-                  <a
+                  <motion.a
                     key={wizard.path}
                     href={wizard.path}
                     onClick={() => {
                       setActiveItem(wizard.path);
                       window.location.href = wizard.path;
                     }}
-                    className={`flex items-start px-3 py-2 text-sm rounded-lg transition-all ${
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`flex items-start px-4 py-4 text-sm rounded-xl transition-all ${
                       isActive
-                        ? 'bg-sirsi-50 text-sirsi-700 border border-sirsi-200'
-                        : 'text-slate-600 hover:text-slate-800 hover:bg-gray-50'
+                        ? 'card-gradient text-white shadow-primary'
+                        : 'card-professional hover-lift text-gray-700 hover:text-gray-900'
                     }`}
                   >
-                    <WizardIcon className={`mr-3 h-4 w-4 mt-0.5 flex-shrink-0 ${
-                      isActive ? 'text-sirsi-600' : 'text-slate-400'
+                    <WizardIcon className={`mr-4 h-5 w-5 mt-0.5 flex-shrink-0 ${
+                      isActive ? 'text-white' : 'text-gray-500'
                     }`} />
                     <div>
-                      <div className="font-medium">{wizard.label}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">{wizard.description}</div>
+                      <div className="font-bold text-base">{wizard.label}</div>
+                      <div className={`text-xs mt-1 ${
+                        isActive ? 'text-white/80' : 'text-gray-500'
+                      }`}>{wizard.description}</div>
                     </div>
-                  </a>
+                  </motion.a>
                 );
               })}
             </div>
@@ -124,23 +139,32 @@ export const Sidebar: React.FC = () => {
           if (isMigrationSteps) {
             return (
               <div key={item.path}>
-                <button
+                <motion.button
                   onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all ${
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all ${
                     isActive
-                      ? 'card-3d shadow-glow'
-                      : 'text-slate-700 hover:card-3d hover:shadow-glow hover:scale-105'
+                      ? 'card-gradient text-white shadow-primary'
+                      : 'text-gray-700 card-professional hover-lift'
                   }`}
                 >
                   <div className="flex items-center">
-                    <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-primary' : 'text-slate-500'}`} />
-                    {item.label}
+                    <div className={`p-2 rounded-lg mr-4 ${
+                      isActive ? 'bg-white/20' : 'card-gradient'
+                    }`}>
+                      <Icon className={`h-6 w-6 ${
+                        isActive ? 'text-white' : 'text-white'
+                      }`} />
+                    </div>
+                    <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
                   </div>
-                  {migrationStepsExpanded ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
+                  <motion.div
+                    animate={{ rotate: migrationStepsExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </motion.div>
                 </button>
                 
                 {migrationStepsExpanded && (
@@ -180,40 +204,52 @@ export const Sidebar: React.FC = () => {
           }
           
           return (
-            <a
+            <motion.a
               key={item.path}
               href={item.path}
               onClick={() => {
                 setActiveItem(item.path);
                 window.location.href = item.path;
               }}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all ${
+              whileHover={{ scale: 1.02, x: 4 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center px-4 py-4 text-base font-bold rounded-xl transition-all ${
                 isActive
-                  ? 'card-3d shadow-glow scale-105'
-                  : 'text-slate-700 hover:card-3d hover:shadow-glow hover:scale-105'
+                  ? 'card-gradient text-white shadow-primary'
+                  : 'text-gray-700 card-professional hover-lift'
               }`}
             >
-              <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-primary' : 'text-slate-500'}`} />
-              {item.label}
-            </a>
+              <div className={`p-2 rounded-lg mr-4 ${
+                isActive ? 'bg-white/20' : 'card-gradient'
+              }`}>
+                <Icon className={`h-6 w-6 ${
+                  isActive ? 'text-white' : 'text-white'
+                }`} />
+              </div>
+              <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
+            </motion.a>
           );
         })}
         
         {/* Quick Actions */}
-        <div className="mt-8 pt-4 border-t border-gray-200">
-          <div className="px-3 mb-2">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-black text-gradient uppercase tracking-wider">
               Quick Actions
             </h3>
           </div>
-          <div className="space-y-1">
-            <button 
+          <div className="space-y-3">
+            <motion.button 
               onClick={() => window.location.href = '/migration'}
-              className="w-full flex items-center px-3 py-2 text-sm text-slate-700 hover:card-3d hover:shadow-glow rounded-lg transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full flex items-center px-4 py-4 text-base text-white card-gradient rounded-xl shadow-primary hover-glow transition-all font-bold"
             >
-              <Play className="mr-3 h-4 w-4 text-gray-400" />
+              <div className="p-2 bg-white/20 rounded-lg mr-4">
+                <Play className="h-5 w-5 text-white" />
+              </div>
               Start New Migration
-            </button>
+            </motion.button>
           </div>
         </div>
       </nav>

@@ -54,50 +54,50 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="nav-glass gradient-animated text-slate-800 shadow-intense sticky top-0 z-50">
-      <div className="flex h-16 items-center justify-between px-6">
-        <div className="flex items-center gap-3">
-          <motion.div
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-            className="text-2xl font-black tracking-tight"
-            style={{
-              background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
-            }}
-          >
-            Sirsi Nexus
-          </motion.div>
-        </div>
+    <header className="nav-glass sticky top-0 z-50">
+      <div className="container-professional">
+        <div className="flex h-20 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="text-display text-3xl font-black tracking-tight slide-up"
+            >
+              Sirsi Nexus
+            </motion.div>
+            <div className="status-success text-xs px-3 py-1">
+              v0.3.2
+            </div>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <button
+        <div className="flex items-center gap-6">
+          <motion.button
             onClick={handleThemeToggle}
-            className="btn-modern rounded-full p-2 hover:scale-105 transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="card-professional p-3 rounded-xl hover-glow transition-all"
             title={`Current: ${theme} mode - Click to cycle`}
           >
             {theme === 'dark' ? (
-              <Sun className="h-5 w-5" />
+              <Sun className="h-6 w-6 text-amber-500" />
             ) : theme === 'light' ? (
-              <Moon className="h-5 w-5" />
+              <Moon className="h-6 w-6 text-purple-500" />
             ) : (
-              <Monitor className="h-5 w-5" />
+              <Monitor className="h-6 w-6 text-blue-500" />
             )}
-          </button>
+          </motion.button>
 
           <NotificationDropdown />
 
           <div className="relative">
-            <button
+            <motion.button
               onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-              className="btn-modern rounded-full p-2 hover:scale-105 transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="card-professional p-3 rounded-xl hover-glow transition-all"
             >
-              <Settings className="h-5 w-5" />
-            </button>
+              <Settings className="h-6 w-6 text-gray-600" />
+            </motion.button>
             <SettingsDropDown 
               isOpen={showSettingsMenu} 
               onClose={() => setShowSettingsMenu(false)} 
@@ -105,41 +105,45 @@ export const Header: React.FC = () => {
           </div>
 
           <div className="relative">
-            <button
+            <motion.button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="glass-strong flex items-center gap-2 rounded-full px-3 py-2 hover:scale-105 transition-all shadow-glow"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="card-glass flex items-center gap-4 rounded-2xl px-4 py-3 hover-glow transition-all backdrop-blur"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl card-gradient text-white shadow-primary">
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
                     alt={user.name}
-                    className="h-full w-full rounded-full object-cover"
+                    className="h-full w-full rounded-xl object-cover"
                   />
                 ) : (
-                  <User className="h-5 w-5" />
+                  <User className="h-6 w-6" />
                 )}
               </div>
-              <span className="text-sm font-bold text-slate-900">
+              <span className="text-base font-bold text-gray-900">
                 {user?.name || 'Guest User'}
               </span>
-              <ChevronDown className="h-4 w-4 text-slate-800" />
-            </button>
+              <ChevronDown className="h-5 w-5 text-gray-600" />
+            </motion.button>
 
             {showUserMenu && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-48 rounded-lg border border-border bg-background py-1 shadow-lg"
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                className="absolute right-0 mt-4 w-56 card-professional p-2 shadow-xl"
               >
-                <button
+                <motion.button
                   onClick={handleLogout}
-                  className="flex w-full items-center px-4 py-2 text-sm text-slate-800 font-medium hover:bg-gray-100"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex w-full items-center px-4 py-3 text-base text-red-600 font-semibold hover:card-professional hover:text-red-700 rounded-lg transition-all"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-3 h-5 w-5" />
                   Sign Out
-                </button>
+                </motion.button>
               </motion.div>
             )}
           </div>

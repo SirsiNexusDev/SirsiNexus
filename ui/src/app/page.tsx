@@ -210,158 +210,202 @@ export default function DashboardPage() {
       {!hideMainContent && (
         <>
           {/* Quick Actions - at the very top */}
+          <div className="mb-12">
           <div className="mb-8">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold text-gradient">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-display text-3xl mb-4"
+            >
               Quick Actions
-            </h2>
-            <p className="text-slate-800 font-medium">
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-gray-700 font-semibold"
+            >
               Get started with common tasks
-            </p>
+            </motion.p>
           </div>
         
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <button
+        <div className="grid-professional">
+          <motion.button
             onClick={() => setShowCreateProjectModal(true)}
-            className="card-3d flex items-center gap-4 p-6 rounded-xl transition-all duration-300 hover:shadow-glow group"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="card-professional hover-lift p-8 group"
           >
-            <div className="gradient-primary p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-              <Plus className="h-6 w-6 text-white" />
+            <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all mb-6">
+              <Plus className="h-8 w-8 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-bold text-lg text-slate-800">New Project</h3>
-              <p className="text-sm font-medium text-slate-800">Start migration</p>
+              <h3 className="font-black text-xl text-gray-900 mb-2">New Project</h3>
+              <p className="text-base font-semibold text-gray-600">Start migration journey</p>
             </div>
-          </button>
+          </motion.button>
           
-          <button
+          <motion.button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="card-3d flex items-center gap-4 p-6 rounded-xl transition-all duration-300 hover:shadow-glow group"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="card-professional hover-lift p-8 group"
           >
-            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-              <Shield className="h-6 w-6 text-white" />
+            <div className="bg-gradient-secondary p-4 rounded-2xl shadow-secondary group-hover:shadow-xl transition-all mb-6">
+              <Shield className="h-8 w-8 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-bold text-lg text-slate-800">Demo Sign In</h3>
-              <p className="text-sm font-medium text-slate-800">Try the platform</p>
+              <h3 className="font-black text-xl text-gray-900 mb-2">Demo Sign In</h3>
+              <p className="text-base font-semibold text-gray-600">Try the platform</p>
             </div>
-          </button>
+          </motion.button>
           
-          <button
+          <motion.button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="card-3d flex items-center gap-4 p-6 rounded-xl transition-all duration-300 hover:shadow-glow group"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="card-professional hover-lift p-8 group"
           >
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-              <Zap className="h-6 w-6 text-white" />
+            <div className="bg-gradient-accent p-4 rounded-2xl shadow-purple group-hover:shadow-xl transition-all mb-6">
+              <Zap className="h-8 w-8 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-bold text-lg text-slate-800">Choose Journey</h3>
-              <p className="text-sm font-medium text-slate-800">Select your path</p>
+              <h3 className="font-black text-xl text-gray-900 mb-2">Choose Journey</h3>
+              <p className="text-base font-semibold text-gray-600">Select your path</p>
             </div>
-          </button>
+          </motion.button>
           
-          <button className="card-3d flex items-center gap-4 p-6 rounded-xl transition-all duration-300 hover:shadow-glow group">
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-              <BarChart className="h-6 w-6 text-white" />
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="card-professional hover-lift p-8 group"
+          >
+            <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all mb-6">
+              <BarChart className="h-8 w-8 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-bold text-lg text-slate-800">Analytics</h3>
-              <p className="text-sm font-medium text-slate-800">View reports</p>
+              <h3 className="font-black text-xl text-gray-900 mb-2">Analytics</h3>
+              <p className="text-base font-semibold text-gray-600">View reports</p>
             </div>
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {/* Dashboard Section */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gradient">
+      <motion.div 
+        className="mb-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <h1 className="text-display text-4xl mb-4">
           Dashboard
         </h1>
-        <p className="text-slate-800 font-medium">
+        <p className="text-xl text-gray-700 font-semibold">
           Overview of your migration projects and activities
         </p>
-      </div>
+      </motion.div>
       
       {/* Stats Grid */}
-      <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {mockStats.map((stat) => {
+      <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {mockStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div
+            <motion.div
               key={stat.name}
-              className="card-3d rounded-xl p-6 hover:shadow-glow transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 + (index * 0.1) }}
+              className="card-professional hover-lift p-8 group"
             >
-              <div className="flex items-center justify-between">
-                <div className="gradient-primary p-3 rounded-lg shadow-md">
+              <div className="flex items-center justify-between mb-6">
+                <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all">
                   <Icon className="h-8 w-8 text-white" />
                 </div>
-                <span
-                  className={`text-sm ${
-                    stat.change.startsWith('+')
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}
-                >
-                  {stat.change}
-                </span>
+                <div className={`status-${stat.change.startsWith('+') ? 'success' : 'error'} px-3 py-2 text-sm font-bold`}>
+                  {stat.percentage}
+                </div>
               </div>
-              <h3 className="mt-4 text-2xl font-bold text-slate-800">
+              <h3 className="text-3xl font-black text-gray-900 mb-2">
                 {stat.value}
               </h3>
               
-              <p className="text-sm font-medium text-slate-800">
+              <p className="text-lg font-bold text-gray-800 mb-3">
                 {stat.name}
               </p>
-              <p className="text-xs text-slate-700 font-medium mt-1">
+              <p className="text-sm text-gray-600 font-medium leading-relaxed">
                 {stat.description}
               </p>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
       
       {/* Recent Activity */}
-      <div className="card-3d rounded-xl p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-800">
+      <motion.div 
+        className="card-professional p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.3 }}
+      >
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="text-display text-2xl">
             Recent Activity
           </h2>
-          <button className="flex items-center text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="btn-primary flex items-center text-base font-bold px-6 py-3"
+          >
             View All
-            <ArrowRight className="ml-1 h-4 w-4" />
-          </button>
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </motion.button>
         </div>
 
-        <div className="space-y-3">
-          {mockRecentActivity.map((activity) => (
-            <div
+        <div className="space-y-4">
+          {mockRecentActivity.map((activity, index) => (
+            <motion.div
               key={activity.id}
-              className="list-item-3d flex items-center justify-between rounded-lg p-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.4 + (index * 0.1) }}
+              className="card-professional hover-lift flex items-center justify-between p-6"
             >
               <div>
-                <h4 className="font-semibold text-slate-800">
+                <h4 className="font-black text-lg text-gray-900 mb-2">
                   {activity.project}
                 </h4>
-                <p className="text-sm font-medium text-slate-800">
+                <p className="text-base font-semibold text-gray-600">
                   {activity.timestamp}
                 </p>
               </div>
               <span
-                className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                  activity.status === 'success'
-                    ? 'bg-green-100 text-green-800 border border-green-200'
+                className={`${activity.status === 'success'
+                    ? 'status-success'
                     : activity.status === 'warning'
-                    ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                    : 'bg-blue-100 text-blue-800 border border-blue-200'
-                }`}
+                    ? 'status-warning'
+                    : 'status-success'
+                } text-base font-bold px-4 py-2`}
               >
                 {activity.type.split('_').join(' ')}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
         </>
       )}
       
