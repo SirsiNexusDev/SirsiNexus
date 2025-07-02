@@ -3,28 +3,28 @@
 :root {
   /* === PROFESSIONAL COLOR PALETTE === */
   
-  /* Primary Brand Colors */
-  --sirsi-50: #f0f9ff;
-  --sirsi-100: #e0f2fe;
-  --sirsi-200: #bae6fd;
-  --sirsi-300: #7dd3fc;
-  --sirsi-400: #38bdf8;
-  --sirsi-500: #0ea5e9;
-  --sirsi-600: #0284c7;
-  --sirsi-700: #0369a1;
-  --sirsi-800: #075985;
-  --sirsi-900: #0c4a6e;
-  --sirsi-950: #082f49;
+  /* Sirsi Brand Colors - Refined Green Primary */
+  --sirsi-50: #f0fdf4;
+  --sirsi-100: #dcfce7;
+  --sirsi-200: #bbf7d0;
+  --sirsi-300: #86efac;
+  --sirsi-400: #4ade80;
+  --sirsi-500: #059669;
+  --sirsi-600: #047857;
+  --sirsi-700: #065f46;
+  --sirsi-800: #064e3b;
+  --sirsi-900: #022c22;
+  --sirsi-950: #052e16;
 
-  /* Secondary Accent Colors */
-  --accent-purple: #8b5cf6;
-  --accent-purple-light: #a78bfa;
-  --accent-emerald: #10b981;
-  --accent-emerald-light: #34d399;
-  --accent-amber: #f59e0b;
-  --accent-amber-light: #fbbf24;
-  --accent-rose: #f43f5e;
-  --accent-rose-light: #fb7185;
+  /* Secondary Accent Colors - Purple Accent for Sirsi */
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #8b5cf6;
+  --accent-emerald: #059669;
+  --accent-emerald-light: #10b981;
+  --accent-amber: #d97706;
+  --accent-amber-light: #f59e0b;
+  --accent-rose: #dc2626;
+  --accent-rose-light: #ef4444;
 
   /* Professional Grays */
   --gray-50: #f8fafc;

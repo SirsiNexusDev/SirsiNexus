@@ -68,7 +68,7 @@ export const NotificationDropdown: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="btn-modern rounded-full p-2 hover:scale-105 transition-all"
+        className="card-professional p-3 rounded-xl hover-glow transition-all relative"
       >
         <Bell className="h-5 w-5 text-slate-800" />
         {unreadCount > 0 && (

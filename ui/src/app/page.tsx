@@ -210,11 +210,11 @@ export default function DashboardPage() {
         <>
           {/* Quick Actions - at the very top */}
           <div className="mb-12">
-          <div className="mb-8 animate-slide-up">
-            <h2 className="text-display text-3xl mb-4">
+          <div className="mb-6 animate-slide-up">
+            <h2 className="text-display text-2xl mb-3">
               Quick Actions
             </h2>
-            <p className="text-xl text-gray-700 font-semibold">
+            <p className="text-lg text-gray-600 font-medium">
               Get started with common tasks
             </p>
           </div>
@@ -274,11 +274,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Dashboard Section */}
-      <div className="mb-12 animate-slide-up">
-        <h1 className="text-display text-4xl mb-4">
+      <div className="mb-8 animate-slide-up">
+        <h1 className="text-display text-3xl mb-3">
           Dashboard
         </h1>
-        <p className="text-xl text-gray-700 font-semibold">
+        <p className="text-lg text-gray-600 font-medium">
           Overview of your migration projects and activities
         </p>
       </div>
