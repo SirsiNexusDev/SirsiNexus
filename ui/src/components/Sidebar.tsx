@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import {
   Home,
   Wand2,
@@ -60,19 +59,12 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <motion.div
-      initial={{ x: -300, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="sidebar-glass fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block"
-    >
-    <nav className="p-6 space-y-2">
+    <div className="sidebar-glass fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block">
+      <nav className="p-6 space-y-2">
         {/* Wizards Section */}
         <div className="mb-6">
-          <motion.button
+          <button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
             className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-gray-900 card-professional hover-lift"
           >
             <div className="flex items-center">
@@ -81,35 +73,25 @@ export const Sidebar: React.FC = () => {
               </div>
               <span className="text-gradient">Wizards</span>
             </div>
-            <motion.div
-              animate={{ rotate: wizardsExpanded ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
+            <div className={`transition-transform duration-200 ${wizardsExpanded ? 'rotate-180' : ''}`}>
               <ChevronDown className="h-5 w-5 text-gray-600" />
-            </motion.div>
+            </div>
           </button>
           
           {wizardsExpanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="ml-4 mt-4 space-y-3"
-            >
+            <div className="ml-4 mt-4 space-y-3 animate-fade-in">
               {wizards.map((wizard) => {
                 const WizardIcon = wizard.icon;
                 const isActive = activeItem === wizard.path;
                 return (
-                  <motion.a
+                  <a
                     key={wizard.path}
                     href={wizard.path}
                     onClick={() => {
                       setActiveItem(wizard.path);
                       window.location.href = wizard.path;
                     }}
-                    whileHover={{ scale: 1.02, x: 4 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`flex items-start px-4 py-4 text-sm rounded-xl transition-all ${
+                    className={`flex items-start px-4 py-4 text-sm rounded-xl transition-all hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98] ${
                       isActive
                         ? 'card-gradient text-white shadow-primary'
                         : 'card-professional hover-lift text-gray-700 hover:text-gray-900'
@@ -124,7 +106,7 @@ export const Sidebar: React.FC = () => {
                         isActive ? 'text-white/80' : 'text-gray-500'
                       }`}>{wizard.description}</div>
                     </div>
-                  </motion.a>
+                  </a>
                 );
               })}
             </div>
@@ -139,11 +121,9 @@ export const Sidebar: React.FC = () => {
           if (isMigrationSteps) {
             return (
               <div key={item.path}>
-                <motion.button
+                <button
                   onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all ${
+                  className={`w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isActive
                       ? 'card-gradient text-white shadow-primary'
                       : 'text-gray-700 card-professional hover-lift'
@@ -159,12 +139,9 @@ export const Sidebar: React.FC = () => {
                     </div>
                     <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
                   </div>
-                  <motion.div
-                    animate={{ rotate: migrationStepsExpanded ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
+                  <div className={`transition-transform duration-200 ${migrationStepsExpanded ? 'rotate-180' : ''}`}>
                     <ChevronDown className="h-5 w-5" />
-                  </motion.div>
+                  </div>
                 </button>
                 
                 {migrationStepsExpanded && (
@@ -204,16 +181,14 @@ export const Sidebar: React.FC = () => {
           }
           
           return (
-            <motion.a
+            <a
               key={item.path}
               href={item.path}
               onClick={() => {
                 setActiveItem(item.path);
                 window.location.href = item.path;
               }}
-              whileHover={{ scale: 1.02, x: 4 }}
-              whileTap={{ scale: 0.98 }}
-              className={`flex items-center px-4 py-4 text-base font-bold rounded-xl transition-all ${
+              className={`flex items-center px-4 py-4 text-base font-bold rounded-xl transition-all hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98] ${
                 isActive
                   ? 'card-gradient text-white shadow-primary'
                   : 'text-gray-700 card-professional hover-lift'
@@ -227,7 +202,7 @@ export const Sidebar: React.FC = () => {
                 }`} />
               </div>
               <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
-            </motion.a>
+            </a>
           );
         })}
         
@@ -239,20 +214,18 @@ export const Sidebar: React.FC = () => {
             </h3>
           </div>
           <div className="space-y-3">
-            <motion.button 
+            <button 
               onClick={() => window.location.href = '/migration'}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full flex items-center px-4 py-4 text-base text-white card-gradient rounded-xl shadow-primary hover-glow transition-all font-bold"
+              className="w-full flex items-center px-4 py-4 text-base text-white card-gradient rounded-xl shadow-primary hover-glow transition-all font-bold hover:scale-[1.02] active:scale-[0.98]"
             >
               <div className="p-2 bg-white/20 rounded-lg mr-4">
                 <Play className="h-5 w-5 text-white" />
               </div>
               Start New Migration
-            </motion.button>
+            </button>
           </div>
         </div>
       </nav>
-    </motion.div>
+    </div>
   );
 };

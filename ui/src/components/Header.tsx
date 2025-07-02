@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
             </div>
           </div>
 
-        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
           <motion.button
             onClick={handleThemeToggle}
             whileHover={{ scale: 1.05 }}
@@ -146,6 +146,7 @@ export const Header: React.FC = () => {
                 </motion.button>
               </motion.div>
             )}
+          </div>
           </div>
         </div>
       </div>
