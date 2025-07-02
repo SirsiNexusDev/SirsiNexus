@@ -178,6 +178,37 @@
     100% { background-position: 0% 50%; }
   }
 
+  /* Animation classes */
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      height: 0;
+    }
+    to {
+      opacity: 1;
+      height: auto;
+    }
+  }
+
   /* Enhanced buttons */
   .btn-modern {
     background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);

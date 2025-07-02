@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Loader } from 'lucide-react';
 
 interface Message {
@@ -59,23 +58,15 @@ export const AgentChat: React.FC<AgentChatProps> = ({ contextualHints = [], onSe
 
   return (
     <>
-      <motion.button
+      <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-sirsi-500 text-white shadow-lg hover:bg-sirsi-600"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-sirsi-500 text-white shadow-lg hover:bg-sirsi-600 hover:scale-110 active:scale-90 transition-all"
       >
         <MessageCircle />
-      </motion.button>
+      </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-20 right-4 h-[500px] w-[360px] rounded-lg bg-white shadow-xl"
-          >
+      {isOpen && (
+        <div className="fixed bottom-20 right-4 h-[500px] w-[360px] rounded-lg bg-white shadow-xl animate-slide-up">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
               <h3 className="text-lg font-semibold text-sirsi-900">Agent Chat</h3>
@@ -153,9 +144,8 @@ export const AgentChat: React.FC<AgentChatProps> = ({ contextualHints = [], onSe
                 </button>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </>
   );
 };

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { removeNotification } from '@/store/slices/uiSlice';
 import {
@@ -58,17 +57,13 @@ export const NotificationCenter: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 space-y-4">
-      <AnimatePresence mode="popLayout">
-        {notifications.map((notification) => (
-          <motion.div
-            key={notification.id}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className={`w-96 rounded-lg border shadow-lg ${getBackgroundColor(
-              notification.type
-            )}`}
-          >
+      {notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className={`w-96 rounded-lg border shadow-lg animate-slide-up ${getBackgroundColor(
+            notification.type
+          )}`}
+        >
             <div className="flex items-start gap-3 p-4">
               {getIcon(notification.type)}
               <div className="flex-1">
@@ -86,9 +81,8 @@ export const NotificationCenter: React.FC = () => {
                 <CloseIcon className="h-5 w-5" />
               </button>
             </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+        </div>
+      ))}
     </div>
   );
 };
