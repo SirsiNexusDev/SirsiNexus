@@ -222,53 +222,65 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <button
             onClick={() => setShowCreateProjectModal(true)}
-            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
+            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
           >
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Plus className="h-4 w-4 text-emerald-700" />
-              </div>
+            <div className="terminal-prompt mb-4">
+              ~/sirsi-nexus create-project
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">New Project</h3>
-            <p className="text-sm text-gray-600">Start migration journey</p>
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 bg-emerald-500/20 rounded border border-emerald-500/30 flex items-center justify-center mr-3">
+                <Plus className="h-3 w-3 text-emerald-400" />
+              </div>
+              <h3 className="font-semibold text-white mb-0">New Project</h3>
+            </div>
+            <p className="text-sm text-emerald-200/80">Start migration journey</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
+            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
           >
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Shield className="h-4 w-4 text-purple-700" />
-              </div>
+            <div className="terminal-prompt mb-4">
+              ~/sirsi-nexus auth --demo
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Demo Sign In</h3>
-            <p className="text-sm text-gray-600">Try the platform</p>
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 bg-purple-500/20 rounded border border-purple-500/30 flex items-center justify-center mr-3">
+                <Shield className="h-3 w-3 text-purple-400" />
+              </div>
+              <h3 className="font-semibold text-white mb-0">Demo Sign In</h3>
+            </div>
+            <p className="text-sm text-purple-200/80">Try the platform</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
+            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
           >
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Zap className="h-4 w-4 text-emerald-700" />
-              </div>
+            <div className="terminal-prompt mb-4">
+              ~/sirsi-nexus select-journey
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Choose Journey</h3>
-            <p className="text-sm text-gray-600">Select your path</p>
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 bg-yellow-500/20 rounded border border-yellow-500/30 flex items-center justify-center mr-3">
+                <Zap className="h-3 w-3 text-yellow-400" />
+              </div>
+              <h3 className="font-semibold text-white mb-0">Choose Journey</h3>
+            </div>
+            <p className="text-sm text-yellow-200/80">Select your path</p>
           </button>
           
           <button
-            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
+            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
           >
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <BarChart className="h-4 w-4 text-blue-700" />
-              </div>
+            <div className="terminal-prompt mb-4">
+              ~/sirsi-nexus analytics --show
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Analytics</h3>
-            <p className="text-sm text-gray-600">View reports</p>
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 bg-blue-500/20 rounded border border-blue-500/30 flex items-center justify-center mr-3">
+                <BarChart className="h-3 w-3 text-blue-400" />
+              </div>
+              <h3 className="font-semibold text-white mb-0">Analytics</h3>
+            </div>
+            <p className="text-sm text-blue-200/80">View reports</p>
           </button>
         </div>
       </div>
@@ -290,23 +302,26 @@ export default function DashboardPage() {
           return (
             <div
               key={stat.name}
-              className="glass-ultra rounded-xl p-6 hover:focus-ring transition-all duration-300 group"
+              className="floating-panel rounded-xl p-6 transition-all duration-300 group"
             >
+              <div className="code-block mb-4">
+                status: {stat.trend === 'up' ? 'active' : 'idle'}
+              </div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Icon className="h-4 w-4 text-emerald-700" />
+                <div className="w-8 h-8 bg-emerald-500/20 rounded border border-emerald-500/30 flex items-center justify-center">
+                  <Icon className="h-4 w-4 text-emerald-400" />
                 </div>
-                <span className="text-sm font-semibold text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
+                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                   {stat.percentage}
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">
+              <h3 className="text-2xl font-bold text-white mb-2 font-mono">
                 {stat.value}
               </h3>
-              <p className="text-sm font-semibold text-gray-900 mb-2">
+              <p className="text-sm font-semibold text-emerald-200 mb-2">
                 {stat.name}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-gray-400 font-mono">
                 {stat.description}
               </p>
             </div>

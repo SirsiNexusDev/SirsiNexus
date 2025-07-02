@@ -68,15 +68,15 @@ export const Header: React.FC = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={handleThemeToggle}
-              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+              className="p-2 text-gray-300 hover:text-emerald-400 hover:bg-emerald-500/10 rounded border border-transparent hover:border-emerald-500/20 transition-all"
               title={`Current: ${theme} mode - Click to cycle`}
             >
               {theme === 'dark' ? (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-4 w-4" />
               ) : theme === 'light' ? (
-                <Moon className="h-5 w-5" />
+                <Moon className="h-4 w-4" />
               ) : (
-                <Monitor className="h-5 w-5" />
+                <Monitor className="h-4 w-4" />
               )}
             </button>
 
@@ -85,9 +85,9 @@ export const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+              className="p-2 text-gray-300 hover:text-emerald-400 hover:bg-emerald-500/10 rounded border border-transparent hover:border-emerald-500/20 transition-all"
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-4 w-4" />
             </button>
             <SettingsDropDown 
               isOpen={showSettingsMenu} 
