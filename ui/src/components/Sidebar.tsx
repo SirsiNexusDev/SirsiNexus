@@ -68,8 +68,8 @@ export const Sidebar: React.FC = () => {
             className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-gray-900 card-professional hover-lift"
           >
             <div className="flex items-center">
-              <div className="p-2 card-gradient rounded-lg mr-4">
-                <Wand2 className="h-6 w-6 text-white" />
+              <div className="p-2 card-gradient rounded-lg mr-3">
+                <Wand2 className="h-4 w-4 text-white" />
               </div>
               <span className="text-gradient">Wizards</span>
             </div>
@@ -97,9 +97,9 @@ export const Sidebar: React.FC = () => {
                         : 'card-professional hover-lift text-gray-700 hover:text-gray-900'
                     }`}
                   >
-                    <WizardIcon className={`mr-4 h-5 w-5 mt-0.5 flex-shrink-0 ${
-                      isActive ? 'text-white' : 'text-gray-500'
-                    }`} />
+                <WizardIcon className={`mr-3 h-4 w-4 mt-0.5 flex-shrink-0 ${
+                  isActive ? 'text-white' : 'text-gray-500'
+                }`} />
                     <div>
                       <div className="font-bold text-base">{wizard.label}</div>
                       <div className={`text-xs mt-1 ${
@@ -133,14 +133,14 @@ export const Sidebar: React.FC = () => {
                     <div className={`p-2 rounded-lg mr-4 ${
                       isActive ? 'bg-white/20' : 'card-gradient'
                     }`}>
-                      <Icon className={`h-6 w-6 ${
+                      <Icon className={`h-4 w-4 ${
                         isActive ? 'text-white' : 'text-white'
                       }`} />
                     </div>
                     <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
                   </div>
                   <div className={`transition-transform duration-200 ${migrationStepsExpanded ? 'rotate-180' : ''}`}>
-                    <ChevronDown className="h-5 w-5" />
+                    <ChevronDown className="h-4 w-4" />
                   </div>
                 </button>
                 
@@ -194,10 +194,10 @@ export const Sidebar: React.FC = () => {
                   : 'text-gray-700 card-professional hover-lift'
               }`}
             >
-              <div className={`p-2 rounded-lg mr-4 ${
+              <div className={`p-2 rounded-lg mr-3 ${
                 isActive ? 'bg-white/20' : 'card-gradient'
               }`}>
-                <Icon className={`h-6 w-6 ${
+                <Icon className={`h-4 w-4 ${
                   isActive ? 'text-white' : 'text-white'
                 }`} />
               </div>
@@ -218,8 +218,8 @@ export const Sidebar: React.FC = () => {
               onClick={() => window.location.href = '/migration'}
               className="w-full flex items-center px-4 py-4 text-base text-white card-gradient rounded-xl shadow-primary hover-glow transition-all font-bold hover:scale-[1.02] active:scale-[0.98]"
             >
-              <div className="p-2 bg-white/20 rounded-lg mr-4">
-                <Play className="h-5 w-5 text-white" />
+              <div className="p-2 bg-white/20 rounded-lg mr-3">
+                <Play className="h-4 w-4 text-white" />
               </div>
               Start New Migration
             </button>

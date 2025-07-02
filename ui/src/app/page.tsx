@@ -219,55 +219,55 @@ export default function DashboardPage() {
             </p>
           </div>
         
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <button
             onClick={() => setShowCreateProjectModal(true)}
-            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
           >
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Plus className="h-5 w-5 text-gray-600" />
+            <div className="flex items-center mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Plus className="h-4 w-4 text-emerald-700" />
               </div>
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">New Project</h3>
+            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">New Project</h3>
             <p className="text-sm text-gray-600">Start migration journey</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
           >
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Shield className="h-5 w-5 text-gray-600" />
+            <div className="flex items-center mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Shield className="h-4 w-4 text-purple-700" />
               </div>
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">Demo Sign In</h3>
+            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Demo Sign In</h3>
             <p className="text-sm text-gray-600">Try the platform</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
           >
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Zap className="h-5 w-5 text-gray-600" />
+            <div className="flex items-center mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Zap className="h-4 w-4 text-emerald-700" />
               </div>
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">Choose Journey</h3>
+            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Choose Journey</h3>
             <p className="text-sm text-gray-600">Select your path</p>
           </button>
           
           <button
-            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+            className="glass-ultra rounded-xl p-6 text-left hover:focus-ring transition-all duration-300 group"
           >
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <BarChart className="h-5 w-5 text-gray-600" />
+            <div className="flex items-center mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <BarChart className="h-4 w-4 text-blue-700" />
               </div>
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">Analytics</h3>
+            <h3 className="font-semibold text-gray-900 mb-1 text-gradient">Analytics</h3>
             <p className="text-sm text-gray-600">View reports</p>
           </button>
         </div>
@@ -284,26 +284,26 @@ export default function DashboardPage() {
       </div>
       
       {/* Stats Grid */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {mockStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.name}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="glass-ultra rounded-xl p-6 hover:focus-ring transition-all duration-300 group"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-teal-600" />
+                <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Icon className="h-4 w-4 text-emerald-700" />
                 </div>
-                <span className="text-sm font-medium text-teal-600">
+                <span className="text-sm font-semibold text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
                   {stat.percentage}
                 </span>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-1">
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">
                 {stat.value}
               </h3>
-              <p className="text-sm font-medium text-gray-900 mb-2">
+              <p className="text-sm font-semibold text-gray-900 mb-2">
                 {stat.name}
               </p>
               <p className="text-sm text-gray-600">
