@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSession, signIn } from 'next-auth/react';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SignInModal } from '@/components/SignInModal';
 import { MigrationWelcomeModal } from '@/components/MigrationWelcomeModal';
@@ -211,33 +210,19 @@ export default function DashboardPage() {
         <>
           {/* Quick Actions - at the very top */}
           <div className="mb-12">
-          <div className="mb-8">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-display text-3xl mb-4"
-            >
+          <div className="mb-8 animate-slide-up">
+            <h2 className="text-display text-3xl mb-4">
               Quick Actions
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-xl text-gray-700 font-semibold"
-            >
+            </h2>
+            <p className="text-xl text-gray-700 font-semibold">
               Get started with common tasks
-            </motion.p>
+            </p>
           </div>
         
         <div className="grid-professional">
-          <motion.button
+          <button
             onClick={() => setShowCreateProjectModal(true)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="card-professional hover-lift p-8 group"
+            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
           >
             <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all mb-6">
               <Plus className="h-8 w-8 text-white" />
@@ -246,16 +231,11 @@ export default function DashboardPage() {
               <h3 className="font-black text-xl text-gray-900 mb-2">New Project</h3>
               <p className="text-base font-semibold text-gray-600">Start migration journey</p>
             </div>
-          </motion.button>
+          </button>
           
-          <motion.button
+          <button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="card-professional hover-lift p-8 group"
+            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
           >
             <div className="bg-gradient-secondary p-4 rounded-2xl shadow-secondary group-hover:shadow-xl transition-all mb-6">
               <Shield className="h-8 w-8 text-white" />
@@ -264,16 +244,11 @@ export default function DashboardPage() {
               <h3 className="font-black text-xl text-gray-900 mb-2">Demo Sign In</h3>
               <p className="text-base font-semibold text-gray-600">Try the platform</p>
             </div>
-          </motion.button>
+          </button>
           
-          <motion.button
+          <button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="card-professional hover-lift p-8 group"
+            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
           >
             <div className="bg-gradient-accent p-4 rounded-2xl shadow-purple group-hover:shadow-xl transition-all mb-6">
               <Zap className="h-8 w-8 text-white" />
@@ -282,15 +257,10 @@ export default function DashboardPage() {
               <h3 className="font-black text-xl text-gray-900 mb-2">Choose Journey</h3>
               <p className="text-base font-semibold text-gray-600">Select your path</p>
             </div>
-          </motion.button>
+          </button>
           
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="card-professional hover-lift p-8 group"
+          <button
+            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
           >
             <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all mb-6">
               <BarChart className="h-8 w-8 text-white" />
@@ -299,36 +269,28 @@ export default function DashboardPage() {
               <h3 className="font-black text-xl text-gray-900 mb-2">Analytics</h3>
               <p className="text-base font-semibold text-gray-600">View reports</p>
             </div>
-          </motion.button>
+          </button>
         </div>
       </div>
 
       {/* Dashboard Section */}
-      <motion.div 
-        className="mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
+      <div className="mb-12 animate-slide-up">
         <h1 className="text-display text-4xl mb-4">
           Dashboard
         </h1>
         <p className="text-xl text-gray-700 font-semibold">
           Overview of your migration projects and activities
         </p>
-      </motion.div>
+      </div>
       
       {/* Stats Grid */}
       <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {mockStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <motion.div
+            <div
               key={stat.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 + (index * 0.1) }}
-              className="card-professional hover-lift p-8 group"
+              className="card-professional hover-lift p-8 group animate-slide-up"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all">
@@ -348,41 +310,29 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-600 font-medium leading-relaxed">
                 {stat.description}
               </p>
-            </motion.div>
+            </div>
           );
         })}
       </div>
 
       
       {/* Recent Activity */}
-      <motion.div 
-        className="card-professional p-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.3 }}
-      >
+      <div className="card-professional p-8 animate-slide-up">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-display text-2xl">
             Recent Activity
           </h2>
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="btn-primary flex items-center text-base font-bold px-6 py-3"
-          >
+          <button className="btn-primary flex items-center text-base font-bold px-6 py-3 hover:scale-[1.02] active:scale-[0.98] transition-all">
             View All
             <ArrowRight className="ml-2 h-5 w-5" />
-          </motion.button>
+          </button>
         </div>
 
         <div className="space-y-4">
           {mockRecentActivity.map((activity, index) => (
-            <motion.div
+            <div
               key={activity.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.4 + (index * 0.1) }}
-              className="card-professional hover-lift flex items-center justify-between p-6"
+              className="card-professional hover-lift flex items-center justify-between p-6 animate-slide-up"
             >
               <div>
                 <h4 className="font-black text-lg text-gray-900 mb-2">
@@ -402,10 +352,10 @@ export default function DashboardPage() {
               >
                 {activity.type.split('_').join(' ')}
               </span>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
         </>
       )}
       
