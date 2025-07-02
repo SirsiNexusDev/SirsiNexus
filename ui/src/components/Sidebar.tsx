@@ -65,7 +65,7 @@ export const Sidebar: React.FC = () => {
         <div className="mb-6">
           <button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-gray-900 card-professional hover-lift"
+            className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-white glass-ultra hover:glass-focus"
           >
             <div className="flex items-center">
               <div className="p-2 card-gradient rounded-lg mr-3">

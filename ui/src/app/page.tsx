@@ -211,10 +211,10 @@ export default function DashboardPage() {
           {/* Quick Actions - at the very top */}
           <div className="mb-12">
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-2xl font-semibold text-white mb-2">
               Quick Actions
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-300">
               Get started with common tasks
             </p>
           </div>

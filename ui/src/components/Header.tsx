@@ -57,10 +57,10 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-gray-900">
+            <h1 className="text-xl font-bold text-white">
               Sirsi Nexus
             </h1>
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+            <span className="text-xs text-gray-300 bg-white/10 px-2 py-1 rounded border border-white/20">
               v0.3.2
             </span>
           </div>
