@@ -210,104 +210,103 @@ export default function DashboardPage() {
         <>
           {/* Quick Actions - at the very top */}
           <div className="mb-12">
-          <div className="mb-6 animate-slide-up">
-            <h2 className="text-display text-2xl mb-3">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               Quick Actions
             </h2>
-            <p className="text-lg text-gray-600 font-medium">
+            <p className="text-gray-600">
               Get started with common tasks
             </p>
           </div>
         
-        <div className="grid-professional">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <button
             onClick={() => setShowCreateProjectModal(true)}
-            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
+            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all mb-6">
-              <Plus className="h-8 w-8 text-white" />
+            <div className="flex items-center mb-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Plus className="h-5 w-5 text-gray-600" />
+              </div>
             </div>
-            <div className="text-left">
-              <h3 className="font-black text-xl text-gray-900 mb-2">New Project</h3>
-              <p className="text-base font-semibold text-gray-600">Start migration journey</p>
-            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">New Project</h3>
+            <p className="text-sm text-gray-600">Start migration journey</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
+            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div className="bg-gradient-secondary p-4 rounded-2xl shadow-secondary group-hover:shadow-xl transition-all mb-6">
-              <Shield className="h-8 w-8 text-white" />
+            <div className="flex items-center mb-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Shield className="h-5 w-5 text-gray-600" />
+              </div>
             </div>
-            <div className="text-left">
-              <h3 className="font-black text-xl text-gray-900 mb-2">Demo Sign In</h3>
-              <p className="text-base font-semibold text-gray-600">Try the platform</p>
-            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">Demo Sign In</h3>
+            <p className="text-sm text-gray-600">Try the platform</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
+            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div className="bg-gradient-accent p-4 rounded-2xl shadow-purple group-hover:shadow-xl transition-all mb-6">
-              <Zap className="h-8 w-8 text-white" />
+            <div className="flex items-center mb-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Zap className="h-5 w-5 text-gray-600" />
+              </div>
             </div>
-            <div className="text-left">
-              <h3 className="font-black text-xl text-gray-900 mb-2">Choose Journey</h3>
-              <p className="text-base font-semibold text-gray-600">Select your path</p>
-            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">Choose Journey</h3>
+            <p className="text-sm text-gray-600">Select your path</p>
           </button>
           
           <button
-            className="card-professional hover-lift p-8 group hover:scale-[1.02] active:scale-[0.98] transition-all animate-slide-up"
+            className="bg-white border border-gray-200 rounded-lg p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all mb-6">
-              <BarChart className="h-8 w-8 text-white" />
+            <div className="flex items-center mb-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <BarChart className="h-5 w-5 text-gray-600" />
+              </div>
             </div>
-            <div className="text-left">
-              <h3 className="font-black text-xl text-gray-900 mb-2">Analytics</h3>
-              <p className="text-base font-semibold text-gray-600">View reports</p>
-            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">Analytics</h3>
+            <p className="text-sm text-gray-600">View reports</p>
           </button>
         </div>
       </div>
 
       {/* Dashboard Section */}
-      <div className="mb-8 animate-slide-up">
-        <h1 className="text-display text-3xl mb-3">
+      <div className="mb-6">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">
           Dashboard
         </h1>
-        <p className="text-lg text-gray-600 font-medium">
+        <p className="text-gray-600">
           Overview of your migration projects and activities
         </p>
       </div>
       
       {/* Stats Grid */}
-      <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {mockStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.name}
-              className="card-professional hover-lift p-8 group animate-slide-up"
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 hover:shadow-sm transition-all"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="card-gradient p-4 rounded-2xl shadow-primary group-hover:shadow-xl transition-all">
-                  <Icon className="h-8 w-8 text-white" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center">
+                  <Icon className="h-5 w-5 text-teal-600" />
                 </div>
-                <div className={`status-${stat.change.startsWith('+') ? 'success' : 'error'} px-3 py-2 text-sm font-bold`}>
+                <span className="text-sm font-medium text-teal-600">
                   {stat.percentage}
-                </div>
+                </span>
               </div>
-              <h3 className="text-3xl font-black text-gray-900 mb-2">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-1">
                 {stat.value}
               </h3>
-              
-              <p className="text-lg font-bold text-gray-800 mb-3">
+              <p className="text-sm font-medium text-gray-900 mb-2">
                 {stat.name}
               </p>
-              <p className="text-sm text-gray-600 font-medium leading-relaxed">
+              <p className="text-sm text-gray-600">
                 {stat.description}
               </p>
             </div>
