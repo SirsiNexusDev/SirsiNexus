@@ -161,12 +161,12 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center">
-        <div className="w-16 h-16 bg-sirsi-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Key className="h-8 w-8 text-sirsi-600" />
+      <div className="text-center slide-up">
+        <div className="w-20 h-20 card-gradient rounded-full flex items-center justify-center mx-auto mb-6 hover-glow">
+          <Key className="h-10 w-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{config.title}</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">{config.description}</p>
+        <h2 className="text-display text-3xl mb-4">{config.title}</h2>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto font-medium">{config.description}</p>
       </div>
 
       {/* Environment Configuration Status */}
@@ -174,10 +174,10 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-sirsi-50 to-blue-50 rounded-lg p-6 border border-sirsi-200"
+          className="card-professional hover-lift p-8 border-gradient"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Settings className="h-5 w-5 mr-2 text-sirsi-600" />
+          <h3 className="text-xl font-bold text-gradient mb-6 flex items-center">
+            <Settings className="h-6 w-6 mr-3 text-sirsi-600" />
             Environment Configuration Summary
           </h3>
           
@@ -187,8 +187,8 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
                 <h4 className="font-medium text-gray-900">
                   {wizardType === 'migration' ? 'Source Environment' : 'Target Environment'}
                 </h4>
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center space-x-3">
+                <div className="card-professional p-6 hover-lift">
+                  <div className="flex items-center space-x-4">
                     <div className={`p-2 rounded-lg ${
                       sourceCredential.type === 'aws' ? 'bg-orange-100 text-orange-700' :
                       sourceCredential.type === 'azure' ? 'bg-blue-100 text-blue-700' :
@@ -239,7 +239,7 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
       )}
 
       {/* Source Environment Credentials */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="card-professional hover-lift p-8">
         <CredentialSelector
           title={config.sourceTitle}
           description={config.sourceDescription}
@@ -252,7 +252,7 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
 
       {/* Target Environment Credentials (if needed) */}
       {config.targetTitle && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="card-professional hover-lift p-8">
           <CredentialSelector
             title={config.targetTitle}
             description={config.targetDescription!}
@@ -269,7 +269,7 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 border border-red-200 rounded-lg p-4"
+          className="notification-error slide-up"
         >
           <div className="flex items-center space-x-2 mb-3">
             <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -287,12 +287,14 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
       )}
 
       {/* Security Notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start space-x-3">
-          <Lock className="h-5 w-5 text-blue-600 mt-0.5" />
+      <div className="card-glass p-6 backdrop-blur">
+        <div className="flex items-start space-x-4">
+          <div className="p-3 bg-gradient-primary rounded-xl">
+            <Lock className="h-6 w-6 text-white" />
+          </div>
           <div>
-            <h4 className="font-medium text-blue-900 mb-1">Security Notice</h4>
-            <p className="text-sm text-blue-800">
+            <h4 className="font-bold text-lg text-gray-900 mb-2">Security Notice</h4>
+            <p className="text-base text-gray-700 leading-relaxed">
               Your credentials are securely stored and encrypted. We only use the minimum required permissions 
               for {wizardType} operations. You can revoke access at any time through the Credentials Management page.
             </p>
@@ -305,10 +307,10 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
         <button
           onClick={handleContinue}
           disabled={!isValid()}
-          className="flex items-center space-x-2 bg-sirsi-600 hover:bg-sirsi-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all"
+          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg px-10 py-5 font-bold flex items-center space-x-3"
         >
           <span>Continue to {wizardType === 'migration' ? 'Resource Discovery' : wizardType === 'optimization' ? 'Analysis' : 'Monitoring Setup'}</span>
-          <ArrowRight className="h-5 w-5" />
+          <ArrowRight className="h-6 w-6" />
         </button>
       </div>
     </div>
