@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { signIn } from 'next-auth/react';
 import { initiateOAuth } from '@/lib/oauth';
 import { 
   X, 
@@ -59,12 +60,25 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
     
     try {
       if (activeTab === 'signin') {
-        onSignIn({ email, password });
+        // Use NextAuth for credentials sign-in
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false
+        });
+        
+        if (result?.error) {
+          setErrors({ signin: 'Invalid credentials. Please try again.' });
+        } else {
+          // Success - the useAuthSync hook will handle Redux updates
+          onSignIn({ email, password }); // Still call for UI state management
+        }
       } else {
         onRegister?.({ name, email, password, confirmPassword });
       }
     } catch (error) {
       console.error('Authentication error:', error);
+      setErrors({ signin: 'Authentication failed. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -132,7 +146,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md glass-ultra shadow-intense rounded-xl overflow-hidden p-6 text-slate-800"
+            className="relative w-full max-w-sm md:max-w-md glass-ultra shadow-intense rounded-xl overflow-auto max-h-[90vh] p-4 text-slate-800"
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">

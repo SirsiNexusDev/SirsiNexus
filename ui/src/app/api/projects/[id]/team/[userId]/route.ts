@@ -5,8 +5,9 @@ import { db } from '@/lib/db';
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string; userId: string } }
+  { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
+  const { id, userId } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -16,7 +17,7 @@ export async function DELETE(
       );
     }
 
-    await db.teamMember.delete({ where: { id: params.userId } });
+    await db.teamMember.delete({ where: { id: userId } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

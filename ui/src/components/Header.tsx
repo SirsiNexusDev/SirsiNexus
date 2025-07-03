@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { toggleTheme } from '@/store/slices/uiSlice';
 import { logout } from '@/store/slices/authSlice';
@@ -14,6 +14,8 @@ import {
   ChevronDown,
   LogOut,
   Monitor,
+  Search,
+  Command,
 } from 'lucide-react';
 import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsDropDown } from './SettingsDropDown';
@@ -53,22 +55,35 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="nav-glass sticky top-0 z-50">
+    <header className="glass-strong sticky top-0 z-50 border-b border-white/20">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-white">
-              Sirsi Nexus
-            </h1>
-            <span className="text-xs text-gray-300 bg-white/10 px-2 py-1 rounded border border-white/20">
-              v0.3.2
-            </span>
+        <div className="flex h-20 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-xl font-black text-white">S</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-black text-slate-800">
+                  Sirsi Nexus
+                </h1>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-600 bg-gradient-to-r from-emerald-100 to-teal-100 px-3 py-1 rounded-full border border-emerald-200">
+                    v0.3.2
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-semibold text-emerald-600">Live</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
             <button
               onClick={handleThemeToggle}
-              className="p-2 text-gray-300 hover:text-emerald-400 hover:bg-emerald-500/10 rounded border border-transparent hover:border-emerald-500/20 transition-all"
+              className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-500/10 rounded border border-transparent hover:border-orange-500/20 transition-all"
               title={`Current: ${theme} mode - Click to cycle`}
             >
               {theme === 'dark' ? (
@@ -85,7 +100,7 @@ export const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-              className="p-2 text-gray-300 hover:text-emerald-400 hover:bg-emerald-500/10 rounded border border-transparent hover:border-emerald-500/20 transition-all"
+              className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-500/10 rounded border border-transparent hover:border-orange-500/20 transition-all"
             >
               <Settings className="h-4 w-4" />
             </button>
@@ -98,9 +113,9 @@ export const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+              className="flex items-center gap-3 p-2 text-slate-700 hover:bg-white/20 rounded-lg transition-all"
             >
-              <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
@@ -108,13 +123,13 @@ export const Header: React.FC = () => {
                     className="h-full w-full rounded-lg object-cover"
                   />
                 ) : (
-                  <User className="h-4 w-4 text-teal-600" />
+                  <User className="h-4 w-4 text-orange-600" />
                 )}
               </div>
               <span className="text-sm font-medium">
                 {user?.name || 'Guest User'}
               </span>
-              <ChevronDown className="h-4 w-4 text-gray-500" />
+              <ChevronDown className="h-4 w-4 text-slate-600" />
             </button>
 
             {showUserMenu && (

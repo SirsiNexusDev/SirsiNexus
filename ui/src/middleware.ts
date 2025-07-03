@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 // Add paths that should be protected by authentication
 const PROTECTED_PATHS = [
-  '/api/',
+  '/api/protected/', // Only protect specific API routes
   '/dashboard',
   '/admin',
   '/settings',
@@ -11,11 +11,14 @@ const PROTECTED_PATHS = [
 
 // Add paths that should be allowed without authentication
 const PUBLIC_PATHS = [
+  '/api/auth', // NextAuth API routes (no trailing slash)
   '/auth/login',
   '/auth/register',
   '/_next',
   '/images',
   '/favicon.ico',
+  '/test-effects',
+  '/', // Allow homepage
 ];
 
 export async function middleware(request: NextRequest) {

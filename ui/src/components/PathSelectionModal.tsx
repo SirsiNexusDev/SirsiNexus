@@ -50,12 +50,12 @@ const journeyOptions = [
     description: 'Scale your applications automatically based on demand',
     longDescription: 'Set up intelligent auto-scaling for your applications to handle traffic spikes efficiently.',
     icon: Zap,
-    color: 'purple',
-    gradient: 'from-purple-500 to-purple-600',
-    bgColor: 'bg-purple-50 hover:bg-purple-100',
-    borderColor: 'border-purple-200',
-    textColor: 'text-purple-900',
-    subtextColor: 'text-purple-700'
+    color: 'emerald',
+    gradient: 'from-emerald-500 to-emerald-600',
+    bgColor: 'bg-emerald-50 hover:bg-emerald-100',
+    borderColor: 'border-emerald-200',
+    textColor: 'text-emerald-900',
+    subtextColor: 'text-emerald-700'
   }
 ];
 
@@ -83,12 +83,12 @@ export const PathSelectionModal: React.FC<PathSelectionModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl max-h-[90vh] glass-ultra shadow-intense rounded-xl overflow-hidden text-slate-800"
+            className="relative w-full max-w-3xl glass-ultra shadow-intense rounded-xl overflow-auto max-h-[80vh] text-slate-800"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-slate-300">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-forest-500 to-purple-600 rounded-lg">
+                <div className="p-2 bg-gradient-to-r from-forest-500 to-forest-600 rounded-lg">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
                 <div>

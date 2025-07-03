@@ -25,7 +25,7 @@ export const Breadcrumb: React.FC = () => {
         <li>
           <Link
             href="/"
-            className="flex items-center text-sm text-gray-600 hover:text-sirsi-500 dark:text-gray-400 dark:hover:text-sirsi-400"
+            className="flex items-center text-caption text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors"
           >
               <Home className="mr-1 h-4 w-4" />
             Home
@@ -33,14 +33,14 @@ export const Breadcrumb: React.FC = () => {
         </li>
         {segments.map((segment, index) => (
           <React.Fragment key={segment.href}>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="h-4 w-4 text-slate-400" />
             <li>
               <Link
                 href={segment.href}
-                className={`text-sm ${
+                className={`text-caption transition-colors ${
                   index === segments.length - 1
-                    ? 'font-medium text-sirsi-500'
-                    : 'text-gray-600 hover:text-sirsi-500 dark:text-gray-400 dark:hover:text-sirsi-400'
+                    ? 'text-emerald-600 nav-item'
+                    : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
                 }`}
               >
                 {segment.name}

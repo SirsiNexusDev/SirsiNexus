@@ -15,8 +15,9 @@ const taskUpdateSchema = z.object({
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string; taskId: string } }
+  { params }: { params: Promise<{ id: string; taskId: string }> }
 ) {
+  const { id, taskId } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -26,7 +27,7 @@ export async function GET(
       );
     }
 
-    const task = await db.task.findUnique({ where: { id: params.taskId } });
+    const task = await db.task.findUnique({ where: { id: taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -47,8 +48,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string; taskId: string } }
+  { params }: { params: Promise<{ id: string; taskId: string }> }
 ) {
+  const { id, taskId } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -58,7 +60,7 @@ export async function PATCH(
       );
     }
 
-    const task = await db.task.findUnique({ where: { id: params.taskId } });
+    const task = await db.task.findUnique({ where: { id: taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -71,7 +73,7 @@ export async function PATCH(
     const validatedData = taskUpdateSchema.parse(body);
 
     const updatedTask = await db.task.update({
-      where: { id: params.taskId },
+      where: { id: taskId },
       data: validatedData,
     });
 
@@ -94,8 +96,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string; taskId: string } }
+  { params }: { params: Promise<{ id: string; taskId: string }> }
 ) {
+  const { id, taskId } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -105,7 +108,7 @@ export async function DELETE(
       );
     }
 
-    const task = await db.task.findUnique({ where: { id: params.taskId } });
+    const task = await db.task.findUnique({ where: { id: taskId } });
 
     if (!task) {
       return NextResponse.json(
@@ -114,7 +117,7 @@ export async function DELETE(
       );
     }
 
-    await db.task.delete({ where: { id: params.taskId } });
+    await db.task.delete({ where: { id: taskId } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

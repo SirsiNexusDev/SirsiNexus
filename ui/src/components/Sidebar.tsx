@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Home,
   Wand2,
@@ -13,10 +14,11 @@ import {
   HelpCircle,
   Play,
   ChevronDown,
-  ChevronRight,
   TrendingUp,
   Zap,
   ArrowRight,
+  Sparkles,
+  Rocket,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -26,7 +28,6 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { label: 'Overview', icon: Home, path: '/' },
   { label: 'Demo Scenarios', icon: Play, path: '/demos' },
   { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
   { label: 'Projects', icon: Folder, path: '/projects' },
@@ -38,9 +39,9 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 export const Sidebar: React.FC = () => {
-  const [activeItem, setActiveItem] = React.useState('/');
+  const pathname = usePathname();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
-  const [wizardsExpanded, setWizardsExpanded] = React.useState(false);
+  const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
   
   const migrationSteps = [
     { label: 'PLAN', path: '/migration/plan' },
@@ -53,177 +54,222 @@ export const Sidebar: React.FC = () => {
   ];
 
   const wizards = [
-    { label: 'Migration Wizard', icon: ArrowRight, path: '/migration', description: 'Complete infrastructure migration' },
-    { label: 'Optimization Wizard', icon: TrendingUp, path: '/optimization', description: 'Cost and performance optimization' },
-    { label: 'Auto-Scaling Wizard', icon: Zap, path: '/scaling', description: 'Configure intelligent auto-scaling' },
+    { 
+      label: 'Migration Wizard', 
+      icon: ArrowRight, 
+      path: '/migration', 
+      description: 'Complete infrastructure migration',
+      gradient: 'from-blue-500 to-purple-600'
+    },
+    { 
+      label: 'Optimization Wizard', 
+      icon: TrendingUp, 
+      path: '/optimization', 
+      description: 'Cost and performance optimization',
+      gradient: 'from-emerald-500 to-teal-600'
+    },
+    { 
+      label: 'Auto-Scaling Wizard', 
+      icon: Zap, 
+      path: '/scaling', 
+      description: 'Configure intelligent auto-scaling',
+      gradient: 'from-amber-500 to-orange-600'
+    },
   ];
 
   return (
-    <div className="sidebar-glass fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block">
-      <nav className="p-6 space-y-2">
-        {/* Wizards Section */}
+    <div className="glass-strong fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block rounded-r-2xl border-r-0">
+      <nav className="p-6 space-y-4">
+        {/* Overview Section */}
+        <div className="glass rounded-xl p-4 mb-6">
+          <button
+            onClick={() => window.location.pathname !== '/' ? window.location.href = '/' : null}
+            className={`w-full text-left transition-all duration-300 group ${
+              pathname === '/'
+                ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg rounded-xl p-4 -m-4'
+                : 'hover:bg-white/20 rounded-xl p-4 -m-4'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                pathname === '/'
+                  ? 'bg-white/20'
+                  : 'bg-gradient-to-r from-emerald-500 to-green-600'
+              }`}>
+                <Home className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 className={`text-lg ${pathname === '/' ? 'nav-item-active' : 'text-headline'}`}>Overview</h2>
+                <p className={`text-xs ${pathname === '/' ? 'text-white/80' : 'text-caption'}`}>Dashboard and insights</p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* Smart Wizards Section */}
         <div className="mb-6">
           <button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            className="w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all text-white glass-ultra hover:glass-focus"
+            className="w-full glass glass-hover rounded-xl p-4 mb-4"
           >
-            <div className="flex items-center">
-              <div className="p-2 card-gradient rounded-lg mr-3">
-                <Wand2 className="h-4 w-4 text-white" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                  <Wand2 className="h-4 w-4 text-white" />
+                </div>
+                <span className="nav-item">Smart Wizards</span>
               </div>
-              <span className="text-gradient">Wizards</span>
-            </div>
-            <div className={`transition-transform duration-200 ${wizardsExpanded ? 'rotate-180' : ''}`}>
-              <ChevronDown className="h-5 w-5 text-gray-600" />
+              <ChevronDown className={`h-4 w-4 text-slate-600 transition-transform ${wizardsExpanded ? 'rotate-180' : ''}`} />
             </div>
           </button>
           
           {wizardsExpanded && (
-            <div className="ml-4 mt-4 space-y-3 animate-fade-in">
+            <div className="space-y-3 fade-in">
               {wizards.map((wizard) => {
                 const WizardIcon = wizard.icon;
-                const isActive = activeItem === wizard.path;
+                const isActive = pathname === wizard.path;
                 return (
-                  <a
+                  <button
                     key={wizard.path}
-                    href={wizard.path}
                     onClick={() => {
-                      setActiveItem(wizard.path);
                       window.location.href = wizard.path;
                     }}
-                    className={`flex items-start px-4 py-4 text-sm rounded-xl transition-all hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98] ${
+                    className={`w-full p-4 rounded-xl transition-all duration-300 group ${
                       isActive
-                        ? 'card-gradient text-white shadow-primary'
-                        : 'card-professional hover-lift text-gray-700 hover:text-gray-900'
+                        ? `bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg scale-105`
+                        : 'glass glass-hover text-slate-700'
                     }`}
                   >
-                <WizardIcon className={`mr-3 h-4 w-4 mt-0.5 flex-shrink-0 ${
-                  isActive ? 'text-white' : 'text-gray-500'
-                }`} />
-                    <div>
-                      <div className="font-bold text-base">{wizard.label}</div>
-                      <div className={`text-xs mt-1 ${
-                        isActive ? 'text-white/80' : 'text-gray-500'
-                      }`}>{wizard.description}</div>
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                        isActive 
+                          ? 'bg-white/20' 
+                          : `bg-gradient-to-r ${wizard.gradient}`
+                      }`}>
+                        <WizardIcon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-white'}`} />
+                      </div>
+                      <div className="text-left">
+                        <div className={`text-sm ${isActive ? 'nav-item-active' : 'card-title'}`}>{wizard.label}</div>
+                        <div className={`text-xs mt-1 ${isActive ? 'text-white/80' : 'text-caption'}`}>
+                          {wizard.description}
+                        </div>
+                      </div>
                     </div>
-                  </a>
+                  </button>
                 );
               })}
             </div>
           )}
         </div>
 
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeItem === item.path;
-          const isMigrationSteps = item.path === '/steps';
-          
-          if (isMigrationSteps) {
-            return (
-              <div key={item.path}>
-                <button
-                  onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
-                  className={`w-full flex items-center justify-between px-4 py-4 text-base font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] ${
-                    isActive
-                      ? 'card-gradient text-white shadow-primary'
-                      : 'text-gray-700 card-professional hover-lift'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <div className={`p-2 rounded-lg mr-4 ${
-                      isActive ? 'bg-white/20' : 'card-gradient'
-                    }`}>
-                      <Icon className={`h-4 w-4 ${
-                        isActive ? 'text-white' : 'text-white'
-                      }`} />
+        {/* Navigation Items */}
+        <div className="space-y-2">
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.path;
+            const isMigrationSteps = item.path === '/steps';
+            
+            if (isMigrationSteps) {
+              return (
+                <div key={item.path} className="space-y-2">
+                  <button
+                    onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
+                    className={`w-full p-3 rounded-xl transition-all duration-300 group ${
+                      isActive
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg'
+                        : 'glass glass-hover text-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          isActive ? 'bg-white/20' : 'bg-gradient-to-r from-emerald-500 to-green-600'
+                        }`}>
+                          <Icon className="h-4 w-4 text-white" />
+                        </div>
+                        <span className="nav-item">{item.label}</span>
+                      </div>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${migrationStepsExpanded ? 'rotate-180' : ''}`} />
                     </div>
-                    <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
+                  </button>
+                  
+                  {migrationStepsExpanded && (
+                    <div className="ml-4 space-y-1 fade-in">
+                      {migrationSteps.map((step, index) => {
+                        const isCompleted = index < 2;
+                        const isCurrent = index === 2;
+                        return (
+                          <button
+                            key={step.path}
+                            onClick={() => window.location.href = step.path}
+                            className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
+                              isCurrent
+                                ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                : isCompleted
+                                ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                : 'glass-subtle text-slate-600 hover:text-slate-800'
+                            }`}
+                          >
+                            <span>{step.label}</span>
+                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                              isCurrent
+                                ? 'bg-blue-200 text-blue-800'
+                                : isCompleted
+                                ? 'bg-emerald-200 text-emerald-800'
+                                : 'bg-slate-200 text-slate-600'
+                            }`}>
+                              {isCurrent ? 'ACTIVE' : isCompleted ? 'DONE' : 'TODO'}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            
+            return (
+              <button
+                key={item.path}
+                onClick={() => {
+                  window.location.href = item.path;
+                }}
+                className={`w-full p-3 rounded-xl transition-all duration-300 group ${
+                  isActive
+                    ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg'
+                    : 'glass glass-hover text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    isActive ? 'bg-white/20' : 'bg-gradient-to-r from-emerald-500 to-green-600'
+                  }`}>
+                    <Icon className="h-4 w-4 text-white" />
                   </div>
-                  <div className={`transition-transform duration-200 ${migrationStepsExpanded ? 'rotate-180' : ''}`}>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
-                </button>
-                
-                {migrationStepsExpanded && (
-                  <div className="ml-6 mt-2 space-y-1">
-                    {migrationSteps.map((step, index) => {
-                      const isCompleted = index < 2; // Mock some as completed
-                      const isCurrent = index === 2; // Mock current step
-                      return (
-                        <button
-                          key={step.path}
-                          onClick={() => window.location.href = step.path}
-                          className={`flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${
-                            isCurrent
-                              ? 'bg-blue-50 text-blue-700'
-                              : isCompleted
-                              ? 'text-green-700 bg-green-50'
-                              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          <span>{step.label}</span>
-                          <span className={`px-2 py-1 text-xs rounded ${
-                            isCurrent
-                              ? 'bg-blue-100 text-blue-700'
-                              : isCompleted
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-500'
-                          }`}>
-                            {isCurrent ? 'CURRENT' : isCompleted ? 'DONE' : 'TODO'}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                  <span className={`text-sm ${isActive ? 'nav-item-active' : 'nav-item'}`}>{item.label}</span>
+                </div>
+              </button>
             );
-          }
-          
-          return (
-            <a
-              key={item.path}
-              href={item.path}
-              onClick={() => {
-                setActiveItem(item.path);
-                window.location.href = item.path;
-              }}
-              className={`flex items-center px-4 py-4 text-base font-bold rounded-xl transition-all hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98] ${
-                isActive
-                  ? 'card-gradient text-white shadow-primary'
-                  : 'text-gray-700 card-professional hover-lift'
-              }`}
-            >
-              <div className={`p-2 rounded-lg mr-3 ${
-                isActive ? 'bg-white/20' : 'card-gradient'
-              }`}>
-                <Icon className={`h-4 w-4 ${
-                  isActive ? 'text-white' : 'text-white'
-                }`} />
-              </div>
-              <span className={isActive ? 'text-white' : 'text-gradient'}>{item.label}</span>
-            </a>
-          );
-        })}
+          })}
+        </div>
         
-        {/* Quick Actions */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="px-4 mb-4">
-            <h3 className="text-sm font-black text-gradient uppercase tracking-wider">
-              Quick Actions
-            </h3>
-          </div>
-          <div className="space-y-3">
-            <button 
-              onClick={() => window.location.href = '/migration'}
-              className="w-full flex items-center px-4 py-4 text-base text-white card-gradient rounded-xl shadow-primary hover-glow transition-all font-bold hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <div className="p-2 bg-white/20 rounded-lg mr-3">
-                <Play className="h-4 w-4 text-white" />
+        {/* Quick Action CTA */}
+        <div className="mt-8 pt-6">
+          <button 
+            onClick={() => window.location.href = '/migration'}
+            className="w-full btn-primary rounded-xl p-4 group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <Rocket className="h-4 w-4 text-white" />
               </div>
-              Start New Migration
-            </button>
-          </div>
+              <div className="text-left">
+                <div className="nav-item text-sm">Start Migration</div>
+                <div className="text-xs text-white/80">Begin your journey</div>
+              </div>
+            </div>
+          </button>
         </div>
       </nav>
     </div>

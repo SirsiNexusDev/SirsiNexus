@@ -225,7 +225,7 @@ export default function ScalingWizardPage() {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-green-50 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -237,7 +237,7 @@ export default function ScalingWizardPage() {
             transition={{ delay: 0.2, type: "spring" }}
             className="mb-6"
           >
-            <div className="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trophy className="h-10 w-10 text-white" />
             </div>
           </motion.div>
@@ -275,7 +275,7 @@ export default function ScalingWizardPage() {
                     className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="flex items-center justify-center w-8 h-8 bg-purple-500 rounded-full">
+                      <div className="flex items-center justify-center w-8 h-8 bg-emerald-500 rounded-full">
                         <FileText className="h-4 w-4 text-white" />
                       </div>
                       <div>
@@ -285,7 +285,7 @@ export default function ScalingWizardPage() {
                     </div>
                     <button
                       onClick={() => downloadArtifact(artifact)}
-                      className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md text-sm"
+                      className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-md text-sm"
                     >
                       <Download className="h-4 w-4" />
                       <span>Download</span>
@@ -304,7 +304,7 @@ export default function ScalingWizardPage() {
           >
             <button 
               onClick={() => window.location.reload()}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium"
             >
               Configure New Scaling
             </button>
@@ -346,7 +346,7 @@ export default function ScalingWizardPage() {
                       onClick={() => handleStepClick(step)}
                       className={`cursor-pointer rounded-lg border p-3 transition-colors ${
                         isActive 
-                          ? 'border-purple-500 bg-purple-50' 
+                          ? 'border-emerald-500 bg-emerald-50' 
                           : isCompleted
                           ? 'border-green-200 bg-green-50'
                           : 'border-gray-200 hover:border-gray-300'
@@ -357,7 +357,7 @@ export default function ScalingWizardPage() {
                           isCompleted 
                             ? 'bg-green-500' 
                             : isActive 
-                            ? 'bg-purple-500' 
+                            ? 'bg-emerald-500' 
                             : 'bg-gray-300'
                         }`}>
                           {isCompleted ? (
@@ -368,12 +368,12 @@ export default function ScalingWizardPage() {
                         </div>
                         <div className="flex-1">
                           <h3 className={`text-sm font-medium ${
-                            isActive ? 'text-purple-900' : isCompleted ? 'text-green-900' : 'text-gray-900'
+                            isActive ? 'text-emerald-900' : isCompleted ? 'text-green-900' : 'text-gray-900'
                           }`}>
                             {config.title}
                           </h3>
                           <p className={`text-xs ${
-                            isActive ? 'text-purple-600' : isCompleted ? 'text-green-600' : 'text-gray-600'
+                            isActive ? 'text-emerald-600' : isCompleted ? 'text-green-600' : 'text-gray-600'
                           }`}>
                             {config.description}
                           </p>
@@ -398,7 +398,7 @@ export default function ScalingWizardPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${(completedSteps.size / steps.length) * 100}%` }}
                       ></div>
                     </div>
@@ -416,7 +416,7 @@ export default function ScalingWizardPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
                 <div className="flex items-center space-x-3 mb-4">
-                  <div className="flex items-center justify-center w-10 h-10 bg-purple-500 rounded-full">
+                  <div className="flex items-center justify-center w-10 h-10 bg-emerald-500 rounded-full">
                     <span className="text-lg font-bold text-white">
                       {steps.indexOf(currentStep) + 1}
                     </span>
@@ -454,7 +454,7 @@ export default function ScalingWizardPage() {
 
                   {/* Business Entity Context */}
                   {currentStep !== 'environment' && scalingData && (
-                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-6 border border-emerald-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">Scaling Overview</h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="text-center">
@@ -462,7 +462,7 @@ export default function ScalingWizardPage() {
                           <div className="text-sm text-gray-600">Current Users</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">{scalingData.targetUsers.toLocaleString()}</div>
+                          <div className="text-2xl font-bold text-emerald-600">{scalingData.targetUsers.toLocaleString()}</div>
                           <div className="text-sm text-gray-600">Target Users</div>
                         </div>
                         <div className="text-center">
@@ -478,7 +478,7 @@ export default function ScalingWizardPage() {
                             <h4 className="font-medium text-gray-900 mb-2">{resource.type.replace('-', ' ').replace(/\\b\\w/g, (l: string) => l.toUpperCase())}</h4>
                             <div className="flex justify-between text-sm">
                               <span className="text-gray-600">Current: {resource.current}</span>
-                              <span className="text-purple-600 font-medium">Target: {resource.target}</span>
+                              <span className="text-emerald-600 font-medium">Target: {resource.target}</span>
                             </div>
                           </div>
                         ))}
@@ -490,8 +490,8 @@ export default function ScalingWizardPage() {
                   {currentStep !== 'environment' && (
                   <div className="bg-white rounded-lg border border-gray-200 p-6">
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Zap className="h-8 w-8 text-purple-600" />
+                      <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Zap className="h-8 w-8 text-emerald-600" />
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         {SCALING_STEPS[currentStep].title} in Progress
@@ -509,7 +509,7 @@ export default function ScalingWizardPage() {
                           };
                           handleStepComplete(currentStep, artifact);
                         }}
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium"
                       >
                         Complete {SCALING_STEPS[currentStep].title}
                       </button>
@@ -546,7 +546,7 @@ export default function ScalingWizardPage() {
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-3">
-                          <div className="flex items-center justify-center w-8 h-8 bg-purple-500 rounded-full">
+                          <div className="flex items-center justify-center w-8 h-8 bg-emerald-500 rounded-full">
                             <FileText className="h-4 w-4 text-white" />
                           </div>
                           <div>
@@ -554,7 +554,7 @@ export default function ScalingWizardPage() {
                             <p className="text-xs text-gray-500">{artifact.step} Step</p>
                           </div>
                         </div>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
                           {artifact.type}
                         </span>
                       </div>
@@ -563,7 +563,7 @@ export default function ScalingWizardPage() {
                         <span className="text-xs text-gray-500">{artifact.size}</span>
                         <button
                           onClick={() => downloadArtifact(artifact)}
-                          className="flex items-center space-x-1 text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 px-2 py-1 rounded"
+                          className="flex items-center space-x-1 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded"
                         >
                           <Download className="h-3 w-3" />
                           <span>Download</span>

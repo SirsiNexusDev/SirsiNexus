@@ -8,7 +8,7 @@ import { store } from '@/store';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
-    <SessionProvider>
+    <SessionProvider basePath="/api/auth" refetchInterval={0}>
       <Provider store={store}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange={false}>
           {children}

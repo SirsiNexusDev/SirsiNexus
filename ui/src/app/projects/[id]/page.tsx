@@ -3,15 +3,16 @@ import { ProjectDetail } from '@/components/Projects/ProjectDetail';
 import { ProjectDetailSkeleton } from '@/components/Projects/ProjectDetailSkeleton';
 
 interface ProjectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { id } = await params;
   return (
     <Suspense fallback={<ProjectDetailSkeleton />}>
-      <ProjectDetail id={params.id} />
+      <ProjectDetail id={id} />
     </Suspense>
   );
 }

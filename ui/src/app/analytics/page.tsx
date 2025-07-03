@@ -82,144 +82,170 @@ export default function AnalyticsPage() {
       <Breadcrumb />
       
       {/* Header with controls */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gradient">
-            Analytics & Reports
-          </h1>
-          <p className="text-xl text-slate-800 font-medium">
-            Comprehensive insights and metrics for your migration projects
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
-              <SelectItem value="1y">Last year</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="All Projects" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Projects</SelectItem>
-              <SelectItem value="1">E-commerce Migration</SelectItem>
-              <SelectItem value="2">Database Modernization</SelectItem>
-              <SelectItem value="3">SAP ERP Migration</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={refreshing}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          
-          <Button variant="outline" size="sm" onClick={() => handleExport('pdf')}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+      <div className="card-action-premium mb-6 border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+        <div className="card-action-glow"></div>
+        <div className="relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gradient group-hover:text-emerald-600 transition-colors">
+                Analytics & Reports
+              </h1>
+              <p className="text-xl text-slate-800 font-medium group-hover:text-slate-700 transition-colors">
+                Comprehensive insights and metrics for your migration projects
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
+                <SelectTrigger className="w-32 border-emerald-300 bg-white/90">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7d">Last 7 days</SelectItem>
+                  <SelectItem value="30d">Last 30 days</SelectItem>
+                  <SelectItem value="90d">Last 90 days</SelectItem>
+                  <SelectItem value="1y">Last year</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={selectedProject} onValueChange={setSelectedProject}>
+                <SelectTrigger className="w-40 border-emerald-300 bg-white/90">
+                  <SelectValue placeholder="All Projects" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Projects</SelectItem>
+                  <SelectItem value="1">E-commerce Migration</SelectItem>
+                  <SelectItem value="2">Database Modernization</SelectItem>
+                  <SelectItem value="3">SAP ERP Migration</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="border-emerald-300 bg-white/90 hover:bg-emerald-50"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              
+              <Button variant="outline" size="sm" onClick={() => handleExport('pdf')} className="border-emerald-300 bg-white/90 hover:bg-emerald-50">
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="glass-strong grid w-full grid-cols-6 p-1 rounded-xl">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="resources">Resources</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
-          <TabsTrigger value="compliance">Compliance</TabsTrigger>
-        </TabsList>
+        <div className="card-action-premium border-2 border-emerald-500/30 relative overflow-hidden mb-6">
+          <div className="card-action-glow"></div>
+          <div className="relative z-20">
+            <TabsList className="glass-strong grid w-full grid-cols-6 p-1 rounded-xl relative z-30">
+              <TabsTrigger value="overview" className="relative z-40">Overview</TabsTrigger>
+              <TabsTrigger value="performance" className="relative z-40">Performance</TabsTrigger>
+              <TabsTrigger value="security" className="relative z-40">Security</TabsTrigger>
+              <TabsTrigger value="resources" className="relative z-40">Resources</TabsTrigger>
+              <TabsTrigger value="team" className="relative z-40">Team</TabsTrigger>
+              <TabsTrigger value="compliance" className="relative z-40">Compliance</TabsTrigger>
+            </TabsList>
+          </div>
+        </div>
         
         <TabsContent value="overview" className="space-y-6">
           <ProjectAnalytics />
           
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold text-slate-900">Total Projects</CardTitle>
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-slate-900">24</div>
-                <p className="text-sm text-slate-700 font-medium">+2 from last month</p>
-              </CardContent>
+            <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Total Projects</CardTitle>
+                  <BarChart3 className="h-4 w-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-slate-900">24</div>
+                  <p className="text-sm text-slate-700 font-medium">+2 from last month</p>
+                </CardContent>
+              </div>
             </Card>
             
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold text-slate-900">Data Migrated</CardTitle>
-                <Database className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-slate-900">847 TB</div>
-                <p className="text-sm text-slate-700 font-medium">+12% from last month</p>
-              </CardContent>
+            <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Data Migrated</CardTitle>
+                  <Database className="h-4 w-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-slate-900">847 TB</div>
+                  <p className="text-sm text-slate-700 font-medium">+12% from last month</p>
+                </CardContent>
+              </div>
             </Card>
             
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Cost Savings</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">$2.8M</div>
-                <p className="text-xs text-muted-foreground">+18% from last quarter</p>
-              </CardContent>
+            <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium group-hover:text-emerald-600 transition-colors">Cost Savings</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">$2.8M</div>
+                  <p className="text-xs text-muted-foreground">+18% from last quarter</p>
+                </CardContent>
+              </div>
             </Card>
             
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-                <Activity className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">99.2%</div>
-                <p className="text-xs text-muted-foreground">+0.8% improvement</p>
-              </CardContent>
+            <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium group-hover:text-emerald-600 transition-colors">Success Rate</CardTitle>
+                  <Activity className="h-4 w-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">99.2%</div>
+                  <p className="text-xs text-muted-foreground">+0.8% improvement</p>
+                </CardContent>
+              </div>
             </Card>
           </div>
         </TabsContent>
         
         <TabsContent value="performance" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance Metrics</CardTitle>
-              <CardDescription>
-                Key performance indicators for migration operations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {performanceMetrics.map((metric, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{metric.name}</span>
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        metric.trend === 'up' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {metric.change}
-                      </span>
+          <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+            <div className="card-action-glow"></div>
+            <div className="relative z-10">
+              <CardHeader>
+                <CardTitle className="group-hover:text-emerald-600 transition-colors">Performance Metrics</CardTitle>
+                <CardDescription className="group-hover:text-slate-700 transition-colors">
+                  Key performance indicators for migration operations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {performanceMetrics.map((metric, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{metric.name}</span>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          metric.trend === 'up' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {metric.change}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold">{metric.value}</div>
                     </div>
-                    <div className="text-2xl font-bold">{metric.value}</div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
+                  ))}
+                </div>
+              </CardContent>
+            </div>
           </Card>
         </TabsContent>
         

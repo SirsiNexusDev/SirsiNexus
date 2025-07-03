@@ -18,8 +18,9 @@ const projectUpdateSchema = z.object({
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -29,7 +30,7 @@ export async function GET(
       );
     }
 
-    const project = await db.project.findUnique({ where: { id: params.id } });
+    const project = await db.project.findUnique({ where: { id } });
 
     if (!project) {
       return NextResponse.json(
@@ -62,8 +63,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -73,7 +75,7 @@ export async function PATCH(
       );
     }
 
-    const project = await db.project.findUnique({ where: { id: params.id } });
+    const project = await db.project.findUnique({ where: { id } });
 
     if (!project) {
       return NextResponse.json(
@@ -95,7 +97,7 @@ export async function PATCH(
     const validatedData = projectUpdateSchema.parse(body);
 
     const updatedProject = await db.project.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     });
 
@@ -118,8 +120,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -129,7 +132,7 @@ export async function DELETE(
       );
     }
 
-    const project = await db.project.findUnique({ where: { id: params.id } });
+    const project = await db.project.findUnique({ where: { id } });
 
     if (!project) {
       return NextResponse.json(
@@ -148,7 +151,7 @@ export async function DELETE(
 
     await db.project.delete({
       where: {
-        id: params.id,
+        id,
       },
     });
 

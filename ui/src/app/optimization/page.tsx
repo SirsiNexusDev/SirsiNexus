@@ -428,5 +428,4 @@ export default function OptimizationWizardPage() {
   );
 };
 
-export default OptimizationWizardPage;
 

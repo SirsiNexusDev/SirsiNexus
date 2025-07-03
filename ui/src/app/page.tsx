@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { signIn } from 'next-auth/react';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SignInModal } from '@/components/SignInModal';
 import { MigrationWelcomeModal } from '@/components/MigrationWelcomeModal';
@@ -9,6 +10,7 @@ import { OptimizationWelcomeModal } from '@/components/OptimizationWelcomeModal'
 import { ScalingWelcomeModal } from '@/components/ScalingWelcomeModal';
 import { CreateProjectModal } from '@/components/CreateProjectModal';
 import { useAppSelector, useAppDispatch } from '@/store';
+import { useAuthSync } from '@/hooks/useAuthSync';
 import { setModalState, selectJourney, markAsNotFirstTime } from '@/store/slices/uiSlice';
 import { login } from '@/store/slices/authSlice';
 import {
@@ -23,6 +25,11 @@ import {
   Users,
   Shield,
   Zap,
+  Sparkles,
+  Rocket,
+  Monitor,
+  Search,
+  Command,
 } from 'lucide-react';
 
 const mockStats = [
@@ -108,6 +115,7 @@ const mockRecentActivity = [
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
+  const authSync = useAuthSync(); // Sync NextAuth with Redux
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const welcomeModalOpen = useAppSelector((state) => state.ui.modals.welcome);
   const authModalOpen = useAppSelector((state) => state.ui.modals.auth);
@@ -209,166 +217,261 @@ export default function DashboardPage() {
       {!hideMainContent && (
         <>
           {/* Quick Actions - at the very top */}
-          <div className="mb-12">
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-white mb-2">
-              Quick Actions
-            </h2>
-            <p className="text-gray-300">
-              Get started with common tasks
-            </p>
+          <div className="mb-12 stagger-children">
+        <div className="card-action-premium mb-8 spring-entrance border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+          <div className="card-action-glow"></div>
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-headline text-3xl group-hover:text-emerald-600 transition-colors">
+                  Quick Actions
+                </h2>
+                <p className="text-subheading group-hover:text-slate-700 transition-colors">
+                  Get started with common tasks
+                </p>
+              </div>
+            </div>
           </div>
+        </div>
         
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-6">
           <button
             onClick={() => setShowCreateProjectModal(true)}
-            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
+            className="card-action-premium group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
           >
-            <div className="terminal-prompt mb-4">
-              ~/sirsi-nexus create-project
-            </div>
-            <div className="flex items-center mb-3">
-              <div className="w-6 h-6 bg-emerald-500/20 rounded border border-emerald-500/30 flex items-center justify-center mr-3">
-                <Plus className="h-3 w-3 text-emerald-400" />
+            <div className="card-action-glow"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-emerald-600">
+                  <Plus className="h-6 w-6 text-white" />
+                </div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               </div>
-              <h3 className="font-semibold text-white mb-0">New Project</h3>
+              <h3 className="card-title mb-2 group-hover:text-emerald-600 transition-colors">New Project</h3>
+              <p className="text-body group-hover:text-slate-700">Start your migration journey</p>
             </div>
-            <p className="text-sm text-emerald-200/80">Start migration journey</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
+            className="card-action-premium group relative overflow-hidden border-2 border-blue-500/30 hover:border-blue-500/60"
           >
-            <div className="terminal-prompt mb-4">
-              ~/sirsi-nexus auth --demo
-            </div>
-            <div className="flex items-center mb-3">
-              <div className="w-6 h-6 bg-purple-500/20 rounded border border-purple-500/30 flex items-center justify-center mr-3">
-                <Shield className="h-3 w-3 text-purple-400" />
+            <div className="card-action-glow"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-blue-600">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
               </div>
-              <h3 className="font-semibold text-white mb-0">Demo Sign In</h3>
+              <h3 className="card-title mb-2 group-hover:text-blue-600 transition-colors">Demo Sign In</h3>
+              <p className="text-body group-hover:text-slate-700">Try the platform features</p>
             </div>
-            <p className="text-sm text-purple-200/80">Try the platform</p>
           </button>
           
           <button
             onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
+            className="card-action-premium group relative overflow-hidden border-2 border-amber-500/30 hover:border-amber-500/60"
           >
-            <div className="terminal-prompt mb-4">
-              ~/sirsi-nexus select-journey
-            </div>
-            <div className="flex items-center mb-3">
-              <div className="w-6 h-6 bg-yellow-500/20 rounded border border-yellow-500/30 flex items-center justify-center mr-3">
-                <Zap className="h-3 w-3 text-yellow-400" />
+            <div className="card-action-glow"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-amber-600">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
               </div>
-              <h3 className="font-semibold text-white mb-0">Choose Journey</h3>
+              <h3 className="card-title mb-2 group-hover:text-amber-600 transition-colors">Choose Journey</h3>
+              <p className="text-body group-hover:text-slate-700">Select your migration path</p>
             </div>
-            <p className="text-sm text-yellow-200/80">Select your path</p>
           </button>
           
           <button
-            className="terminal-glass rounded-xl p-6 text-left transition-all duration-300 group"
+            onClick={() => window.location.href = '/analytics'}
+            className="card-action-premium group relative overflow-hidden border-2 border-purple-500/30 hover:border-purple-500/60"
           >
-            <div className="terminal-prompt mb-4">
-              ~/sirsi-nexus analytics --show
-            </div>
-            <div className="flex items-center mb-3">
-              <div className="w-6 h-6 bg-blue-500/20 rounded border border-blue-500/30 flex items-center justify-center mr-3">
-                <BarChart className="h-3 w-3 text-blue-400" />
+            <div className="card-action-glow"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-purple-600">
+                  <BarChart className="h-6 w-6 text-white" />
+                </div>
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
               </div>
-              <h3 className="font-semibold text-white mb-0">Analytics</h3>
+              <h3 className="card-title mb-2 group-hover:text-purple-600 transition-colors">Analytics</h3>
+              <p className="text-body group-hover:text-slate-700">View detailed reports</p>
             </div>
-            <p className="text-sm text-blue-200/80">View reports</p>
           </button>
         </div>
       </div>
 
-      {/* Dashboard Section */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-          Dashboard
-        </h1>
-        <p className="text-gray-600">
-          Overview of your migration projects and activities
-        </p>
+      {/* Dashboard Overview Header */}
+      <div className="card-action-premium mb-8 border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+        <div className="card-action-glow"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
+              <Monitor className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-headline text-3xl group-hover:text-emerald-600 transition-colors">
+                Dashboard Overview
+              </h1>
+              <p className="text-subheading group-hover:text-slate-700 transition-colors">
+                Real-time insights into your migration projects and infrastructure
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
       
-      {/* Stats Grid */}
+      {/* Interactive Stats Grid */}
       <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {mockStats.map((stat, index) => {
           const Icon = stat.icon;
+          const getNavigationPath = (name: string) => {
+            switch (name) {
+              case 'Active Migrations':
+                return '/analytics?filter=active-migrations';
+              case 'Resources Migrated':
+                return '/analytics?filter=resources';
+              case 'Success Rate':
+                return '/analytics?filter=success-metrics';
+              case 'Data Transferred':
+                return '/analytics?filter=data';
+              case 'Cost Savings':
+                return '/analytics?filter=cost-savings';
+              case 'Team Members':
+                return '/team';
+              default:
+                return '/analytics';
+            }
+          };
+          
           return (
-            <div
+            <button
               key={stat.name}
-              className="floating-panel rounded-xl p-6 transition-all duration-300 group"
+              onClick={() => window.location.href = getNavigationPath(stat.name)}
+              className="card-action-premium text-left group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
             >
-              <div className="code-block mb-4">
-                status: {stat.trend === 'up' ? 'active' : 'idle'}
-              </div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-8 h-8 bg-emerald-500/20 rounded border border-emerald-500/30 flex items-center justify-center">
-                  <Icon className="h-4 w-4 text-emerald-400" />
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="card-title text-base group-hover:text-emerald-600 transition-colors">
+                    {stat.name}
+                  </h3>
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-emerald-600">
+                    <Icon className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
-                  {stat.percentage}
-                </span>
+              
+                <div className="mb-4">
+                  <div className="card-value text-3xl mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-subheading text-emerald-600">
+                      {stat.change}
+                    </span>
+                    <span className="text-caption text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full">
+                      {stat.percentage}
+                    </span>
+                  </div>
+                </div>
+                
+                <p className="text-body group-hover:text-slate-700 transition-colors">
+                  {stat.description}
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2 font-mono">
-                {stat.value}
-              </h3>
-              <p className="text-sm font-semibold text-emerald-200 mb-2">
-                {stat.name}
-              </p>
-              <p className="text-xs text-gray-400 font-mono">
-                {stat.description}
-              </p>
-            </div>
+            </button>
           );
         })}
       </div>
 
       
       {/* Recent Activity */}
-      <div className="card-professional p-8 animate-slide-up">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-display text-2xl">
-            Recent Activity
-          </h2>
-          <button className="btn-primary flex items-center text-base font-bold px-6 py-3 hover:scale-[1.02] active:scale-[0.98] transition-all">
-            View All
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {mockRecentActivity.map((activity, index) => (
-            <div
-              key={activity.id}
-              className="card-professional hover-lift flex items-center justify-between p-6 animate-slide-up"
-            >
+      <div className="card-action-premium mb-8 border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
+        <div className="card-action-glow"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
+                <Activity className="h-6 w-6 text-white" />
+              </div>
               <div>
-                <h4 className="font-black text-lg text-gray-900 mb-2">
-                  {activity.project}
-                </h4>
-                <p className="text-base font-semibold text-gray-600">
-                  {activity.timestamp}
+                <h2 className="text-headline text-2xl group-hover:text-emerald-600 transition-colors">
+                  Recent Activity
+                </h2>
+                <p className="text-subheading group-hover:text-slate-700 transition-colors">
+                  Latest updates and project milestones
                 </p>
               </div>
-              <span
-                className={`${activity.status === 'success'
-                    ? 'status-success'
-                    : activity.status === 'warning'
-                    ? 'status-warning'
-                    : 'status-success'
-                } text-base font-bold px-4 py-2`}
-              >
-                {activity.type.split('_').join(' ')}
-              </span>
             </div>
-          ))}
+            <button 
+              onClick={() => window.location.href = '/projects'}
+              className="btn-primary flex items-center btn-text-large px-6 py-3 hover:scale-[1.02] active:scale-[0.98] transition-all border border-emerald-600"
+            >
+              View All Projects
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </button>
+          </div>
         </div>
+      </div>
+
+      <div className="space-y-4">
+        {mockRecentActivity.map((activity, index) => {
+          const getActivityPath = (activityId: string, type: string) => {
+            switch (type) {
+              case 'migration_completed':
+                return `/projects/${activityId}`;
+              case 'optimization_suggested':
+                return `/optimization?project=${activityId}`;
+              case 'validation_warning':
+                return `/projects/${activityId}?tab=logs`;
+              default:
+                return `/projects/${activityId}`;
+            }
+          };
+          
+          return (
+            <button
+              key={activity.id}
+              onClick={() => window.location.href = getActivityPath(activity.id, activity.type)}
+              className="card-action-premium w-full text-left group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
+            >
+              <div className="card-action-glow"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="card-title mb-2 group-hover:text-emerald-600 transition-colors">
+                      {activity.project}
+                    </h3>
+                    <p className="text-body group-hover:text-slate-700 transition-colors">
+                      {activity.timestamp} • {activity.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-caption border ${
+                        activity.status === 'success'
+                          ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                          : activity.status === 'warning'
+                          ? 'bg-amber-100 text-amber-700 border-amber-200'
+                          : 'bg-blue-100 text-blue-700 border-blue-200'
+                      }`}
+                    >
+                      {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
+                    </span>
+                    <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                  </div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
         </>
       )}

@@ -15,8 +15,9 @@ const taskCreateSchema = z.object({
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -39,8 +40,9 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -54,8 +56,10 @@ export async function POST(
     const validatedData = taskCreateSchema.parse(body);
 
     const newTask = await db.task.create({
-      ...validatedData,
-      projectId: params.id,
+      data: {
+        ...validatedData,
+        projectId: id,
+      },
     });
 
     return NextResponse.json(newTask, { status: 201 });
