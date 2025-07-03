@@ -52,15 +52,10 @@
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "tnum" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: 
-      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>'),
-      radial-gradient(circle at 15% 25%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 85% 75%, rgba(22, 163, 74, 0.06) 0%, transparent 45%),
-      radial-gradient(circle at 45% 85%, rgba(21, 128, 61, 0.04) 0%, transparent 35%),
-      radial-gradient(circle at 70% 30%, rgba(16, 185, 129, 0.03) 0%, transparent 40%),
-      linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(30px) saturate(300%);
+    -webkit-backdrop-filter: blur(30px) saturate(300%);
     min-height: 100vh;
-    background-attachment: fixed;
     color: #1e293b;
   }
 }
@@ -582,7 +577,7 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   }
   
-  /* Premium Action Cards */
+  /* Premium Action Cards - Subtle Contrast */
   .card-action-premium {
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(30px) saturate(200%) !important;
@@ -597,6 +592,7 @@
       0 10px 25px rgba(0, 0, 0, 0.08) !important,
       inset 0 2px 0 rgba(255, 255, 255, 0.9) !important;
     position: relative !important;
+    color: #1e293b !important;
   }
   
   .card-action-premium:hover {
