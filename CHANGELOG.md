@@ -5,6 +5,31 @@ All notable changes to the Sirsi Nexus project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2025-07-03
+
+### Fixed
+
+#### UI Component Fixes
+- ✅ **TabsList Z-Index Issue Resolution**
+  - Fixed white opaque overlay covering tab text when selected in analytics section
+  - Replaced broken `gradient-primary` CSS class with proper Tailwind gradient classes
+  - Updated TabsTrigger component to use `bg-gradient-to-r from-emerald-500 to-green-600` for active state
+  - Fixed glow effect z-index from `z-index: 1` to `z-index: -1` to prevent text coverage
+  - Added `pointer-events: none` to glow effect to prevent interaction interference
+  - Enhanced TabsTrigger with `relative z-50` for proper stacking order
+  - Tab names now remain fully visible and accessible in all states
+  - Improved focus ring styling with emerald color consistency
+  - Reduced hover background opacity for better visual hierarchy
+
+### Enhanced
+- 🔄 **Analytics Page Tab System**
+  - Cleaner tab selection with proper visual feedback
+  - Enhanced emerald gradient styling for active tabs
+  - Improved hover effects and transition smoothness
+  - Better accessibility with proper focus states
+
+---
+
 ## [0.4.0] - 2025-01-07
 
 ### Added

@@ -29,7 +29,7 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **UI**: Next.js + React frontend with Tailwind and shadcn/ui
 - **CLI**: Tauri + Rust-based command-line interface
 
-## 🎯 **Current Status: v0.4.0 - Professional UI Design System**
+## 🎯 **Current Status: v0.4.1 - TabsList Z-Index Fix**
 
 ### ✅ **Agent Framework Foundation (100% Complete)**
 - **Core Engine**: Rust-based AI Hypervisor with gRPC services

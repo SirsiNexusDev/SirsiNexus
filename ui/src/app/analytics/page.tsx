@@ -140,22 +140,22 @@ export default function AnalyticsPage() {
         </div>
       </div>
       
-      <Tabs defaultValue="overview" className="space-y-6">
-        <div className="card-action-premium border-2 border-emerald-500/30 relative overflow-hidden mb-6">
+      <Tabs defaultValue="overview" className="space-y-6 relative">
+        <div className="card-action-premium border-2 border-emerald-500/30 relative overflow-visible mb-6 sticky top-0 z-50">
           <div className="card-action-glow"></div>
-          <div className="relative z-20">
-            <TabsList className="glass-strong grid w-full grid-cols-6 p-1 rounded-xl relative z-30">
-              <TabsTrigger value="overview" className="relative z-40">Overview</TabsTrigger>
-              <TabsTrigger value="performance" className="relative z-40">Performance</TabsTrigger>
-              <TabsTrigger value="security" className="relative z-40">Security</TabsTrigger>
-              <TabsTrigger value="resources" className="relative z-40">Resources</TabsTrigger>
-              <TabsTrigger value="team" className="relative z-40">Team</TabsTrigger>
-              <TabsTrigger value="compliance" className="relative z-40">Compliance</TabsTrigger>
+          <div className="relative z-10">
+            <TabsList className="glass-strong grid w-full grid-cols-6 p-1 rounded-xl">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="resources">Resources</TabsTrigger>
+              <TabsTrigger value="team">Team</TabsTrigger>
+              <TabsTrigger value="compliance">Compliance</TabsTrigger>
             </TabsList>
           </div>
         </div>
         
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-6 relative z-0">
           <ProjectAnalytics />
           
           {/* Quick Stats */}
@@ -218,7 +218,7 @@ export default function AnalyticsPage() {
           </div>
         </TabsContent>
         
-        <TabsContent value="performance" className="space-y-6">
+        <TabsContent value="performance" className="space-y-6 relative z-0">
           <Card className="card-action-premium border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
             <div className="card-action-glow"></div>
             <div className="relative z-10">

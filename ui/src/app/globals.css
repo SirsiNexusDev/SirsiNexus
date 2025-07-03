@@ -640,7 +640,8 @@
     border-radius: inherit !important;
     opacity: 0 !important;
     transition: opacity 0.4s ease !important;
-    z-index: 1 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
   }
   
   .card-action-premium:hover .card-action-glow {
