@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { FormProvider } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -101,8 +102,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onSuccess }) => {
             Create a new project to start tracking your work.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormProvider {...form}>
+          <Form>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -209,8 +211,9 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onSuccess }) => {
               </Button>
               <Button type="submit">Create Project</Button>
             </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

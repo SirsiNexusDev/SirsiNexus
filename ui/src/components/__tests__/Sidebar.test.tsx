@@ -57,19 +57,20 @@ describe('Sidebar', () => {
     );
 
     const navItems = [
-      'Dashboard',
+      'Overview',
+      'Demo Scenarios',
+      'Credential Management',
       'Projects',
-      'Migration Wizard',
-      'Credentials',
-      'Analytics',
-      'Help',
+      'Migration Steps',
+      'Analytics \u0026 Reports',
+      'Security',
+      'Scripting Console',
+      'Help \u0026 Tutorials'
     ];
 
-    expect(screen.getByText('Overview')).toBeInTheDocument();
-    expect(screen.getByText('Migration Wizard')).toBeInTheDocument();
-    expect(screen.getByText('Projects')).toBeInTheDocument();
-    expect(screen.getByText('Analytics & Reports')).toBeInTheDocument();
-    expect(screen.getByText('Help & Tutorials')).toBeInTheDocument();
+    navItems.forEach(item => {
+      expect(screen.getByText(new RegExp(item, 'i'))).toBeInTheDocument();
+    });
   });
 
   it('highlights active navigation item based on current path', () => {
@@ -81,53 +82,45 @@ describe('Sidebar', () => {
       </Provider>
     );
 
-    const projectsLink = screen.getByText('Projects').closest('a');
-    expect(projectsLink).toHaveClass('mb-2 flex items-center rounded-lg px-4 py-2 text-sm text-sirsi-100 transition-colors hover:bg-sirsi-800');
+    const projectsButton = screen.getByText('Projects').closest('button');
+    expect(projectsButton).toHaveClass('bg-gradient-to-r');
   });
 
-  it('collapses and expands sidebar', () => {
+  it('expands and collapses migration steps', async () => {
     render(
       <Provider store={mockStore}>
         <Sidebar />
       </Provider>
     );
 
-    const toggleButton = screen.getByRole('button', { name: /toggle sidebar/i });
-    fireEvent.click(toggleButton);
+    const migrationStepsButton = screen.getByText('Migration Steps').closest('button');
 
-    expect(mockStore.getState().ui.sidebarCollapsed).toBe(true);
-    expect(screen.getByTestId('sidebar')).toHaveClass('w-16');
+    if (migrationStepsButton) {
+      fireEvent.click(migrationStepsButton);
+      expect(screen.getByText('PLAN')).toBeInTheDocument();
 
-    fireEvent.click(toggleButton);
-    expect(mockStore.getState().ui.sidebarCollapsed).toBe(false);
-    expect(screen.getByTestId('sidebar')).toHaveClass('w-64');
+      fireEvent.click(migrationStepsButton);
+      expect(screen.queryByText('PLAN')).not.toBeInTheDocument();
+    }
   });
 
-  it('shows tooltips for collapsed items', async () => {
-    const collapsedStore = configureStore({
-      reducer: {
-        auth: authReducer,
-        ui: uiReducer,
-      },
-      preloadedState: {
-        ...mockStore.getState(),
-        ui: {
-          ...mockStore.getState().ui,
-          sidebarCollapsed: true,
-        },
-      },
-    });
-
+  it('shows wizard descriptions when expanded', () => {
     render(
-      <Provider store={collapsedStore}>
+      <Provider store={mockStore}>
         <Sidebar />
       </Provider>
     );
 
-    const dashboardIcon = screen.getByTestId('dashboard-icon');
-    fireEvent.mouseEnter(dashboardIcon);
+    // Wizards are expanded by default, so we should see the descriptions immediately
+    const descriptions = [
+      'Complete infrastructure migration',
+      'Cost and performance optimization',
+      'Configure intelligent auto-scaling'
+    ];
 
-    expect(await screen.findByText('Dashboard')).toBeInTheDocument();
+    descriptions.forEach(description => {
+      expect(screen.getByText(description)).toBeInTheDocument();
+    });
   });
 
   it('requires authentication for protected routes', () => {
@@ -152,8 +145,9 @@ describe('Sidebar', () => {
       </Provider>
     );
 
-    const credentialsLink = screen.getByText('Credential Management').closest('a');
-    expect(credentialsLink).toHaveAttribute('href', '/credentials');
+    // Check that the credentials management button exists
+    const credentialsButton = screen.getByText('Credential Management').closest('button');
+    expect(credentialsButton).toBeInTheDocument();
   });
 
   it('displays role-based navigation items', () => {

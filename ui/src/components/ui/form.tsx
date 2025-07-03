@@ -1,14 +1,14 @@
 import * as React from "react";
 import type { FieldPath, FieldValues, ControllerProps } from "react-hook-form";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
 const Form = React.forwardRef<
-  HTMLFormElement,
-  React.HTMLAttributes<HTMLFormElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <form className={cn("space-y-6", className)} ref={ref} {...props} />
+  <div className={cn("space-y-6", className)} ref={ref} {...props} />
 ));
 Form.displayName = "Form";
 
@@ -38,13 +38,18 @@ const FormField = <
 
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
+  const itemContext = React.useContext(FormItemContext);
+  const form = useFormContext();
   
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");
   }
 
   const { name } = fieldContext;
-  const id = React.useId();
+  const id = itemContext?.id || React.useId();
+  
+  const fieldState = form?.getFieldState?.(name, form.formState);
+  const error = fieldState?.error;
 
   return {
     id,
@@ -52,6 +57,7 @@ const useFormField = () => {
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
+    error,
   };
 };
 
@@ -136,9 +142,10 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
-  const { formMessageId } = useFormField();
+  const { formMessageId, error } = useFormField();
+  const body = error ? String(error.message) : children;
 
-  if (!children) {
+  if (!body) {
     return null;
   }
 
@@ -149,7 +156,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {children}
+      {body}
     </p>
   );
 });

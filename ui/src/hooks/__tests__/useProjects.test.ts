@@ -87,8 +87,12 @@ describe('useProjects', () => {
       React.createElement(Provider, { store }, children)
     );
 
-    const { result } = renderHook(() => useProjects(), {
-      wrapper,
+    let result: any;
+    await act(async () => {
+      const hookResult = renderHook(() => useProjects(), {
+        wrapper,
+      });
+      result = hookResult.result;
     });
 
     await waitFor(() => {
@@ -244,8 +248,12 @@ describe('useProjects', () => {
       React.createElement(Provider, { store }, children)
     );
 
-    const { result } = renderHook(() => useProjects(), {
-      wrapper,
+    let result: any;
+    await act(async () => {
+      const hookResult = renderHook(() => useProjects(), {
+        wrapper,
+      });
+      result = hookResult.result;
     });
 
     await waitFor(() => {

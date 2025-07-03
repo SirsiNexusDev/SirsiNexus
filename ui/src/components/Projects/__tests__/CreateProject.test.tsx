@@ -8,12 +8,12 @@ import uiReducer from '@/store/slices/uiSlice';
 import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 
-  const mockStore = configureStore({
-    reducer: {
-      auth: authReducer,
-      ui: uiReducer,
-      projects: projectReducer,
-    },
+const mockStore = configureStore({
+  reducer: {
+    auth: authReducer,
+    ui: uiReducer,
+    agent: agentReducer,
+    projects: projectReducer,
   },
 });
 
@@ -49,9 +49,17 @@ describe('CreateProject', () => {
       </Provider>
     );
 
-    fireEvent.click(screen.getByText('Create Project'));
-    fireEvent.click(screen.getByText('Create Project', { selector: 'button[type="submit"]' }));
+    // Open modal
+    fireEvent.click(screen.getByRole('button', { name: /create project/i }));
+    
+    // Wait for modal to open
+    await screen.findByText('Create New Project');
+    
+    // Submit empty form
+    const submitButton = screen.getByRole('button', { name: /^create project$/i });
+    fireEvent.click(submitButton);
 
+    // Wait for validation errors
     expect(await screen.findByText('Project name is required')).toBeInTheDocument();
     expect(await screen.findByText('Project description is required')).toBeInTheDocument();
   });
@@ -76,13 +84,9 @@ describe('CreateProject', () => {
       target: { value: 'A test project description' },
     });
 
-    // Select status
-    fireEvent.click(screen.getByText('Select status'));
-    fireEvent.click(screen.getByText('Active'));
-
-    // Select visibility
-    fireEvent.click(screen.getByText('Select visibility'));
-    fireEvent.click(screen.getByText('Private'));
+    // Status is already set to 'active' by default, so no need to change it
+    // Visibility is already set to 'private' by default, so no need to change it
+    // These values are set in the form's defaultValues
 
     // Add tags
     fireEvent.change(screen.getByPlaceholderText('Enter tags separated by commas'), {

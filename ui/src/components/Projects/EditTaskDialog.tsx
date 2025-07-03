@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { FormProvider } from 'react-hook-form';
 import {
   Select,
   SelectContent,
@@ -101,8 +102,9 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
             )}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormProvider {...form}>
+          <Form>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -262,8 +264,9 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 )}
               </Button>
             </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

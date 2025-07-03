@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { FormProvider } from 'react-hook-form';
 import {
   Select,
   SelectContent,
@@ -74,8 +75,9 @@ export const AddTeamMemberDialog: React.FC<AddTeamMemberDialogProps> = ({
             Add a new member to your project team.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormProvider {...form}>
+          <Form>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="userId"
@@ -145,8 +147,9 @@ export const AddTeamMemberDialog: React.FC<AddTeamMemberDialogProps> = ({
               </Button>
               <Button type="submit">Add Member</Button>
             </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

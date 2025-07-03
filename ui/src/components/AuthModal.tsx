@@ -116,7 +116,12 @@ export const AuthModal: React.FC = () => {
           className="fixed inset-0 bg-black/50" 
           data-testid="modal-overlay"
         />
-        <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[90vh] w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg bg-white p-6 shadow-xl">
+        <Dialog.Content 
+          className="fixed left-1/2 top-1/2 max-h-[90vh] w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg bg-white p-6 shadow-xl"
+        >
+          <Dialog.Description className="sr-only">
+            {isRegister ? 'Register for a new account' : 'Login to your account'}
+          </Dialog.Description>
           <div className="flex items-center justify-between mb-4">
             <Dialog.Title className="text-xl font-bold text-gray-900">
               {isRegister ? 'Register' : 'Login'}

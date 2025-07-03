@@ -37,7 +37,7 @@ export const Projects: React.FC = () => {
   };
 
   const handleStatusFilter = (value: string) => {
-    setFilters({ status: [value] });
+    setFilters({ status: value === 'all' ? [] : [value] });
   };
 
   const handleSort = (value: string) => {
@@ -102,7 +102,7 @@ export const Projects: React.FC = () => {
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="completed">Completed</SelectItem>
             <SelectItem value="archived">Archived</SelectItem>

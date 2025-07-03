@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { FormProvider } from 'react-hook-form';
 import {
   Select,
   SelectContent,
@@ -69,8 +70,11 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
+      title: '',
+      description: '',
       status: 'todo',
       priority: 'medium',
+      assigneeId: '',
     },
   });
 
@@ -99,8 +103,9 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
             )}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormProvider {...form}>
+          <Form>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -260,8 +265,9 @@ export const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                 )}
               </Button>
             </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

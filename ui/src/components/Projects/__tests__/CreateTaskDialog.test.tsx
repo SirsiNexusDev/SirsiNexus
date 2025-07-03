@@ -49,11 +49,11 @@ describe('CreateTaskDialog', () => {
       />
     );
 
-    expect(screen.getByText('Create Task')).toBeInTheDocument();
-    expect(screen.getByLabelText('Title')).toBeInTheDocument();
-    expect(screen.getByLabelText('Description')).toBeInTheDocument();
-    expect(screen.getByLabelText('Status')).toBeInTheDocument();
-    expect(screen.getByLabelText('Priority')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Create Task' })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Task title')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Task description')).toBeInTheDocument();
+    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(screen.getByText('Priority')).toBeInTheDocument();
   });
 
   it('shows loading state during task creation', async () => {
@@ -71,9 +71,11 @@ describe('CreateTaskDialog', () => {
       />
     );
 
-    const submitButton = screen.getByText('Create Task');
-    expect(submitButton).toBeDisabled();
+    expect(screen.getByText('Creating...')).toBeInTheDocument();
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    
+    const submitButton = screen.getByRole('button', { name: /creating/i });
+    expect(submitButton).toBeDisabled();
   });
 
   it('displays error message when task creation fails', async () => {
@@ -108,19 +110,11 @@ describe('CreateTaskDialog', () => {
     );
 
     // Fill out the form
-    await user.type(screen.getByLabelText('Title'), 'Test Task');
-    await user.type(screen.getByLabelText('Description'), 'Test Description');
+    await user.type(screen.getByPlaceholderText('Task title'), 'Test Task');
+    await user.type(screen.getByPlaceholderText('Task description'), 'Test Description');
     
-    // Select status
-    await user.click(screen.getByLabelText('Status'));
-    await user.click(screen.getByText('To Do'));
-
-    // Select priority
-    await user.click(screen.getByLabelText('Priority'));
-    await user.click(screen.getByText('Medium'));
-
     // Submit the form
-    await user.click(screen.getByText('Create Task'));
+    await user.click(screen.getByRole('button', { name: 'Create Task' }));
 
     await waitFor(() => {
       expect(mockCreateTask).toHaveBeenCalledWith({
@@ -128,6 +122,7 @@ describe('CreateTaskDialog', () => {
         description: 'Test Description',
         status: 'todo',
         priority: 'medium',
+        projectId: 'project-1',
         dueDate: undefined,
         assigneeId: undefined,
       });
@@ -148,7 +143,7 @@ describe('CreateTaskDialog', () => {
     );
 
     // Try to submit without filling required fields
-    await user.click(screen.getByText('Create Task'));
+    await user.click(screen.getByRole('button', { name: 'Create Task' }));
 
     await waitFor(() => {
       expect(screen.getByText('Task title is required')).toBeInTheDocument();
@@ -169,7 +164,7 @@ describe('CreateTaskDialog', () => {
       />
     );
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(mockSetOpen).toHaveBeenCalledWith(false);
   });
 });

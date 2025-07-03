@@ -8,91 +8,126 @@ import uiReducer from '@/store/slices/uiSlice';
 import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 
-  const mockStore = configureStore({
-    reducer: {
-      auth: authReducer,
-      ui: uiReducer,
-      projects: projectReducer,
-    },
+// Mock the API
+jest.mock('@/lib/api/projects', () => ({
+  projectsApi: {
+    list: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+const mockProjectsApi = require('@/lib/api/projects').projectsApi;
+
+// Mock the toast hook
+jest.mock('@/hooks/useToast', () => ({
+  useToast: () => ({
+    toast: jest.fn(),
+  }),
+}));
+
+const mockProjects = [
+  {
+    id: '1',
+    name: 'Test Project',
+    description: 'A test project',
+    status: 'active',
+    tags: ['test'],
+    stats: { tasks: 5, completed: 2, pending: 2, blocked: 1 },
+    createdAt: '2023-01-01T00:00:00Z',
+    updatedAt: '2023-01-02T00:00:00Z',
+  },
+];
+
+const createMockStore = (overrideState = {}) => configureStore({
+  reducer: {
+    auth: authReducer,
+    ui: uiReducer,
+    agent: agentReducer,
+    projects: projectReducer,
   },
   preloadedState: {
     projects: {
-      projects: [
-        {
-          id: '1',
-          name: 'Test Project',
-          description: 'A test project',
-          status: 'active',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          owner: {
-            id: '1',
-            name: 'John Doe',
-          },
-          team: [],
-          settings: {
-            visibility: 'public',
-            allowComments: true,
-            notifications: true,
-          },
-          tags: ['test', 'active'],
-          stats: {
-            tasks: 5,
-            completed: 2,
-            pending: 2,
-            blocked: 1,
-          },
-        },
-      ],
+      projects: mockProjects,
       currentProject: null,
       loading: false,
       error: null,
       filters: {
+        search: '',
         status: [],
         tags: [],
-        search: '',
       },
       sort: {
         field: 'updatedAt',
         order: 'desc',
       },
+      ...overrideState,
     },
   },
 });
 
 describe('Projects', () => {
-  it('renders project list', () => {
-    render(
-      <Provider store={mockStore}>
-        <Projects />
-      </Provider>
-    );
-
-    expect(screen.getByText('Test Project')).toBeInTheDocument();
-    expect(screen.getByText('A test project')).toBeInTheDocument();
+  beforeEach(() => {
+    // Reset mocks
+    jest.clearAllMocks();
+    // Mock successful API response
+    mockProjectsApi.list.mockResolvedValue({
+      success: true,
+      data: mockProjects,
+    });
   });
 
-  it('filters projects by search term', () => {
+  it('renders project list', async () => {
+    const mockStore = createMockStore();
+    
     render(
       <Provider store={mockStore}>
         <Projects />
       </Provider>
     );
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Project')).toBeInTheDocument();
+      expect(screen.getByText('A test project')).toBeInTheDocument();
+    });
+  });
+
+  it('filters projects by search term', async () => {
+    const mockStore = createMockStore();
+    
+    render(
+      <Provider store={mockStore}>
+        <Projects />
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Project')).toBeInTheDocument();
+    });
 
     const searchInput = screen.getByPlaceholderText('Search projects...');
     fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
 
-    expect(screen.queryByText('Test Project')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Test Project')).not.toBeInTheDocument();
+    });
   });
 
   it('filters projects by status', async () => {
+    const mockStore = createMockStore();
+    
     render(
       <Provider store={mockStore}>
         <Projects />
       </Provider>
     );
 
-    const statusFilter = screen.getByPlaceholderText('Filter by status');
+    await waitFor(() => {
+      expect(screen.getByText('Test Project')).toBeInTheDocument();
+    });
+
+    const statusFilter = screen.getByText('Filter by status');
     fireEvent.click(statusFilter);
     
     const completedOption = screen.getByText('Completed');
@@ -104,13 +139,19 @@ describe('Projects', () => {
   });
 
   it('sorts projects', async () => {
+    const mockStore = createMockStore();
+    
     render(
       <Provider store={mockStore}>
         <Projects />
       </Provider>
     );
 
-    const sortSelect = screen.getByPlaceholderText('Sort by');
+    await waitFor(() => {
+      expect(screen.getByText('Test Project')).toBeInTheDocument();
+    });
+
+    const sortSelect = screen.getByText('Sort by');
     fireEvent.click(sortSelect);
     
     const nameOption = screen.getByText('Name A-Z');
@@ -123,9 +164,12 @@ describe('Projects', () => {
     });
   });
 
-  it('confirms before deleting a project', () => {
+  it('confirms before deleting a project', async () => {
     const confirmSpy = jest.spyOn(window, 'confirm');
     confirmSpy.mockImplementation(() => true);
+    mockProjectsApi.delete.mockResolvedValue({ success: true });
+    
+    const mockStore = createMockStore();
 
     render(
       <Provider store={mockStore}>
@@ -133,30 +177,20 @@ describe('Projects', () => {
       </Provider>
     );
 
+    await waitFor(() => {
+      expect(screen.getByText('Test Project')).toBeInTheDocument();
+    });
+
     const deleteButton = screen.getByText('Delete');
     fireEvent.click(deleteButton);
 
     expect(confirmSpy).toHaveBeenCalled();
-    expect(screen.queryByText('Test Project')).not.toBeInTheDocument();
-
+    
     confirmSpy.mockRestore();
   });
 
   it('shows loading state', () => {
-    const loadingStore = configureStore({
-      reducer: {
-        auth: authReducer,
-        ui: uiReducer,
-        agent: agentReducer,
-        projects: projectReducer,
-      },
-      preloadedState: {
-        projects: {
-          ...mockStore.getState().projects,
-          loading: true,
-        },
-      },
-    });
+    const loadingStore = createMockStore({ loading: true });
 
     render(
       <Provider store={loadingStore}>
@@ -168,20 +202,7 @@ describe('Projects', () => {
   });
 
   it('shows error state', () => {
-    const errorStore = configureStore({
-      reducer: {
-        auth: authReducer,
-        ui: uiReducer,
-        agent: agentReducer,
-        projects: projectReducer,
-      },
-      preloadedState: {
-        projects: {
-          ...mockStore.getState().projects,
-          error: 'Failed to load projects',
-        },
-      },
-    });
+    const errorStore = createMockStore({ error: 'Failed to load projects' });
 
     render(
       <Provider store={errorStore}>

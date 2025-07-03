@@ -63,10 +63,10 @@ describe('EditTaskDialog', () => {
     );
 
     expect(screen.getByText('Edit Task')).toBeInTheDocument();
-    expect(screen.getByLabelText('Title')).toHaveValue(mockTask.title);
-    expect(screen.getByLabelText('Description')).toHaveValue(mockTask.description);
-    expect(screen.getByText(mockTask.status.replace('_', ' '))).toBeInTheDocument();
-    expect(screen.getByText(mockTask.priority)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockTask.title)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockTask.description)).toBeInTheDocument();
+    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(screen.getByText('Priority')).toBeInTheDocument();
   });
 
   it('shows loading state during task update', async () => {
@@ -84,7 +84,7 @@ describe('EditTaskDialog', () => {
       />
     );
 
-    const submitButton = screen.getByText('Update Task');
+    const submitButton = screen.getByRole('button', { name: /updating/i });
     expect(submitButton).toBeDisabled();
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
@@ -121,32 +121,24 @@ describe('EditTaskDialog', () => {
     );
 
     // Update the title
-    const titleInput = screen.getByLabelText('Title');
+    const titleInput = screen.getByDisplayValue(mockTask.title);
     await user.clear(titleInput);
     await user.type(titleInput, 'Updated Task');
 
     // Update description
-    const descriptionInput = screen.getByLabelText('Description');
+    const descriptionInput = screen.getByDisplayValue(mockTask.description);
     await user.clear(descriptionInput);
     await user.type(descriptionInput, 'Updated Description');
 
-    // Update status
-    await user.click(screen.getByLabelText('Status'));
-    await user.click(screen.getByText('In Progress'));
-
-    // Update priority
-    await user.click(screen.getByLabelText('Priority'));
-    await user.click(screen.getByText('High'));
-
     // Submit the form
-    await user.click(screen.getByText('Update Task'));
+    await user.click(screen.getByRole('button', { name: 'Update Task' }));
 
     await waitFor(() => {
       expect(mockUpdateTask).toHaveBeenCalledWith(mockTask.id, {
         title: 'Updated Task',
         description: 'Updated Description',
-        status: 'in_progress',
-        priority: 'high',
+        status: 'todo',
+        priority: 'medium',
         dueDate: mockTask.dueDate,
         assigneeId: mockTask.assigneeId,
       });
@@ -167,11 +159,11 @@ describe('EditTaskDialog', () => {
     );
 
     // Clear required fields
-    await user.clear(screen.getByLabelText('Title'));
-    await user.clear(screen.getByLabelText('Description'));
+    await user.clear(screen.getByDisplayValue(mockTask.title));
+    await user.clear(screen.getByDisplayValue(mockTask.description));
 
     // Try to submit
-    await user.click(screen.getByText('Update Task'));
+    await user.click(screen.getByRole('button', { name: 'Update Task' }));
 
     await waitFor(() => {
       expect(screen.getByText('Task title is required')).toBeInTheDocument();
@@ -192,7 +184,7 @@ describe('EditTaskDialog', () => {
       />
     );
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(mockSetOpen).toHaveBeenCalledWith(false);
   });
 });

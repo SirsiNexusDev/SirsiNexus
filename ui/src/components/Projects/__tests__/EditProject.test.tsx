@@ -9,12 +9,12 @@ import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 import { Project } from '@/store/slices/projectSlice';
 
-  const mockStore = configureStore({
-    reducer: {
-      auth: authReducer,
-      ui: uiReducer,
-      projects: projectReducer,
-    },
+const mockStore = configureStore({
+  reducer: {
+    auth: authReducer,
+    ui: uiReducer,
+    agent: agentReducer,
+    projects: projectReducer,
   },
 });
 
