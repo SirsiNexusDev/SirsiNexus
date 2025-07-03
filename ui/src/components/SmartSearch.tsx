@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Search, Clock, Star, TrendingUp, X, ArrowRight } from 'lucide-react';
 
 interface SearchResult {
@@ -161,6 +161,19 @@ export const SmartSearch: React.FC<SmartSearchProps> = ({
     setSelectedIndex(0);
   }, [query]);
 
+  const handleSelectResult = useCallback((result: SearchResult) => {
+    // Add to recent searches
+    setRecentSearches(prev => {
+      const updated = [query, ...prev.filter(s => s !== query)].slice(0, 5);
+      localStorage.setItem('recent-searches', JSON.stringify(updated));
+      return updated;
+    });
+
+    // Navigate to result
+    window.location.href = result.url;
+    onClose();
+  }, [query, onClose]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
@@ -192,20 +205,7 @@ export const SmartSearch: React.FC<SmartSearchProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, selectedIndex, searchResults, onClose]);
-
-  const handleSelectResult = (result: SearchResult) => {
-    // Add to recent searches
-    setRecentSearches(prev => {
-      const updated = [query, ...prev.filter(s => s !== query)].slice(0, 5);
-      localStorage.setItem('recent-searches', JSON.stringify(updated));
-      return updated;
-    });
-
-    // Navigate to result
-    window.location.href = result.url;
-    onClose();
-  };
+  }, [isOpen, selectedIndex, searchResults, onClose, handleSelectResult]);
 
   const clearRecentSearches = () => {
     setRecentSearches([]);

@@ -8,15 +8,15 @@ import uiReducer from '@/store/slices/uiSlice';
 import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 
-const mockStore = configureStore({
-  reducer: {
-    auth: authReducer,
-    ui: uiReducer,
-    agent: agentReducer,
-    project: projectReducer,
+  const mockStore = configureStore({
+    reducer: {
+      auth: authReducer,
+      ui: uiReducer,
+      projects: projectReducer,
+    },
   },
   preloadedState: {
-    project: {
+    projects: {
       projects: [
         {
           id: '1',
@@ -118,8 +118,8 @@ describe('Projects', () => {
 
     await waitFor(() => {
       const state = mockStore.getState();
-      expect(state.project.sort.field).toBe('name');
-      expect(state.project.sort.order).toBe('asc');
+      expect(state.projects.sort.field).toBe('name');
+      expect(state.projects.sort.order).toBe('asc');
     });
   });
 
@@ -148,11 +148,11 @@ describe('Projects', () => {
         auth: authReducer,
         ui: uiReducer,
         agent: agentReducer,
-        project: projectReducer,
+        projects: projectReducer,
       },
       preloadedState: {
-        project: {
-          ...mockStore.getState().project,
+        projects: {
+          ...mockStore.getState().projects,
           loading: true,
         },
       },
@@ -173,11 +173,11 @@ describe('Projects', () => {
         auth: authReducer,
         ui: uiReducer,
         agent: agentReducer,
-        project: projectReducer,
+        projects: projectReducer,
       },
       preloadedState: {
-        project: {
-          ...mockStore.getState().project,
+        projects: {
+          ...mockStore.getState().projects,
           error: 'Failed to load projects',
         },
       },

@@ -46,7 +46,7 @@ describe('AuthModal', () => {
 
     expect(screen.getByRole('heading', { name: /login/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument(); // password field
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
   });
 
@@ -62,7 +62,7 @@ describe('AuthModal', () => {
     expect(screen.getByRole('heading', { name: /register/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(document.getElementById('password')).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
   });
 
@@ -106,11 +106,11 @@ describe('AuthModal', () => {
 
     fireEvent.click(screen.getByText(/register/i));
 
-    const passwordInput = screen.getByLabelText(/^password/i);
-    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
 
-    await userEvent.type(passwordInput, 'password123');
-    await userEvent.type(confirmPasswordInput, 'password456');
+    await userEvent.type(passwordInput!, 'password123');
+    await userEvent.type(confirmPasswordInput!, 'password456');
 
     const registerButton = screen.getByRole('button', { name: /register/i });
     fireEvent.click(registerButton);
@@ -143,7 +143,7 @@ describe('AuthModal', () => {
     );
 
     await userEvent.type(screen.getByLabelText(/email/i), 'john@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
+    await userEvent.type(document.getElementById('password')!, 'password123');
 
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
@@ -170,7 +170,7 @@ describe('AuthModal', () => {
     );
 
     await userEvent.type(screen.getByLabelText(/email/i), 'wrong@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'wrongpassword');
+    await userEvent.type(document.getElementById('password')!, 'wrongpassword');
 
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 

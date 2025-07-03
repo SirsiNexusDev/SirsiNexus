@@ -8,12 +8,12 @@ import uiReducer from '@/store/slices/uiSlice';
 import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 
-const mockStore = configureStore({
-  reducer: {
-    auth: authReducer,
-    ui: uiReducer,
-    agent: agentReducer,
-    project: projectReducer,
+  const mockStore = configureStore({
+    reducer: {
+      auth: authReducer,
+      ui: uiReducer,
+      projects: projectReducer,
+    },
   },
 });
 
@@ -94,8 +94,8 @@ describe('CreateProject', () => {
 
     await waitFor(() => {
       const state = mockStore.getState();
-      expect(state.project.projects).toHaveLength(1);
-      expect(state.project.projects[0]).toMatchObject({
+      expect(state.projects.projects).toHaveLength(1);
+      expect(state.projects.projects[0]).toMatchObject({
         name: 'Test Project',
         description: 'A test project description',
         status: 'active',
@@ -132,7 +132,7 @@ describe('CreateProject', () => {
     });
 
     const state = mockStore.getState();
-    expect(state.project.projects).toHaveLength(0);
+    expect(state.projects.projects).toHaveLength(0);
   });
 
   it('resets form when modal is closed', async () => {

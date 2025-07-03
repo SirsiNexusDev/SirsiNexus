@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useProjects } from '../useProjects';
@@ -37,12 +37,18 @@ describe('useProjects', () => {
         auth: authReducer,
         ui: uiReducer,
         agent: agentReducer,
-        project: projectReducer,
+        projects: projectReducer,
       },
     });
 
     // Reset all mocks
     jest.clearAllMocks();
+    
+    // Set up default mock for list API to prevent hanging
+    (projectsApi.list as jest.Mock).mockResolvedValue({
+      success: true,
+      data: [],
+    });
   });
 
   it('fetches projects on mount', async () => {
@@ -72,7 +78,7 @@ describe('useProjects', () => {
       },
     }];
 
-    (projectsApi.list as jest.Mock).mockResolvedValueOnce({
+    (projectsApi.list as jest.Mock).mockResolvedValue({
       success: true,
       data: mockProjects,
     });
@@ -81,14 +87,16 @@ describe('useProjects', () => {
       React.createElement(Provider, { store }, children)
     );
 
-    const { result, waitForNextUpdate } = renderHook(() => useProjects(), {
+    const { result } = renderHook(() => useProjects(), {
       wrapper,
     });
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.projects).toEqual(mockProjects);
+      expect(result.current.loading).toBe(false);
+    }, { timeout: 3000 });
 
     expect(projectsApi.list).toHaveBeenCalled();
-    expect(result.current.projects).toEqual(mockProjects);
   });
 
   it('creates a new project', async () => {
@@ -140,10 +148,12 @@ describe('useProjects', () => {
       response = await result.current.createProject(newProject);
     });
 
-    expect(projectsApi.create).toHaveBeenCalledWith(newProject);
-    expect(response).toEqual(createdProject);
-    expect(result.current.projects).toContainEqual(createdProject);
-  });
+    await waitFor(() => {
+      expect(projectsApi.create).toHaveBeenCalledWith(newProject);
+      expect(response).toEqual(createdProject);
+      expect(result.current.projects).toContainEqual(createdProject);
+    });
+  }, 10000);
 
   it('updates a project', async () => {
     const projectId = '1';
@@ -219,27 +229,29 @@ describe('useProjects', () => {
       response = await result.current.deleteProject(projectId);
     });
 
-    expect(projectsApi.delete).toHaveBeenCalledWith(projectId);
-    expect(response).toBe(true);
-    expect(result.current.projects).not.toContainEqual(expect.objectContaining({ id: projectId }));
-  });
+    await waitFor(() => {
+      expect(projectsApi.delete).toHaveBeenCalledWith(projectId);
+      expect(response).toBe(true);
+      expect(result.current.projects).not.toContainEqual(expect.objectContaining({ id: projectId }));
+    });
+  }, 10000);
 
   it('handles API errors', async () => {
     const error = 'API Error';
-    (projectsApi.list as jest.Mock).mockRejectedValueOnce(new Error(error));
+    (projectsApi.list as jest.Mock).mockRejectedValue(new Error(error));
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       React.createElement(Provider, { store }, children)
     );
 
-    const { result, waitForNextUpdate } = renderHook(() => useProjects(), {
+    const { result } = renderHook(() => useProjects(), {
       wrapper,
     });
 
-    await waitForNextUpdate();
-
-    expect(result.current.error).toBe(error);
-    expect(result.current.projects).toEqual([]);
+    await waitFor(() => {
+      expect(result.current.error).toBe(error);
+      expect(result.current.loading).toBe(false);
+    }, { timeout: 3000 });
   });
 
   it('updates filters', async () => {

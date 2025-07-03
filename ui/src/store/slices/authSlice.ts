@@ -61,10 +61,17 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    register: (state, action: PayloadAction<User>) => {
+      state.isAuthenticated = true;
+      state.user = action.payload;
+      state.token = 'demo-token';
+      state.loading = false;
+      state.error = null;
+    },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, updateUser, login } =
+export const { loginStart, loginSuccess, loginFailure, logout, updateUser, login, register } =
   authSlice.actions;
 
 export default authSlice.reducer;

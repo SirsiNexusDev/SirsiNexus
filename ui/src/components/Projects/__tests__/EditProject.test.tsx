@@ -9,12 +9,12 @@ import agentReducer from '@/store/slices/agentSlice';
 import projectReducer from '@/store/slices/projectSlice';
 import { Project } from '@/store/slices/projectSlice';
 
-const mockStore = configureStore({
-  reducer: {
-    auth: authReducer,
-    ui: uiReducer,
-    agent: agentReducer,
-    project: projectReducer,
+  const mockStore = configureStore({
+    reducer: {
+      auth: authReducer,
+      ui: uiReducer,
+      projects: projectReducer,
+    },
   },
 });
 
@@ -135,7 +135,7 @@ describe('EditProject', () => {
     });
 
     const state = mockStore.getState();
-    expect(state.project.projects[0]).toMatchObject({
+    expect(state.projects.projects[0]).toMatchObject({
       name: 'Updated Project',
       description: 'Updated Description',
       tags: ['updated', 'test'],
@@ -197,7 +197,7 @@ describe('EditProject', () => {
 
     await waitFor(() => {
       const state = mockStore.getState();
-      expect(state.project.projects[0].status).toBe('completed');
+      expect(state.projects.projects[0].status).toBe('completed');
     });
   });
 
@@ -219,7 +219,7 @@ describe('EditProject', () => {
 
     await waitFor(() => {
       const state = mockStore.getState();
-      expect(state.project.projects[0].settings.visibility).toBe('private');
+      expect(state.projects.projects[0].settings.visibility).toBe('private');
     });
   });
 });

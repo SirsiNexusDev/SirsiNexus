@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsDropDown } from './SettingsDropDown';
+import Image from 'next/image';
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -117,10 +118,13 @@ export const Header: React.FC = () => {
             >
               <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
                 {user?.avatar ? (
-                  <img
+                  <Image
                     src={user.avatar}
-                    alt={user.name}
+                    alt={user.name || 'User avatar'}
+                    width={32}
+                    height={32}
                     className="h-full w-full rounded-lg object-cover"
+                    priority
                   />
                 ) : (
                   <User className="h-4 w-4 text-orange-600" />
