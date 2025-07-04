@@ -5,6 +5,48 @@ All notable changes to the SirsiNexus Core Engine will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-07-04
+
+### 🚀 ENHANCED PROTOBUF SCHEMA: Google API Standards Compliance
+
+#### Added
+- **Comprehensive protobuf redesign** following Google API Design Guidelines
+- **Google API Standards**: Import and use standard Google proto types (Timestamp, FieldMask, Empty)
+- **Enhanced Session Management**: Proper lifecycle with states, expiration, and configuration
+- **Complete CRUD Operations**: Full agent lifecycle with create, read, update, delete, list
+- **Rich Messaging**: Enhanced message types with attachments, priorities, and metadata
+- **Comprehensive Monitoring**: System health, agent metrics, and performance tracking
+- **Pagination Support**: Standard pagination with page tokens and size limits
+- **Suggestion Framework**: Structured suggestion system with types, actions, and confidence
+- **Backwards Compatibility**: Legacy adapters maintain existing client compatibility
+- **Field Validation**: Proper field constraints and validation rules
+- **Multi-language Support**: Proper package options for Go, Java, C#
+
+#### Fixed
+- Updated AgentService implementation with all new enhanced methods
+- Enhanced WebSocket-to-gRPC bridge with new message mappings
+- Updated agent manager with new suggestion structures
+- Fixed all enum references to use integer values for compatibility
+- Compilation errors resolved - zero errors, production ready
+
+#### Technical Enhancements
+- **Extensible Design**: Metadata fields and extensible message structures
+- **Error Handling**: Structured error responses with detailed status information
+- **Performance Metrics**: Built-in performance tracking and monitoring
+- Session expiration and lifecycle management
+- Agent state tracking and health monitoring
+- System-wide health checks and metrics collection
+- Proper resource management and cleanup
+
+#### Migration Strategy
+- Phase 1: New enhanced API available alongside legacy
+- Phase 2: Gradual migration of existing clients
+- Phase 3: Full deprecation of legacy endpoints
+
+**Status**: ✅ All components compile successfully with zero errors. Ready for Phase 3 development and frontend integration.
+
+---
+
 ## [0.2.0] - 2025-07-04
 
 ### 🎯 MAJOR MILESTONE: Phase 2 AI Hypervisor & Agent Framework Complete

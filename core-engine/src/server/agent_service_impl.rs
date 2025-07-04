@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tonic::{Request, Response, Status};
-use tracing::{info, error, warn};
+use tracing::info;
 use uuid::Uuid;
 use prost_types::Timestamp;
 

@@ -2,10 +2,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
-use uuid::Uuid;
-
 use crate::error::AppResult;
-use crate::proto::sirsi::agent::v1::{Suggestion, Action};
+use crate::proto::sirsi::agent::v1::Suggestion;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AwsResource {
