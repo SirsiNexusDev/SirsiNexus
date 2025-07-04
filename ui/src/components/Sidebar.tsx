@@ -29,6 +29,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { label: 'Demo Scenarios', icon: Play, path: '/demos' },
+  { label: 'Agent Management', icon: Sparkles, path: '/agents' },
   { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
   { label: 'Projects', icon: Folder, path: '/projects' },
   { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
