@@ -2,6 +2,7 @@ pub mod agent;
 pub mod api;
 pub mod audit;
 pub mod auth;
+pub mod compliance;
 pub mod config;
 pub mod db;
 pub mod error;
