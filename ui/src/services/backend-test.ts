@@ -211,7 +211,7 @@ export class BackendTestService {
       agentWebSocket.on('message', messageHandler);
       
       // Send test message
-      agentWebSocket.sendMessage({
+      agentWebSocket.sendRawMessage({
         type: 'user',
         content: 'test connection',
         agentName: 'TestUser',

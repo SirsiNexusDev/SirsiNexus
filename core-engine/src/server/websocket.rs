@@ -328,7 +328,7 @@ impl WebSocketHandler {
             })
             .unwrap_or_default();
 
-        let agent_type_enum = match agent_type {
+        let _agent_type_enum = match agent_type {
             "aws" => 2,
             "azure" => 3,
             "gcp" => 4,
@@ -490,7 +490,7 @@ impl WebSocketHandler {
             })
             .unwrap_or_default();
 
-        let suggestion_type_enum = match suggestion_type {
+        let _suggestion_type_enum = match suggestion_type {
             "action" => 1,
             "optimization" => 2,
             "security" => 3,

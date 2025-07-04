@@ -58,7 +58,7 @@ export const useProjects = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  }, [dispatch]); // Removed toast from dependencies to prevent infinite loop
+  }, [dispatch, toast]); // Include toast in dependencies
 
   const createProject = async (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
@@ -279,7 +279,7 @@ export const useProjects = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, []); // Only run on mount
+  }, [fetchProjects]); // Include fetchProjects in dependencies
 
   return {
     projects,

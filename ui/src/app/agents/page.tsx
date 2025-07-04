@@ -13,7 +13,7 @@ import {
   Globe,
   Terminal,
   BookOpen,
-  Refresh
+  RefreshCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,7 +43,7 @@ export default function AgentsPage() {
     { type: 'aws' as const, name: 'AWS Agent', icon: Globe, description: 'Manages AWS resources and services' },
     { type: 'azure' as const, name: 'Azure Agent', icon: Cpu, description: 'Handles Azure infrastructure and ARM templates' },
     { type: 'gcp' as const, name: 'GCP Agent', icon: Activity, description: 'Manages Google Cloud Platform resources' },
-    { type: 'migration' as const, name: 'Migration Agent', icon: Refresh, description: 'Orchestrates cross-cloud migrations' },
+    { type: 'migration' as const, name: 'Migration Agent', icon: RefreshCw, description: 'Orchestrates cross-cloud migrations' },
     { type: 'security' as const, name: 'Security Agent', icon: Shield, description: 'Monitors compliance and security policies' },
     { type: 'reporting' as const, name: 'Reporting Agent', icon: BarChart3, description: 'Generates analytics and reports' },
     { type: 'scripting' as const, name: 'Scripting Agent', icon: Terminal, description: 'Assists with infrastructure as code' },
@@ -154,7 +154,7 @@ export default function AgentsPage() {
     }
   };
 
-  const handleGetSuggestions = async (suggestionType: AgentSuggestion['actionType']) => {
+  const handleGetSuggestions = async (suggestionType: AgentSuggestion['action']['actionType']) => {
     if (!activeSession || !selectedAgent) return;
 
     setIsLoading(true);
@@ -225,8 +225,8 @@ export default function AgentsPage() {
                         <div className="flex items-center justify-between">
                           <Icon className="h-6 w-6 text-sirsi-500" />
                           {isSpawned && (
-                            <Badge variant={agent?.status === 'ready' ? 'default' : 'secondary'}>
-                              {agent?.status}
+                            <Badge variant={agent?.state === 'ready' ? 'default' : 'secondary'}>
+                              {agent?.state}
                             </Badge>
                           )}
                         </div>
@@ -346,13 +346,13 @@ export default function AgentsPage() {
                       <div>
                         <label className="text-sm font-medium">Status</label>
                         <Badge variant="outline" className="ml-2">
-                          {selectedAgent.status}
+                          {selectedAgent.state}
                         </Badge>
                       </div>
                       <div>
                         <label className="text-sm font-medium">Capabilities</label>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {selectedAgent.capabilities.map(capability => (
+                          {selectedAgent.config.requiredCapabilities.map(capability => (
                             <Badge key={capability} variant="secondary" className="text-xs">
                               {capability}
                             </Badge>
@@ -424,7 +424,7 @@ export default function AgentsPage() {
                     ) : (
                       suggestions.map(suggestion => (
                         <div
-                          key={suggestion.id}
+                          key={suggestion.suggestionId}
                           className="p-3 border border-gray-200 rounded-lg space-y-2"
                         >
                           <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ export default function AgentsPage() {
                           </div>
                           <p className="text-sm text-gray-600">{suggestion.description}</p>
                           <Badge variant="secondary" className="text-xs">
-                            {suggestion.actionType}
+                            {suggestion.action.actionType}
                           </Badge>
                         </div>
                       ))
@@ -461,7 +461,7 @@ export default function AgentsPage() {
                     </div>
                     <div>
                       <label className="text-sm font-medium">Status</label>
-                      <Badge variant="outline" className="ml-2">{activeSession.status}</Badge>
+                      <Badge variant="outline" className="ml-2">{activeSession.state}</Badge>
                     </div>
                     <div>
                       <label className="text-sm font-medium">Active Agents</label>
@@ -480,19 +480,19 @@ export default function AgentsPage() {
                     <div className="flex justify-between">
                       <span className="text-sm">Ready</span>
                       <span className="text-sm font-medium">
-                        {agents.filter(a => a.status === 'ready').length}
+                        {agents.filter(a => a.state === 'ready').length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Busy</span>
                       <span className="text-sm font-medium">
-                        {agents.filter(a => a.status === 'busy').length}
+                        {agents.filter(a => a.state === 'busy').length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Initializing</span>
                       <span className="text-sm font-medium">
-                        {agents.filter(a => a.status === 'initializing').length}
+                        {agents.filter(a => a.state === 'initializing').length}
                       </span>
                     </div>
                   </div>

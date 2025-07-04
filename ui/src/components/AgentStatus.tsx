@@ -142,7 +142,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
     }
   };
 
-  const getAgentStatusIcon = (status: SubAgent['status']) => {
+  const getAgentStatusIcon = (status: SubAgent['state']) => {
     switch (status) {
       case 'ready':
         return <CheckCircle className="h-3 w-3 text-green-500" />;
@@ -152,7 +152,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
         return <Clock className="h-3 w-3 text-yellow-500" />;
       case 'error':
         return <AlertCircle className="h-3 w-3 text-red-500" />;
-      case 'stopped':
+      case 'terminated':
         return <X className="h-3 w-3 text-gray-400" />;
       default:
         return <Bot className="h-3 w-3 text-gray-400" />;
@@ -267,7 +267,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
               <div className="text-xs text-green-600">ID: {activeSession.sessionId.slice(0, 8)}...</div>
             </div>
             <Badge variant="secondary" className="bg-green-100 text-green-800">
-              {activeSession.status}
+              {activeSession.state}
             </Badge>
           </div>
         </motion.div>
@@ -313,10 +313,10 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
                     {getAgentTypeIcon(agent.agentType)}
                     <span className="text-sm font-medium capitalize">{agent.agentType}</span>
                     <Badge variant="outline" className="text-xs">
-                      {agent.status}
+                      {agent.state}
                     </Badge>
                   </div>
-                  {getAgentStatusIcon(agent.status)}
+                  {getAgentStatusIcon(agent.state)}
                 </motion.div>
               ))}
             </AnimatePresence>

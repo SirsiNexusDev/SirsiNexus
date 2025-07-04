@@ -396,7 +396,7 @@ impl AwsAgent {
     }
 
     fn lambda_function_to_resource(&self, function: &FunctionConfiguration) -> AwsResource {
-        let mut tags = HashMap::new();
+        let tags = HashMap::new();
         let mut metadata = HashMap::new();
 
         // Extract metadata

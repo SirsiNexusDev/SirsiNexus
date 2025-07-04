@@ -3,6 +3,7 @@
  * Handles connection to the Rust gRPC backend via WebSocket proxy
  */
 
+// Enhanced types matching the new protobuf schema
 export interface AgentMessage {
   id: string;
   type: 'user' | 'agent' | 'system' | 'error';
@@ -13,41 +14,154 @@ export interface AgentMessage {
     sessionId?: string;
     agentId?: string;
     context?: any;
+    requestId?: string;
   };
+  attachments?: Attachment[];
+  priority?: 'low' | 'normal' | 'high' | 'critical';
+}
+
+export interface Attachment {
+  attachmentId: string;
+  name: string;
+  mimeType: string;
+  sizeBytes: number;
+  data?: ArrayBuffer;
+  url?: string;
 }
 
 export interface AgentSession {
   sessionId: string;
   userId: string;
-  status: 'active' | 'inactive' | 'error';
+  state: 'active' | 'suspended' | 'expired' | 'terminated';
   createdAt: Date;
-  availableAgents: string[];
+  updatedAt: Date;
+  expiresAt: Date;
+  availableAgentTypes: AgentType[];
+  metadata: Record<string, string>;
+  config: SessionConfig;
+}
+
+export interface SessionConfig {
+  maxAgents: number;
+  timeoutSeconds: number;
+  enableLogging: boolean;
+  preferences: Record<string, string>;
+}
+
+export interface AgentType {
+  typeId: string;
+  displayName: string;
+  description: string;
+  version: string;
+  capabilities: Capability[];
+  defaultConfig: Record<string, string>;
+}
+
+export interface Capability {
+  capabilityId: string;
+  name: string;
+  description: string;
+  parameters: Parameter[];
+}
+
+export interface Parameter {
+  name: string;
+  type: string;
+  description: string;
+  required: boolean;
+  defaultValue?: any;
 }
 
 export interface SubAgent {
   agentId: string;
-  agentType: 'aws' | 'azure' | 'gcp' | 'vsphere' | 'migration' | 'security' | 'reporting' | 'scripting' | 'tutorial' | 'general';
-  status: 'initializing' | 'ready' | 'busy' | 'error' | 'stopped';
+  sessionId: string;
+  agentType: string;
+  state: 'initializing' | 'ready' | 'busy' | 'error' | 'terminated';
   createdAt: Date;
-  capabilities: string[];
-  metrics: Record<string, string>;
+  updatedAt: Date;
+  config: AgentConfig;
+  metadata: Record<string, string>;
+  parentAgentId?: string;
+}
+
+export interface AgentConfig {
+  parameters: Record<string, string>;
+  timeoutSeconds: number;
+  maxConcurrentOperations: number;
+  enableCaching: boolean;
+  requiredCapabilities: string[];
 }
 
 export interface AgentSuggestion {
-  id: string;
+  suggestionId: string;
   title: string;
   description: string;
-  actionType: 'action' | 'optimization' | 'security' | 'code' | 'tutorial' | 'troubleshooting';
-  action: string;
-  parameters: Record<string, string>;
+  type: 'action' | 'query' | 'insight' | 'warning' | 'optimization';
+  action: Action;
   confidence: number;
+  metadata: Record<string, string>;
+  priority: number;
+}
+
+export interface Action {
+  actionType: string;
+  parameters: Record<string, string>;
+  command: string;
+  requiredPermissions: string[];
+}
+
+export interface AgentStatus {
+  state: 'initializing' | 'ready' | 'busy' | 'error' | 'terminated';
+  statusMessage: string;
+  lastActivity: Date;
+  activeOperations: number;
+  statusDetails: Record<string, string>;
+}
+
+export interface AgentMetrics {
+  messagesProcessed: number;
+  operationsCompleted: number;
+  errorsEncountered: number;
+  averageResponseTimeMs: number;
+  lastReset: Date;
+  customMetrics: Record<string, number>;
+}
+
+export interface MessageMetrics {
+  processingTimeMs: number;
+  tokensProcessed: number;
+  modelUsed: string;
+  performanceMetrics: Record<string, number>;
+}
+
+export interface SystemHealth {
+  overallStatus: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  components: Record<string, ComponentHealth>;
+  lastCheck: Date;
+}
+
+export interface ComponentHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  message: string;
+  details: Record<string, string>;
+}
+
+export interface SystemMetrics {
+  activeSessions: number;
+  totalAgents: number;
+  cpuUsagePercent: number;
+  memoryUsagePercent: number;
+  uptimeSeconds: number;
+  customMetrics: Record<string, number>;
 }
 
 export interface AgentRequest {
-  action: 'start_session' | 'spawn_agent' | 'send_message' | 'get_suggestions' | 'get_status' | 'stop_session';
+  action: 'create_session' | 'get_session' | 'delete_session' | 'create_agent' | 'get_agent' | 'list_agents' | 'update_agent' | 'delete_agent' | 'send_message' | 'get_suggestions' | 'get_agent_status' | 'get_system_health';
   sessionId?: string;
   agentId?: string;
   data?: any;
+  // Legacy actions for backwards compatibility
+  legacyAction?: 'start_session' | 'spawn_agent' | 'stop_session';
 }
 
 export interface AgentResponse {
@@ -157,7 +271,7 @@ export class AgentWebSocketService {
     this.listeners.clear();
   }
 
-  sendMessage(message: Omit<AgentMessage, 'id' | 'timestamp'>): void {
+  sendRawMessage(message: Omit<AgentMessage, 'id' | 'timestamp'>): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket not connected, queuing message for retry...');
       // In production, implement message queuing with retry logic
@@ -257,48 +371,169 @@ export class AgentWebSocketService {
     }
   }
 
-  // Agent Service gRPC Methods
+  // Enhanced Agent Service API Methods
 
-  async startAgentSession(userId: string, context: Record<string, string> = {}): Promise<AgentSession> {
+  async createSession(userId: string, context: Record<string, string> = {}, config?: Partial<SessionConfig>): Promise<AgentSession> {
     return this.sendAgentRequest({
-      action: 'start_session',
-      data: { userId, context }
+      action: 'create_session',
+      data: { userId, context, config }
     }).then(response => {
       if (!response.success) {
-        throw new Error(response.error || 'Failed to start agent session');
+        throw new Error(response.error || 'Failed to create agent session');
       }
       return response.data as AgentSession;
     });
   }
 
-  async spawnSubAgent(
-    sessionId: string, 
-    agentType: SubAgent['agentType'], 
-    config: Record<string, string> = {}
-  ): Promise<SubAgent> {
+  async getSession(sessionId: string): Promise<{ session: AgentSession; activeAgents: SubAgent[] }> {
     return this.sendAgentRequest({
-      action: 'spawn_agent',
+      action: 'get_session',
       sessionId,
-      data: { agentType, config }
+      data: {}
     }).then(response => {
       if (!response.success) {
-        throw new Error(response.error || 'Failed to spawn sub-agent');
+        throw new Error(response.error || 'Failed to get session');
+      }
+      return response.data;
+    });
+  }
+
+  async deleteSession(sessionId: string): Promise<void> {
+    return this.sendAgentRequest({
+      action: 'delete_session',
+      sessionId,
+      data: {}
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to delete session');
+      }
+    });
+  }
+
+  // Legacy compatibility method
+  async startAgentSession(userId: string, context: Record<string, string> = {}): Promise<AgentSession> {
+    // Use new create_session API but maintain backward compatibility
+    return this.createSession(userId, context);
+  }
+
+  // Enhanced Agent Lifecycle Methods
+
+  async createAgent(
+    sessionId: string,
+    agentType: string,
+    config?: Partial<AgentConfig>,
+    context: Record<string, string> = {}
+  ): Promise<{ agent: SubAgent; capabilities: Capability[] }> {
+    return this.sendAgentRequest({
+      action: 'create_agent',
+      sessionId,
+      data: { agentType, config, context }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to create agent');
+      }
+      return response.data;
+    });
+  }
+
+  async getAgent(sessionId: string, agentId: string): Promise<{ agent: SubAgent; metrics: AgentMetrics }> {
+    return this.sendAgentRequest({
+      action: 'get_agent',
+      sessionId,
+      agentId,
+      data: {}
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to get agent');
+      }
+      return response.data;
+    });
+  }
+
+  async listAgents(
+    sessionId: string,
+    pageSize: number = 50,
+    pageToken?: string,
+    filter?: string
+  ): Promise<{ agents: SubAgent[]; nextPageToken?: string; totalSize: number }> {
+    return this.sendAgentRequest({
+      action: 'list_agents',
+      sessionId,
+      data: { pageSize, pageToken, filter }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to list agents');
+      }
+      return response.data;
+    });
+  }
+
+  async updateAgent(
+    sessionId: string,
+    agentId: string,
+    agent: Partial<SubAgent>,
+    updateMask?: string[]
+  ): Promise<SubAgent> {
+    return this.sendAgentRequest({
+      action: 'update_agent',
+      sessionId,
+      agentId,
+      data: { agent, updateMask }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to update agent');
       }
       return response.data as SubAgent;
     });
   }
 
-  async sendAgentMessage(
+  async deleteAgent(sessionId: string, agentId: string): Promise<void> {
+    return this.sendAgentRequest({
+      action: 'delete_agent',
+      sessionId,
+      agentId,
+      data: {}
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to delete agent');
+      }
+    });
+  }
+
+  // Legacy compatibility method
+  async spawnSubAgent(
+    sessionId: string, 
+    agentType: string, 
+    config: Record<string, string> = {}
+  ): Promise<SubAgent> {
+    // Use new create_agent API but maintain backward compatibility
+    const result = await this.createAgent(sessionId, agentType, { parameters: config });
+    return result.agent;
+  }
+
+  // Enhanced Messaging Methods
+
+  async sendMessage(
     sessionId: string,
     agentId: string,
-    message: string,
-    context: Record<string, string> = {}
-  ): Promise<{ responseId: string; response: string; suggestions: AgentSuggestion[] }> {
+    message: {
+      content: string;
+      type?: 'text' | 'command' | 'query';
+      attachments?: Attachment[];
+      metadata?: Record<string, string>;
+    },
+    options?: {
+      timeoutSeconds?: number;
+      streamResponse?: boolean;
+      context?: Record<string, string>;
+      priority?: 'low' | 'normal' | 'high' | 'critical';
+    }
+  ): Promise<{ messageId: string; response: AgentMessage; suggestions: AgentSuggestion[]; metrics: MessageMetrics }> {
     return this.sendAgentRequest({
       action: 'send_message',
       sessionId,
       agentId,
-      data: { message, context }
+      data: { message, options }
     }).then(response => {
       if (!response.success) {
         throw new Error(response.error || 'Failed to send message to agent');
@@ -307,47 +542,99 @@ export class AgentWebSocketService {
     });
   }
 
-  async getAgentSuggestions(
+  // Legacy compatibility method
+  async sendAgentMessage(
     sessionId: string,
     agentId: string,
-    suggestionType: AgentSuggestion['actionType'],
+    message: string,
     context: Record<string, string> = {}
-  ): Promise<AgentSuggestion[]> {
+  ): Promise<{ responseId: string; response: string; suggestions: AgentSuggestion[] }> {
+    const result = await this.sendMessage(sessionId, agentId, { content: message }, { context });
+    return {
+      responseId: result.messageId,
+      response: result.response.content,
+      suggestions: result.suggestions
+    };
+  }
+
+  // Enhanced Suggestions Methods
+
+  async getSuggestions(
+    sessionId: string,
+    agentId: string,
+    context: {
+      contextType: string;
+      contextData: Record<string, string>;
+      tags?: string[];
+    },
+    maxSuggestions: number = 10
+  ): Promise<{ suggestions: AgentSuggestion[]; contextId: string }> {
     return this.sendAgentRequest({
       action: 'get_suggestions',
       sessionId,
       agentId,
-      data: { suggestionType, context }
+      data: { context, maxSuggestions }
     }).then(response => {
       if (!response.success) {
-        throw new Error(response.error || 'Failed to get agent suggestions');
+        throw new Error(response.error || 'Failed to get suggestions');
       }
-      return response.data as AgentSuggestion[];
+      return response.data;
     });
   }
 
-  async getAgentStatus(sessionId: string, agentId: string): Promise<SubAgent> {
+  // Legacy compatibility method
+  async getAgentSuggestions(
+    sessionId: string,
+    agentId: string,
+    suggestionType: string,
+    context: Record<string, string> = {}
+  ): Promise<AgentSuggestion[]> {
+    const result = await this.getSuggestions(sessionId, agentId, {
+      contextType: suggestionType,
+      contextData: context
+    });
+    return result.suggestions;
+  }
+
+  // Enhanced Monitoring Methods
+
+  async getAgentStatus(sessionId: string, agentId: string): Promise<{
+    status: AgentStatus;
+    metrics: AgentMetrics;
+    activeCapabilities: Capability[];
+    healthStatus: string;
+  }> {
     return this.sendAgentRequest({
-      action: 'get_status',
+      action: 'get_agent_status',
       sessionId,
-      agentId
+      agentId,
+      data: {}
     }).then(response => {
       if (!response.success) {
         throw new Error(response.error || 'Failed to get agent status');
       }
-      return response.data as SubAgent;
+      return response.data;
     });
   }
 
-  async stopAgentSession(sessionId: string): Promise<void> {
+  async getSystemHealth(includeMetrics: boolean = false): Promise<{
+    health: SystemHealth;
+    metrics?: SystemMetrics;
+  }> {
     return this.sendAgentRequest({
-      action: 'stop_session',
-      sessionId
+      action: 'get_system_health',
+      data: { includeMetrics }
     }).then(response => {
       if (!response.success) {
-        throw new Error(response.error || 'Failed to stop agent session');
+        throw new Error(response.error || 'Failed to get system health');
       }
+      return response.data;
     });
+  }
+
+  // Legacy compatibility method
+  async stopAgentSession(sessionId: string): Promise<void> {
+    return this.deleteSession(sessionId);
   }
 
   private async sendAgentRequest(request: AgentRequest): Promise<AgentResponse> {

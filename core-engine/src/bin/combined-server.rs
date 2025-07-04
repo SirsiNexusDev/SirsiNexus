@@ -1,8 +1,7 @@
 use clap::Parser;
-use sirsi_core::server::{start_grpc_server, start_websocket_server};
+use sirsi_core::server::start_grpc_server;
 use tracing::{info, error};
 use tracing_subscriber;
-use tokio::try_join;
 
 #[derive(Parser)]
 #[command(name = "combined-server")]
@@ -36,23 +35,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_target(false)
         .init();
 
-    info!("🚀 Starting Sirsi Nexus Combined Server");
+    info!("🚀 Starting Sirsi Nexus gRPC Server");
     info!("📡 gRPC Server will listen on port {}", cli.grpc_port);
-    info!("🌐 WebSocket Server will listen on port {}", cli.websocket_port);
     info!("🔄 Redis URL: {}", cli.redis_url);
 
-    // Construct gRPC endpoint for WebSocket server to connect to
-    let grpc_endpoint = format!("http://127.0.0.1:{}", cli.grpc_port);
-
-    // Start both servers concurrently
-    let result = try_join!(
-        start_grpc_server(cli.grpc_port, &cli.redis_url),
-        start_websocket_server(cli.websocket_port, grpc_endpoint)
-    );
+    // Start gRPC server (WebSocket functionality is disabled for now)
+    let result = start_grpc_server(cli.grpc_port, &cli.redis_url).await;
 
     match result {
         Ok(_) => {
-            info!("✅ Both servers shut down gracefully");
+            info!("✅ gRPC server shut down gracefully");
             Ok(())
         }
         Err(e) => {
