@@ -4,10 +4,11 @@ use tonic::transport::Server;
 use tonic_reflection::server::Builder as ReflectionServerBuilder;
 use tracing::{info, error};
 
-use crate::agent::{AgentManager, AgentService};
+use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
 use crate::error::{AppError, AppResult};
 use crate::proto::sirsi::agent::v1::agent_service_server::AgentServiceServer;
+use crate::server::agent_service_impl::AgentServiceImpl;
 
 pub struct GrpcServer {
     port: u16,
@@ -42,7 +43,7 @@ impl GrpcServer {
         info!("Redis connection established successfully");
 
         // Create the agent service
-        let agent_service = AgentService::new(
+        let agent_service = AgentServiceImpl::new(
             self.agent_manager.clone(),
             self.context_store.clone(),
         );

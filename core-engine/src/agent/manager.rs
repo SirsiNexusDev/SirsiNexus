@@ -4,6 +4,7 @@ use uuid::Uuid;
 use crate::{
     error::{AppError, AppResult},
     proto::sirsi::agent::v1::Suggestion,
+    agent::implementations::AwsAgent,
 };
 
 pub struct AgentManager {
@@ -17,11 +18,17 @@ struct SessionState {
     _context: HashMap<String, String>,
 }
 
+enum AgentImplementation {
+    Aws(AwsAgent),
+    General,
+}
+
 struct AgentState {
     _agent_type: String,
     status: String,
     metrics: HashMap<String, String>,
     capabilities: Vec<String>,
+    implementation: AgentImplementation,
 }
 
 impl AgentManager {
@@ -51,7 +58,7 @@ impl AgentManager {
         &mut self,
         session_id: &str,
         agent_type: &str,
-        _config: HashMap<String, String>,
+        config: HashMap<String, String>,
     ) -> AppResult<String> {
         let agent_id = Uuid::new_v4().to_string();
 
@@ -60,16 +67,32 @@ impl AgentManager {
             .get_mut(session_id)
             .ok_or_else(|| AppError::NotFound("Session not found".into()))?;
 
+        // Create agent implementation
+        let (implementation, capabilities) = match agent_type {
+            "aws" => {
+                let aws_agent = AwsAgent::new(agent_id.clone(), session_id.to_string(), config);
+                aws_agent.initialize().await?;
+                let (_, _, caps) = aws_agent.get_status().await?;
+                (AgentImplementation::Aws(aws_agent), caps)
+            }
+            _ => {
+                // Default general agent
+                let capabilities = vec![
+                    "chat".to_string(),
+                    "suggest".to_string(),
+                    format!("{}_specific", agent_type),
+                ];
+                (AgentImplementation::General, capabilities)
+            }
+        };
+
         // Create agent state
         let agent_state = AgentState {
             _agent_type: agent_type.to_string(),
-            status: "running".to_string(),
+            status: "ready".to_string(),
             metrics: HashMap::new(),
-            capabilities: vec![
-                "chat".to_string(),
-                "suggest".to_string(),
-                format!("{}_specific", agent_type),
-            ],
+            capabilities,
+            implementation,
         };
 
         // Add agent to session and global state
@@ -84,25 +107,32 @@ impl AgentManager {
         session_id: &str,
         agent_id: &str,
         message: &str,
-        _context: HashMap<String, String>,
+        context: HashMap<String, String>,
     ) -> AppResult<(String, String, Vec<Suggestion>)> {
         // Verify session and agent exist
-        self.verify_session_and_agent(session_id, agent_id)?;
+        let agent = self.verify_session_and_agent(session_id, agent_id)?;
 
-        // TODO: Implement actual message handling
         let message_id = Uuid::new_v4().to_string();
-        let response = format!("Received message: {}", message);
-        let suggestions = vec![
-            Suggestion {
-                id: Uuid::new_v4().to_string(),
-                title: "Sample suggestion".to_string(),
-                description: "This is a sample suggestion".to_string(),
-                r#type: 1, // SUGGESTION_TYPE_ACTION
-                action: "command".to_string(),
-                parameters: HashMap::new(),
-                confidence: 0.9,
-            },
-        ];
+        
+        let (response, suggestions) = match &agent.implementation {
+            AgentImplementation::Aws(aws_agent) => {
+                aws_agent.process_message(message, context).await?
+            }
+            AgentImplementation::General => {
+                let response = format!("General agent received: {}", message);
+                let suggestions = vec![
+                    Suggestion {
+                        id: Uuid::new_v4().to_string(),
+                        title: "General Help".to_string(),
+                        description: "Get general assistance".to_string(),
+                        action_type: "action".to_string(),
+                        action_params: HashMap::new(),
+                        confidence: 0.8,
+                    },
+                ];
+                (response, suggestions)
+            }
+        };
 
         Ok((message_id, response, suggestions))
     }
@@ -112,23 +142,30 @@ impl AgentManager {
         session_id: &str,
         agent_id: &str,
         context_type: &str,
-        _context: HashMap<String, String>,
+        context: HashMap<String, String>,
     ) -> AppResult<Vec<Suggestion>> {
         // Verify session and agent exist
-        self.verify_session_and_agent(session_id, agent_id)?;
+        let agent = self.verify_session_and_agent(session_id, agent_id)?;
 
-        // TODO: Implement actual suggestion generation
-        Ok(vec![
-            Suggestion {
-                id: Uuid::new_v4().to_string(),
-                title: format!("Suggestion for {}", context_type),
-                description: "This is a contextual suggestion".to_string(),
-                r#type: 1, // SUGGESTION_TYPE_ACTION
-                action: "command".to_string(),
-                parameters: HashMap::new(),
-                confidence: 0.8,
-            },
-        ])
+        let suggestions = match &agent.implementation {
+            AgentImplementation::Aws(aws_agent) => {
+                aws_agent.get_suggestions(context_type, context).await?
+            }
+            AgentImplementation::General => {
+                vec![
+                    Suggestion {
+                        id: Uuid::new_v4().to_string(),
+                        title: format!("General {} Suggestion", context_type),
+                        description: "This is a general contextual suggestion".to_string(),
+                        action_type: "action".to_string(),
+                        action_params: HashMap::new(),
+                        confidence: 0.7,
+                    },
+                ]
+            }
+        };
+
+        Ok(suggestions)
     }
 
     pub async fn get_agent_status(

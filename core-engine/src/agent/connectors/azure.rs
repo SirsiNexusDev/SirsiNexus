@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use reqwest::Client as HttpClient;
+// Azure SDK imports will be implemented when real integration is needed
+// use azure_core::TokenCredential;
+// use azure_identity::{ClientSecretCredential, DefaultAzureCredential};
 
 use crate::error::{AppError, AppResult};
 

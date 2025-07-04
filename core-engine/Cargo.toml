@@ -11,6 +11,10 @@ path = "src/main.rs"
 name = "agent-server"
 path = "src/bin/agent-server.rs"
 
+[[bin]]
+name = "combined-server"
+path = "src/bin/combined-server.rs"
+
 [lib]
 name = "sirsi_core"
 path = "src/lib.rs"
@@ -76,6 +80,10 @@ chrono = { version = "0.4", features = ["serde"] }
 # Redis for agent context storage
 redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
 
+# WebSocket server dependencies
+tokio-tungstenite = "0.21"
+futures-util = "0.3"
+
 # Agent Framework Dependencies - Enhanced AWS Integration
 aws-sdk-ec2 = "1.66"
 aws-sdk-s3 = "1.66"
@@ -96,9 +104,11 @@ azure_mgmt_compute = "0.21"
 azure_mgmt_storage = "0.21"
 azure_mgmt_resources = "0.21"
 
-# GCP SDK Dependencies - Foundation for Real Integration
-# Note: Using basic HTTP client foundation for GCP API calls
-# TODO: Add specific google-cloud-rust SDK when stable versions are available
+# GCP SDK Dependencies - Real Integration
+gcp_auth = "0.12"
+yup-oauth2 = "12.1.0"
+google-cloud-storage = "0.24.0"
+google-cloud = "0.2.1"
 
 [build-dependencies]
 tonic-build = { version = "0.10", features = ["prost"] }

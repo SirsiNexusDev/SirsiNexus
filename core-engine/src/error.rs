@@ -37,6 +37,9 @@ pub enum Error {
     
     #[error("Server error: {0}")]
     Server(String),
+    
+    #[error("JSON serialization error: {0}")]
+    JsonSerialization(#[from] serde_json::Error),
 }
 
 impl IntoResponse for Error {
@@ -53,6 +56,7 @@ impl IntoResponse for Error {
             Error::Serialization(msg) => (StatusCode::BAD_REQUEST, msg),
             Error::ExternalService(msg) => (StatusCode::BAD_GATEWAY, msg),
             Error::Server(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
+            Error::JsonSerialization(e) => (StatusCode::BAD_REQUEST, format!("JSON error: {}", e)),
         };
 
         let body = Json(json!({

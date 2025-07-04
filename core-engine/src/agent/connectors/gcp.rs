@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use reqwest::Client as HttpClient;
+// GCP SDK imports will be implemented when real integration is needed
+// use google_cloud_storage::{Client as GcsClient, bucket::Bucket};
+// use gcp_auth::AuthFlow;
 
 use crate::error::{AppError, AppResult};
 
