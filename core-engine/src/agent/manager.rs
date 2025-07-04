@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::time::{SystemTime, Instant};
 use uuid::Uuid;
 
 use crate::{
@@ -7,6 +8,11 @@ use crate::{
     protos::proto::{Suggestion, Action},
     agent::implementations::AwsAgent,
     agent::context::ContextStore,
+    telemetry::{
+        metrics::MetricsCollector,
+        opentelemetry::{OtelTracer, TraceContext, SpanStatus},
+    },
+    audit::AuditLogger,
 };
 
 #[derive(Debug, Clone)]
@@ -28,6 +34,9 @@ pub struct AgentMetricsData {
 pub struct AgentManager {
     sessions: HashMap<String, SessionState>,
     agents: HashMap<String, AgentState>,
+    metrics_collector: Option<Arc<MetricsCollector>>,
+    otel_tracer: Option<Arc<OtelTracer>>,
+    audit_logger: Option<AuditLogger>,
 }
 
 struct SessionState {
@@ -86,6 +95,9 @@ impl AgentManager {
         Self {
             sessions: HashMap::new(),
             agents: HashMap::new(),
+            metrics_collector: None,
+            otel_tracer: None,
+            audit_logger: None,
         }
     }
     
@@ -93,7 +105,23 @@ impl AgentManager {
         Self {
             sessions: HashMap::new(),
             agents: HashMap::new(),
+            metrics_collector: None,
+            otel_tracer: None,
+            audit_logger: None,
         }
+    }
+    
+    /// Add observability components
+    pub fn with_observability(
+        mut self,
+        metrics_collector: Arc<MetricsCollector>,
+        otel_tracer: Arc<OtelTracer>,
+        audit_logger: AuditLogger,
+    ) -> Self {
+        self.metrics_collector = Some(metrics_collector);
+        self.otel_tracer = Some(otel_tracer);
+        self.audit_logger = Some(audit_logger);
+        self
     }
 
     pub async fn list_available_agents(&self) -> Vec<String> {
@@ -262,10 +290,34 @@ impl AgentManager {
         agent_type: &str,
         config: HashMap<String, String>,
     ) -> AppResult<String> {
+        let start_time = Instant::now();
         let agent_id = Uuid::new_v4().to_string();
+
+        // Start distributed tracing span
+        let span = if let Some(tracer) = &self.otel_tracer {
+            Some(tracer.start_span(
+                &format!("agent_spawn_{}", agent_type),
+                "agent_manager",
+                None,
+            ).await.ok())
+        } else {
+            None
+        };
+
+        // Add span tags
+        if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+            let mut tags = HashMap::new();
+            tags.insert("agent.type".to_string(), agent_type.to_string());
+            tags.insert("agent.id".to_string(), agent_id.clone());
+            tags.insert("session.id".to_string(), session_id.to_string());
+            let _ = tracer.add_span_tags(&span.span_id, tags).await;
+        }
 
         // Verify session exists first
         if !self.sessions.contains_key(session_id) {
+            if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+                let _ = tracer.finish_span(&span.span_id, SpanStatus::Error).await;
+            }
             return Err(AppError::NotFound("Session not found".into()));
         }
 
@@ -301,6 +353,33 @@ impl AgentManager {
             session.agent_ids.push(agent_id.clone());
         }
 
+        // Record metrics
+        if let Some(metrics) = &self.metrics_collector {
+            metrics.increment_counter("agent_spawns_total", 1).await;
+            metrics.increment_counter(&format!("agent_spawns_{}", agent_type), 1).await;
+            metrics.set_gauge("active_agents", self.agents.len() as i64).await;
+        }
+
+        // Audit log
+        if let Some(audit_logger) = &self.audit_logger {
+            let _ = audit_logger.log_agent_event(
+                &agent_id,
+                "agent_spawned",
+                serde_json::json!({
+                    "agent_type": agent_type,
+                    "session_id": session_id,
+                    "spawn_duration_ms": start_time.elapsed().as_millis()
+                }),
+                true,
+                Some(session_id),
+            ).await;
+        }
+
+        // Finish span
+        if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+            let _ = tracer.finish_span(&span.span_id, SpanStatus::Ok).await;
+        }
+
         Ok(agent_id)
     }
 
@@ -311,8 +390,38 @@ impl AgentManager {
         message: &str,
         context: HashMap<String, String>,
     ) -> AppResult<(String, String, Vec<Suggestion>)> {
+        let start_time = Instant::now();
+        
+        // Start distributed tracing span
+        let span = if let Some(tracer) = &self.otel_tracer {
+            Some(tracer.start_span(
+                "agent_message_processing",
+                "agent_manager",
+                None,
+            ).await.ok())
+        } else {
+            None
+        };
+
+        // Add span tags
+        if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+            let mut tags = HashMap::new();
+            tags.insert("agent.id".to_string(), agent_id.to_string());
+            tags.insert("session.id".to_string(), session_id.to_string());
+            tags.insert("message.length".to_string(), message.len().to_string());
+            let _ = tracer.add_span_tags(&span.span_id, tags).await;
+        }
+
         // Verify session and agent exist
-        let agent = self.verify_session_and_agent(session_id, agent_id)?;
+        let agent = match self.verify_session_and_agent(session_id, agent_id) {
+            Ok(agent) => agent,
+            Err(e) => {
+                if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+                    let _ = tracer.finish_span(&span.span_id, SpanStatus::Error).await;
+                }
+                return Err(e);
+            }
+        };
 
         let message_id = Uuid::new_v4().to_string();
         
@@ -376,6 +485,53 @@ impl AgentManager {
                 (response, suggestions)
             }
         };
+
+        let duration_ms = start_time.elapsed().as_millis() as f64;
+        
+        // Record metrics
+        if let Some(metrics) = &self.metrics_collector {
+            metrics.increment_counter("agent_messages_total", 1).await;
+            metrics.increment_counter(&format!("agent_messages_{}", &agent.agent_type), 1).await;
+            metrics.observe_histogram("agent_message_duration_ms", duration_ms).await;
+            metrics.record_agent_operation(
+                "message_processing",
+                duration_ms,
+                true, // Assuming success if we reach here
+                false, // Not an AI API call directly
+            ).await;
+        }
+
+        // Audit log
+        if let Some(audit_logger) = &self.audit_logger {
+            let _ = audit_logger.log_agent_event(
+                agent_id,
+                "message_processed",
+                serde_json::json!({
+                    "message_id": message_id,
+                    "agent_type": agent.agent_type,
+                    "response_length": response.len(),
+                    "suggestions_count": suggestions.len(),
+                    "duration_ms": duration_ms
+                }),
+                false,
+                Some(session_id),
+            ).await;
+        }
+
+        // Finish span
+        if let (Some(tracer), Some(ref span)) = (&self.otel_tracer, &span) {
+            let _ = tracer.add_span_event(
+                &span.span_id,
+                "message_processed",
+                {
+                    let mut attrs = HashMap::new();
+                    attrs.insert("suggestions_count".to_string(), suggestions.len().to_string());
+                    attrs.insert("response_length".to_string(), response.len().to_string());
+                    attrs
+                },
+            ).await;
+            let _ = tracer.finish_span(&span.span_id, SpanStatus::Ok).await;
+        }
 
         Ok((message_id, response, suggestions))
     }
@@ -548,6 +704,63 @@ impl AgentManager {
         };
 
         Ok(suggestions)
+    }
+    
+    /// Get comprehensive metrics for all agents
+    pub async fn get_agent_metrics(&self) -> AgentMetricsData {
+        let mut total_messages = 0i64;
+        let mut total_operations = 0i64;
+        let mut total_errors = 0i64;
+        let mut total_response_time = 0f64;
+        let mut custom_metrics = HashMap::new();
+        
+        // Aggregate metrics from all agents
+        for (agent_id, agent_state) in &self.agents {
+            // Extract metrics from agent state (simplified)
+            if let Some(messages) = agent_state.metrics.get("messages_processed") {
+                if let Ok(count) = messages.parse::<i64>() {
+                    total_messages += count;
+                }
+            }
+            if let Some(operations) = agent_state.metrics.get("operations_completed") {
+                if let Ok(count) = operations.parse::<i64>() {
+                    total_operations += count;
+                }
+            }
+            if let Some(errors) = agent_state.metrics.get("errors_encountered") {
+                if let Ok(count) = errors.parse::<i64>() {
+                    total_errors += count;
+                }
+            }
+            
+            // Add agent-specific metrics
+            custom_metrics.insert(
+                format!("agent_{}_type", agent_id),
+                agent_state.agent_type.clone(),
+            );
+            custom_metrics.insert(
+                format!("agent_{}_status", agent_id),
+                agent_state.status.clone(),
+            );
+        }
+        
+        // Calculate average response time
+        let average_response_time_ms = if total_messages > 0 {
+            total_response_time / total_messages as f64
+        } else {
+            0.0
+        };
+        
+        custom_metrics.insert("active_agents_count".to_string(), self.agents.len().to_string());
+        custom_metrics.insert("active_sessions_count".to_string(), self.sessions.len().to_string());
+        
+        AgentMetricsData {
+            messages_processed: total_messages,
+            operations_completed: total_operations,
+            errors_encountered: total_errors,
+            average_response_time_ms,
+            custom_metrics,
+        }
     }
 
     pub async fn get_agent_status(
