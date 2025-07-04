@@ -145,7 +145,7 @@ impl WebSocketHandler {
             };
 
             match msg {
-                WsMessage::Text(text) => {
+                Message::Text(text) => {
                     debug!("Received message: {}", text);
                     
                     let response = match self.process_request(&text, &connection_id).await {
@@ -170,18 +170,18 @@ impl WebSocketHandler {
                         }
                     };
 
-                    if let Err(e) = ws_sender.send(WsMessage::Text(response_json)).await {
+                    if let Err(e) = ws_sender.send(Message::Text(response_json)).await {
                         error!("Failed to send WebSocket response: {}", e);
                         break;
                     }
                 }
-                WsMessage::Ping(data) => {
-                    if let Err(e) = ws_sender.send(WsMessage::Pong(data)).await {
+                Message::Ping(data) => {
+                    if let Err(e) = ws_sender.send(Message::Pong(data)).await {
                         error!("Failed to send pong: {}", e);
                         break;
                     }
                 }
-                WsMessage::Close(_) => {
+                Message::Close(_) => {
                     info!("WebSocket close received");
                     break;
                 }

@@ -11,6 +11,12 @@ pub enum Error {
     #[error("Authentication error: {0}")]
     Auth(String),
     
+    #[error("Authorization error: {0}")]
+    Forbidden(String),
+    
+    #[error("Security error: {0}")]
+    Security(String),
+    
     #[error("Invalid input: {0}")]
     InvalidInput(String),
     
@@ -46,6 +52,8 @@ impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
             Error::Auth(msg) => (StatusCode::UNAUTHORIZED, msg),
+            Error::Forbidden(msg) => (StatusCode::FORBIDDEN, msg),
+            Error::Security(msg) => (StatusCode::FORBIDDEN, msg),
             Error::Database(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)),
             Error::InvalidInput(msg) => (StatusCode::BAD_REQUEST, msg),
             Error::NotFound(msg) => (StatusCode::NOT_FOUND, msg),

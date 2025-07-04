@@ -1,6 +1,10 @@
+mod production;
+
 use serde::Deserialize;
 use std::net::SocketAddr;
 use config::ConfigError;
+
+pub use production::*;
 
 #[derive(Debug, Deserialize)]
 pub struct DatabaseConfig {

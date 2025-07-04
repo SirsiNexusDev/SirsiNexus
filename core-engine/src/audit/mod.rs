@@ -150,6 +150,50 @@ impl AuditLogger {
         };
 
         self.insert_audit_log(&log_entry).await?;
+        
+        // Phase 3: Real-time security monitoring
+        if action == "login_failed" || !success {
+            self.analyze_security_event(&log_entry).await;
+        }
+        
+        Ok(log_entry.id)
+    }
+
+    /// Log authorization events
+    pub async fn log_authorization(
+        &self,
+        action: &str,
+        resource_type: &str,
+        resource_id: Option<&str>,
+        user_id: Option<Uuid>,
+        details: serde_json::Value,
+        context: AuditContext,
+        success: bool,
+        error_message: Option<&str>,
+    ) -> AppResult<Uuid> {
+        let log_entry = AuditLog {
+            id: Uuid::new_v4(),
+            event_type: "authorization".to_string(),
+            resource_type: resource_type.to_string(),
+            resource_id: resource_id.map(|s| s.to_string()),
+            user_id,
+            session_id: context.session_id,
+            action: action.to_string(),
+            details,
+            ip_address: context.ip_address,
+            user_agent: context.user_agent,
+            timestamp: Utc::now(),
+            success,
+            error_message: error_message.map(|s| s.to_string()),
+        };
+
+        self.insert_audit_log(&log_entry).await?;
+        
+        // Phase 3: Real-time security monitoring for authorization failures
+        if !success {
+            self.analyze_security_event(&log_entry).await;
+        }
+        
         Ok(log_entry.id)
     }
 
@@ -178,6 +222,12 @@ impl AuditLogger {
         };
 
         self.insert_audit_log(&log_entry).await?;
+        
+        // Phase 3: Real-time security monitoring for system failures
+        if !success {
+            self.analyze_security_event(&log_entry).await;
+        }
+        
         Ok(log_entry.id)
     }
 
@@ -200,14 +250,133 @@ impl AuditLogger {
         .bind(&log.details)
         .bind(&log.ip_address)
         .bind(&log.user_agent)
-        .bind(log.timestamp)
+        .bind(&log.timestamp)
         .bind(log.success)
         .bind(&log.error_message)
         .execute(&self.pool)
         .await
         .map_err(AppError::Database)?;
-
+        
         Ok(())
+    }
+    
+    /// Phase 3: Real-time security event analysis
+    async fn analyze_security_event(&self, log_entry: &AuditLog) {
+        tracing::info!("🔍 Phase 3: Analyzing security event: {} - {}", log_entry.action, log_entry.event_type);
+        
+        // Detect brute force attacks
+        if log_entry.action == "login_failed" {
+            if let Some(ip_address) = &log_entry.ip_address {
+                match self.check_brute_force_attack(ip_address).await {
+                    Ok(true) => {
+                        tracing::warn!("🚨 SECURITY ALERT: Potential brute force attack detected from IP: {}", ip_address);
+                        self.trigger_security_alert("brute_force", &format!("Multiple failed logins from IP: {}", ip_address)).await;
+                    }
+                    Ok(false) => {
+                        tracing::debug!("🔍 Normal failed login from IP: {}", ip_address);
+                    }
+                    Err(e) => {
+                        tracing::error!("Failed to analyze brute force pattern: {}", e);
+                    }
+                }
+            }
+        }
+        
+        // Detect privilege escalation attempts
+        if log_entry.event_type == "authorization" && !log_entry.success {
+            tracing::warn!("🚨 SECURITY ALERT: Failed authorization attempt - User: {:?}, Action: {}", 
+                log_entry.user_id, log_entry.action);
+            
+            if let Some(user_id) = log_entry.user_id {
+                match self.check_privilege_escalation_attempt(user_id).await {
+                    Ok(true) => {
+                        tracing::warn!("🚨 CRITICAL: Potential privilege escalation detected for user: {}", user_id);
+                        self.trigger_security_alert("privilege_escalation", 
+                            &format!("Multiple failed authorization attempts by user: {}", user_id)).await;
+                    }
+                    _ => {}
+                }
+            }
+        }
+        
+        // Detect suspicious system access patterns
+        if log_entry.event_type == "system" && !log_entry.success {
+            tracing::warn!("🚨 SECURITY ALERT: Failed system operation: {}", log_entry.action);
+            self.trigger_security_alert("system_access", 
+                &format!("Failed system operation: {}", log_entry.action)).await;
+        }
+    }
+    
+    /// Check for brute force attack patterns
+    async fn check_brute_force_attack(&self, ip_address: &str) -> AppResult<bool> {
+        // Count failed login attempts in the last 10 minutes
+        let failed_attempts = sqlx::query_scalar::<_, i64>(
+            r#"
+            SELECT COUNT(*) 
+            FROM audit_logs 
+            WHERE ip_address = $1 
+                AND action = 'login_failed' 
+                AND timestamp > NOW() - INTERVAL '10 minutes'
+            "#
+        )
+        .bind(ip_address)
+        .fetch_one(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        // Threshold: 5 failed attempts in 10 minutes indicates potential brute force
+        Ok(failed_attempts >= 5)
+    }
+    
+    /// Check for privilege escalation attempt patterns
+    async fn check_privilege_escalation_attempt(&self, user_id: Uuid) -> AppResult<bool> {
+        // Count failed authorization attempts in the last 5 minutes
+        let failed_auth_attempts = sqlx::query_scalar::<_, i64>(
+            r#"
+            SELECT COUNT(*) 
+            FROM audit_logs 
+            WHERE user_id = $1 
+                AND event_type = 'authorization' 
+                AND success = false 
+                AND timestamp > NOW() - INTERVAL '5 minutes'
+            "#
+        )
+        .bind(user_id)
+        .fetch_one(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        // Threshold: 3 failed authorization attempts in 5 minutes
+        Ok(failed_auth_attempts >= 3)
+    }
+    
+    /// Trigger security alert (in production, this would integrate with SIEM/alerting systems)
+    async fn trigger_security_alert(&self, alert_type: &str, message: &str) {
+        tracing::error!("🚨 SECURITY ALERT [{}]: {}", alert_type.to_uppercase(), message);
+        
+        // Phase 3: In production, this would:
+        // 1. Send alerts to security team via PagerDuty/Slack
+        // 2. Update SIEM systems (Splunk, ELK Stack)
+        // 3. Trigger automated responses (rate limiting, IP blocking)
+        // 4. Create incident tickets
+        
+        // Log the security alert as a system event
+        let alert_details = serde_json::json!({
+            "alert_type": alert_type,
+            "message": message,
+            "severity": "high",
+            "timestamp": Utc::now(),
+            "auto_generated": true
+        });
+        
+        if let Err(e) = self.log_system_event(
+            &format!("security_alert_{}", alert_type),
+            alert_details,
+            true,
+            None,
+        ).await {
+            tracing::error!("Failed to log security alert: {}", e);
+        }
     }
 
     /// Query audit logs with filters

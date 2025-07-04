@@ -199,6 +199,131 @@ impl RbacManager {
         self.permission_cache.insert(name.to_string(), permission.clone());
         Ok(permission)
     }
+    
+    // User Role Management
+    pub async fn assign_role(&mut self, user_id: Uuid, role_id: Uuid, assigned_by: Uuid) -> AppResult<()> {
+        // Verify role exists
+        self.get_role(role_id).await?;
+        
+        let now = chrono::Utc::now();
+        
+        sqlx::query(
+            r#"
+            INSERT INTO user_roles (user_id, role_id, assigned_by, assigned_at)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (user_id, role_id) DO UPDATE SET
+                assigned_by = $3,
+                assigned_at = $4
+            "#
+        )
+        .bind(user_id)
+        .bind(role_id)
+        .bind(assigned_by)
+        .bind(now)
+        .execute(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        tracing::info!("✅ Role {} assigned to user {} by {}", role_id, user_id, assigned_by);
+        Ok(())
+    }
+    
+    pub async fn revoke_role(&mut self, user_id: Uuid, role_id: Uuid) -> AppResult<()> {
+        sqlx::query(
+            "DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2"
+        )
+        .bind(user_id)
+        .bind(role_id)
+        .execute(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        tracing::info!("🗑️ Role {} revoked from user {}", role_id, user_id);
+        Ok(())
+    }
+    
+    // Runtime Permission Checking
+    pub async fn check_permission(&mut self, user_id: Uuid, resource: &str, action: &str) -> AppResult<bool> {
+        tracing::debug!("🔍 Checking permission for user {} on {}:{}", user_id, resource, action);
+        
+        // Get user's roles
+        let user_roles = sqlx::query_as::<_, (serde_json::Value,)>(
+            r#"
+            SELECT r.permissions
+            FROM user_roles ur
+            JOIN roles r ON ur.role_id = r.id
+            WHERE ur.user_id = $1
+            "#
+        )
+        .bind(user_id)
+        .fetch_all(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        // Check if any role has the required permission
+        let required_permission = format!("{}:{}", resource, action);
+        
+        for role_record in user_roles {
+            let permissions = &role_record.0;
+            if let Some(perms_array) = permissions.as_array() {
+                for perm in perms_array {
+                    if let Some(perm_str) = perm.as_str() {
+                        if perm_str == required_permission {
+                            tracing::debug!("✅ Permission granted via role permissions");
+                            return Ok(true);
+                        }
+                    }
+                }
+            }
+        }
+        
+        tracing::warn!("❌ Permission {} denied for user {}", required_permission, user_id);
+        Ok(false)
+    }
+    
+    // Bulk permission check for efficiency
+    pub async fn check_permissions(&mut self, user_id: Uuid, required_permissions: Vec<(String, String)>) -> AppResult<bool> {
+        for (resource, action) in required_permissions {
+            if !self.check_permission(user_id, &resource, &action).await? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+    
+    // Get user permissions (for debugging/admin)
+    pub async fn get_user_permissions(&mut self, user_id: Uuid) -> AppResult<Vec<String>> {
+        let user_roles = sqlx::query_as::<_, (serde_json::Value,)>(
+            r#"
+            SELECT r.permissions
+            FROM user_roles ur
+            JOIN roles r ON ur.role_id = r.id
+            WHERE ur.user_id = $1
+            "#
+        )
+        .bind(user_id)
+        .fetch_all(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
+        
+        let mut all_permissions = Vec::new();
+        for role_record in user_roles {
+            let permissions = &role_record.0;
+            if let Some(perms_array) = permissions.as_array() {
+                for perm in perms_array {
+                    if let Some(perm_str) = perm.as_str() {
+                        all_permissions.push(perm_str.to_string());
+                    }
+                }
+            }
+        }
+        
+        // Remove duplicates and sort
+        all_permissions.sort();
+        all_permissions.dedup();
+        
+        Ok(all_permissions)
+    }
 
     // User Role Management
     pub async fn assign_role_to_user(&self, user_id: Uuid, role_id: Uuid, assigned_by: Uuid, expires_at: Option<chrono::DateTime<chrono::Utc>>) -> AppResult<()> {

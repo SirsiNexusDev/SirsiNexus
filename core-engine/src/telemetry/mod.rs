@@ -7,6 +7,10 @@ use crate::config::AppConfig;
 
 pub mod error;
 pub mod performance;
+pub mod metrics;
+pub mod prometheus;
+pub mod opentelemetry;
+pub mod dashboard;
 
 pub use error::{TelemetryError, Result as TelemetryResult};
 pub use performance::{PerformanceMonitor, PerformanceMetric, PerformanceReport, RequestTimer};

@@ -452,7 +452,7 @@ impl AgentManager {
                         action: Some(Action {
                             action_type: "security_action".to_string(),
                             parameters: HashMap::new(),
-                            command: "action_command".to_string(),
+                            command: "".to_string(),
                             required_permissions: vec![],
                         }),
                         confidence: 0.7,
@@ -473,7 +473,7 @@ impl AgentManager {
                         action: Some(Action {
                             action_type: "cost_optimization_action".to_string(),
                             parameters: HashMap::new(),
-                            command: "action_command".to_string(),
+                            command: "".to_string(),
                             required_permissions: vec![],
                         }),
                         confidence: 0.7,
@@ -494,7 +494,7 @@ impl AgentManager {
                         action: Some(Action {
                             action_type: "migration_action".to_string(),
                             parameters: HashMap::new(),
-                            command: "action_command".to_string(),
+                            command: "".to_string(),
                             required_permissions: vec![],
                         }),
                         confidence: 0.7,
@@ -515,7 +515,7 @@ impl AgentManager {
                         action: Some(Action {
                             action_type: "reporting_action".to_string(),
                             parameters: HashMap::new(),
-                            command: "action_command".to_string(),
+                            command: "".to_string(),
                             required_permissions: vec![],
                         }),
                         confidence: 0.7,
@@ -536,7 +536,7 @@ impl AgentManager {
                         action: Some(Action {
                             action_type: "general_action".to_string(),
                             parameters: HashMap::new(),
-                            command: "action_command".to_string(),
+                            command: "".to_string(),
                             required_permissions: vec![],
                         }),
                         confidence: 0.7,

@@ -1,18 +1,19 @@
+use uuid::Uuid;
 use axum::{
     async_trait,
-    extract::FromRequestParts,
-    http::request::Parts,
+    extract::{FromRequestParts},
+    http::{header::AUTHORIZATION, request::Parts},
     response::{IntoResponse, Response},
 };
-use axum::http::header::AUTHORIZATION;
+use axum::extract::State;
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
-use uuid::Uuid;
+use sqlx::PgPool;
 
 use crate::{
     error::{AppError, AppResult},
     models::user::User,
+    auth::rbac::RbacManager,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,6 +29,31 @@ pub struct Claims {
 pub struct AuthUser {
     pub user: User,
     pub user_id: Uuid,
+}
+
+/// Permission-checked authenticated user
+/// Use this for endpoints that require specific permissions
+#[derive(Debug)]
+pub struct AuthorizedUser {
+    pub user: User,
+    pub user_id: Uuid,
+    pub required_permissions: Vec<(String, String)>, // (resource, action) pairs
+}
+
+impl AuthorizedUser {
+    /// Create a new authorized user with permission requirements
+    pub fn new(user: User, user_id: Uuid, required_permissions: Vec<(String, String)>) -> Self {
+        Self {
+            user,
+            user_id,
+            required_permissions,
+        }
+    }
+    
+    /// Check if user has a specific permission
+    pub async fn has_permission(&self, rbac_manager: &mut RbacManager, resource: &str, action: &str) -> AppResult<bool> {
+        rbac_manager.check_permission(self.user_id, resource, action).await
+    }
 }
 
 #[async_trait]

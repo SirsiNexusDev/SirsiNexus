@@ -7,7 +7,7 @@ use tracing::{info, error};
 use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
 use crate::error::{AppError, AppResult};
-use crate::proto::sirsi::agent::v1::agent_service_server::AgentServiceServer;
+use crate::protos::sirsi::agent::v1::agent_service_server::AgentServiceServer;
 use crate::server::agent_service_impl::AgentServiceImpl;
 
 pub struct GrpcServer {
@@ -50,7 +50,7 @@ impl GrpcServer {
 
         // Set up reflection service for easier debugging
         let reflection_service = ReflectionServerBuilder::configure()
-            .register_encoded_file_descriptor_set(crate::proto::sirsi::agent::v1::FILE_DESCRIPTOR_SET)
+            .register_encoded_file_descriptor_set(crate::protos::sirsi::agent::v1::FILE_DESCRIPTOR_SET)
             .build()
             .map_err(|e| AppError::Configuration(format!("Failed to build reflection service: {}", e)))?;
 

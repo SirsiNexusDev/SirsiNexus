@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tonic::{Request, Response, Status};
@@ -7,9 +8,9 @@ use prost_types::Timestamp;
 
 use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
-use crate::proto::sirsi::agent::v1::{
-    agent_service_server::AgentService,
-    *,
+use crate::protos::{
+    sirsi::agent::v1::{agent_service_server::*, *},
+    AgentService,
 };
 
 pub struct AgentServiceImpl {
@@ -52,26 +53,6 @@ impl AgentService for AgentServiceImpl {
         let session_id = Uuid::new_v4().to_string();
         let now = Self::current_timestamp();
         
-        let session = Session {
-            session_id: session_id.clone(),
-            user_id: req.user_id,
-            state: 1, // SESSION_STATE_ACTIVE
-            created_at: now.clone(),
-            updated_at: now.clone(),
-            expires_at: {
-                let expire_time = std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .unwrap()
-                    .as_secs() + 86400; // 24 hours
-                Some(Timestamp {
-                    seconds: expire_time as i64,
-                    nanos: 0,
-                })
-            },
-            metadata: req.context,
-            config: req.config,
-        };
-
         let available_agent_types = vec![
             AgentType {
                 type_id: "aws".to_string(),
@@ -98,6 +79,28 @@ impl AgentService for AgentServiceImpl {
                 default_config: std::collections::HashMap::new(),
             },
         ];
+        
+        let session = Session {
+            id: session_id.clone(),
+            session_id: session_id.clone(),
+            user_id: req.user_id,
+            state: 1, // SESSION_STATE_ACTIVE
+            created_at: now.clone(),
+            updated_at: now.clone(),
+            expires_at: {
+                let expire_time = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs() + 86400; // 24 hours
+                Some(Timestamp {
+                    seconds: expire_time as i64,
+                    nanos: 0,
+                })
+            },
+            agent_types: available_agent_types.clone(),
+            metadata: HashMap::new(),
+            config: HashMap::new(),
+        };
 
         let response = CreateSessionResponse {
             session: Some(session),
@@ -144,10 +147,17 @@ impl AgentService for AgentServiceImpl {
         // Real implementation using AgentManager
         let mut agent_manager = self.agent_manager.write().await;
         
+        // Convert AgentConfig to HashMap<String, String> format expected by AgentManager
+        let config_map = if let Some(ref agent_config) = req.config {
+            agent_config.parameters.clone()
+        } else {
+            HashMap::new()
+        };
+        
         match agent_manager.spawn_agent(
             &req.session_id,
             &req.agent_type,
-            req.config.clone(),
+            config_map,
         ).await {
             Ok(agent_id) => {
                 let now = Self::current_timestamp();
@@ -201,14 +211,49 @@ impl AgentService for AgentServiceImpl {
         request: Request<GetAgentRequest>,
     ) -> Result<Response<GetAgentResponse>, Status> {
         let req = request.into_inner();
-        info!("Getting agent: {}", req.agent_id);
+        info!("📊 Getting agent: {} for session: {}", req.agent_id, req.session_id);
 
-        let response = GetAgentResponse {
-            agent: None,
-            metrics: None,
-        };
-
-        Ok(Response::new(response))
+        let agent_manager = self.agent_manager.read().await;
+        
+        match agent_manager.get_agent_details(&req.session_id, &req.agent_id).await {
+            Ok((agent_info, metrics)) => {
+                let now = Self::current_timestamp();
+                
+                let agent = Agent {
+                    agent_id: req.agent_id.clone(),
+                    session_id: req.session_id.clone(),
+                    agent_type: agent_info.agent_type,
+                    state: 2, // AGENT_STATE_READY
+                    created_at: now.clone(),
+                    updated_at: now.clone(),
+                    config: None, // TODO: Store and return actual config
+                    metadata: std::collections::HashMap::new(),
+                    parent_agent_id: agent_info.parent_agent_id.unwrap_or_default(),
+                };
+                
+                let agent_metrics = AgentMetrics {
+                    messages_processed: metrics.messages_processed,
+                    operations_completed: metrics.operations_completed,
+                    errors_encountered: metrics.errors_encountered,
+                    average_response_time_ms: metrics.average_response_time_ms,
+                    last_reset: now.clone(),
+                    custom_metrics: std::collections::HashMap::new(), // TODO: Convert string metrics to f64
+                };
+                
+                let response = GetAgentResponse {
+                    agent: Some(agent),
+                    metrics: Some(agent_metrics),
+                };
+                
+                info!("✅ Agent details retrieved for: {}", req.agent_id);
+                Ok(Response::new(response))
+            }
+            Err(e) => {
+                let error_msg = format!("Failed to get agent {}: {}", req.agent_id, e);
+                tracing::error!("{}", error_msg);
+                Err(Status::not_found(error_msg))
+            }
+        }
     }
 
     async fn list_agents(
@@ -216,15 +261,54 @@ impl AgentService for AgentServiceImpl {
         request: Request<ListAgentsRequest>,
     ) -> Result<Response<ListAgentsResponse>, Status> {
         let req = request.into_inner();
-        info!("Listing agents for session: {}", req.session_id);
+        info!("📋 Listing agents for session: {} (page_size: {})", req.session_id, req.page_size);
 
-        let response = ListAgentsResponse {
-            agents: vec![],
-            next_page_token: String::new(),
-            total_size: 0,
-        };
-
-        Ok(Response::new(response))
+        let agent_manager = self.agent_manager.read().await;
+        
+        match agent_manager.list_session_agents(&req.session_id).await {
+            Ok(agent_list) => {
+                let now = Self::current_timestamp();
+                
+                // Convert internal agent info to protobuf agents
+                let agents: Vec<Agent> = agent_list.into_iter().map(|agent_info| {
+                    Agent {
+                        agent_id: agent_info.agent_id,
+                        session_id: req.session_id.clone(),
+                        agent_type: agent_info.agent_type,
+                        state: 2, // AGENT_STATE_READY
+                        created_at: now.clone(),
+                        updated_at: now.clone(),
+                        config: None,
+                        metadata: std::collections::HashMap::new(),
+                        parent_agent_id: agent_info.parent_agent_id.unwrap_or_default(),
+                    }
+                }).collect();
+                
+                let total_size = agents.len() as i32;
+                
+                // Apply pagination if requested
+                let paginated_agents = if req.page_size > 0 {
+                    let page_size = req.page_size as usize;
+                    agents.into_iter().take(page_size).collect()
+                } else {
+                    agents
+                };
+                
+                let response = ListAgentsResponse {
+                    agents: paginated_agents,
+                    next_page_token: String::new(), // TODO: Implement pagination tokens
+                    total_size,
+                };
+                
+                info!("✅ Listed {} agents for session: {}", total_size, req.session_id);
+                Ok(Response::new(response))
+            }
+            Err(e) => {
+                let error_msg = format!("Failed to list agents for session {}: {}", req.session_id, e);
+                tracing::error!("{}", error_msg);
+                Err(Status::internal(error_msg))
+            }
+        }
     }
 
     async fn update_agent(
@@ -304,14 +388,14 @@ impl AgentService for AgentServiceImpl {
                         }
                     }).collect();
 
+                    let suggestion_count = proto_suggestions.len();
                     let response = SendMessageResponse {
                         message_id,
                         response: Some(response_message),
                         suggestions: proto_suggestions,
                         metrics: None, // TODO: Add performance metrics
                     };
-                    
-                    info!("✅ Real agent response generated with {} suggestions", proto_suggestions.len());
+                    info!("✅ Real agent response generated with {} suggestions", suggestion_count);
                     Ok(Response::new(response))
                 }
                 Err(e) => {
@@ -346,16 +430,72 @@ impl AgentService for AgentServiceImpl {
         request: Request<GetAgentStatusRequest>,
     ) -> Result<Response<GetAgentStatusResponse>, Status> {
         let req = request.into_inner();
-        info!("Getting status for agent: {}", req.agent_id);
+        info!("🔍 Getting status for agent: {} in session: {}", req.agent_id, req.session_id);
 
-        let response = GetAgentStatusResponse {
-            status: None,
-            metrics: None,
-            active_capabilities: vec![],
-            health_status: "healthy".to_string(),
-        };
-
-        Ok(Response::new(response))
+        let agent_manager = self.agent_manager.read().await;
+        
+        match agent_manager.get_agent_status(&req.session_id, &req.agent_id).await {
+            Ok((status_str, metrics, capabilities)) => {
+                let now = Self::current_timestamp();
+                
+                // Create agent status
+                let agent_status = AgentStatus {
+                    state: 2, // AGENT_STATE_READY
+                    status_message: status_str.clone(),
+                    last_activity: now.clone(),
+                    active_operations: 0, // TODO: Track active operations
+                    status_details: metrics.clone(),
+                };
+                
+                // Create agent metrics
+                let agent_metrics = AgentMetrics {
+                    messages_processed: metrics.get("messages_processed")
+                        .and_then(|v| v.parse::<i64>().ok()).unwrap_or(0),
+                    operations_completed: metrics.get("operations_completed")
+                        .and_then(|v| v.parse::<i64>().ok()).unwrap_or(0),
+                    errors_encountered: metrics.get("errors_encountered")
+                        .and_then(|v| v.parse::<i64>().ok()).unwrap_or(0),
+                    average_response_time_ms: metrics.get("avg_response_time_ms")
+                        .and_then(|v| v.parse::<f64>().ok()).unwrap_or(0.0),
+                    last_reset: now.clone(),
+                    custom_metrics: std::collections::HashMap::new(),
+                };
+                
+                // Convert capabilities to protobuf format
+                let active_capabilities: Vec<Capability> = capabilities.into_iter().map(|cap| {
+                    Capability {
+                        capability_id: cap.clone(),
+                        name: cap.clone(),
+                        description: format!("Agent capability: {}", cap),
+                        parameters: vec![], // TODO: Add actual capability parameters
+                    }
+                }).collect();
+                
+                // Determine health status based on agent state
+                let health_status = if status_str == "ready" || status_str == "active" {
+                    "healthy"
+                } else if status_str == "error" {
+                    "unhealthy"
+                } else {
+                    "unknown"
+                }.to_string();
+                
+                let response = GetAgentStatusResponse {
+                    status: Some(agent_status),
+                    metrics: Some(agent_metrics),
+                    active_capabilities,
+                    health_status,
+                };
+                
+                info!("✅ Agent status retrieved: {} - {}", req.agent_id, status_str);
+                Ok(Response::new(response))
+            }
+            Err(e) => {
+                let error_msg = format!("Failed to get status for agent {}: {}", req.agent_id, e);
+                tracing::error!("{}", error_msg);
+                Err(Status::not_found(error_msg))
+            }
+        }
     }
 
     async fn get_system_health(
