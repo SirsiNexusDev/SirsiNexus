@@ -256,24 +256,30 @@ impl WebSocketHandler {
             })
             .unwrap_or_default();
 
-        let grpc_request = StartSessionRequest {
+        let grpc_request = CreateSessionRequest {
             user_id: user_id.to_string(),
             context,
+            config: None, // Use default session config
         };
 
-        let response = self.grpc_client.start_session(grpc_request).await
-            .map_err(|e| AppError::Connection(format!("gRPC start_session failed: {}", e)))?;
+        let response = self.grpc_client.create_session(grpc_request).await
+            .map_err(|e| AppError::Connection(format!("gRPC create_session failed: {}", e)))?;
 
         let session_response = response.into_inner();
+        
+        // Extract session ID from the response
+        let session_id = session_response.session.as_ref()
+            .map(|s| s.session_id.clone())
+            .unwrap_or_else(|| "unknown".to_string());
         
         // Store session mapping
         self.sessions.write().await.insert(
             connection_id.to_string(),
-            session_response.session_id.clone()
+            session_id.clone()
         );
 
         let session_data = AgentSessionData {
-            session_id: session_response.session_id,
+            session_id,
             user_id: user_id.to_string(),
             status: "active".to_string(),
             created_at: chrono::Utc::now().to_rfc3339(),
@@ -335,19 +341,30 @@ impl WebSocketHandler {
             _ => 1, // General
         };
 
-        let grpc_request = SpawnSubAgentRequest {
+        let grpc_request = CreateAgentRequest {
             session_id,
             agent_type: agent_type.to_string(),
-            config,
+            config: Some(AgentConfig {
+                parameters: config,
+                timeout_seconds: 30,
+                max_concurrent_operations: 5,
+                enable_caching: true,
+                required_capabilities: vec![],
+            }),
+            context: std::collections::HashMap::new(),
         };
 
-        let response = self.grpc_client.spawn_sub_agent(grpc_request).await
-            .map_err(|e| AppError::Connection(format!("gRPC spawn_sub_agent failed: {}", e)))?;
+        let response = self.grpc_client.create_agent(grpc_request).await
+            .map_err(|e| AppError::Connection(format!("gRPC create_agent failed: {}", e)))?;
 
         let agent_response = response.into_inner();
+        
+        let agent_id = agent_response.agent.as_ref()
+            .map(|a| a.agent_id.clone())
+            .unwrap_or_else(|| "unknown".to_string());
 
         let agent_data = SubAgentData {
-            agent_id: agent_response.agent_id,
+            agent_id,
             agent_type: agent_type.to_string(),
             status: "ready".to_string(),
             created_at: chrono::Utc::now().to_rfc3339(),
@@ -398,8 +415,15 @@ impl WebSocketHandler {
         let grpc_request = SendMessageRequest {
             session_id,
             agent_id,
-            message: message.to_string(),
-            context,
+            message: Some(crate::proto::sirsi::agent::v1::Message {
+                message_id: Uuid::new_v4().to_string(),
+                r#type: 1, // MESSAGE_TYPE_TEXT
+                content: message.to_string(),
+                metadata: context,
+                timestamp: None, // Will be set by server
+                attachments: vec![],
+            }),
+            options: None, // Use default options
         };
 
         let response = self.grpc_client.send_message(grpc_request).await
@@ -410,19 +434,23 @@ impl WebSocketHandler {
         let suggestions: Vec<AgentSuggestionData> = message_response.suggestions
             .into_iter()
             .map(|s| AgentSuggestionData {
-                id: s.id,
+                id: s.suggestion_id,
                 title: s.title,
                 description: s.description,
-                action_type: s.action_type,
-                action: "".to_string(), // Can be derived from action_params if needed
-                parameters: s.action_params,
+                action_type: s.action.as_ref().map(|a| a.action_type.clone()).unwrap_or_default(),
+                action: "".to_string(), // Can be derived from action if needed
+                parameters: s.action.as_ref().map(|a| a.parameters.clone()).unwrap_or_default(),
                 confidence: s.confidence,
             })
             .collect();
+            
+        let response_content = message_response.response.as_ref()
+            .map(|r| r.content.clone())
+            .unwrap_or_else(|| "No response".to_string());
 
         let response_data = MessageResponseData {
             response_id: message_response.message_id,
-            response: message_response.response,
+            response: response_content,
             suggestions,
         };
 
@@ -475,8 +503,12 @@ impl WebSocketHandler {
         let grpc_request = GetSuggestionsRequest {
             session_id,
             agent_id,
-            context_type: suggestion_type.to_string(),
-            context,
+            context: Some(SuggestionContext {
+                context_type: suggestion_type.to_string(),
+                context_data: context,
+                tags: vec![],
+            }),
+            max_suggestions: 10, // Default limit
         };
 
         let response = self.grpc_client.get_suggestions(grpc_request).await
@@ -487,12 +519,12 @@ impl WebSocketHandler {
         let suggestions: Vec<AgentSuggestionData> = suggestions_response.suggestions
             .into_iter()
             .map(|s| AgentSuggestionData {
-                id: s.id,
+                id: s.suggestion_id,
                 title: s.title,
                 description: s.description,
-                action_type: s.action_type,
-                action: "".to_string(), // Map from action_params if needed
-                parameters: s.action_params,
+                action_type: s.action.as_ref().map(|a| a.action_type.clone()).unwrap_or_default(),
+                action: "".to_string(), // Map from action if needed
+                parameters: s.action.as_ref().map(|a| a.parameters.clone()).unwrap_or_default(),
                 confidence: s.confidence,
             })
             .collect();
@@ -517,23 +549,52 @@ impl WebSocketHandler {
         let agent_id = request.agent_id.ok_or_else(|| 
             AppError::Validation("Missing agentId".to_string()))?;
 
-        let grpc_request = GetSubAgentStatusRequest {
+        let grpc_request = GetAgentStatusRequest {
             session_id,
             agent_id: agent_id.clone(),
         };
 
-        let response = self.grpc_client.get_sub_agent_status(grpc_request).await
-            .map_err(|e| AppError::Connection(format!("gRPC get_sub_agent_status failed: {}", e)))?;
+        let response = self.grpc_client.get_agent_status(grpc_request).await
+            .map_err(|e| AppError::Connection(format!("gRPC get_agent_status failed: {}", e)))?;
 
         let status_response = response.into_inner();
+
+        let status_string = status_response.status
+            .as_ref()
+            .map(|s| match s.state {
+                1 => "initializing".to_string(),
+                2 => "ready".to_string(),
+                3 => "busy".to_string(),
+                4 => "error".to_string(),
+                5 => "terminated".to_string(),
+                _ => "unknown".to_string(),
+            })
+            .unwrap_or_else(|| "unknown".to_string());
+            
+        let capabilities = status_response.active_capabilities
+            .iter()
+            .map(|c| c.name.clone())
+            .collect();
+            
+        let metrics = status_response.metrics
+            .as_ref()
+            .map(|m| {
+                let mut map = std::collections::HashMap::new();
+                map.insert("messages_processed".to_string(), m.messages_processed.to_string());
+                map.insert("operations_completed".to_string(), m.operations_completed.to_string());
+                map.insert("errors_encountered".to_string(), m.errors_encountered.to_string());
+                map.insert("avg_response_time_ms".to_string(), m.average_response_time_ms.to_string());
+                map
+            })
+            .unwrap_or_default();
 
         let agent_data = SubAgentData {
             agent_id,
             agent_type: "general".to_string(), // Default agent type
-            status: status_response.status,
+            status: status_string,
             created_at: chrono::Utc::now().to_rfc3339(),
-            capabilities: status_response.capabilities,
-            metrics: status_response.metrics,
+            capabilities,
+            metrics,
         };
 
         Ok(WebSocketResponse {

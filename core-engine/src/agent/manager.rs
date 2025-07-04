@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::{
     error::{AppError, AppResult},
-    proto::sirsi::agent::v1::Suggestion,
+    proto::sirsi::agent::v1::{Suggestion, Action},
     agent::implementations::AwsAgent,
 };
 
@@ -122,12 +122,19 @@ impl AgentManager {
                 let response = format!("General agent received: {}", message);
                 let suggestions = vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
+                        suggestion_id: Uuid::new_v4().to_string(),
                         title: "General Help".to_string(),
                         description: "Get general assistance".to_string(),
-                        action_type: "action".to_string(),
-                        action_params: HashMap::new(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
+                        action: Some(Action {
+                            action_type: "general_help".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
                         confidence: 0.8,
+                        metadata: HashMap::new(),
+                        priority: 1,
                     },
                 ];
                 (response, suggestions)
@@ -154,12 +161,19 @@ impl AgentManager {
             AgentImplementation::General => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
+                        suggestion_id: Uuid::new_v4().to_string(),
                         title: format!("General {} Suggestion", context_type),
                         description: "This is a general contextual suggestion".to_string(),
-                        action_type: "action".to_string(),
-                        action_params: HashMap::new(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
+                        action: Some(Action {
+                            action_type: "general_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
                         confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
                     },
                 ]
             }

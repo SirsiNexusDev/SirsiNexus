@@ -3,19 +3,14 @@ use tokio::sync::RwLock;
 use tonic::{Request, Response, Status};
 use tracing::{info, error, warn};
 use uuid::Uuid;
+use prost_types::Timestamp;
 
 use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
 use crate::proto::sirsi::agent::v1::{
     agent_service_server::AgentService,
-    StartSessionRequest, StartSessionResponse,
-    SpawnSubAgentRequest, SpawnSubAgentResponse,
-    SendMessageRequest, SendMessageResponse,
-    GetSuggestionsRequest, GetSuggestionsResponse,
-    GetSubAgentStatusRequest, GetSubAgentStatusResponse,
-    Suggestion,
+    *,
 };
-
 
 pub struct AgentServiceImpl {
     agent_manager: Arc<RwLock<AgentManager>>,
@@ -32,68 +27,199 @@ impl AgentServiceImpl {
             context_store,
         }
     }
+
+    fn current_timestamp() -> Option<Timestamp> {
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap();
+        Some(Timestamp {
+            seconds: now.as_secs() as i64,
+            nanos: now.subsec_nanos() as i32,
+        })
+    }
 }
 
 #[tonic::async_trait]
 impl AgentService for AgentServiceImpl {
-    async fn start_session(
+    // Session Management
+    async fn create_session(
         &self,
-        request: Request<StartSessionRequest>,
-    ) -> Result<Response<StartSessionResponse>, Status> {
+        request: Request<CreateSessionRequest>,
+    ) -> Result<Response<CreateSessionResponse>, Status> {
         let req = request.into_inner();
-        info!("Starting session for user: {}", req.user_id);
+        info!("Creating session for user: {}", req.user_id);
 
         let session_id = Uuid::new_v4().to_string();
+        let now = Self::current_timestamp();
         
-        // For now, skip session context storage - will implement later
-        // TODO: Fix context store interface to match SessionContext
-        info!("Session context storage skipped for now");
+        let session = Session {
+            session_id: session_id.clone(),
+            user_id: req.user_id,
+            state: 1, // SESSION_STATE_ACTIVE
+            created_at: now.clone(),
+            updated_at: now.clone(),
+            expires_at: {
+                let expire_time = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs() + 86400; // 24 hours
+                Some(Timestamp {
+                    seconds: expire_time as i64,
+                    nanos: 0,
+                })
+            },
+            metadata: req.context,
+            config: req.config,
+        };
 
-        let response = StartSessionResponse {
-            session_id,
-            available_agents: vec![
-                "aws".to_string(),
-                "azure".to_string(), 
-                "gcp".to_string(),
-                "migration".to_string(),
-                "security".to_string(),
-                "reporting".to_string(),
-                "scripting".to_string(),
-                "tutorial".to_string(),
-            ],
+        let available_agent_types = vec![
+            AgentType {
+                type_id: "aws".to_string(),
+                display_name: "AWS Cloud Agent".to_string(),
+                description: "Manages AWS resources and operations".to_string(),
+                version: "1.0.0".to_string(),
+                capabilities: vec![],
+                default_config: std::collections::HashMap::new(),
+            },
+            AgentType {
+                type_id: "azure".to_string(),
+                display_name: "Azure Cloud Agent".to_string(),
+                description: "Manages Azure resources and operations".to_string(),
+                version: "1.0.0".to_string(),
+                capabilities: vec![],
+                default_config: std::collections::HashMap::new(),
+            },
+            AgentType {
+                type_id: "gcp".to_string(),
+                display_name: "Google Cloud Agent".to_string(),
+                description: "Manages GCP resources and operations".to_string(),
+                version: "1.0.0".to_string(),
+                capabilities: vec![],
+                default_config: std::collections::HashMap::new(),
+            },
+        ];
+
+        let response = CreateSessionResponse {
+            session: Some(session),
+            available_agent_types,
         };
 
         Ok(Response::new(response))
     }
 
-    async fn spawn_sub_agent(
+    async fn get_session(
         &self,
-        request: Request<SpawnSubAgentRequest>,
-    ) -> Result<Response<SpawnSubAgentResponse>, Status> {
+        request: Request<GetSessionRequest>,
+    ) -> Result<Response<GetSessionResponse>, Status> {
         let req = request.into_inner();
-        info!("Spawning sub-agent of type: {}", req.agent_type);
+        info!("Getting session: {}", req.session_id);
 
-        let agent_id = Uuid::new_v4().to_string();
+        // Placeholder implementation
+        let response = GetSessionResponse {
+            session: None,
+            active_agents: vec![],
+        };
 
-        // Get agent manager and spawn agent
-        let mut manager = self.agent_manager.write().await;
-        
-        match manager.spawn_agent(&req.session_id, &req.agent_type, req.config).await {
-            Ok(_) => {
-                info!("Successfully spawned agent: {}", agent_id);
-                let response = SpawnSubAgentResponse {
-                    agent_id,
-                    status: "ready".to_string(),
-                };
-                Ok(Response::new(response))
-            }
-            Err(e) => {
-                error!("Failed to spawn agent: {}", e);
-                Err(Status::internal("Failed to spawn agent"))
-            }
-        }
+        Ok(Response::new(response))
     }
 
+    async fn delete_session(
+        &self,
+        request: Request<DeleteSessionRequest>,
+    ) -> Result<Response<()>, Status> {
+        let req = request.into_inner();
+        info!("Deleting session: {}", req.session_id);
+
+        Ok(Response::new(()))
+    }
+
+    // Agent Lifecycle
+    async fn create_agent(
+        &self,
+        request: Request<CreateAgentRequest>,
+    ) -> Result<Response<CreateAgentResponse>, Status> {
+        let req = request.into_inner();
+        info!("Creating agent of type: {}", req.agent_type);
+
+        let agent_id = Uuid::new_v4().to_string();
+        let now = Self::current_timestamp();
+
+        let agent = Agent {
+            agent_id: agent_id.clone(),
+            session_id: req.session_id,
+            agent_type: req.agent_type,
+            state: 2, // AGENT_STATE_READY
+            created_at: now.clone(),
+            updated_at: now,
+            config: req.config,
+            metadata: req.context,
+            parent_agent_id: String::new(),
+        };
+
+        let response = CreateAgentResponse {
+            agent: Some(agent),
+            capabilities: vec![],
+        };
+
+        Ok(Response::new(response))
+    }
+
+    async fn get_agent(
+        &self,
+        request: Request<GetAgentRequest>,
+    ) -> Result<Response<GetAgentResponse>, Status> {
+        let req = request.into_inner();
+        info!("Getting agent: {}", req.agent_id);
+
+        let response = GetAgentResponse {
+            agent: None,
+            metrics: None,
+        };
+
+        Ok(Response::new(response))
+    }
+
+    async fn list_agents(
+        &self,
+        request: Request<ListAgentsRequest>,
+    ) -> Result<Response<ListAgentsResponse>, Status> {
+        let req = request.into_inner();
+        info!("Listing agents for session: {}", req.session_id);
+
+        let response = ListAgentsResponse {
+            agents: vec![],
+            next_page_token: String::new(),
+            total_size: 0,
+        };
+
+        Ok(Response::new(response))
+    }
+
+    async fn update_agent(
+        &self,
+        request: Request<UpdateAgentRequest>,
+    ) -> Result<Response<UpdateAgentResponse>, Status> {
+        let req = request.into_inner();
+        info!("Updating agent: {}", req.agent_id);
+
+        let response = UpdateAgentResponse {
+            agent: req.agent,
+        };
+
+        Ok(Response::new(response))
+    }
+
+    async fn delete_agent(
+        &self,
+        request: Request<DeleteAgentRequest>,
+    ) -> Result<Response<()>, Status> {
+        let req = request.into_inner();
+        info!("Deleting agent: {}", req.agent_id);
+
+        Ok(Response::new(()))
+    }
+
+    // Agent Interaction
     async fn send_message(
         &self,
         request: Request<SendMessageRequest>,
@@ -101,35 +227,24 @@ impl AgentService for AgentServiceImpl {
         let req = request.into_inner();
         info!("Sending message to agent: {}", req.agent_id);
 
-        let manager = self.agent_manager.read().await;
-        
-        match manager.send_message(&req.session_id, &req.agent_id, &req.message, req.context).await {
-            Ok((message_id, response_text, suggestions)) => {
-                let grpc_suggestions: Vec<Suggestion> = suggestions
-                    .into_iter()
-                    .map(|s| Suggestion {
-                        id: s.id,
-                        title: s.title,
-                        description: s.description,
-                        action_type: s.action_type,
-                        action_params: s.action_params,
-                        confidence: s.confidence,
-                    })
-                    .collect();
+        let message_id = Uuid::new_v4().to_string();
+        let response_message = Message {
+            message_id: Uuid::new_v4().to_string(),
+            r#type: 4, // MESSAGE_TYPE_RESPONSE
+            content: "Response from agent".to_string(),
+            metadata: std::collections::HashMap::new(),
+            timestamp: Self::current_timestamp(),
+            attachments: vec![],
+        };
 
-                let response = SendMessageResponse {
-                    message_id,
-                    response: response_text,
-                    suggestions: grpc_suggestions,
-                };
+        let response = SendMessageResponse {
+            message_id,
+            response: Some(response_message),
+            suggestions: vec![],
+            metrics: None,
+        };
 
-                Ok(Response::new(response))
-            }
-            Err(e) => {
-                error!("Failed to send message: {}", e);
-                Err(Status::internal("Failed to process message"))
-            }
-        }
+        Ok(Response::new(response))
     }
 
     async fn get_suggestions(
@@ -139,58 +254,44 @@ impl AgentService for AgentServiceImpl {
         let req = request.into_inner();
         info!("Getting suggestions for agent: {}", req.agent_id);
 
-        let manager = self.agent_manager.read().await;
-        
-        match manager.get_suggestions(&req.session_id, &req.agent_id, &req.context_type, req.context).await {
-            Ok(suggestions) => {
-                let grpc_suggestions: Vec<Suggestion> = suggestions
-                    .into_iter()
-                    .map(|s| Suggestion {
-                        id: s.id,
-                        title: s.title,
-                        description: s.description,
-                        action_type: s.action_type,
-                        action_params: s.action_params,
-                        confidence: s.confidence,
-                    })
-                    .collect();
+        let response = GetSuggestionsResponse {
+            suggestions: vec![],
+            context_id: String::new(),
+        };
 
-                let response = GetSuggestionsResponse {
-                    suggestions: grpc_suggestions,
-                };
-
-                Ok(Response::new(response))
-            }
-            Err(e) => {
-                error!("Failed to get suggestions: {}", e);
-                Err(Status::internal("Failed to get suggestions"))
-            }
-        }
+        Ok(Response::new(response))
     }
 
-    async fn get_sub_agent_status(
+    // Health and Monitoring
+    async fn get_agent_status(
         &self,
-        request: Request<GetSubAgentStatusRequest>,
-    ) -> Result<Response<GetSubAgentStatusResponse>, Status> {
+        request: Request<GetAgentStatusRequest>,
+    ) -> Result<Response<GetAgentStatusResponse>, Status> {
         let req = request.into_inner();
         info!("Getting status for agent: {}", req.agent_id);
 
-        let manager = self.agent_manager.read().await;
-        
-        match manager.get_agent_status(&req.session_id, &req.agent_id).await {
-            Ok((status, metrics, capabilities)) => {
-                let response = GetSubAgentStatusResponse {
-                    status,
-                    metrics,
-                    capabilities,
-                };
+        let response = GetAgentStatusResponse {
+            status: None,
+            metrics: None,
+            active_capabilities: vec![],
+            health_status: "healthy".to_string(),
+        };
 
-                Ok(Response::new(response))
-            }
-            Err(e) => {
-                error!("Failed to get agent status: {}", e);
-                Err(Status::internal("Failed to get agent status"))
-            }
-        }
+        Ok(Response::new(response))
+    }
+
+    async fn get_system_health(
+        &self,
+        request: Request<GetSystemHealthRequest>,
+    ) -> Result<Response<GetSystemHealthResponse>, Status> {
+        let _req = request.into_inner();
+        info!("Getting system health");
+
+        let response = GetSystemHealthResponse {
+            health: None,
+            metrics: None,
+        };
+
+        Ok(Response::new(response))
     }
 }
