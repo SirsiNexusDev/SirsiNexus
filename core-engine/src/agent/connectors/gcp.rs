@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use reqwest::Client as HttpClient;
-// GCP SDK imports will be implemented when real integration is needed
-// use google_cloud_storage::{Client as GcsClient, bucket::Bucket};
-// use gcp_auth::AuthFlow;
+
+// GCP SDK imports - Mock implementation for now
+// TODO: Re-enable real GCP SDK when ready
+type StorageClient = ();
 
 use crate::error::{AppError, AppResult};
 
@@ -39,17 +40,16 @@ pub struct GcpDiscoveryResult {
 
 pub struct GcpAgent {
     config: GcpConfig,
+    storage_client: Option<StorageClient>,
     http_client: Option<HttpClient>,
     gcp_authenticated: bool,
-    // TODO: Add real GCP SDK clients when implementing real integration
-    // compute_client: Option<ComputeClient>,
-    // storage_client: Option<StorageClient>,
 }
 
 impl GcpAgent {
     pub fn new(config: GcpConfig) -> Self {
         Self {
             config,
+            storage_client: None,
             http_client: None,
             gcp_authenticated: false,
         }
@@ -59,26 +59,22 @@ impl GcpAgent {
         // Initialize HTTP client for Google Cloud APIs
         self.http_client = Some(HttpClient::new());
         
-        // Check if we have GCP credentials for real API calls
+        // For now, we'll use mock mode for GCP
+        // TODO: Implement real GCP authentication in future iteration
         if let Some(credentials_path) = &self.config.credentials_path {
-            // TODO: Implement real GCP service account authentication
-            // For now, mark as authenticated for testing purposes
             if std::path::Path::new(credentials_path).exists() {
                 self.gcp_authenticated = true;
-                println!("GCP credentials file found - real SDK integration will be implemented in Phase 2.2");
+                println!("GCP credentials file found - real SDK integration will be implemented");
             } else {
-                println!("GCP credentials file not found at {} - using mock mode", credentials_path);
+                println!("GCP credentials file not found - using mock mode");
             }
+        } else if std::env::var("GOOGLE_APPLICATION_CREDENTIALS").is_ok() {
+            self.gcp_authenticated = true;
+            println!("GCP credentials found via environment - real SDK integration will be implemented");
         } else {
-            // Check for default credential sources (service account metadata, gcloud CLI, etc.)
-            if std::env::var("GOOGLE_APPLICATION_CREDENTIALS").is_ok() {
-                self.gcp_authenticated = true;
-                println!("GCP credentials found via GOOGLE_APPLICATION_CREDENTIALS - ready for real SDK");
-            } else {
-                println!("No GCP credentials provided - using mock mode for resource discovery");
-            }
+            println!("No GCP credentials provided - using mock mode");
         }
-        
+
         Ok(())
     }
 
@@ -153,8 +149,31 @@ impl GcpAgent {
     }
 
     async fn discover_storage_buckets(&self) -> AppResult<Vec<GcpResource>> {
-        // TODO: Implement actual GCP Cloud Storage discovery
-        // For now, return mock data
+        if !self.gcp_authenticated || self.storage_client.is_none() {
+            return self.discover_storage_buckets_mock().await;
+        }
+        
+        let storage_client = self.storage_client.as_ref().unwrap();
+        let mut resources = Vec::new();
+        
+        match storage_client.list_buckets().await {
+            Ok(bucket_list) => {
+                for bucket_name in vec!["mock-bucket-1", "mock-bucket-2"] { // Mock bucket names
+                    if let Some(bucket_resource) = self.bucket_to_resource(bucket_name) {
+                        resources.push(bucket_resource);
+                    }
+                }
+            }
+            Err(e) => {
+                println!("Failed to list GCP storage buckets: {}", e);
+                return self.discover_storage_buckets_mock().await;
+            }
+        }
+        
+        Ok(resources)
+    }
+    
+    async fn discover_storage_buckets_mock(&self) -> AppResult<Vec<GcpResource>> {
         let mut metadata = HashMap::new();
         metadata.insert("storage_class".to_string(), "STANDARD".to_string());
         metadata.insert("location".to_string(), "US".to_string());
@@ -173,6 +192,25 @@ impl GcpAgent {
         };
         
         Ok(vec![resource])
+    }
+    
+    fn bucket_to_resource(&self, bucket_name: &str) -> Option<GcpResource> {
+        let mut metadata = HashMap::new();
+        metadata.insert("storage_class".to_string(), "STANDARD".to_string());
+        metadata.insert("location".to_string(), "US".to_string());
+        
+        Some(GcpResource {
+            resource_type: "storage.googleapis.com/Bucket".to_string(),
+            resource_id: format!("projects/{}/buckets/{}", self.config.project_id, bucket_name),
+            name: bucket_name.to_string(),
+            project_id: self.config.project_id.clone(),
+            zone: None,
+            region: Some("US".to_string()),
+            tags: HashMap::new(),
+            labels: HashMap::new(),
+            metadata,
+            cost_estimate: None,
+        })
     }
 
     async fn discover_disks(&self) -> AppResult<Vec<GcpResource>> {

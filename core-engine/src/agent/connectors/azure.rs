@@ -1,11 +1,22 @@
 use std::collections::HashMap;
+use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use reqwest::Client as HttpClient;
-// Azure SDK imports will be implemented when real integration is needed
-// use azure_core::TokenCredential;
-// use azure_identity::{ClientSecretCredential, DefaultAzureCredential};
+
+// Azure SDK imports - Mock implementation for now due to compilation issues
+// TODO: Implement real Azure SDK integration when dependencies are available
+// For now, we'll use placeholder structs to maintain the interface
 
 use crate::error::{AppError, AppResult};
+
+// Placeholder types for Azure SDK (to be replaced with real implementations)
+type TokenCredential = ();
+type VirtualMachine = ();
+type StorageAccount = ();
+type ResourceGroup = ();
+type ComputeClient = ();
+type StorageClient = ();
+type ResourceClient = ();
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AzureConfig {
@@ -38,6 +49,10 @@ pub struct AzureDiscoveryResult {
 
 pub struct AzureAgent {
     config: AzureConfig,
+    credential: Option<Arc<dyn TokenCredential>>,
+    compute_client: Option<ComputeClient>,
+    storage_client: Option<StorageClient>,
+    resource_client: Option<ResourceClient>,
     http_client: Option<HttpClient>,
     azure_authenticated: bool,
 }
@@ -46,6 +61,10 @@ impl AzureAgent {
     pub fn new(config: AzureConfig) -> Self {
         Self {
             config,
+            credential: None,
+            compute_client: None,
+            storage_client: None,
+            resource_client: None,
             http_client: None,
             azure_authenticated: false,
         }
@@ -55,19 +74,22 @@ impl AzureAgent {
         // Initialize HTTP client
         self.http_client = Some(HttpClient::new());
         
-        // Check if we have authentication credentials for real Azure API calls
+        // Mock Azure initialization - TODO: Replace with real Azure SDK
         if let (Some(_tenant_id), Some(_client_id), Some(_client_secret)) = (
             &self.config.tenant_id,
             &self.config.client_id,
             &self.config.client_secret,
         ) {
-            // TODO: Implement real Azure SDK authentication in future iteration
-            // For now, mark as authenticated for testing purposes
+            // Mock credential setup
+            self.credential = Some(Arc::new(()));
+            self.compute_client = Some(());
+            self.storage_client = Some(());
+            self.resource_client = Some(());
             self.azure_authenticated = true;
-            println!("Azure credentials provided - real SDK integration will be implemented in Phase 2.2");
+            
+            println!("Azure credentials provided - using mock mode for now");
         } else {
-            // No credentials provided - using mock mode
-            println!("Azure credentials not provided - using mock mode for resource discovery");
+            println!("No Azure credentials provided - using mock mode");
         }
         
         Ok(())
@@ -118,8 +140,11 @@ impl AzureAgent {
     }
 
     async fn discover_virtual_machines(&self) -> AppResult<Vec<AzureResource>> {
-        // TODO: Implement actual Azure VM discovery
-        // For now, return mock data
+        // Always use mock implementation for now
+        self.discover_virtual_machines_mock().await
+    }
+    
+    async fn discover_virtual_machines_mock(&self) -> AppResult<Vec<AzureResource>> {
         let resource_group = self.config.resource_group.as_deref().unwrap_or("mock-rg");
         
         let mut metadata = HashMap::new();
@@ -140,10 +165,14 @@ impl AzureAgent {
         
         Ok(vec![resource])
     }
+    
 
     async fn discover_storage_accounts(&self) -> AppResult<Vec<AzureResource>> {
-        // TODO: Implement actual Azure Storage discovery
-        // For now, return mock data
+        // Always use mock implementation for now
+        self.discover_storage_accounts_mock().await
+    }
+    
+    async fn discover_storage_accounts_mock(&self) -> AppResult<Vec<AzureResource>> {
         let resource_group = self.config.resource_group.as_deref().unwrap_or("mock-rg");
         
         let mut metadata = HashMap::new();
@@ -164,10 +193,14 @@ impl AzureAgent {
         
         Ok(vec![resource])
     }
+    
 
     async fn discover_resource_groups(&self) -> AppResult<Vec<AzureResource>> {
-        // TODO: Implement actual Azure Resource Groups discovery
-        // For now, return mock data
+        // Always use mock implementation for now
+        self.discover_resource_groups_mock().await
+    }
+    
+    async fn discover_resource_groups_mock(&self) -> AppResult<Vec<AzureResource>> {
         let resource_group = self.config.resource_group.as_deref().unwrap_or("mock-rg");
         
         let mut metadata = HashMap::new();
@@ -186,6 +219,7 @@ impl AzureAgent {
         
         Ok(vec![resource])
     }
+    
 
     // Note: These helper methods are not needed for the mock implementation
     // TODO: Implement these when real Azure SDK integration is added

@@ -1,10 +1,12 @@
 use std::collections::HashMap;
+use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::{
     error::{AppError, AppResult},
     proto::sirsi::agent::v1::{Suggestion, Action},
     agent::implementations::AwsAgent,
+    agent::context::ContextStore,
 };
 
 pub struct AgentManager {
@@ -20,15 +22,41 @@ struct SessionState {
 
 enum AgentImplementation {
     Aws(AwsAgent),
+    Azure,
+    Gcp,
+    Security,
+    CostOptimization,
+    Migration,
+    Reporting,
     General,
 }
 
+#[derive(Debug, Clone)]
+pub enum AgentRole {
+    Primary,
+    SubAgent,
+    Coordinator,
+}
+
+#[derive(Debug, Clone)]
+pub struct AgentCapabilities {
+    pub can_spawn_subagents: bool,
+    pub can_coordinate: bool,
+    pub domain_expertise: Vec<String>,
+    pub required_permissions: Vec<String>,
+}
+
 struct AgentState {
-    _agent_type: String,
+    agent_type: String,
     status: String,
     metrics: HashMap<String, String>,
-    capabilities: Vec<String>,
+    capabilities: AgentCapabilities,
+    role: AgentRole,
+    parent_agent_id: Option<String>,
+    sub_agent_ids: Vec<String>,
     implementation: AgentImplementation,
+    context_store: Arc<ContextStore>,
+    memory: HashMap<String, String>,
 }
 
 impl AgentManager {
@@ -38,9 +66,15 @@ impl AgentManager {
             agents: HashMap::new(),
         }
     }
+    
+    pub fn new_with_context_store(context_store: Arc<ContextStore>) -> Self {
+        Self {
+            sessions: HashMap::new(),
+            agents: HashMap::new(),
+        }
+    }
 
     pub async fn list_available_agents(&self) -> Vec<String> {
-        // In the future, this will load from a configuration or dynamic registry
         vec![
             "aws".to_string(),
             "azure".to_string(),
@@ -49,9 +83,140 @@ impl AgentManager {
             "migration".to_string(),
             "reporting".to_string(),
             "security".to_string(),
+            "cost_optimization".to_string(),
+            "compliance".to_string(),
+            "monitoring".to_string(),
+            "automation".to_string(),
             "scripting".to_string(),
             "tutorial".to_string(),
         ]
+    }
+    
+    pub async fn spawn_sub_agent(
+        &mut self,
+        parent_agent_id: &str,
+        agent_type: &str,
+        config: HashMap<String, String>,
+    ) -> AppResult<String> {
+        let parent_agent = self.agents.get_mut(parent_agent_id)
+            .ok_or_else(|| AppError::NotFound("Parent agent not found".into()))?;
+        
+        if !parent_agent.capabilities.can_spawn_subagents {
+            return Err(AppError::Configuration("Parent agent cannot spawn sub-agents".into()));
+        }
+        
+        let sub_agent_id = Uuid::new_v4().to_string();
+        let context_store = parent_agent.context_store.clone();
+        
+        let (implementation, capabilities) = self.create_agent_implementation(
+            agent_type, 
+            &sub_agent_id, 
+            Some(parent_agent_id), 
+            config
+        ).await?;
+        
+        let agent_state = AgentState {
+            agent_type: agent_type.to_string(),
+            status: "ready".to_string(),
+            metrics: HashMap::new(),
+            capabilities,
+            role: AgentRole::SubAgent,
+            parent_agent_id: Some(parent_agent_id.to_string()),
+            sub_agent_ids: Vec::new(),
+            implementation,
+            context_store,
+            memory: HashMap::new(),
+        };
+        
+        parent_agent.sub_agent_ids.push(sub_agent_id.clone());
+        self.agents.insert(sub_agent_id.clone(), agent_state);
+        
+        Ok(sub_agent_id)
+    }
+    
+    async fn create_agent_implementation(
+        &self,
+        agent_type: &str,
+        agent_id: &str,
+        parent_agent_id: Option<&str>,
+        config: HashMap<String, String>,
+    ) -> AppResult<(AgentImplementation, AgentCapabilities)> {
+        match agent_type {
+            "aws" => {
+                let aws_agent = AwsAgent::new(agent_id.to_string(), "".to_string(), config);
+                aws_agent.initialize().await?;
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: true,
+                    can_coordinate: true,
+                    domain_expertise: vec!["aws".to_string(), "ec2".to_string(), "s3".to_string()],
+                    required_permissions: vec!["aws:read".to_string()],
+                };
+                Ok((AgentImplementation::Aws(aws_agent), capabilities))
+            }
+            "azure" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: true,
+                    can_coordinate: true,
+                    domain_expertise: vec!["azure".to_string(), "vm".to_string(), "storage".to_string()],
+                    required_permissions: vec!["azure:read".to_string()],
+                };
+                Ok((AgentImplementation::Azure, capabilities))
+            }
+            "gcp" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: true,
+                    can_coordinate: true,
+                    domain_expertise: vec!["gcp".to_string(), "compute".to_string(), "storage".to_string()],
+                    required_permissions: vec!["gcp:read".to_string()],
+                };
+                Ok((AgentImplementation::Gcp, capabilities))
+            }
+            "security" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: false,
+                    can_coordinate: false,
+                    domain_expertise: vec!["security".to_string(), "compliance".to_string(), "audit".to_string()],
+                    required_permissions: vec!["security:read".to_string(), "audit:read".to_string()],
+                };
+                Ok((AgentImplementation::Security, capabilities))
+            }
+            "cost_optimization" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: false,
+                    can_coordinate: false,
+                    domain_expertise: vec!["cost".to_string(), "optimization".to_string(), "billing".to_string()],
+                    required_permissions: vec!["billing:read".to_string()],
+                };
+                Ok((AgentImplementation::CostOptimization, capabilities))
+            }
+            "migration" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: true,
+                    can_coordinate: true,
+                    domain_expertise: vec!["migration".to_string(), "planning".to_string(), "execution".to_string()],
+                    required_permissions: vec!["migration:read".to_string(), "migration:write".to_string()],
+                };
+                Ok((AgentImplementation::Migration, capabilities))
+            }
+            "reporting" => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: false,
+                    can_coordinate: false,
+                    domain_expertise: vec!["reporting".to_string(), "analytics".to_string(), "visualization".to_string()],
+                    required_permissions: vec!["analytics:read".to_string()],
+                };
+                Ok((AgentImplementation::Reporting, capabilities))
+            }
+            _ => {
+                let capabilities = AgentCapabilities {
+                    can_spawn_subagents: false,
+                    can_coordinate: false,
+                    domain_expertise: vec!["general".to_string()],
+                    required_permissions: vec![],
+                };
+                Ok((AgentImplementation::General, capabilities))
+            }
+        }
     }
 
     pub async fn spawn_agent(
@@ -67,32 +232,28 @@ impl AgentManager {
             .get_mut(session_id)
             .ok_or_else(|| AppError::NotFound("Session not found".into()))?;
 
-        // Create agent implementation
-        let (implementation, capabilities) = match agent_type {
-            "aws" => {
-                let aws_agent = AwsAgent::new(agent_id.clone(), session_id.to_string(), config);
-                aws_agent.initialize().await?;
-                let (_, _, caps) = aws_agent.get_status().await?;
-                (AgentImplementation::Aws(aws_agent), caps)
-            }
-            _ => {
-                // Default general agent
-                let capabilities = vec![
-                    "chat".to_string(),
-                    "suggest".to_string(),
-                    format!("{}_specific", agent_type),
-                ];
-                (AgentImplementation::General, capabilities)
-            }
-        };
+        let (implementation, capabilities) = self.create_agent_implementation(
+            agent_type,
+            &agent_id,
+            None,
+            config
+        ).await?;
+        
+        // Create default context store for now
+        let context_store = Arc::new(ContextStore::new());
 
         // Create agent state
         let agent_state = AgentState {
-            _agent_type: agent_type.to_string(),
+            agent_type: agent_type.to_string(),
             status: "ready".to_string(),
             metrics: HashMap::new(),
             capabilities,
+            role: AgentRole::Primary,
+            parent_agent_id: None,
+            sub_agent_ids: Vec::new(),
             implementation,
+            context_store,
+            memory: HashMap::new(),
         };
 
         // Add agent to session and global state
