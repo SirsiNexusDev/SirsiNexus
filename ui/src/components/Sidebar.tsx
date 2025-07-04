@@ -34,6 +34,7 @@ const sidebarItems: SidebarItem[] = [
   { label: 'Projects', icon: Folder, path: '/projects' },
   { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
   { label: 'Analytics & Reports', icon: BarChart, path: '/analytics' },
+  { label: 'Enhanced Analytics', icon: TrendingUp, path: '/analytics/enhanced' },
   { label: 'Security', icon: Shield, path: '/security' },
   { label: 'Scripting Console', icon: Terminal, path: '/console' },
   { label: 'Backend Tests', icon: Rocket, path: '/test-backend' },
