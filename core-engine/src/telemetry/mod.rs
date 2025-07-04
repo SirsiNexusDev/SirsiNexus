@@ -3,12 +3,18 @@ use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{Resource, runtime::Tokio};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use crate::error::AppResult;
+use crate::config::AppConfig;
 
 pub mod error;
 pub mod performance;
 
 pub use error::{TelemetryError, Result as TelemetryResult};
 pub use performance::{PerformanceMonitor, PerformanceMetric, PerformanceReport, RequestTimer};
+
+/// Initialize telemetry with app config
+pub async fn init(config: &AppConfig) -> AppResult<()> {
+    init_tracing(&config.telemetry.service_name, Some(&config.telemetry.otlp_endpoint))
+}
 
 /// Initialize OpenTelemetry tracing with OTLP exporter
 pub fn init_tracing(service_name: &str, otlp_endpoint: Option<&str>) -> AppResult<()> {

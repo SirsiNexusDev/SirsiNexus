@@ -290,17 +290,15 @@ impl Soc2ComplianceManager {
 
     async fn validate_rbac_implementation(&self) -> AppResult<AutomatedCheckResult> {
         // Check if RBAC system is properly implemented
-        let role_count = sqlx::query_scalar!("SELECT COUNT(*) FROM roles")
+        let role_count = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM roles")
             .fetch_one(&self.pool)
             .await
-            .map_err(|e| AppError::Database(e.to_string()))?
-            .unwrap_or(0);
+            .map_err(AppError::Database)?;
 
-        let permission_count = sqlx::query_scalar!("SELECT COUNT(*) FROM permissions")
+        let permission_count = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM permissions")
             .fetch_one(&self.pool)
             .await
-            .map_err(|e| AppError::Database(e.to_string()))?
-            .unwrap_or(0);
+            .map_err(AppError::Database)?;
 
         let passed = role_count > 0 && permission_count > 0;
 
@@ -323,13 +321,12 @@ impl Soc2ComplianceManager {
 
     async fn validate_access_reviews(&self) -> AppResult<AutomatedCheckResult> {
         // Check if regular access reviews are being conducted
-        let recent_reviews = sqlx::query_scalar!(
+        let recent_reviews = sqlx::query_scalar::<_, i64>(
             "SELECT COUNT(*) FROM audit_logs WHERE action = 'access_review' AND timestamp > NOW() - INTERVAL '90 days'"
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
         let passed = recent_reviews > 0;
 
@@ -352,21 +349,19 @@ impl Soc2ComplianceManager {
 
     async fn validate_authentication_controls(&self) -> AppResult<AutomatedCheckResult> {
         // Validate authentication controls are in place
-        let failed_logins = sqlx::query_scalar!(
+        let failed_logins = sqlx::query_scalar::<_, i64>(
             "SELECT COUNT(*) FROM audit_logs WHERE action = 'login_failed' AND timestamp > NOW() - INTERVAL '24 hours'"
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
-        let successful_logins = sqlx::query_scalar!(
+        let successful_logins = sqlx::query_scalar::<_, i64>(
             "SELECT COUNT(*) FROM audit_logs WHERE action = 'login' AND timestamp > NOW() - INTERVAL '24 hours'"
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
         // Check if there's a reasonable ratio of failed to successful logins
         let failure_rate = if successful_logins > 0 {

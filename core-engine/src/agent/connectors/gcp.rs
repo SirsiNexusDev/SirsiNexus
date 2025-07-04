@@ -149,28 +149,9 @@ impl GcpAgent {
     }
 
     async fn discover_storage_buckets(&self) -> AppResult<Vec<GcpResource>> {
-        if !self.gcp_authenticated || self.storage_client.is_none() {
-            return self.discover_storage_buckets_mock().await;
-        }
-        
-        let storage_client = self.storage_client.as_ref().unwrap();
-        let mut resources = Vec::new();
-        
-        match storage_client.list_buckets().await {
-            Ok(bucket_list) => {
-                for bucket_name in vec!["mock-bucket-1", "mock-bucket-2"] { // Mock bucket names
-                    if let Some(bucket_resource) = self.bucket_to_resource(bucket_name) {
-                        resources.push(bucket_resource);
-                    }
-                }
-            }
-            Err(e) => {
-                println!("Failed to list GCP storage buckets: {}", e);
-                return self.discover_storage_buckets_mock().await;
-            }
-        }
-        
-        Ok(resources)
+        // Always use mock implementation for now
+        // TODO: Implement real GCP storage bucket discovery when SDK is properly integrated
+        self.discover_storage_buckets_mock().await
     }
     
     async fn discover_storage_buckets_mock(&self) -> AppResult<Vec<GcpResource>> {

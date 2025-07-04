@@ -5,7 +5,7 @@ use sqlx::PgPool;
 
 use crate::error::{AppError, AppResult};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Role {
     pub id: Uuid,
     pub name: String,
@@ -16,7 +16,7 @@ pub struct Role {
     pub updated_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Permission {
     pub id: Uuid,
     pub name: String,
@@ -61,24 +61,23 @@ impl RbacManager {
             self.get_permission(permission).await?;
         }
         
-        let role = sqlx::query_as!(
-            Role,
+        let role = sqlx::query_as::<_, Role>(
             r#"
             INSERT INTO roles (id, name, description, permissions, is_system_role, created_at, updated_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING id, name, description, permissions, is_system_role, created_at, updated_at
-            "#,
-            role_id,
-            name,
-            description,
-            &permissions,
-            false,
-            now,
-            now
+            "#
         )
+        .bind(role_id)
+        .bind(&name)
+        .bind(&description)
+        .bind(&permissions)
+        .bind(false)
+        .bind(now)
+        .bind(now)
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
         
         self.role_cache.insert(role_id, role.clone());
         Ok(role)
@@ -89,14 +88,13 @@ impl RbacManager {
             return Ok(role.clone());
         }
         
-        let role = sqlx::query_as!(
-            Role,
-            "SELECT id, name, description, permissions, is_system_role, created_at, updated_at FROM roles WHERE id = $1",
-            role_id
+        let role = sqlx::query_as::<_, Role>(
+            "SELECT id, name, description, permissions, is_system_role, created_at, updated_at FROM roles WHERE id = $1"
         )
+        .bind(role_id)
         .fetch_optional(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
+        .map_err(AppError::Database)?
         .ok_or_else(|| AppError::NotFound("Role not found".into()))?;
         
         self.role_cache.insert(role_id, role.clone());
@@ -109,21 +107,20 @@ impl RbacManager {
             self.get_permission(permission).await?;
         }
         
-        let role = sqlx::query_as!(
-            Role,
+        let role = sqlx::query_as::<_, Role>(
             r#"
             UPDATE roles 
             SET permissions = $2, updated_at = $3
             WHERE id = $1
             RETURNING id, name, description, permissions, is_system_role, created_at, updated_at
-            "#,
-            role_id,
-            &permissions,
-            chrono::Utc::now()
+            "#
         )
+        .bind(role_id)
+        .bind(&permissions)
+        .bind(chrono::Utc::now())
         .fetch_optional(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
+        .map_err(AppError::Database)?
         .ok_or_else(|| AppError::NotFound("Role not found".into()))?;
         
         self.role_cache.insert(role_id, role.clone());
@@ -138,16 +135,22 @@ impl RbacManager {
         }
         
         // Remove role assignments first
-        sqlx::query!("DELETE FROM user_roles WHERE role_id = $1", role_id)
-            .execute(&self.pool)
-            .await
-            .map_err(|e| AppError::Database(e.to_string()))?;
+        sqlx::query(
+            "DELETE FROM user_roles WHERE role_id = $1"
+        )
+        .bind(role_id)
+        .execute(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
         
         // Delete role
-        sqlx::query!("DELETE FROM roles WHERE id = $1", role_id)
-            .execute(&self.pool)
-            .await
-            .map_err(|e| AppError::Database(e.to_string()))?;
+        sqlx::query(
+            "DELETE FROM roles WHERE id = $1"
+        )
+        .bind(role_id)
+        .execute(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
         
         self.role_cache.remove(&role_id);
         Ok(())
@@ -158,23 +161,22 @@ impl RbacManager {
         let permission_id = Uuid::new_v4();
         let now = chrono::Utc::now();
         
-        let permission = sqlx::query_as!(
-            Permission,
+        let permission = sqlx::query_as::<_, Permission>(
             r#"
             INSERT INTO permissions (id, name, resource, action, description, created_at)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id, name, resource, action, description, created_at
-            "#,
-            permission_id,
-            name,
-            resource,
-            action,
-            description,
-            now
+            "#
         )
+        .bind(permission_id)
+        .bind(name)
+        .bind(resource)
+        .bind(action)
+        .bind(description)
+        .bind(now)
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
         
         self.permission_cache.insert(permission.name.clone(), permission.clone());
         Ok(permission)
@@ -185,14 +187,13 @@ impl RbacManager {
             return Ok(permission.clone());
         }
         
-        let permission = sqlx::query_as!(
-            Permission,
-            "SELECT id, name, resource, action, description, created_at FROM permissions WHERE name = $1",
-            name
+        let permission = sqlx::query_as::<_, Permission>(
+            "SELECT id, name, resource, action, description, created_at FROM permissions WHERE name = $1"
         )
+        .bind(name)
         .fetch_optional(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
+        .map_err(AppError::Database)?
         .ok_or_else(|| AppError::NotFound("Permission not found".into()))?;
         
         self.permission_cache.insert(name.to_string(), permission.clone());
@@ -203,47 +204,51 @@ impl RbacManager {
     pub async fn assign_role_to_user(&self, user_id: Uuid, role_id: Uuid, assigned_by: Uuid, expires_at: Option<chrono::DateTime<chrono::Utc>>) -> AppResult<()> {
         let now = chrono::Utc::now();
         
-        sqlx::query!(
+        sqlx::query(
             r#"
             INSERT INTO user_roles (user_id, role_id, assigned_by, assigned_at, expires_at)
             VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (user_id, role_id) 
             DO UPDATE SET assigned_by = $3, assigned_at = $4, expires_at = $5
-            "#,
-            user_id,
-            role_id,
-            assigned_by,
-            now,
-            expires_at
+            "#
         )
+        .bind(user_id)
+        .bind(role_id)
+        .bind(assigned_by)
+        .bind(now)
+        .bind(expires_at)
         .execute(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
         
         Ok(())
     }
 
     pub async fn remove_role_from_user(&self, user_id: Uuid, role_id: Uuid) -> AppResult<()> {
-        sqlx::query!("DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2", user_id, role_id)
-            .execute(&self.pool)
-            .await
-            .map_err(|e| AppError::Database(e.to_string()))?;
+        sqlx::query(
+            "DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2"
+        )
+        .bind(user_id)
+        .bind(role_id)
+        .execute(&self.pool)
+        .await
+        .map_err(AppError::Database)?;
         
         Ok(())
     }
 
     pub async fn get_user_roles(&mut self, user_id: Uuid) -> AppResult<Vec<Role>> {
-        let role_ids: Vec<Uuid> = sqlx::query_scalar!(
+        let role_ids: Vec<Uuid> = sqlx::query_scalar::<_, Uuid>(
             r#"
             SELECT role_id FROM user_roles 
             WHERE user_id = $1 
             AND (expires_at IS NULL OR expires_at > NOW())
-            "#,
-            user_id
+            "#
         )
+        .bind(user_id)
         .fetch_all(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
         
         let mut roles = Vec::new();
         for role_id in role_ids {
@@ -307,31 +312,32 @@ impl RbacManager {
 
         for (name, description, permissions) in system_roles {
             // Check if role already exists
-            let existing = sqlx::query_scalar!("SELECT id FROM roles WHERE name = $1", name)
+            let existing = sqlx::query_scalar::<_, Uuid>("SELECT id FROM roles WHERE name = $1")
+                .bind(name)
                 .fetch_optional(&self.pool)
                 .await
-                .map_err(|e| AppError::Database(e.to_string()))?;
+                .map_err(AppError::Database)?;
 
             if existing.is_none() {
                 let role_id = Uuid::new_v4();
                 let now = chrono::Utc::now();
                 
-                sqlx::query!(
+                sqlx::query(
                     r#"
                     INSERT INTO roles (id, name, description, permissions, is_system_role, created_at, updated_at)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
-                    "#,
-                    role_id,
-                    name,
-                    description,
-                    &permissions,
-                    true,
-                    now,
-                    now
+                    "#
                 )
+                .bind(role_id)
+                .bind(name)
+                .bind(description)
+                .bind(&permissions)
+                .bind(true)
+                .bind(now)
+                .bind(now)
                 .execute(&self.pool)
                 .await
-                .map_err(|e| AppError::Database(e.to_string()))?;
+                .map_err(AppError::Database)?;
             }
         }
 

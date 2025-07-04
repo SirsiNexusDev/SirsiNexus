@@ -7,7 +7,7 @@ use crate::error::{AppError, AppResult};
 
 pub mod events;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct AuditLog {
     pub id: Uuid,
     pub event_type: String,
@@ -182,30 +182,30 @@ impl AuditLogger {
     }
 
     async fn insert_audit_log(&self, log: &AuditLog) -> AppResult<()> {
-        sqlx::query!(
+        sqlx::query(
             r#"
             INSERT INTO audit_logs (
                 id, event_type, resource_type, resource_id, user_id, session_id,
                 action, details, ip_address, user_agent, timestamp, success, error_message
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-            "#,
-            log.id,
-            log.event_type,
-            log.resource_type,
-            log.resource_id,
-            log.user_id,
-            log.session_id,
-            log.action,
-            log.details,
-            log.ip_address,
-            log.user_agent,
-            log.timestamp,
-            log.success,
-            log.error_message
+            "#
         )
+        .bind(log.id)
+        .bind(&log.event_type)
+        .bind(&log.resource_type)
+        .bind(&log.resource_id)
+        .bind(log.user_id)
+        .bind(&log.session_id)
+        .bind(&log.action)
+        .bind(&log.details)
+        .bind(&log.ip_address)
+        .bind(&log.user_agent)
+        .bind(log.timestamp)
+        .bind(log.success)
+        .bind(&log.error_message)
         .execute(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
 
         Ok(())
     }
@@ -279,14 +279,13 @@ impl AuditLogger {
 
         // For simplicity, we'll use a direct query here
         // In a real implementation, you'd want to use sqlx's query builder
-        let logs = sqlx::query_as!(
-            AuditLog,
-            "SELECT * FROM audit_logs ORDER BY timestamp DESC LIMIT $1",
-            limit.unwrap_or(100)
+        let logs = sqlx::query_as::<_, AuditLog>(
+            "SELECT id, event_type, resource_type, resource_id, user_id, session_id, action, details, ip_address, user_agent, timestamp, success, error_message FROM audit_logs ORDER BY timestamp DESC LIMIT $1"
         )
+        .bind(limit.unwrap_or(100))
         .fetch_all(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?;
+        .map_err(AppError::Database)?;
 
         Ok(logs)
     }
@@ -295,37 +294,34 @@ impl AuditLogger {
     pub async fn get_statistics(&self, timeframe: AuditTimeframe) -> AppResult<AuditStatistics> {
         let (start_time, end_time) = timeframe.to_datetime_range();
 
-        let total_events = sqlx::query_scalar!(
-            "SELECT COUNT(*) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2",
-            start_time,
-            end_time
+        let total_events = sqlx::query_scalar::<_, i64>(
+            "SELECT COUNT(*) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2"
         )
+        .bind(start_time)
+        .bind(end_time)
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
-        let successful_events = sqlx::query_scalar!(
-            "SELECT COUNT(*) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2 AND success = true",
-            start_time,
-            end_time
+        let successful_events = sqlx::query_scalar::<_, i64>(
+            "SELECT COUNT(*) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2 AND success = true"
         )
+        .bind(start_time)
+        .bind(end_time)
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
         let failed_events = total_events - successful_events;
 
-        let unique_users = sqlx::query_scalar!(
-            "SELECT COUNT(DISTINCT user_id) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2 AND user_id IS NOT NULL",
-            start_time,
-            end_time
+        let unique_users = sqlx::query_scalar::<_, i64>(
+            "SELECT COUNT(DISTINCT user_id) FROM audit_logs WHERE timestamp BETWEEN $1 AND $2 AND user_id IS NOT NULL"
         )
+        .bind(start_time)
+        .bind(end_time)
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| AppError::Database(e.to_string()))?
-        .unwrap_or(0);
+        .map_err(AppError::Database)?;
 
         Ok(AuditStatistics {
             total_events,

@@ -10,7 +10,15 @@ use reqwest::Client as HttpClient;
 use crate::error::{AppError, AppResult};
 
 // Placeholder types for Azure SDK (to be replaced with real implementations)
-type TokenCredential = ();
+// Define a mock trait for TokenCredential
+pub trait TokenCredential: Send + Sync {
+    // Mock trait definition - will be replaced with real Azure SDK
+}
+
+// Implement mock credential
+struct MockTokenCredential;
+impl TokenCredential for MockTokenCredential {}
+
 type VirtualMachine = ();
 type StorageAccount = ();
 type ResourceGroup = ();
@@ -81,7 +89,7 @@ impl AzureAgent {
             &self.config.client_secret,
         ) {
             // Mock credential setup
-            self.credential = Some(Arc::new(()));
+            self.credential = Some(Arc::new(MockTokenCredential));
             self.compute_client = Some(());
             self.storage_client = Some(());
             self.resource_client = Some(());

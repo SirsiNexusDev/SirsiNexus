@@ -98,15 +98,25 @@ impl AgentManager {
         agent_type: &str,
         config: HashMap<String, String>,
     ) -> AppResult<String> {
-        let parent_agent = self.agents.get_mut(parent_agent_id)
-            .ok_or_else(|| AppError::NotFound("Parent agent not found".into()))?;
-        
-        if !parent_agent.capabilities.can_spawn_subagents {
-            return Err(AppError::Configuration("Parent agent cannot spawn sub-agents".into()));
+        // Check parent agent capabilities first
+        {
+            let parent_agent = self.agents.get(parent_agent_id)
+                .ok_or_else(|| AppError::NotFound("Parent agent not found".into()))?;
+            
+            if !parent_agent.capabilities.can_spawn_subagents {
+                return Err(AppError::Configuration("Parent agent cannot spawn sub-agents".into()));
+            }
         }
         
         let sub_agent_id = Uuid::new_v4().to_string();
-        let context_store = parent_agent.context_store.clone();
+        let parent_agent_id_string = parent_agent_id.to_string();
+        
+        // Get context store from parent agent
+        let context_store = {
+            let parent_agent = self.agents.get(parent_agent_id)
+                .ok_or_else(|| AppError::NotFound("Parent agent not found".into()))?;
+            parent_agent.context_store.clone()
+        };
         
         let (implementation, capabilities) = self.create_agent_implementation(
             agent_type, 
@@ -121,15 +131,20 @@ impl AgentManager {
             metrics: HashMap::new(),
             capabilities,
             role: AgentRole::SubAgent,
-            parent_agent_id: Some(parent_agent_id.to_string()),
+            parent_agent_id: Some(parent_agent_id_string.clone()),
             sub_agent_ids: Vec::new(),
             implementation,
             context_store,
             memory: HashMap::new(),
         };
         
-        parent_agent.sub_agent_ids.push(sub_agent_id.clone());
+        // Insert the new agent first
         self.agents.insert(sub_agent_id.clone(), agent_state);
+        
+        // Then update parent agent
+        if let Some(parent_agent) = self.agents.get_mut(&parent_agent_id_string) {
+            parent_agent.sub_agent_ids.push(sub_agent_id.clone());
+        }
         
         Ok(sub_agent_id)
     }
@@ -227,10 +242,10 @@ impl AgentManager {
     ) -> AppResult<String> {
         let agent_id = Uuid::new_v4().to_string();
 
-        // Verify session exists
-        let session = self.sessions
-            .get_mut(session_id)
-            .ok_or_else(|| AppError::NotFound("Session not found".into()))?;
+        // Verify session exists first
+        if !self.sessions.contains_key(session_id) {
+            return Err(AppError::NotFound("Session not found".into()));
+        }
 
         let (implementation, capabilities) = self.create_agent_implementation(
             agent_type,
@@ -240,7 +255,7 @@ impl AgentManager {
         ).await?;
         
         // Create default context store for now
-        let context_store = Arc::new(ContextStore::new());
+        let context_store = Arc::new(ContextStore::new("redis://127.0.0.1:6379")?);
 
         // Create agent state
         let agent_state = AgentState {
@@ -256,9 +271,13 @@ impl AgentManager {
             memory: HashMap::new(),
         };
 
-        // Add agent to session and global state
-        session.agent_ids.push(agent_id.clone());
+        // Add agent to global state first
         self.agents.insert(agent_id.clone(), agent_state);
+        
+        // Then add agent to session
+        if let Some(session) = self.sessions.get_mut(session_id) {
+            session.agent_ids.push(agent_id.clone());
+        }
 
         Ok(agent_id)
     }
@@ -278,6 +297,36 @@ impl AgentManager {
         let (response, suggestions) = match &agent.implementation {
             AgentImplementation::Aws(aws_agent) => {
                 aws_agent.process_message(message, context).await?
+            }
+            AgentImplementation::Azure => {
+                let response = format!("Azure agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
+            }
+            AgentImplementation::Gcp => {
+                let response = format!("GCP agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
+            }
+            AgentImplementation::Security => {
+                let response = format!("Security agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
+            }
+            AgentImplementation::CostOptimization => {
+                let response = format!("Cost optimization agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
+            }
+            AgentImplementation::Migration => {
+                let response = format!("Migration agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
+            }
+            AgentImplementation::Reporting => {
+                let response = format!("Reporting agent received: {}", message);
+                let suggestions = vec![];
+                (response, suggestions)
             }
             AgentImplementation::General => {
                 let response = format!("General agent received: {}", message);
@@ -319,6 +368,120 @@ impl AgentManager {
             AgentImplementation::Aws(aws_agent) => {
                 aws_agent.get_suggestions(context_type, context).await?
             }
+            AgentImplementation::Azure => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("Azure {} Suggestion", context_type),
+                        description: "This is an Azure contextual suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "azure_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
+            AgentImplementation::Gcp => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("GCP {} Suggestion", context_type),
+                        description: "This is a GCP contextual suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "gcp_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
+            AgentImplementation::Security => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("Security {} Suggestion", context_type),
+                        description: "This is a security contextual suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "security_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
+            AgentImplementation::CostOptimization => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("Cost Optimization {} Suggestion", context_type),
+                        description: "This is a cost optimization suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "cost_optimization_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
+            AgentImplementation::Migration => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("Migration {} Suggestion", context_type),
+                        description: "This is a migration contextual suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "migration_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
+            AgentImplementation::Reporting => {
+                vec![
+                    Suggestion {
+                        suggestion_id: Uuid::new_v4().to_string(),
+                        title: format!("Reporting {} Suggestion", context_type),
+                        description: "This is a reporting contextual suggestion".to_string(),
+                        r#type: 1,
+                        action: Some(Action {
+                            action_type: "reporting_action".to_string(),
+                            parameters: HashMap::new(),
+                            command: "".to_string(),
+                            required_permissions: vec![],
+                        }),
+                        confidence: 0.7,
+                        metadata: HashMap::new(),
+                        priority: 1,
+                    },
+                ]
+            }
             AgentImplementation::General => {
                 vec![
                     Suggestion {
@@ -347,7 +510,7 @@ impl AgentManager {
         &self,
         session_id: &str,
         agent_id: &str,
-    ) -> AppResult<(String, HashMap<String, String>, Vec<String>)> {
+    ) -> AppResult<(String, HashMap<String, String>, AgentCapabilities)> {
         // Verify session and agent exist
         let agent = self.verify_session_and_agent(session_id, agent_id)?;
 
