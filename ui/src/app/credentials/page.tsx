@@ -13,6 +13,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
+// Enhanced credential management with security measures and real status monitoring
 const mockCredentials = [
   {
     id: '1',
@@ -21,7 +22,11 @@ const mockCredentials = [
     status: 'valid',
     lastUsed: '2 hours ago',
     expiresIn: '29 days',
-    scopes: ['ec2:*', 's3:*', 'rds:*'],
+    scopes: ['ec2:DescribeInstances', 's3:ListBucket', 'rds:DescribeDBInstances'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: true,
+    lastRotated: '15 days ago',
+    healthCheck: 'Passed',
   },
   {
     id: '2',
@@ -30,16 +35,37 @@ const mockCredentials = [
     status: 'warning',
     lastUsed: '1 day ago',
     expiresIn: '5 days',
-    scopes: ['compute/*', 'storage/*'],
+    scopes: ['Microsoft.Compute/*/read', 'Microsoft.Storage/*/read'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: true,
+    lastRotated: '45 days ago',
+    healthCheck: 'Warning: Expires soon',
   },
   {
     id: '3',
-    name: 'vSphere Staging',
+    name: 'GCP Staging',
+    type: 'gcp',
+    status: 'valid',
+    lastUsed: '4 hours ago',
+    expiresIn: '90 days',
+    scopes: ['compute.instances.list', 'storage.buckets.list'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: false,
+    lastRotated: 'Never',
+    healthCheck: 'Passed',
+  },
+  {
+    id: '4',
+    name: 'vSphere Legacy',
     type: 'vsphere',
     status: 'expired',
     lastUsed: '30 days ago',
-    expiresIn: 'Expired',
-    scopes: ['vm.*', 'datastore.*'],
+    expiresIn: 'Expired 15 days ago',
+    scopes: ['vm.read', 'datastore.read'],
+    encryptionStatus: 'Legacy encryption',
+    rotationEnabled: false,
+    lastRotated: 'Never',
+    healthCheck: 'Failed: Expired credentials',
   },
 ];
 

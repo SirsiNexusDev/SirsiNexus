@@ -45,10 +45,7 @@ export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         }}
       />
 
-      <AuthModal
-        isOpen={showAuth}
-        onClose={() => setShowAuth(false)}
-      />
+      <AuthModal />
     </div>
   );
 };

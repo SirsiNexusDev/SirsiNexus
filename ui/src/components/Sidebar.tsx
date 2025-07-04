@@ -35,6 +35,7 @@ const sidebarItems: SidebarItem[] = [
   { label: 'Analytics & Reports', icon: BarChart, path: '/analytics' },
   { label: 'Security', icon: Shield, path: '/security' },
   { label: 'Scripting Console', icon: Terminal, path: '/console' },
+  { label: 'Backend Tests', icon: Rocket, path: '/test-backend' },
   { label: 'Help & Tutorials', icon: HelpCircle, path: '/help' },
 ];
 

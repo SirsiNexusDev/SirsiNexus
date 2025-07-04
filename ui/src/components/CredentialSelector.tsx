@@ -28,6 +28,12 @@ export interface Credential {
   lastUsed: string;
   expiresIn: string;
   scopes: string[];
+  // Enhanced security fields
+  encryptionStatus: string;
+  rotationEnabled: boolean;
+  lastRotated: string;
+  healthCheck: string;
+  minimumTtl?: number; // Minimum time-to-live in days
 }
 
 interface CredentialSelectorProps {
@@ -49,7 +55,12 @@ const mockCredentials: Credential[] = [
     account: '123456789012',
     lastUsed: '2 hours ago',
     expiresIn: '29 days',
-    scopes: ['ec2:*', 's3:*', 'rds:*', 'iam:read*'],
+    scopes: ['ec2:DescribeInstances', 's3:ListBucket', 'rds:DescribeDBInstances', 'iam:read*'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: true,
+    lastRotated: '15 days ago',
+    healthCheck: 'Passed',
+    minimumTtl: 30,
   },
   {
     id: '2',
@@ -60,7 +71,12 @@ const mockCredentials: Credential[] = [
     region: 'East US',
     lastUsed: '1 day ago',
     expiresIn: '5 days',
-    scopes: ['compute/*', 'storage/*', 'network/*'],
+    scopes: ['Microsoft.Compute/*/read', 'Microsoft.Storage/*/read', 'Microsoft.Network/*/read'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: true,
+    lastRotated: '45 days ago',
+    healthCheck: 'Warning: Expires soon',
+    minimumTtl: 7,
   },
   {
     id: '3',
@@ -71,7 +87,12 @@ const mockCredentials: Credential[] = [
     region: 'us-central1',
     lastUsed: '4 hours ago',
     expiresIn: '45 days',
-    scopes: ['compute.*', 'storage.*', 'iam.*'],
+    scopes: ['compute.instances.list', 'storage.buckets.list', 'iam.serviceAccounts.list'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: false,
+    lastRotated: 'Never',
+    healthCheck: 'Passed',
+    minimumTtl: 30,
   },
   {
     id: '4',
@@ -81,7 +102,12 @@ const mockCredentials: Credential[] = [
     region: 'vCenter-DC1',
     lastUsed: '30 days ago',
     expiresIn: 'Expired',
-    scopes: ['vm.*', 'datastore.*', 'network.*'],
+    scopes: ['vm.read', 'datastore.read', 'network.read'],
+    encryptionStatus: 'Legacy encryption',
+    rotationEnabled: false,
+    lastRotated: 'Never',
+    healthCheck: 'Failed: Expired credentials',
+    minimumTtl: 0,
   },
   {
     id: '5',
@@ -92,7 +118,12 @@ const mockCredentials: Credential[] = [
     account: '987654321098',
     lastUsed: '6 hours ago',
     expiresIn: '22 days',
-    scopes: ['ec2:*', 's3:*', 'rds:read*'],
+    scopes: ['ec2:DescribeInstances', 's3:ListBucket', 'rds:DescribeDBInstances'],
+    encryptionStatus: 'AES-256 encrypted at rest',
+    rotationEnabled: true,
+    lastRotated: '8 days ago',
+    healthCheck: 'Passed',
+    minimumTtl: 30,
   },
 ];
 
@@ -258,6 +289,37 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                     <div>
                       <span className="font-medium text-gray-700">Status:</span>
                       <p className="text-gray-600 capitalize">{credential.status}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Health Check:</span>
+                      <p className={`text-xs ${
+                        credential.healthCheck.includes('Passed') ? 'text-green-600' :
+                        credential.healthCheck.includes('Warning') ? 'text-yellow-600' :
+                        'text-red-600'
+                      }`}>{credential.healthCheck}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Encryption:</span>
+                      <p className="text-gray-600">{credential.encryptionStatus}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Auto-Rotation:</span>
+                      <div className="flex items-center space-x-1">
+                        {credential.rotationEnabled ? (
+                          <CheckCircle className="h-3 w-3 text-green-600" />
+                        ) : (
+                          <AlertTriangle className="h-3 w-3 text-yellow-600" />
+                        )}
+                        <span className={credential.rotationEnabled ? 'text-green-600' : 'text-yellow-600'}>
+                          {credential.rotationEnabled ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Last Rotated:</span>
+                      <p className={`text-gray-600 ${credential.lastRotated === 'Never' ? 'text-yellow-600' : ''}`}>
+                        {credential.lastRotated}
+                      </p>
                     </div>
                     <div className="md:col-span-2">
                       <span className="font-medium text-gray-700">Permissions:</span>

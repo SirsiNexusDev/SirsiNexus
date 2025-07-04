@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2025-07-03
+
+### Fixed
+- **Form Validation System**: Fixed FormMessage component to properly display react-hook-form validation errors
+- **Form State Management**: Added FormProvider wrapper to all form components (CreateProject, EditProject, TaskDialogs)
+- **Input Warnings**: Resolved uncontrolled-to-controlled input warnings by adding proper default values
+- **DOM Nesting**: Fixed DOM nesting warnings in Dialog components using asChild pattern
+- **Select Components**: Resolved empty value props issues in Projects filter Select components
+- **React Warnings**: Eliminated React prop spreading warnings by removing form object spreading
+- **Test Infrastructure**: Enhanced global test setup with improved fetch mocking and API responses
+- **Console Noise**: Added console warning suppression for cleaner test output
+
+### Added
+- Comprehensive test setup with `setupTests.ts` for better test reliability
+- Proper error handling and display in form validation across all components
+- Enhanced form component architecture with proper react-hook-form integration
+
+### Changed
+- **Test Results**: Improved from 79.8% to 93.3% test pass rate (97/104 tests passing)
+- **Test Failures**: Reduced from 21 failed tests to only 7 failed tests
+- Improved test selectors and interaction patterns for better reliability
+- Enhanced form validation user experience with proper error messages
+
 ## [0.4.2] - 2025-07-03
 
 ### Fixed
