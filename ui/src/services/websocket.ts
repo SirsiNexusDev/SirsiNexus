@@ -16,6 +16,47 @@ export interface AgentMessage {
   };
 }
 
+export interface AgentSession {
+  sessionId: string;
+  userId: string;
+  status: 'active' | 'inactive' | 'error';
+  createdAt: Date;
+  availableAgents: string[];
+}
+
+export interface SubAgent {
+  agentId: string;
+  agentType: 'aws' | 'azure' | 'gcp' | 'vsphere' | 'migration' | 'security' | 'reporting' | 'scripting' | 'tutorial' | 'general';
+  status: 'initializing' | 'ready' | 'busy' | 'error' | 'stopped';
+  createdAt: Date;
+  capabilities: string[];
+  metrics: Record<string, string>;
+}
+
+export interface AgentSuggestion {
+  id: string;
+  title: string;
+  description: string;
+  actionType: 'action' | 'optimization' | 'security' | 'code' | 'tutorial' | 'troubleshooting';
+  action: string;
+  parameters: Record<string, string>;
+  confidence: number;
+}
+
+export interface AgentRequest {
+  action: 'start_session' | 'spawn_agent' | 'send_message' | 'get_suggestions' | 'get_status' | 'stop_session';
+  sessionId?: string;
+  agentId?: string;
+  data?: any;
+}
+
+export interface AgentResponse {
+  action: string;
+  success: boolean;
+  data?: any;
+  error?: string;
+}
+
 export interface WebSocketConfig {
   url: string;
   reconnectAttempts: number;
@@ -214,6 +255,140 @@ export class AgentWebSocketService {
       case WebSocket.CLOSED: return 'disconnected';
       default: return 'unknown';
     }
+  }
+
+  // Agent Service gRPC Methods
+
+  async startAgentSession(userId: string, context: Record<string, string> = {}): Promise<AgentSession> {
+    return this.sendAgentRequest({
+      action: 'start_session',
+      data: { userId, context }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to start agent session');
+      }
+      return response.data as AgentSession;
+    });
+  }
+
+  async spawnSubAgent(
+    sessionId: string, 
+    agentType: SubAgent['agentType'], 
+    config: Record<string, string> = {}
+  ): Promise<SubAgent> {
+    return this.sendAgentRequest({
+      action: 'spawn_agent',
+      sessionId,
+      data: { agentType, config }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to spawn sub-agent');
+      }
+      return response.data as SubAgent;
+    });
+  }
+
+  async sendAgentMessage(
+    sessionId: string,
+    agentId: string,
+    message: string,
+    context: Record<string, string> = {}
+  ): Promise<{ responseId: string; response: string; suggestions: AgentSuggestion[] }> {
+    return this.sendAgentRequest({
+      action: 'send_message',
+      sessionId,
+      agentId,
+      data: { message, context }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to send message to agent');
+      }
+      return response.data;
+    });
+  }
+
+  async getAgentSuggestions(
+    sessionId: string,
+    agentId: string,
+    suggestionType: AgentSuggestion['actionType'],
+    context: Record<string, string> = {}
+  ): Promise<AgentSuggestion[]> {
+    return this.sendAgentRequest({
+      action: 'get_suggestions',
+      sessionId,
+      agentId,
+      data: { suggestionType, context }
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to get agent suggestions');
+      }
+      return response.data as AgentSuggestion[];
+    });
+  }
+
+  async getAgentStatus(sessionId: string, agentId: string): Promise<SubAgent> {
+    return this.sendAgentRequest({
+      action: 'get_status',
+      sessionId,
+      agentId
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to get agent status');
+      }
+      return response.data as SubAgent;
+    });
+  }
+
+  async stopAgentSession(sessionId: string): Promise<void> {
+    return this.sendAgentRequest({
+      action: 'stop_session',
+      sessionId
+    }).then(response => {
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to stop agent session');
+      }
+    });
+  }
+
+  private async sendAgentRequest(request: AgentRequest): Promise<AgentResponse> {
+    return new Promise((resolve, reject) => {
+      if (!this.isConnected()) {
+        reject(new Error('WebSocket not connected to agent backend'));
+        return;
+      }
+
+      const requestId = this.generateMessageId();
+      const requestWithId = { ...request, requestId };
+
+      // Set up one-time listener for response
+      const responseHandler = (message: AgentMessage) => {
+        if (message.metadata?.requestId === requestId) {
+          this.off('agent_response', responseHandler);
+          try {
+            const response = JSON.parse(message.content) as AgentResponse;
+            resolve(response);
+          } catch (error) {
+            reject(new Error('Invalid response format from agent backend'));
+          }
+        }
+      };
+
+      this.on('agent_response', responseHandler);
+
+      // Send request
+      try {
+        this.ws!.send(JSON.stringify(requestWithId));
+      } catch (error) {
+        this.off('agent_response', responseHandler);
+        reject(new Error('Failed to send request to agent backend'));
+      }
+
+      // Set timeout for request
+      setTimeout(() => {
+        this.off('agent_response', responseHandler);
+        reject(new Error('Request timeout'));
+      }, 30000); // 30 second timeout
+    });
   }
 }
 
