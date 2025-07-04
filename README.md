@@ -29,7 +29,7 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **UI**: Next.js + React frontend with Tailwind and shadcn/ui
 - **CLI**: Tauri + Rust-based command-line interface
 
-## 🎯 **Current Status: v2.2.0 - Elite CDB Compliance Assessment & Strategic Resumption**
+## 🎯 **Current Status: v2.3.0 - Elite CDB Compliance Assessment & Advanced Observability**
 
 ### ⚠️ **REALITY CHECK: Objective Assessment Results**
 - **CDB Compliance**: 72% (Objectively Assessed vs Previous 95% Claim)
@@ -57,6 +57,18 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 - **Smart Validation**: Prevents common configuration errors with best practice warnings
 - **Security Transparency**: Clear security notices about credential handling and permissions
 - **Artifact Generation**: Environment configuration artifacts for subsequent steps
+
+### ✅ **Advanced Performance Monitoring & Observability (NEW - Phase 4)**
+- **Comprehensive Metrics Collection**: High-resolution system and application metrics with atomic operations
+- **Agent-Level Observability**: Distributed tracing and metrics for every agent operation and message
+- **Prometheus Integration**: Standardized metrics export for monitoring platforms (Grafana, etc.)
+- **OpenTelemetry Support**: W3C Trace Context propagation across distributed agent operations
+- **Real-time Dashboard API**: REST endpoints for live monitoring data (`/api/dashboard`, `/metrics`)
+- **Alert System**: Configurable thresholds for system health, performance, and error rates
+- **Production-Grade Monitoring**: Background collection, audit logging, health checks
+- **Performance Histograms**: Response time distributions, database query performance
+- **AI Operation Tracking**: Specialized tracing for AI API calls and agent suggestions
+- **Security Event Monitoring**: Authentication, authorization, and rate limiting metrics
 
 ### ✅ **Enhanced Demo Capabilities**
 - **Dynamic Resource Generation**: Business-specific infrastructure based on entity & journey
@@ -201,10 +213,18 @@ npm run dev
 ```
 sirsi-nexus/
 ├── core-engine/               # Rust: AI Hypervisor & MCP Server
+│   ├── src/telemetry/        # Advanced Performance Monitoring (Phase 4)
+│   │   ├── metrics.rs        # High-resolution metrics collection
+│   │   ├── prometheus.rs     # Prometheus metrics exporter
+│   │   ├── opentelemetry.rs  # Distributed tracing with W3C Trace Context
+│   │   └── dashboard.rs      # Real-time dashboard API
+│   ├── src/server/http.rs    # HTTP REST API for observability endpoints
+│   └── src/agent/            # Agent system with integrated observability
 ├── mcp/                       # MCP Protocol & SDK Clients
 ├── connectors/                # Go: Cloud Connectors (AWS, Azure, GCP, vSphere)
 ├── planner/                   # Python: AI Orchestration & Pipelines
 ├── ui/                        # Next.js + React Frontend with Enhanced Form Validation & Testing
+│   └── dashboard/            # Observability Dashboard UI (Future Phase)
 ├── cli/                       # Tauri + Rust CLI
 ├── subagents/                 # Agent Modules
 ├── demo-data/                 # Business Entity & Infrastructure Data
@@ -220,7 +240,8 @@ sirsi-nexus/
 └── docs/                      # Documentation & Architecture Diagrams
     ├── DEMO_SCENARIOS.md      # Demo scenario documentation
     ├── DEMO_PRESENTATION_GUIDE.md # Presentation guidelines
-    └── PHASE_2_COMPLETION.md  # Phase 2 completion report
+    ├── PHASE_2_COMPLETION.md  # Phase 2 completion report
+    └── PHASE_4_OBSERVABILITY.md # Phase 4 observability implementation
 ```
 
 ## Workflow
