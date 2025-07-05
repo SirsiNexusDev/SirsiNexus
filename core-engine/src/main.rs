@@ -1,16 +1,6 @@
-mod api;
-mod agent;
-mod config;
-mod db;
-mod error;
-mod middleware;
-mod models;
-mod proto;
-mod server;
-mod telemetry;
-
-use crate::config::AppConfig;
-use crate::server::start_grpc_server;
+use sirsi_core::config::AppConfig;
+use sirsi_core::server::start_grpc_server;
+use sirsi_core::telemetry;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -29,6 +19,7 @@ async fn main() -> anyhow::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use sirsi_core::{api, db};
     use axum::{
         body::Body,
         http::{Request, StatusCode},

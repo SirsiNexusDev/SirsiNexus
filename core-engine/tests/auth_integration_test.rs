@@ -12,10 +12,14 @@ use sirsi_core::{
     middleware::auth::{AuthUser, Claims},
     models::user::User,
 };
+use uuid;
 
 async fn setup() -> sqlx::PgPool {
+    // Load environment variables from .env file
+    dotenv::dotenv().ok();
+    
     let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
+        .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
     
     PgPoolOptions::new()
         .max_connections(5)
@@ -31,6 +35,7 @@ async fn test_auth_flow() {
     // Create a test user
     let user = User::create(
         &pool,
+        "test_user",
         "test@example.com",
         "password123",
     )
@@ -42,6 +47,8 @@ async fn test_auth_flow() {
         sub: user.id.to_string(),
         exp: (chrono::Utc::now() + chrono::Duration::hours(1)).timestamp(),
         iat: chrono::Utc::now().timestamp(),
+        role: "user".to_string(),
+        jti: uuid::Uuid::new_v4().to_string(),
     };
 
     let token = encode(
@@ -51,13 +58,12 @@ async fn test_auth_flow() {
     )
     .expect("Failed to create token");
 
-    // Create a test router with a protected endpoint
-    let app = Router::new()
+    // Test with valid token
+    let app1 = Router::new()
         .route("/protected", get(protected_handler))
         .with_state(pool.clone());
-
-    // Test with valid token
-    let response = app
+        
+    let response = app1
         .oneshot(
             Request::builder()
                 .uri("/protected")
@@ -75,6 +81,8 @@ async fn test_auth_flow() {
         sub: user.id.to_string(),
         exp: (chrono::Utc::now() - chrono::Duration::hours(1)).timestamp(),
         iat: chrono::Utc::now().timestamp(),
+        role: "user".to_string(),
+        jti: uuid::Uuid::new_v4().to_string(),
     };
 
     let expired_token = encode(
@@ -84,7 +92,11 @@ async fn test_auth_flow() {
     )
     .expect("Failed to create expired token");
 
-    let response = app
+    let app2 = Router::new()
+        .route("/protected", get(protected_handler))
+        .with_state(pool.clone());
+
+    let response = app2
         .oneshot(
             Request::builder()
                 .uri("/protected")
@@ -104,6 +116,6 @@ sqlx::query!("DELETE FROM users WHERE id = $1", user.id)
         .expect("Failed to cleanup test user");
 }
 
-async fn protected_handler(auth: AuthUser) -> &'static str {
+async fn protected_handler(_auth: AuthUser) -> &'static str {
     "Protected content"
 }

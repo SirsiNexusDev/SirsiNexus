@@ -5,7 +5,6 @@ use axum::{
     http::{header::AUTHORIZATION, request::Parts},
     response::{IntoResponse, Response},
 };
-use axum::extract::State;
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;

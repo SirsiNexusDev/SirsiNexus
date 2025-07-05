@@ -1,5 +1,6 @@
 use sirsi_core::server::start_grpc_server;
 use sirsi_core::proto::sirsi::agent::v1::*;
+use sirsi_core::proto::sirsi::agent::v1::agent_service_client::AgentServiceClient;
 use std::collections::HashMap;
 use std::time::Duration;
 use tokio::time::timeout;
@@ -132,15 +133,16 @@ async fn test_enhanced_session_lifecycle() {
                     name: "current-infrastructure.json".to_string(),
                     mime_type: "application/json".to_string(),
                     size_bytes: 1024,
-                    data: b"{\"region\": \"us-east-1\", \"services\": [\"ec2\", \"s3\", \"rds\"]}".to_vec(),
-                    url: String::new(),
+                    content: Some(sirsi_core::proto::sirsi::agent::v1::attachment::Content::Data(
+                        b"{\"region\": \"us-east-1\", \"services\": [\"ec2\", \"s3\", \"rds\"]}".to_vec()
+                    )),
                 }
             ],
         }),
         options: Some(MessageOptions {
             timeout_seconds: 30,
             stream_response: false,
-            priority: MessagePriority::High as i32,
+            priority: Priority::High as i32,
             context: {
                 let mut ctx = HashMap::new();
                 ctx.insert("analysis_type".to_string(), "comprehensive".to_string());
@@ -247,7 +249,7 @@ async fn test_enhanced_session_lifecycle() {
     assert!(health_response.metrics.is_some());
     
     let health = health_response.health.unwrap();
-    assert_eq!(health.overall_status, SystemHealthStatus::Healthy as i32);
+    assert_eq!(health.overall_status, HealthStatus::Healthy as i32);
     assert!(!health.components.is_empty());
     
     let metrics = health_response.metrics.unwrap();
@@ -503,31 +505,34 @@ async fn test_message_attachments_and_metadata() {
                     name: "docker-compose.yml".to_string(),
                     mime_type: "application/x-yaml".to_string(),
                     size_bytes: 2048,
-                    data: b"version: '3.8'\nservices:\n  app:\n    image: myapp:latest".to_vec(),
-                    url: String::new(),
+                    content: Some(sirsi_core::proto::sirsi::agent::v1::attachment::Content::Data(
+                        b"version: '3.8'\nservices:\n  app:\n    image: myapp:latest".to_vec()
+                    )),
                 },
                 Attachment {
                     attachment_id: uuid::Uuid::new_v4().to_string(),
                     name: "config.json".to_string(),
                     mime_type: "application/json".to_string(),
                     size_bytes: 512,
-                    data: b"{\"database_url\": \"postgresql://localhost:5432/mydb\"}".to_vec(),
-                    url: String::new(),
+                    content: Some(sirsi_core::proto::sirsi::agent::v1::attachment::Content::Data(
+                        b"{\"database_url\": \"postgresql://localhost:5432/mydb\"}".to_vec()
+                    )),
                 },
                 Attachment {
                     attachment_id: uuid::Uuid::new_v4().to_string(),
                     name: "readme.md".to_string(),
                     mime_type: "text/markdown".to_string(),
                     size_bytes: 1024,
-                    data: b"# My Application\n\nThis is a sample application...".to_vec(),
-                    url: String::new(),
+                    content: Some(sirsi_core::proto::sirsi::agent::v1::attachment::Content::Data(
+                        b"# My Application\n\nThis is a sample application...".to_vec()
+                    )),
                 },
             ],
         }),
         options: Some(MessageOptions {
             timeout_seconds: 45,
             stream_response: false,
-            priority: MessagePriority::High as i32,
+            priority: Priority::High as i32,
             context: {
                 let mut ctx = HashMap::new();
                 ctx.insert("analysis_type".to_string(), "security_and_performance".to_string());

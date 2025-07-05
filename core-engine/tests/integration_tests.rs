@@ -2,15 +2,18 @@ use axum::{
     body::Body,
     http::{Request, StatusCode},
 };
-use serde_json::{json, Value};
+use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
 use std::time::Duration;
 use tower::ServiceExt;
 
 // Helper to create test database pool
 async fn create_test_pool() -> sqlx::PgPool {
+    // Load environment variables from .env file
+    dotenv::dotenv().ok();
+    
     let database_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
+        .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
     
     PgPoolOptions::new()
         .max_connections(5)

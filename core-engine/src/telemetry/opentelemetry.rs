@@ -4,18 +4,18 @@
 use std::{
     collections::HashMap,
     sync::Arc,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::SystemTime,
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
-use tracing::{info, warn, error, debug, Span};
+use tracing::{info, debug};
 use uuid::Uuid;
 
 use crate::{
     error::{AppError, AppResult},
     telemetry::metrics::MetricsCollector,
-    audit::AuditLogger,
 };
+use crate::audit::AuditLogger;
 
 /// OpenTelemetry tracer and span manager
 #[derive(Debug)]
@@ -367,7 +367,7 @@ impl OtelTracer {
         let parent_context = headers.get("traceparent")
             .and_then(|tp| self.parse_trace_context(tp).ok());
         
-        let mut span = self.start_span(
+        let span = self.start_span(
             &format!("HTTP {}", method),
             "http_server",
             parent_context.as_ref(),
@@ -392,7 +392,7 @@ impl OtelTracer {
         table: &str,
         parent_context: Option<&TraceContext>,
     ) -> AppResult<TraceSpan> {
-        let mut span = self.start_span(
+        let span = self.start_span(
             &format!("DB {}", operation),
             "database",
             parent_context,
@@ -415,7 +415,7 @@ impl OtelTracer {
         prompt_tokens: u32,
         parent_context: Option<&TraceContext>,
     ) -> AppResult<TraceSpan> {
-        let mut span = self.start_span(
+        let span = self.start_span(
             "AI API Call",
             "ai_service",
             parent_context,

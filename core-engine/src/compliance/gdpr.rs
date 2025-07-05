@@ -4,7 +4,7 @@ use uuid::Uuid;
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 
-use crate::error::{AppError, AppResult};
+use crate::error::AppResult;
 use crate::audit::{AuditLogger, AuditContext};
 
 /// GDPR Rights under Article 12-22

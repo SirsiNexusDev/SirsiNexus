@@ -11,7 +11,7 @@ use tracing::{info, error, warn, debug};
 use tonic::transport::Channel;
 
 use crate::error::{AppError, AppResult};
-use crate::protos::sirsi::agent::v1::{
+use crate::proto::sirsi::agent::v1::{
     agent_service_client::AgentServiceClient,
     *,
 };

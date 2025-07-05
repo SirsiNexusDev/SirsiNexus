@@ -9,3 +9,6 @@ pub mod sirsi {
         }
     }
 }
+
+// Re-export for easier access
+pub use sirsi::agent::v1::*;

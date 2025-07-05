@@ -280,7 +280,7 @@ impl AuditLogger {
         .bind(&log.details)
         .bind(&log.ip_address)
         .bind(&log.user_agent)
-        .bind(&log.timestamp)
+        .bind(log.timestamp)
         .bind(log.success)
         .bind(&log.error_message)
         .execute(&self.pool)
@@ -318,13 +318,10 @@ impl AuditLogger {
                 log_entry.user_id, log_entry.action);
             
             if let Some(user_id) = log_entry.user_id {
-                match self.check_privilege_escalation_attempt(user_id).await {
-                    Ok(true) => {
-                        tracing::warn!("🚨 CRITICAL: Potential privilege escalation detected for user: {}", user_id);
-                        self.trigger_security_alert("privilege_escalation", 
-                            &format!("Multiple failed authorization attempts by user: {}", user_id)).await;
-                    }
-                    _ => {}
+                if let Ok(true) = self.check_privilege_escalation_attempt(user_id).await {
+                    tracing::warn!("🚨 CRITICAL: Potential privilege escalation detected for user: {}", user_id);
+                    self.trigger_security_alert("privilege_escalation", 
+                        &format!("Multiple failed authorization attempts by user: {}", user_id)).await;
                 }
             }
         }

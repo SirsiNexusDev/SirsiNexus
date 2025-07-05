@@ -12,7 +12,7 @@ use tokio::{
     sync::RwLock,
     time::interval,
 };
-use tracing::{error, info, warn, debug};
+use tracing::{error, info, warn};
 
 use crate::{
     error::{AppError, AppResult},
@@ -193,8 +193,7 @@ impl WorkloadApiClient {
         let svid_guard = self.svid_cache.read().await;
         svid_guard
             .as_ref()
-            .ok_or_else(|| AppError::Security("No SVID available".into()))
-            .map(|svid| svid.clone())
+            .ok_or_else(|| AppError::Security("No SVID available".into())).cloned()
     }
     
     /// Start automatic SVID rotation
@@ -316,6 +315,12 @@ pub struct TrustDomain {
     pub federation_endpoints: Vec<String>,
     pub created_at: SystemTime,
     pub updated_at: SystemTime,
+}
+
+impl Default for TrustDomainManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TrustDomainManager {

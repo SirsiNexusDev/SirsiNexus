@@ -5,7 +5,7 @@ use tokio::sync::RwLock;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::error::{AppError, AppResult};
+use crate::error::AppResult;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PerformanceMetric {
@@ -71,6 +71,12 @@ impl RequestTimer {
 pub struct PerformanceMonitor {
     metrics: Arc<RwLock<Vec<PerformanceMetric>>>,
     enabled: bool,
+}
+
+impl Default for PerformanceMonitor {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PerformanceMonitor {

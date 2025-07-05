@@ -4,14 +4,14 @@
 //! supporting dependency resolution, priority-based execution, and resource allocation.
 
 use crate::{
-    communication::{AgentEvent, AgentEventType, AgentMessage, MessageType, MessagePayload, TaskPayload},
+    communication::{AgentEvent, AgentEventType},
     error::{AppError, AppResult},
     telemetry::metrics::MetricsCollector,
 };
 use std::collections::{HashMap, BTreeMap, VecDeque};
 use std::sync::Arc;
 use tokio::sync::{broadcast, RwLock};
-use tracing::{debug, error, info, warn};
+use tracing::{debug, info, warn};
 use uuid::Uuid;
 use serde::{Deserialize, Serialize};
 use std::time::{Duration, Instant};

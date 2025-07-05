@@ -1,17 +1,13 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tonic::{Status};
 use tracing::info;
 use uuid::Uuid;
 use prost_types::Timestamp;
 
 use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
-use crate::protos::{
-    sirsi::agent::v1::{agent_service_server::*, *},
-    AgentService,
-};
+use crate::proto::sirsi::agent::v1::{agent_service_server::*, *};
 
 #[derive(Clone)]
 pub struct AgentServiceImpl {
@@ -162,7 +158,7 @@ impl AgentService for AgentServiceImpl {
                 let now = Self::current_timestamp();
                 
                 // Get agent status to populate capabilities
-                let (status, _metrics, capabilities) = agent_manager
+                let (_status, _metrics, _capabilities) = agent_manager
                     .get_agent_status(&req.session_id, &agent_id)
                     .await
                     .map_err(|e| tonic::Status::internal(format!("Failed to get agent status: {}", e)))?;
@@ -185,7 +181,6 @@ impl AgentService for AgentServiceImpl {
                         capability_id: format!("{}_agent", req.agent_type),
                         name: format!("{}_agent", req.agent_type),
                         description: format!("Real {} agent with live integration", req.agent_type),
-                        enabled: true,
                         parameters: vec![], // Vec<Parameter> not HashMap
                     }
                 ];
@@ -440,11 +435,6 @@ impl AgentService for AgentServiceImpl {
                 
                 // Create agent status
                 let agent_status = AgentStatus {
-                    agent_id: req.agent_id.clone(),
-                    status: status_str.clone(),
-                    uptime: 0, // TODO: Calculate actual uptime
-                    metrics: None,
-                    active_capabilities: vec![],
                     state: 2, // AGENT_STATE_READY
                     status_message: status_str.clone(),
                     last_activity: now.clone(),
@@ -472,7 +462,6 @@ impl AgentService for AgentServiceImpl {
                         capability_id: cap.clone(),
                         name: cap.clone(),
                         description: format!("Agent capability: {}", cap),
-                        enabled: true,
                         parameters: vec![], // TODO: Add actual capability parameters
                     }
                 }).collect();
@@ -512,8 +501,6 @@ impl AgentService for AgentServiceImpl {
         info!("Getting system health");
 
         let response = GetSystemHealthResponse {
-            status: "healthy".to_string(),
-            components: HashMap::new(),
             health: None,
             metrics: None,
         };

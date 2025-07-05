@@ -8,8 +8,8 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tracing::{debug, error, info, warn};
-use wasmtime::{Engine, Instance, Linker, Module, Store, TypedFunc};
+use tracing::{debug, info, warn};
+use wasmtime::{Engine, Instance, Linker, Module, Store};
 use serde::{Deserialize, Serialize};
 
 /// Agent module metadata
@@ -353,11 +353,11 @@ impl AgentModuleLoader {
         &self,
         module_id: &str,
         function_name: &str,
-        args: Vec<i32>,
+        _args: Vec<i32>,
         session_id: &str,
     ) -> AppResult<i32> {
         let modules = self.modules.read().await;
-        let module = modules.get(module_id)
+        let _module = modules.get(module_id)
             .ok_or_else(|| AppError::NotFound(format!("Module {} not found", module_id)))?;
         
         // TODO: This is a simplified example. In practice, you'd need to handle
@@ -436,7 +436,7 @@ impl AgentModuleLoader {
     /// Start hot-reload monitoring
     async fn start_hot_reload_monitoring(&self) -> AppResult<()> {
         let config = self.config.clone();
-        let loader = Arc::clone(&self.modules);
+        let _loader = Arc::clone(&self.modules);
         
         tokio::spawn(async move {
             info!("🔄 Starting module hot-reload monitoring");

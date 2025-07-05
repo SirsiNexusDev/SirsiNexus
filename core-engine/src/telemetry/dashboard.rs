@@ -4,21 +4,20 @@
 use std::{
     collections::HashMap,
     sync::Arc,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::{SystemTime, UNIX_EPOCH},
 };
 use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
-use tracing::{info, warn, error, debug};
+use tracing::info;
 
 use crate::{
-    error::{AppError, AppResult},
+    error::AppResult,
     telemetry::{
-        metrics::{MetricsCollector, MetricsSnapshot, Alert, AlertThresholds, AlertSeverity},
+        metrics::{MetricsCollector, MetricsSnapshot, Alert, AlertThresholds},
         prometheus::PrometheusExporter,
-        opentelemetry::{OtelTracer, Trace, TraceSpan},
+        opentelemetry::{OtelTracer, Trace},
     },
-    audit::AuditLogger,
 };
+use crate::audit::AuditLogger;
 
 /// Dashboard API server
 #[derive(Debug)]

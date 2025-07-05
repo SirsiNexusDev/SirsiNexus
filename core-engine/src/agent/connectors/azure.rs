@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use reqwest::Client as HttpClient;
 
 // Real Azure SDK imports - using correct paths for Azure SDK for Rust
-use azure_core::credentials::TokenCredential;
 use azure_identity::DefaultAzureCredential;
 use azure_mgmt_compute::Client as ComputeClient;
 use azure_mgmt_storage::Client as StorageClient;
@@ -257,10 +256,10 @@ impl AzureAgent {
     }
     
     async fn discover_virtual_machines_real(&self) -> AppResult<Vec<AzureResource>> {
-        let compute_client = self.compute_client.as_ref()
+        let _compute_client = self.compute_client.as_ref()
             .ok_or_else(|| AppError::Configuration("Azure compute client not initialized".to_string()))?;
         
-        let mut resources = Vec::new();
+        let resources = Vec::new();
         
         // Get all resource groups if none specified
         let resource_groups = if let Some(rg) = &self.config.resource_group {
@@ -287,7 +286,7 @@ impl AzureAgent {
     }
     
     async fn get_all_resource_groups_real(&self) -> AppResult<Vec<String>> {
-        let resource_client = self.resource_client.as_ref()
+        let _resource_client = self.resource_client.as_ref()
             .ok_or_else(|| AppError::Configuration("Azure resource client not initialized".to_string()))?;
         
         // Placeholder for real Azure SDK call

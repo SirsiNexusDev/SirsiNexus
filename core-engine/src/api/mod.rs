@@ -42,8 +42,21 @@ mod tests {
     use tower::ServiceExt;
 
     #[tokio::test]
+    #[serial_test::serial]
     async fn test_health_check() {
-        let app = create_router(PgPool::connect("dummy").await.unwrap());
+        // Load environment variables from .env file
+        dotenv::dotenv().ok();
+        
+        let db_url = std::env::var("DATABASE_URL")
+            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
+        
+        let pool = sqlx::postgres::PgPoolOptions::new()
+            .max_connections(1)
+            .connect(&db_url)
+            .await
+            .expect("Failed to connect to database");
+        
+        let app = create_router(pool);
         
         let response = app
             .oneshot(

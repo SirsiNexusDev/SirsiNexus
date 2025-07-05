@@ -8,7 +8,7 @@ use std::{
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
-use tracing::{error, info, warn, debug};
+use tracing::{info, warn, debug};
 
 use crate::{
     error::{AppError, AppResult},

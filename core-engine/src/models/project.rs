@@ -18,7 +18,7 @@ pub struct Project {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, sqlx::Type)]
-#[sqlx(type_name = "VARCHAR", rename_all = "lowercase")]
+#[sqlx(type_name = "TEXT", rename_all = "lowercase")]
 pub enum ProjectStatus {
     Active,
     Paused,
@@ -112,8 +112,11 @@ mod tests {
     use sqlx::postgres::PgPoolOptions;
 
     async fn setup() -> PgPool {
+        // Load environment variables from .env file
+        dotenv::dotenv().ok();
+        
         let db_url = std::env::var("DATABASE_URL")
-            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
+            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
         
         let pool = PgPoolOptions::new()
             .max_connections(5)
@@ -121,8 +124,13 @@ mod tests {
             .await
             .expect("Failed to connect to database");
 
-        // Clear test database
+        // Clear test database (clear projects first due to foreign key constraint)
         sqlx::query("TRUNCATE projects CASCADE")
+            .execute(&pool)
+            .await
+            .expect("Failed to clear test database");
+        
+        sqlx::query("TRUNCATE users CASCADE")
             .execute(&pool)
             .await
             .expect("Failed to clear test database");
@@ -131,14 +139,24 @@ mod tests {
     }
 
     #[tokio::test]
+    #[serial_test::serial]
     async fn test_project_crud() {
         let pool = setup().await;
+
+        // First create a user to own the project
+        use crate::models::user::User;
+        let user = User::create(
+            &pool,
+            "Test User",
+            "test@example.com",
+            "hashed_password",
+        ).await.expect("Failed to create test user");
 
         // Create
         let new_project = CreateProject {
             name: "Test Project".to_string(),
             description: Some("Test Description".to_string()),
-            owner_id: Uuid::new_v4(),
+            owner_id: user.id,
         };
 
         let project = Project::create(&pool, new_project.clone())
@@ -185,9 +203,20 @@ mod tests {
     }
 
     #[tokio::test]
+    #[serial_test::serial]
     async fn test_find_by_owner() {
         let pool = setup().await;
-        let owner_id = Uuid::new_v4();
+        
+        // First create a user to own the projects
+        use crate::models::user::User;
+        let user = User::create(
+            &pool,
+            "Test Owner",
+            "owner@example.com",
+            "hashed_password",
+        ).await.expect("Failed to create test user");
+        
+        let owner_id = user.id;
 
         // Create multiple projects
         for i in 0..3 {
@@ -203,10 +232,17 @@ mod tests {
         }
 
         // Create a project with different owner
+        let other_user = User::create(
+            &pool,
+            "Other User",
+            "other@example.com",
+            "hashed_password",
+        ).await.expect("Failed to create other test user");
+        
         let new_project = CreateProject {
             name: "Other Project".to_string(),
             description: Some("Other Description".to_string()),
-            owner_id: Uuid::new_v4(),
+            owner_id: other_user.id,
         };
 
         Project::create(&pool, new_project)

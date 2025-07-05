@@ -4,7 +4,7 @@
 //! and cross-agent orchestration in the SirsiNexus AI Hypervisor.
 
 use crate::{
-    agent::{AgentManager, AgentCapabilities},
+    agent::AgentManager,
     communication::{EventBus, AgentEvent, AgentEventType},
     error::{AppError, AppResult},
     telemetry::metrics::MetricsCollector,

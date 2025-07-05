@@ -7,11 +7,10 @@ pub mod vault;
 pub use spiffe::*;
 pub use vault::*;
 
-use std::sync::Arc;
 use sqlx::PgPool;
 
 use crate::{
-    error::{AppError, AppResult},
+    error::AppResult,
     audit::AuditLogger,
 };
 
@@ -147,6 +146,7 @@ impl SecurityManager {
 
 /// Security health status
 #[derive(Debug, Clone)]
+#[derive(Default)]
 pub struct SecurityHealthStatus {
     pub spiffe_healthy: bool,
     pub vault_healthy: bool,
@@ -156,18 +156,6 @@ pub struct SecurityHealthStatus {
     pub svid_expires_in: Option<std::time::Duration>,
 }
 
-impl Default for SecurityHealthStatus {
-    fn default() -> Self {
-        Self {
-            spiffe_healthy: false,
-            vault_healthy: false,
-            trust_domains_configured: false,
-            trust_domains_count: 0,
-            svid_expires_soon: false,
-            svid_expires_in: None,
-        }
-    }
-}
 
 impl SecurityHealthStatus {
     pub fn overall_healthy(&self) -> bool {
@@ -206,8 +194,11 @@ mod tests {
     use sqlx::postgres::PgPoolOptions;
     
     async fn setup_test_pool() -> PgPool {
+        // Load environment variables from .env file
+        dotenv::dotenv().ok();
+        
         let db_url = std::env::var("DATABASE_URL")
-            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
+            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
         
         PgPoolOptions::new()
             .max_connections(1)

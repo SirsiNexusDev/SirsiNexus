@@ -1,22 +1,17 @@
 // HTTP REST API Server
 // Provides dashboard and observability endpoints
 
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 use tokio::sync::RwLock;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use serde_json::json;
 use warp::{Filter, Reply, reject::Rejection, http::StatusCode};
 use tracing::{info, warn, error};
 
 use crate::{
-    error::{AppError, AppResult},
+    error::AppResult,
     agent::AgentManager,
-    telemetry::{
-        dashboard::{DashboardApi, DashboardData, ApiResponse},
-        metrics::MetricsCollector,
-        prometheus::PrometheusExporter,
-        opentelemetry::OtelTracer,
-    },
+    telemetry::dashboard::{DashboardApi, ApiResponse},
 };
 
 /// HTTP server for dashboard and metrics

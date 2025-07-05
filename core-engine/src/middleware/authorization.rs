@@ -50,16 +50,25 @@ pub struct AuthorizationContext {
 
 impl AuthorizationContext {
     pub fn new(user: User, user_id: Uuid, audit_context: AuditContext) -> Self {
-        let is_admin = user.role.as_deref() == Some("admin") || user.role.as_deref() == Some("super_admin");
-        
         Self {
             user_id,
             user,
             permissions_checked: vec![],
             permissions_granted: vec![],
             permissions_denied: vec![],
-            is_admin,
+            is_admin: false, // Will be set async
             session_context: audit_context,
+        }
+    }
+    
+    pub async fn check_admin_role(&mut self, rbac_manager: &mut RbacManager) {
+        if let Ok(roles) = rbac_manager.get_user_roles(self.user_id).await {
+            for role in roles {
+                if role.name == "admin" || role.name == "super_admin" {
+                    self.is_admin = true;
+                    break;
+                }
+            }
         }
     }
     
@@ -95,12 +104,11 @@ where
     let auth_user = request
         .extensions()
         .get::<AuthUser>()
-        .ok_or_else(|| AppError::Auth("User not authenticated".into()))?
-        .clone();
+        .ok_or_else(|| AppError::Auth("User not authenticated".into()))?;
     
     // Create audit context
     let headers = request.headers();
-    let audit_context = create_audit_context(&auth_user, headers)?;
+    let audit_context = create_audit_context(auth_user, headers)?;
     
     // Initialize RBAC and audit managers
     let mut rbac_manager = RbacManager::new(pool.clone());
@@ -112,6 +120,9 @@ where
         auth_user.user_id,
         audit_context.clone(),
     );
+    
+    // Check admin role asynchronously
+    auth_context.check_admin_role(&mut rbac_manager).await;
     
     // Check all required permissions
     let mut all_permissions_granted = true;
@@ -241,6 +252,12 @@ fn create_audit_context(auth_user: &AuthUser, headers: &HeaderMap) -> AppResult<
 pub struct RequirePermissions {
     permissions: Vec<(String, String)>,
     allow_admin_override: bool,
+}
+
+impl Default for RequirePermissions {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl RequirePermissions {

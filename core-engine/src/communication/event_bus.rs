@@ -4,7 +4,7 @@
 //! using Redis Streams as the underlying message transport.
 
 use crate::error::{AppError, AppResult};
-use redis::{AsyncCommands, Client, Connection};
+use redis::{AsyncCommands, Client};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;

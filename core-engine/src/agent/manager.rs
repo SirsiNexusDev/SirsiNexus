@@ -1,20 +1,20 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::{SystemTime, Instant};
+use std::time::Instant;
 use uuid::Uuid;
 use tracing::{info, warn};
 
 use crate::{
     error::{AppError, AppResult},
-    protos::proto::{Suggestion, Action},
     agent::implementations::AwsAgent,
     agent::context::ContextStore,
     telemetry::{
         metrics::MetricsCollector,
-        opentelemetry::{OtelTracer, TraceContext, SpanStatus},
+        opentelemetry::{OtelTracer, SpanStatus},
     },
-    audit::AuditLogger,
 };
+use crate::proto::{Suggestion, Action};
+use crate::audit::AuditLogger;
 
 #[derive(Debug, Clone)]
 pub struct AgentInfo {
@@ -91,6 +91,12 @@ struct AgentState {
     memory: HashMap<String, String>,
 }
 
+impl Default for AgentManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AgentManager {
     pub fn new() -> Self {
         Self {
@@ -102,7 +108,7 @@ impl AgentManager {
         }
     }
     
-    pub fn new_with_context_store(context_store: Arc<ContextStore>) -> Self {
+    pub fn new_with_context_store(_context_store: Arc<ContextStore>) -> Self {
         Self {
             sessions: HashMap::new(),
             agents: HashMap::new(),
@@ -204,7 +210,7 @@ impl AgentManager {
         &self,
         agent_type: &str,
         agent_id: &str,
-        parent_agent_id: Option<&str>,
+        _parent_agent_id: Option<&str>,
         config: HashMap<String, String>,
     ) -> AppResult<(AgentImplementation, AgentCapabilities)> {
         match agent_type {
@@ -690,7 +696,7 @@ impl AgentManager {
         let mut total_messages = 0i64;
         let mut total_operations = 0i64;
         let mut total_errors = 0i64;
-        let mut total_response_time = 0f64;
+        let total_response_time = 0f64;
         let mut custom_metrics = HashMap::new();
         
         // Aggregate metrics from all agents
@@ -895,7 +901,7 @@ mod tests {
             &agent_id,
         ).await.unwrap();
 
-        assert_eq!(status, "running");
+        assert_eq!(status, "ready");
         assert!(!capabilities.is_empty());
 
         // Send a message

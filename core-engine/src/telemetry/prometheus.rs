@@ -5,17 +5,15 @@ use std::{
     collections::HashMap,
     fmt::Write,
     sync::Arc,
-    time::{SystemTime, UNIX_EPOCH},
+    time::UNIX_EPOCH,
 };
-use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
-use tracing::{info, warn, error, debug};
+use tracing::{info, warn, debug};
 
 use crate::{
-    error::{AppError, AppResult},
-    telemetry::metrics::{MetricsCollector, MetricsSnapshot, AlertSeverity},
-    audit::AuditLogger,
+    error::AppResult,
+    telemetry::metrics::{MetricsCollector, MetricsSnapshot},
 };
+use crate::audit::AuditLogger;
 
 /// Prometheus metrics exporter
 #[derive(Debug)]

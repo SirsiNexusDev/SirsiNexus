@@ -433,8 +433,8 @@ impl AwsAgent {
         let mut metadata = HashMap::new();
 
         // Extract service name from ARN
-        let service_name = service_arn.split('/').last().unwrap_or("unknown-service");
-        let cluster_name = cluster_arn.split('/').last().unwrap_or("unknown-cluster");
+        let service_name = service_arn.split('/').next_back().unwrap_or("unknown-service");
+        let cluster_name = cluster_arn.split('/').next_back().unwrap_or("unknown-cluster");
 
         metadata.insert("cluster_arn".to_string(), cluster_arn.to_string());
         metadata.insert("cluster_name".to_string(), cluster_name.to_string());

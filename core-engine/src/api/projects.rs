@@ -148,8 +148,11 @@ use sqlx::postgres::PgPoolOptions; // CockroachDB connection
     use tower::ServiceExt;
 
     async fn setup() -> PgPool {
+        // Load environment variables from .env file
+        dotenv::dotenv().ok();
+        
         let db_url = std::env::var("DATABASE_URL")
-            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_test?sslmode=disable".to_string());
+            .unwrap_or_else(|_| "postgresql://root@localhost:26257/sirsi_nexus?sslmode=disable".to_string());
         
         let pool = PgPoolOptions::new()
             .max_connections(5)
@@ -167,6 +170,7 @@ use sqlx::postgres::PgPoolOptions; // CockroachDB connection
     }
 
     #[tokio::test]
+    #[serial_test::serial]
     async fn test_create_project() {
         let pool = setup().await;
         
@@ -183,6 +187,7 @@ use sqlx::postgres::PgPoolOptions; // CockroachDB connection
     }
 
     #[tokio::test]
+    #[serial_test::serial]
     async fn test_list_projects() {
         let pool = setup().await;
         

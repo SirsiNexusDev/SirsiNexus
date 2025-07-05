@@ -4,16 +4,14 @@
 use std::{
     collections::HashMap,
     sync::{Arc, atomic::{AtomicU64, AtomicI64, Ordering}},
-    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
+    time::{Duration, SystemTime},
 };
 use serde::{Deserialize, Serialize};
 use tokio::{sync::RwLock, time::interval};
-use tracing::{info, warn, error, debug};
+use tracing::{info, error, debug};
 
-use crate::{
-    error::{AppError, AppResult},
-    audit::AuditLogger,
-};
+use crate::error::AppResult;
+use crate::audit::AuditLogger;
 
 /// Performance metrics collector
 #[derive(Debug)]
@@ -259,7 +257,7 @@ impl MetricsCollector {
         self.increment_counter("http_requests_total", 1).await;
         self.observe_histogram("http_request_duration_ms", duration_ms).await;
         
-        if status_code >= 200 && status_code < 300 {
+        if (200..300).contains(&status_code) {
             self.increment_counter("http_requests_successful", 1).await;
         } else if status_code >= 400 {
             self.increment_counter("http_requests_failed", 1).await;
@@ -268,7 +266,7 @@ impl MetricsCollector {
         // Update application metrics
         let mut app_metrics = self.application_metrics.write().await;
         app_metrics.total_requests += 1;
-        if status_code >= 200 && status_code < 300 {
+        if (200..300).contains(&status_code) {
             app_metrics.successful_requests += 1;
         } else {
             app_metrics.failed_requests += 1;
@@ -454,7 +452,7 @@ impl MetricsCollector {
         let system_metrics = Arc::clone(&self.system_metrics);
         let application_metrics = Arc::clone(&self.application_metrics);
         let collection_interval = self.collection_interval;
-        let audit_logger = self.audit_logger.clone();
+        let _audit_logger = self.audit_logger.clone();
         
         tokio::spawn(async move {
             let mut interval = interval(collection_interval);

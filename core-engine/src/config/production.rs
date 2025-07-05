@@ -15,8 +15,8 @@ use tracing::{info, warn, error, debug};
 
 use crate::{
     error::{AppError, AppResult},
-    audit::AuditLogger,
 };
+use crate::audit::AuditLogger;
 
 /// Production environment configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -391,7 +391,7 @@ impl ConfigManager {
             config.security.vault_config.address = vault_addr;
         }
         
-        if let Ok(vault_token) = env::var("VAULT_TOKEN") {
+        if let Ok(_vault_token) = env::var("VAULT_TOKEN") {
             // In production, this would be handled more securely
             debug!("Vault token configured from environment");
         }

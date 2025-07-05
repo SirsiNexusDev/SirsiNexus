@@ -3,7 +3,7 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 use crate::error::AppResult;
-use crate::protos::proto::{Suggestion, Action};
+use crate::proto::{Suggestion, Action};
 use crate::ai::{AgentIntelligence, AIConfig};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -276,7 +276,7 @@ impl AwsAgent {
             ),
         ];
         
-        for (instance_id, name, instance_type, status, monthly_cost, role) in ec2_instances {
+        for (instance_id, name, _instance_type, status, monthly_cost, role) in ec2_instances {
             let mut tags = HashMap::new();
             tags.insert("Name".to_string(), name.to_string());
             tags.insert("Environment".to_string(), "Production".to_string());

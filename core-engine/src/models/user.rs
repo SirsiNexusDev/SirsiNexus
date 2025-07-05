@@ -3,7 +3,7 @@ use sqlx::FromRow;
 use uuid::Uuid;
 use crate::error::Result;
 use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
 pub struct User {
@@ -11,9 +11,8 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password_hash: String,
-    pub role: Option<String>,
-    pub created_at: Option<NaiveDateTime>,
-    pub updated_at: Option<NaiveDateTime>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -42,11 +41,10 @@ pub enum UserRole {
 impl User {
     pub async fn create(pool: &PgPool, name: &str, email: &str, password_hash: &str) -> Result<Self> {
         let user = sqlx::query_as::<_, Self>(
-            r#"INSERT INTO users (id, name, email, password_hash, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            r#"INSERT INTO users (name, email, password_hash)
+            VALUES ($1, $2, $3)
             RETURNING id, name, email, password_hash, created_at, updated_at"#
         )
-        .bind(Uuid::new_v4())
         .bind(name)
         .bind(email)
         .bind(password_hash)
