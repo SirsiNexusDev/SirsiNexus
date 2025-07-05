@@ -57,8 +57,14 @@ impl GrpcServer {
         info!("Agent service initialized, starting server...");
 
         // Start the server
-        let result = Server::builder()
+        // Temporarily commented out due to protobuf service implementation being disabled
+        // TODO: Re-enable when tonic/axum compatibility is resolved
+        /*
+        let server = Server::builder()
             .add_service(AgentServiceServer::new(agent_service))
+            .add_service(reflection_service)
+        */
+        let result = Server::builder()
             .add_service(reflection_service)
             .serve(addr)
             .await;

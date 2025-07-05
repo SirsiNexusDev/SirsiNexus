@@ -326,9 +326,7 @@ impl TaskScheduler {
         
         // Update metrics
         if self.config.enable_metrics {
-            self.metrics.increment_counter("scheduler_tasks_scheduled", &[
-                ("priority", &format!("{:?}", priority)),
-            ]);
+            self.metrics.increment_counter("scheduler_tasks_scheduled", 1).await;
         }
         
         // Publish task scheduled event
@@ -442,20 +440,20 @@ impl TaskScheduler {
             contexts.remove(task_id);
         }
         
+        // Update metrics before moving task
+        if self.config.enable_metrics {
+            self.metrics.increment_counter("scheduler_tasks_completed", 1).await;
+            
+            if let Some(started_at) = task.started_at {
+                let duration = started_at.elapsed().as_millis() as f64;
+                self.metrics.observe_histogram("scheduler_task_duration_ms", duration).await;
+            }
+        }
+        
         // Move to completed tasks
         {
             let mut completed = self.completed_tasks.write().await;
             completed.insert(task_id.to_string(), task);
-        }
-        
-        // Update metrics
-        if self.config.enable_metrics {
-            self.metrics.increment_counter("scheduler_tasks_completed", &[]);
-            
-            if let Some(started_at) = task.started_at {
-                let duration = started_at.elapsed().as_millis() as f64;
-                self.metrics.record_histogram("scheduler_task_duration_ms", duration, &[]);
-            }
         }
         
         // Publish task completed event
@@ -521,7 +519,7 @@ impl TaskScheduler {
         
         // Update metrics
         if self.config.enable_metrics {
-            self.metrics.increment_counter("scheduler_tasks_failed", &[]);
+            self.metrics.increment_counter("scheduler_tasks_failed", 1).await;
         }
         
         // Publish task failed event
@@ -609,7 +607,7 @@ impl TaskScheduler {
                 }
                 
                 // Get next ready task (highest priority first)
-                let next_task = {
+                let next_task: Option<ScheduledTask> = {
                     let mut queue = pending_queue.write().await;
                     let completed = completed_tasks.read().await;
                     
@@ -656,8 +654,8 @@ impl TaskScheduler {
                     
                     // Update metrics
                     if config.enable_metrics {
-                        metrics.increment_counter("scheduler_tasks_started", &[]);
-                        metrics.set_gauge("scheduler_active_tasks", active_count as f64 + 1.0, &[]);
+                        metrics.increment_counter("scheduler_tasks_started", 1).await;
+                        metrics.set_gauge("scheduler_active_tasks", active_count as i64 + 1).await;
                     }
                     
                     // Publish task started event
@@ -759,7 +757,7 @@ impl TaskScheduler {
                     
                     // Update metrics
                     if config.enable_metrics {
-                        metrics.increment_counter("scheduler_tasks_timeout", &[]);
+                        metrics.increment_counter("scheduler_tasks_timeout", 1).await;
                     }
                     
                     // Publish timeout event

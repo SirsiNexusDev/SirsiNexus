@@ -435,21 +435,20 @@ impl AgentModuleLoader {
     
     /// Start hot-reload monitoring
     async fn start_hot_reload_monitoring(&self) -> AppResult<()> {
-        let module_paths = self.module_paths.clone();
-        let loader = Arc::new(self);
+        let config = self.config.clone();
+        let loader = Arc::clone(&self.modules);
         
         tokio::spawn(async move {
             info!("🔄 Starting module hot-reload monitoring");
             let mut interval = tokio::time::interval(
-                tokio::time::Duration::from_secs(loader.config.watch_interval_seconds)
+                tokio::time::Duration::from_secs(config.watch_interval_seconds)
             );
             
             loop {
                 interval.tick().await;
-                
-                // TODO: Implement proper file watching with inotify/similar
-                // For now, just log that monitoring is active
-                debug!("Monitoring modules for changes...");
+                // Module hot-reload logic would go here
+                // For now, just log that we're monitoring
+                debug!("Checking for module updates...");
             }
         });
         
@@ -509,9 +508,9 @@ impl AgentModuleLoader {
         ];
         
         for func_name in standard_functions {
-            if let Some(func) = instance.get_func(store, func_name) {
+            if let Some(func) = instance.get_func(&mut *store, func_name) {
                 // Try to get as a simple i32 -> i32 function for now
-                if let Ok(typed_func) = func.typed::<i32, i32>(store) {
+                if let Ok(typed_func) = func.typed::<i32, i32>(&mut *store) {
                     functions.insert(func_name.to_string(), Box::new(typed_func));
                     debug!("Exported function found: {}", func_name);
                 }

@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{SystemTime, Instant};
 use uuid::Uuid;
+use tracing::{info, warn};
 
 use crate::{
     error::{AppError, AppResult},
@@ -814,6 +815,33 @@ impl AgentManager {
         Ok(agent_list)
     }
 
+    /// Terminate an agent and remove it from the session
+    pub async fn terminate_agent(&mut self, session_id: &str, agent_id: &str) -> AppResult<()> {
+        // Verify the agent exists in the session
+        self.verify_session_and_agent(session_id, agent_id)?;
+        
+        // Remove the agent from the session
+        if let Some(session) = self.sessions.get_mut(session_id) {
+            session.agent_ids.retain(|id| id != agent_id);
+        }
+        
+        // Remove the agent itself
+        if let Some(agent) = self.agents.remove(agent_id) {
+            // If this agent has sub-agents, terminate them too
+            let sub_agent_ids = agent.sub_agent_ids.clone();
+            for sub_agent_id in sub_agent_ids {
+                let future = self.terminate_agent(session_id, &sub_agent_id);
+                if let Err(e) = Box::pin(future).await {
+                    warn!("Failed to terminate sub-agent {}: {}", sub_agent_id, e);
+                }
+            }
+            
+            info!("Terminated agent {} from session {}", agent_id, session_id);
+        }
+        
+        Ok(())
+    }
+    
     fn verify_session_and_agent(&self, session_id: &str, agent_id: &str) -> AppResult<&AgentState> {
         let session = self.sessions
             .get(session_id)

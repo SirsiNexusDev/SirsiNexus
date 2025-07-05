@@ -231,8 +231,8 @@ impl HypervisorCoordinator {
         }
         
         // Update metrics
-        self.metrics.increment_counter("hypervisor_sessions_created", &[]);
-        self.metrics.set_gauge("hypervisor_active_sessions", self.get_active_session_count().await as f64, &[]);
+        self.metrics.increment_counter("hypervisor_sessions_created", 1).await;
+        self.metrics.set_gauge("hypervisor_active_sessions", self.get_active_session_count().await as i64).await;
         
         info!("Created managed session {} for user {}", session_id, user_id);
         Ok(session_id)
@@ -268,7 +268,7 @@ impl HypervisorCoordinator {
         }
         
         // Create agent through agent manager
-        let agent_manager = self.agent_manager.write().await;
+        let mut agent_manager = self.agent_manager.write().await;
         let agent_id = agent_manager.spawn_agent(session_id, agent_type, config).await?;
         drop(agent_manager);
         
@@ -299,8 +299,8 @@ impl HypervisorCoordinator {
         }
         
         // Update metrics
-        self.metrics.increment_counter("hypervisor_agents_created", &[("agent_type", agent_type)]);
-        self.metrics.set_gauge("hypervisor_active_agents", self.get_active_agent_count().await as f64, &[]);
+        self.metrics.increment_counter("hypervisor_agents_created", 1).await;
+        self.metrics.set_gauge("hypervisor_active_agents", self.get_active_agent_count().await as i64).await;
         
         info!("🤖 Orchestrated creation of {} agent {} for session {}", agent_type, agent_id, session_id);
         Ok(agent_id)
@@ -366,7 +366,7 @@ impl HypervisorCoordinator {
         }
         
         // Update metrics
-        self.metrics.increment_counter("hypervisor_cross_agent_tasks", &[]);
+        self.metrics.increment_counter("hypervisor_cross_agent_tasks", 1).await;
         
         info!("🎯 Coordinating cross-agent task {} for session {} with agents {:?}", 
               task_id, session_id, involved_agents);
@@ -438,7 +438,7 @@ impl HypervisorCoordinator {
         
         if let Some(session) = session {
             // Terminate all agents in the session
-            let agent_manager = self.agent_manager.write().await;
+            let mut agent_manager = self.agent_manager.write().await;
             for agent_id in session.active_agents.keys() {
                 if let Err(e) = agent_manager.terminate_agent(session_id, agent_id).await {
                     warn!("Failed to terminate agent {} in session {}: {}", agent_id, session_id, e);
@@ -499,10 +499,10 @@ impl HypervisorCoordinator {
                 // Process coordination events
                 match event.event_type {
                     AgentEventType::TaskCompleted => {
-                        metrics.increment_counter("hypervisor_tasks_completed", &[]);
+                        metrics.increment_counter("hypervisor_tasks_completed", 1).await;
                     }
                     AgentEventType::TaskFailed => {
-                        metrics.increment_counter("hypervisor_tasks_failed", &[]);
+                        metrics.increment_counter("hypervisor_tasks_failed", 1).await;
                     }
                     AgentEventType::AgentDestroyed => {
                         // Update session agent count
@@ -538,8 +538,8 @@ impl HypervisorCoordinator {
                     sessions_read.len()
                 };
                 
-                metrics.set_gauge("hypervisor_health_check", 1.0, &[]);
-                metrics.set_gauge("hypervisor_active_sessions", session_count as f64, &[]);
+                metrics.set_gauge("hypervisor_health_check", 1).await;
+                metrics.set_gauge("hypervisor_active_sessions", session_count as i64).await;
                 
                 // Check if system is overloaded
                 if session_count > 50 {
@@ -584,8 +584,8 @@ impl HypervisorCoordinator {
                     (total_agents, memory_usage)
                 };
                 
-                metrics.set_gauge("hypervisor_total_agents", total_agents as f64, &[]);
-                metrics.set_gauge("hypervisor_memory_usage_mb", memory_usage as f64, &[]);
+                metrics.set_gauge("hypervisor_total_agents", total_agents as i64).await;
+                metrics.set_gauge("hypervisor_memory_usage_mb", memory_usage as i64).await;
                 
                 debug!("Resource usage - Agents: {}, Memory: {}MB", total_agents, memory_usage);
             }

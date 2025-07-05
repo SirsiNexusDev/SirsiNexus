@@ -46,6 +46,12 @@ pub enum Error {
     
     #[error("JSON serialization error: {0}")]
     JsonSerialization(#[from] serde_json::Error),
+    
+    #[error("Resource limit exceeded: {0}")]
+    ResourceLimit(String),
+    
+    #[error("Not supported: {0}")]
+    NotSupported(String),
 }
 
 impl IntoResponse for Error {
@@ -65,6 +71,8 @@ impl IntoResponse for Error {
             Error::ExternalService(msg) => (StatusCode::BAD_GATEWAY, msg),
             Error::Server(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
             Error::JsonSerialization(e) => (StatusCode::BAD_REQUEST, format!("JSON error: {}", e)),
+            Error::ResourceLimit(msg) => (StatusCode::TOO_MANY_REQUESTS, msg),
+            Error::NotSupported(msg) => (StatusCode::NOT_IMPLEMENTED, msg),
         };
 
         let body = Json(json!({

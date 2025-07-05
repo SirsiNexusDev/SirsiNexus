@@ -415,9 +415,12 @@ pub mod sirsi {
                     const NAME: &'static str = "sirsi.agent.v1.AgentService";
                 }
                 
-                impl<T> tower::Service<axum::http::Request<axum::body::Body>> for AgentServiceServer<T>
+                // Commented out temporarily due to HTTP body trait version conflicts
+                // TODO: Fix this implementation when tonic/axum compatibility is resolved
+                /*
+                impl<T> tower::Service<axum::http::Request<axum::body::Body>> for AgentServiceServerInner<T>
                 where
-                    T: Clone + Send + 'static,
+                    T: crate::protos::proto::agent_service_server::AgentService,
                 {
                     type Response = axum::http::Response<tonic::body::BoxBody>;
                     type Error = std::convert::Infallible;
@@ -429,18 +432,16 @@ pub mod sirsi {
                     
                     fn call(&mut self, _req: axum::http::Request<axum::body::Body>) -> Self::Future {
                         Box::pin(async {
-                            use http_body_util::{Full, BodyExt};
-                            let body_bytes = bytes::Bytes::from("Not Implemented");
-                            let body = Full::new(body_bytes)
-                                .map_err(|_| tonic::Status::internal("body error"))
-                                .boxed_unsync();
-                            Ok(axum::http::Response::builder()
+                            let body = "Not Implemented".to_string();
+                            let boxed_body = tonic::body::BoxBody::new(body);
+                            Ok::<_, std::convert::Infallible>(axum::http::Response::builder()
                                 .status(501)
-                                .body(body)
+                                .body(boxed_body)
                                 .unwrap())
                         })
                     }
                 }
+                */
             }
             
             pub mod agent_service_client {
