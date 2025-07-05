@@ -1,118 +1,65 @@
-# ClusterDB Documentation
+# SirsiNexus Documentation
 
-Welcome to the ClusterDB (CDB) documentation. This guide provides comprehensive information about installing, configuring, and using CDB for cloud infrastructure management.
+Welcome to the SirsiNexus core engine documentation. This documentation is organized into focused, comprehensive guides to help you understand, deploy, and work with the platform.
 
-## Table of Contents
+## Quick Start
 
-1. [Overview](#overview)
-2. [Getting Started](#getting-started)
-3. [Core Components](#core-components)
-4. [Guides](#guides)
-5. [API Reference](#api-reference)
-6. [Contributing](#contributing)
+1. **[Project Status](PROJECT_STATUS.md)** - Current implementation status, achievements, roadmap, and quick resumption guide
+2. **[Technical Architecture](TECHNICAL_ARCHITECTURE.md)** - Detailed technical documentation of all system components
+3. **[API & Integration Guide](API_INTEGRATION_GUIDE.md)** - Complete API reference, authentication, and integration examples
+4. **[Operations Guide](OPERATIONS_GUIDE.md)** - Installation, deployment, monitoring, and maintenance procedures
 
-## Overview
+## Documentation Structure
 
-ClusterDB is a comprehensive cloud management platform that provides:
+### Core Guides
+- **PROJECT_STATUS.md** - High-level project overview, current status, and planning hub
+- **TECHNICAL_ARCHITECTURE.md** - In-depth technical reference for developers and architects
+- **API_INTEGRATION_GUIDE.md** - Comprehensive API documentation and integration examples
+- **OPERATIONS_GUIDE.md** - Complete operational procedures for deployment and maintenance
 
-- Multi-cloud infrastructure management
-- Service mesh orchestration
-- Container and serverless workload management
-- Data services and networking
-- Advanced observability and monitoring
-- AI/ML platform capabilities
-- Automation and workflow engine
-
-### Key Features
-
-- **Cloud Provider Integration**: Support for AWS, GCP, Azure, and other cloud providers
-- **Service Mesh**: Istio and Linkerd integration for microservices management
-- **Container Management**: Advanced container orchestration and lifecycle management
-- **Identity and Security**: Comprehensive identity management and secret handling
-- **Data Services**: Database, cache, and message queue management
-- **Network Services**: Load balancing, DNS, VPN, and network policy management
-- **Observability**: Metrics, tracing, and monitoring with multiple exporters
-- **AI/ML Platform**: Model training, deployment, and AutoML capabilities
-- **Automation**: Workflow engine with event-driven automation
+### Archived Documentation
+The `archive/` directory contains previous component-level documentation that has been consolidated into the main guides above for improved organization and accessibility.
 
 ## Getting Started
 
-1. [Installation Guide](./installation/README.md)
-2. [Quick Start Guide](./quickstart/README.md)
-3. [Configuration Guide](./configuration/README.md)
-4. [Security Best Practices](./security/README.md)
+### For Developers
+1. Start with [Project Status](PROJECT_STATUS.md) to understand the current state
+2. Review [Technical Architecture](TECHNICAL_ARCHITECTURE.md) for system design
+3. Use [API & Integration Guide](API_INTEGRATION_GUIDE.md) for implementation details
 
-## Core Components
+### For Operations Teams
+1. Begin with [Project Status](PROJECT_STATUS.md) for context
+2. Follow [Operations Guide](OPERATIONS_GUIDE.md) for deployment procedures
+3. Reference [API & Integration Guide](API_INTEGRATION_GUIDE.md) for endpoint documentation
 
-- [Compute Manager](./components/compute-manager.md)
-- [Service Mesh](./components/service-mesh.md)
-- [Container Management](./components/container-management.md)
-- [Identity Management](./components/identity-management.md)
-- [Key Vault](./components/key-vault.md)
-- [Data Services](./components/data-services.md)
-- [Network Services](./components/network-services.md)
-- [Observability](./components/observability.md)
-- [ML Platform](./components/ml-platform.md)
-- [Automation](./components/automation.md)
+### For System Architects
+1. Review [Project Status](PROJECT_STATUS.md) for project scope and roadmap
+2. Study [Technical Architecture](TECHNICAL_ARCHITECTURE.md) for system design patterns
+3. Consult [Operations Guide](OPERATIONS_GUIDE.md) for scalability and infrastructure planning
 
-## Guides
+## Quick Reference
 
-### Infrastructure Management
-- [Cloud Provider Setup](./guides/cloud-provider-setup.md)
-- [Resource Management](./guides/resource-management.md)
-- [Scaling and Auto-scaling](./guides/scaling.md)
-- [High Availability Setup](./guides/high-availability.md)
+### Current Implementation Status
+- **Phase 1**: ✅ Complete (Core infrastructure, basic agent system)
+- **Phase 1.5**: ✅ Complete (Enhanced security, improved APIs)
+- **Phase 2**: ✅ Complete (WASM agents, hypervisor, Azure integration)
+- **Phase 3**: 🚧 Planning (Advanced AI orchestration, ML platform)
 
-### Service Mesh
-- [Service Mesh Setup](./guides/service-mesh-setup.md)
-- [Traffic Management](./guides/traffic-management.md)
-- [Security Policies](./guides/security-policies.md)
-- [Observability Integration](./guides/observability-integration.md)
+### Key Components
+- Multi-cloud agent orchestration (AWS, Azure, GCP)
+- Dynamic WASM agent loading and execution
+- Real-time event bus with Redis
+- Production-grade monitoring and observability
+- Comprehensive security and compliance framework
 
-### Data & Networking
-- [Database Management](./guides/database-management.md)
-- [Cache Setup](./guides/cache-setup.md)
-- [Message Queue Configuration](./guides/message-queues.md)
-- [Network Policy Management](./guides/network-policies.md)
+### APIs Available
+- **gRPC**: High-performance service communication
+- **REST**: Standard HTTP API for web integration
+- **WebSocket**: Real-time event streaming
+- **Cloud SDKs**: Native provider integrations
 
-### Observability
-- [Metrics Collection](./guides/metrics-collection.md)
-- [Dashboard Creation](./guides/dashboard-creation.md)
-- [Alert Configuration](./guides/alert-configuration.md)
-- [Distributed Tracing](./guides/distributed-tracing.md)
+## Support and Contribution
 
-### AI/ML
-- [Model Training](./guides/model-training.md)
-- [Model Deployment](./guides/model-deployment.md)
-- [AutoML Usage](./guides/automl-usage.md)
-- [Feature Store Management](./guides/feature-store.md)
+For detailed technical questions, refer to the specific guides above. Each guide includes troubleshooting sections and examples relevant to its domain.
 
-### Automation
-- [Workflow Creation](./guides/workflow-creation.md)
-- [Task Scheduling](./guides/task-scheduling.md)
-- [Event-Driven Automation](./guides/event-driven-automation.md)
-- [CI/CD Integration](./guides/cicd-integration.md)
-
-## API Reference
-
-- [REST API](./api/rest/README.md)
-- [gRPC API](./api/grpc/README.md)
-- [CLI Reference](./api/cli/README.md)
-
-## Contributing
-
-- [Development Setup](./contributing/development-setup.md)
-- [Coding Standards](./contributing/coding-standards.md)
-- [Testing Guidelines](./contributing/testing-guidelines.md)
-- [Documentation Guidelines](./contributing/documentation-guidelines.md)
-
-## Support
-
-- [Troubleshooting Guide](./support/troubleshooting.md)
-- [FAQ](./support/faq.md)
-- [Known Issues](./support/known-issues.md)
-- [Support Channels](./support/support-channels.md)
-
-## License
-
-ClusterDB is licensed under the Apache License 2.0. See the [LICENSE](../LICENSE) file for details.
+The consolidated documentation structure ensures all information is easily accessible while maintaining comprehensive coverage of the entire platform.
