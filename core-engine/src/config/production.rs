@@ -403,7 +403,7 @@ impl ConfigManager {
                 "staging" | "stage" => Environment::Staging,
                 "production" | "prod" => Environment::Production,
                 "testing" | "test" => Environment::Testing,
-                _ => config.environment,
+                _ => config.environment.clone(),
             };
         }
         

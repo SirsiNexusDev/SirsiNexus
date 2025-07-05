@@ -383,38 +383,6 @@ impl RbacManager {
         Ok(roles)
     }
 
-    pub async fn get_user_permissions(&mut self, user_id: Uuid) -> AppResult<Vec<String>> {
-        let roles = self.get_user_roles(user_id).await?;
-        let mut permissions = Vec::new();
-        
-        for role in roles {
-            permissions.extend(role.permissions);
-        }
-        
-        // Remove duplicates
-        permissions.sort();
-        permissions.dedup();
-        
-        Ok(permissions)
-    }
-
-    // Authorization
-    pub async fn check_permission(&mut self, user_id: Uuid, required_permission: &str) -> AppResult<bool> {
-        let user_permissions = self.get_user_permissions(user_id).await?;
-        Ok(user_permissions.contains(&required_permission.to_string()))
-    }
-
-    pub async fn check_permissions(&mut self, user_id: Uuid, required_permissions: &[String]) -> AppResult<bool> {
-        let user_permissions = self.get_user_permissions(user_id).await?;
-        
-        for required in required_permissions {
-            if !user_permissions.contains(required) {
-                return Ok(false);
-            }
-        }
-        
-        Ok(true)
-    }
 
     // System Role Initialization
     pub async fn initialize_system_roles(&mut self) -> AppResult<()> {

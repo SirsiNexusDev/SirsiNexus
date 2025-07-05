@@ -171,7 +171,7 @@ impl OtelTracer {
     ) -> AppResult<TraceSpan> {
         // Check sampling decision
         if !self.should_sample() {
-            return Err(AppError::validation("Span not sampled"));
+            return Err(AppError::Validation("Span not sampled".to_string()));
         }
         
         let span_id = self.generate_span_id();
@@ -204,7 +204,7 @@ impl OtelTracer {
         // Update metrics
         if let Some(metrics) = &self.metrics_collector {
             metrics.increment_counter("otel_spans_started", 1).await;
-            metrics.set_gauge("otel_active_spans", active_spans.read().await.len() as i64).await;
+            metrics.set_gauge("otel_active_spans", self.active_spans.read().await.len() as i64).await;
         }
         
         debug!("🔍 Started span: {} ({})", operation_name, span_id);
@@ -295,7 +295,7 @@ impl OtelTracer {
         // Parse W3C Trace Context format: 00-{trace_id}-{span_id}-{flags}
         let parts: Vec<&str> = traceparent.split('-').collect();
         if parts.len() != 4 {
-            return Err(AppError::validation("Invalid traceparent format"));
+            return Err(AppError::Validation("Invalid traceparent format".to_string()));
         }
         
         let trace_id = parts[1].to_string();
@@ -502,7 +502,7 @@ impl OtelTracer {
             host_name: hostname::get().unwrap_or_else(|_| "unknown".into()).to_string_lossy().to_string(),
             process_pid: std::process::id(),
             runtime_name: "rust".to_string(),
-            runtime_version: env!("RUSTC_VERSION").to_string(),
+            runtime_version: std::env::var("RUSTC_VERSION").unwrap_or_else(|_| "unknown".to_string()),
         }
     }
 }

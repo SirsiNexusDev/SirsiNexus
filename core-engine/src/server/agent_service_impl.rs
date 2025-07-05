@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tonic::{Request, Response, Status};
+use tonic::{Status};
 use tracing::info;
 use uuid::Uuid;
 use prost_types::Timestamp;
@@ -13,6 +13,7 @@ use crate::protos::{
     AgentService,
 };
 
+#[derive(Clone)]
 pub struct AgentServiceImpl {
     agent_manager: Arc<RwLock<AgentManager>>,
     context_store: Arc<ContextStore>,
@@ -45,8 +46,8 @@ impl AgentService for AgentServiceImpl {
     // Session Management
     async fn create_session(
         &self,
-        request: Request<CreateSessionRequest>,
-    ) -> Result<Response<CreateSessionResponse>, Status> {
+        request: tonic::Request<CreateSessionRequest>,
+    ) -> Result<tonic::Response<CreateSessionResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("Creating session for user: {}", req.user_id);
 
@@ -81,7 +82,6 @@ impl AgentService for AgentServiceImpl {
         ];
         
         let session = Session {
-            id: session_id.clone(),
             session_id: session_id.clone(),
             user_id: req.user_id,
             state: 1, // SESSION_STATE_ACTIVE
@@ -97,9 +97,8 @@ impl AgentService for AgentServiceImpl {
                     nanos: 0,
                 })
             },
-            agent_types: available_agent_types.clone(),
             metadata: HashMap::new(),
-            config: HashMap::new(),
+            config: None,
         };
 
         let response = CreateSessionResponse {
@@ -107,13 +106,13 @@ impl AgentService for AgentServiceImpl {
             available_agent_types,
         };
 
-        Ok(Response::new(response))
+        Ok(tonic::Response::new(response))
     }
 
     async fn get_session(
         &self,
-        request: Request<GetSessionRequest>,
-    ) -> Result<Response<GetSessionResponse>, Status> {
+        request: tonic::Request<GetSessionRequest>,
+    ) -> Result<tonic::Response<GetSessionResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("Getting session: {}", req.session_id);
 
@@ -123,24 +122,24 @@ impl AgentService for AgentServiceImpl {
             active_agents: vec![],
         };
 
-        Ok(Response::new(response))
+        Ok(tonic::Response::new(response))
     }
 
     async fn delete_session(
         &self,
-        request: Request<DeleteSessionRequest>,
-    ) -> Result<Response<()>, Status> {
+        request: tonic::Request<DeleteSessionRequest>,
+    ) -> Result<tonic::Response<()>, tonic::Status> {
         let req = request.into_inner();
         info!("Deleting session: {}", req.session_id);
 
-        Ok(Response::new(()))
+        Ok(tonic::Response::new(()))
     }
 
     // Agent Lifecycle
     async fn create_agent(
         &self,
-        request: Request<CreateAgentRequest>,
-    ) -> Result<Response<CreateAgentResponse>, Status> {
+        request: tonic::Request<CreateAgentRequest>,
+    ) -> Result<tonic::Response<CreateAgentResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("🤖 Creating real agent of type: {} for session: {}", req.agent_type, req.session_id);
 
@@ -166,7 +165,7 @@ impl AgentService for AgentServiceImpl {
                 let (status, _metrics, capabilities) = agent_manager
                     .get_agent_status(&req.session_id, &agent_id)
                     .await
-                    .map_err(|e| Status::internal(format!("Failed to get agent status: {}", e)))?;
+                    .map_err(|e| tonic::Status::internal(format!("Failed to get agent status: {}", e)))?;
                 
                 let agent = Agent {
                     agent_id: agent_id.clone(),
@@ -186,6 +185,7 @@ impl AgentService for AgentServiceImpl {
                         capability_id: format!("{}_agent", req.agent_type),
                         name: format!("{}_agent", req.agent_type),
                         description: format!("Real {} agent with live integration", req.agent_type),
+                        enabled: true,
                         parameters: vec![], // Vec<Parameter> not HashMap
                     }
                 ];
@@ -196,20 +196,20 @@ impl AgentService for AgentServiceImpl {
                 };
                 
                 info!("✅ Real agent created successfully: {} ({})", agent_id, req.agent_type);
-                Ok(Response::new(response))
+                Ok(tonic::Response::new(response))
             }
             Err(e) => {
                 let error_msg = format!("Failed to create agent: {}", e);
                 tracing::error!("{}", error_msg);
-                Err(Status::internal(error_msg))
+                Err(tonic::Status::internal(error_msg))
             }
         }
     }
 
     async fn get_agent(
         &self,
-        request: Request<GetAgentRequest>,
-    ) -> Result<Response<GetAgentResponse>, Status> {
+        request: tonic::Request<GetAgentRequest>,
+    ) -> Result<tonic::Response<GetAgentResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("📊 Getting agent: {} for session: {}", req.agent_id, req.session_id);
 
@@ -246,20 +246,20 @@ impl AgentService for AgentServiceImpl {
                 };
                 
                 info!("✅ Agent details retrieved for: {}", req.agent_id);
-                Ok(Response::new(response))
+                Ok(tonic::Response::new(response))
             }
             Err(e) => {
                 let error_msg = format!("Failed to get agent {}: {}", req.agent_id, e);
                 tracing::error!("{}", error_msg);
-                Err(Status::not_found(error_msg))
+                Err(tonic::Status::not_found(error_msg))
             }
         }
     }
 
     async fn list_agents(
         &self,
-        request: Request<ListAgentsRequest>,
-    ) -> Result<Response<ListAgentsResponse>, Status> {
+        request: tonic::Request<ListAgentsRequest>,
+    ) -> Result<tonic::Response<ListAgentsResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("📋 Listing agents for session: {} (page_size: {})", req.session_id, req.page_size);
 
@@ -301,20 +301,20 @@ impl AgentService for AgentServiceImpl {
                 };
                 
                 info!("✅ Listed {} agents for session: {}", total_size, req.session_id);
-                Ok(Response::new(response))
+                Ok(tonic::Response::new(response))
             }
             Err(e) => {
                 let error_msg = format!("Failed to list agents for session {}: {}", req.session_id, e);
                 tracing::error!("{}", error_msg);
-                Err(Status::internal(error_msg))
+                Err(tonic::Status::internal(error_msg))
             }
         }
     }
 
     async fn update_agent(
         &self,
-        request: Request<UpdateAgentRequest>,
-    ) -> Result<Response<UpdateAgentResponse>, Status> {
+        request: tonic::Request<UpdateAgentRequest>,
+    ) -> Result<tonic::Response<UpdateAgentResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("Updating agent: {}", req.agent_id);
 
@@ -322,24 +322,24 @@ impl AgentService for AgentServiceImpl {
             agent: req.agent,
         };
 
-        Ok(Response::new(response))
+        Ok(tonic::Response::new(response))
     }
 
     async fn delete_agent(
         &self,
-        request: Request<DeleteAgentRequest>,
-    ) -> Result<Response<()>, Status> {
+        request: tonic::Request<DeleteAgentRequest>,
+    ) -> Result<tonic::Response<()>, tonic::Status> {
         let req = request.into_inner();
         info!("Deleting agent: {}", req.agent_id);
 
-        Ok(Response::new(()))
+        Ok(tonic::Response::new(()))
     }
 
     // Agent Interaction - Real Implementation
     async fn send_message(
         &self,
-        request: Request<SendMessageRequest>,
-    ) -> Result<Response<SendMessageResponse>, Status> {
+        request: tonic::Request<SendMessageRequest>,
+    ) -> Result<tonic::Response<SendMessageResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("💬 Real message to agent {}: {}", req.agent_id, req.message.as_ref().map(|m| &m.content).unwrap_or(&"<no content>".to_string()));
 
@@ -396,23 +396,23 @@ impl AgentService for AgentServiceImpl {
                         metrics: None, // TODO: Add performance metrics
                     };
                     info!("✅ Real agent response generated with {} suggestions", suggestion_count);
-                    Ok(Response::new(response))
+                    Ok(tonic::Response::new(response))
                 }
                 Err(e) => {
                     let error_msg = format!("Agent message processing failed: {}", e);
                     tracing::error!("{}", error_msg);
-                    Err(Status::internal(error_msg))
+                    Err(tonic::Status::internal(error_msg))
                 }
             }
         } else {
-            Err(Status::invalid_argument("Message content is required"))
+            Err(tonic::Status::invalid_argument("Message content is required"))
         }
     }
 
     async fn get_suggestions(
         &self,
-        request: Request<GetSuggestionsRequest>,
-    ) -> Result<Response<GetSuggestionsResponse>, Status> {
+        request: tonic::Request<GetSuggestionsRequest>,
+    ) -> Result<tonic::Response<GetSuggestionsResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("Getting suggestions for agent: {}", req.agent_id);
 
@@ -421,14 +421,14 @@ impl AgentService for AgentServiceImpl {
             context_id: String::new(),
         };
 
-        Ok(Response::new(response))
+        Ok(tonic::Response::new(response))
     }
 
     // Health and Monitoring
     async fn get_agent_status(
         &self,
-        request: Request<GetAgentStatusRequest>,
-    ) -> Result<Response<GetAgentStatusResponse>, Status> {
+        request: tonic::Request<GetAgentStatusRequest>,
+    ) -> Result<tonic::Response<GetAgentStatusResponse>, tonic::Status> {
         let req = request.into_inner();
         info!("🔍 Getting status for agent: {} in session: {}", req.agent_id, req.session_id);
 
@@ -440,6 +440,11 @@ impl AgentService for AgentServiceImpl {
                 
                 // Create agent status
                 let agent_status = AgentStatus {
+                    agent_id: req.agent_id.clone(),
+                    status: status_str.clone(),
+                    uptime: 0, // TODO: Calculate actual uptime
+                    metrics: None,
+                    active_capabilities: vec![],
                     state: 2, // AGENT_STATE_READY
                     status_message: status_str.clone(),
                     last_activity: now.clone(),
@@ -467,6 +472,7 @@ impl AgentService for AgentServiceImpl {
                         capability_id: cap.clone(),
                         name: cap.clone(),
                         description: format!("Agent capability: {}", cap),
+                        enabled: true,
                         parameters: vec![], // TODO: Add actual capability parameters
                     }
                 }).collect();
@@ -488,28 +494,30 @@ impl AgentService for AgentServiceImpl {
                 };
                 
                 info!("✅ Agent status retrieved: {} - {}", req.agent_id, status_str);
-                Ok(Response::new(response))
+                Ok(tonic::Response::new(response))
             }
             Err(e) => {
                 let error_msg = format!("Failed to get status for agent {}: {}", req.agent_id, e);
                 tracing::error!("{}", error_msg);
-                Err(Status::not_found(error_msg))
+                Err(tonic::Status::not_found(error_msg))
             }
         }
     }
 
     async fn get_system_health(
         &self,
-        request: Request<GetSystemHealthRequest>,
-    ) -> Result<Response<GetSystemHealthResponse>, Status> {
+        request: tonic::Request<GetSystemHealthRequest>,
+    ) -> Result<tonic::Response<GetSystemHealthResponse>, tonic::Status> {
         let _req = request.into_inner();
         info!("Getting system health");
 
         let response = GetSystemHealthResponse {
+            status: "healthy".to_string(),
+            components: HashMap::new(),
             health: None,
             metrics: None,
         };
 
-        Ok(Response::new(response))
+        Ok(tonic::Response::new(response))
     }
 }

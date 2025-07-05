@@ -19,6 +19,9 @@ import {
   ArrowRight,
   Sparkles,
   Rocket,
+  Activity,
+  Eye,
+  Crown,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -30,6 +33,8 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { label: 'Demo Scenarios', icon: Play, path: '/demos' },
   { label: 'Agent Management', icon: Sparkles, path: '/agents' },
+  { label: 'SIRSI HYPERVISOR', icon: Crown, path: '/sirsi-hypervisor' },
+  { label: 'Observability Dashboard', icon: Activity, path: '/observability' },
   { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
   { label: 'Projects', icon: Folder, path: '/projects' },
   { label: 'Migration Steps', icon: GitBranch, path: '/steps' },

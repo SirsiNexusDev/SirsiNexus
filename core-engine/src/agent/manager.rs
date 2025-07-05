@@ -22,7 +22,7 @@ pub struct AgentInfo {
     pub parent_agent_id: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct AgentMetricsData {
     pub messages_processed: i64,
     pub operations_completed: i64,
@@ -295,11 +295,11 @@ impl AgentManager {
 
         // Start distributed tracing span
         let span = if let Some(tracer) = &self.otel_tracer {
-            Some(tracer.start_span(
+            tracer.start_span(
                 &format!("agent_spawn_{}", agent_type),
                 "agent_manager",
                 None,
-            ).await.ok())
+            ).await.ok()
         } else {
             None
         };
@@ -394,11 +394,11 @@ impl AgentManager {
         
         // Start distributed tracing span
         let span = if let Some(tracer) = &self.otel_tracer {
-            Some(tracer.start_span(
+            tracer.start_span(
                 "agent_message_processing",
                 "agent_manager",
                 None,
-            ).await.ok())
+            ).await.ok()
         } else {
             None
         };
@@ -463,14 +463,10 @@ impl AgentManager {
                 let response = format!("General agent received: {}", message);
                 let suggestions = vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
-                        text: "Get general assistance".to_string(),
                         title: "General Help".to_string(),
                         description: "Get general assistance".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "general_help".to_string(),
                             command: "general_help".to_string(),
@@ -553,14 +549,10 @@ impl AgentManager {
             AgentImplementation::Azure => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
-                        text: "This is an Azure contextual suggestion".to_string(),
                         title: format!("Azure {} Suggestion", context_type),
                         description: "This is an Azure contextual suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "azure_action".to_string(),
                             command: "azure_action".to_string(),
@@ -576,14 +568,10 @@ impl AgentManager {
             AgentImplementation::Gcp => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
-                        text: "This is a GCP contextual suggestion".to_string(),
                         title: format!("GCP {} Suggestion", context_type),
                         description: "This is a GCP contextual suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "gcp_action".to_string(),
                             command: "gcp_action".to_string(),
@@ -599,12 +587,10 @@ impl AgentManager {
             AgentImplementation::Security => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
                         title: format!("Security {} Suggestion", context_type),
                         description: "This is a security contextual suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "security_action".to_string(),
                             parameters: HashMap::new(),
@@ -620,12 +606,10 @@ impl AgentManager {
             AgentImplementation::CostOptimization => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
                         title: format!("Cost Optimization {} Suggestion", context_type),
                         description: "This is a cost optimization suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "cost_optimization_action".to_string(),
                             parameters: HashMap::new(),
@@ -641,12 +625,10 @@ impl AgentManager {
             AgentImplementation::Migration => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
                         title: format!("Migration {} Suggestion", context_type),
                         description: "This is a migration contextual suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "migration_action".to_string(),
                             parameters: HashMap::new(),
@@ -662,12 +644,10 @@ impl AgentManager {
             AgentImplementation::Reporting => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
                         title: format!("Reporting {} Suggestion", context_type),
                         description: "This is a reporting contextual suggestion".to_string(),
-                        r#type: "action".to_string(),
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "reporting_action".to_string(),
                             parameters: HashMap::new(),
@@ -683,12 +663,10 @@ impl AgentManager {
             AgentImplementation::General => {
                 vec![
                     Suggestion {
-                        id: Uuid::new_v4().to_string(),
                         suggestion_id: Uuid::new_v4().to_string(),
-                        text: "suggestion text".to_string(),
                         title: format!("General {} Suggestion", context_type),
                         description: "This is a general contextual suggestion".to_string(),
-                        r#type: "action".to_string(), // SUGGESTION_TYPE_ACTION
+                        r#type: 1, // SUGGESTION_TYPE_ACTION
                         action: Some(Action {
                             action_type: "general_action".to_string(),
                             parameters: HashMap::new(),

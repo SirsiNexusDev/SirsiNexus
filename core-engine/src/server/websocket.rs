@@ -262,7 +262,7 @@ impl WebSocketHandler {
             config: None, // Use default session config
         };
 
-        let response = self.grpc_client.create_session(grpc_request).await
+        let response = self.grpc_client.create_session(tonic::Request::new(grpc_request)).await
             .map_err(|e| AppError::Connection(format!("gRPC create_session failed: {}", e)))?;
 
         let session_response = response.into_inner();
@@ -354,7 +354,7 @@ impl WebSocketHandler {
             context: std::collections::HashMap::new(),
         };
 
-        let response = self.grpc_client.create_agent(grpc_request).await
+        let response = self.grpc_client.create_agent(tonic::Request::new(grpc_request)).await
             .map_err(|e| AppError::Connection(format!("gRPC create_agent failed: {}", e)))?;
 
         let agent_response = response.into_inner();
@@ -416,16 +416,20 @@ impl WebSocketHandler {
             session_id,
             agent_id,
             message: Some(Message {
-                id: Uuid::new_v4().to_string(),
+                message_id: Uuid::new_v4().to_string(),
                 content: message.to_string(),
-                message_type: "text".to_string(),
-                timestamp: chrono::Utc::now().to_rfc3339(),
+                r#type: 1, // MESSAGE_TYPE_TEXT
+                timestamp: Some(prost_types::Timestamp {
+                    seconds: chrono::Utc::now().timestamp(),
+                    nanos: 0,
+                }),
                 metadata: context,
+                attachments: Vec::new(),
             }),
             options: None, // Use default options
         };
 
-        let response = self.grpc_client.send_message(grpc_request).await
+        let response = self.grpc_client.send_message(tonic::Request::new(grpc_request)).await
             .map_err(|e| AppError::Connection(format!("gRPC send_message failed: {}", e)))?;
 
         let message_response = response.into_inner();
@@ -510,7 +514,7 @@ impl WebSocketHandler {
             max_suggestions: 10, // Default limit
         };
 
-        let response = self.grpc_client.get_suggestions(grpc_request).await
+        let response = self.grpc_client.get_suggestions(tonic::Request::new(grpc_request)).await
             .map_err(|e| AppError::Connection(format!("gRPC get_suggestions failed: {}", e)))?;
 
         let suggestions_response = response.into_inner();
@@ -553,7 +557,7 @@ impl WebSocketHandler {
             agent_id: agent_id.clone(),
         };
 
-        let response = self.grpc_client.get_agent_status(grpc_request).await
+        let response = self.grpc_client.get_agent_status(tonic::Request::new(grpc_request)).await
             .map_err(|e| AppError::Connection(format!("gRPC get_agent_status failed: {}", e)))?;
 
         let status_response = response.into_inner();

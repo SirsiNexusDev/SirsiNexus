@@ -197,6 +197,35 @@ impl AuditLogger {
         Ok(log_entry.id)
     }
 
+    /// Log agent events
+    pub async fn log_agent_event(
+        &self,
+        agent_id: &str,
+        action: &str,
+        details: serde_json::Value,
+        success: bool,
+        session_id: Option<&str>,
+    ) -> AppResult<Uuid> {
+        let log_entry = AuditLog {
+            id: Uuid::new_v4(),
+            event_type: "agent".to_string(),
+            resource_type: "agent".to_string(),
+            resource_id: Some(agent_id.to_string()),
+            user_id: None,
+            session_id: session_id.map(|s| s.to_string()),
+            action: action.to_string(),
+            details,
+            ip_address: None,
+            user_agent: None,
+            timestamp: Utc::now(),
+            success,
+            error_message: None,
+        };
+
+        self.insert_audit_log(&log_entry).await?;
+        Ok(log_entry.id)
+    }
+
     /// Log system events
     pub async fn log_system_event(
         &self,
@@ -224,7 +253,8 @@ impl AuditLogger {
         self.insert_audit_log(&log_entry).await?;
         
         // Phase 3: Real-time security monitoring for system failures
-        if !success {
+        // Skip analysis for security alert events to prevent recursion
+        if !success && !action.starts_with("security_alert_") {
             self.analyze_security_event(&log_entry).await;
         }
         
@@ -360,7 +390,7 @@ impl AuditLogger {
         // 3. Trigger automated responses (rate limiting, IP blocking)
         // 4. Create incident tickets
         
-        // Log the security alert as a system event
+        // Log the security alert as a system event (without triggering analysis to avoid recursion)
         let alert_details = serde_json::json!({
             "alert_type": alert_type,
             "message": message,
@@ -369,12 +399,24 @@ impl AuditLogger {
             "auto_generated": true
         });
         
-        if let Err(e) = self.log_system_event(
-            &format!("security_alert_{}", alert_type),
-            alert_details,
-            true,
-            None,
-        ).await {
+        // Directly insert the audit log without triggering analysis
+        let log_entry = AuditLog {
+            id: Uuid::new_v4(),
+            event_type: "security_alert".to_string(),
+            resource_type: "system".to_string(),
+            resource_id: None,
+            user_id: None,
+            session_id: None,
+            action: format!("security_alert_{}", alert_type),
+            details: alert_details,
+            ip_address: None,
+            user_agent: None,
+            timestamp: Utc::now(),
+            success: true,
+            error_message: None,
+        };
+        
+        if let Err(e) = self.insert_audit_log(&log_entry).await {
             tracing::error!("Failed to log security alert: {}", e);
         }
     }

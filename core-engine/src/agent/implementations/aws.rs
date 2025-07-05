@@ -110,19 +110,17 @@ impl AwsAgent {
         let suggestions: Vec<Suggestion> = ai_recommendations
             .into_iter()
             .map(|rec| Suggestion {
-                id: format!("{}-{}", self.agent_id, rec.title.replace(" ", "-").to_lowercase()),
                 suggestion_id: format!("{}-{}", self.agent_id, rec.title.replace(" ", "-").to_lowercase()),
-                text: rec.description.clone(),
                 title: rec.title,
                 description: rec.description,
-                r#type: "action".to_string(),
+                r#type: 1, // SUGGESTION_TYPE_ACTION
                 action: Some(Action {
                     action_type: rec.action_type.clone(),
                     command: rec.action_type,
                     parameters: rec.parameters,
                     required_permissions: Vec::new(),
                 }),
-                confidence: rec.confidence as f64,
+                confidence: rec.confidence,
                 metadata: std::collections::HashMap::new(),
                 priority: rec.priority,
             })
@@ -148,19 +146,17 @@ impl AwsAgent {
         let suggestions: Vec<Suggestion> = ai_recommendations
             .into_iter()
             .map(|rec| Suggestion {
-                id: format!("{}-{}", self.agent_id, rec.title.replace(" ", "-").to_lowercase()),
                 suggestion_id: format!("{}-{}", self.agent_id, rec.title.replace(" ", "-").to_lowercase()),
-                text: rec.description.clone(),
                 title: rec.title,
                 description: rec.description,
-                r#type: "action".to_string(),
+                r#type: 1, // SUGGESTION_TYPE_ACTION
                 action: Some(Action {
                     action_type: rec.action_type.clone(),
                     command: rec.action_type,
                     parameters: rec.parameters,
                     required_permissions: Vec::new(),
                 }),
-                confidence: rec.confidence as f64,
+                confidence: rec.confidence,
                 metadata: std::collections::HashMap::new(),
                 priority: rec.priority,
             })

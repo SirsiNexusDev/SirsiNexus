@@ -98,6 +98,30 @@ impl From<ValidationErrors> for Error {
     }
 }
 
+impl From<std::fmt::Error> for Error {
+    fn from(err: std::fmt::Error) -> Self {
+        Error::Internal(err.to_string())
+    }
+}
+
+impl From<std::time::SystemTimeError> for Error {
+    fn from(err: std::time::SystemTimeError) -> Self {
+        Error::Internal(err.to_string())
+    }
+}
+
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Self {
+        Error::Internal(err.to_string())
+    }
+}
+
+impl From<std::num::ParseIntError> for Error {
+    fn from(err: std::num::ParseIntError) -> Self {
+        Error::Validation(format!("Parse error: {}", err))
+    }
+}
+
 pub type Result<T> = std::result::Result<T, Error>;
 
 // Type aliases for backward compatibility

@@ -1,4 +1,4 @@
-use opentelemetry::KeyValue;
+use ::opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{Resource, runtime::Tokio};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -56,5 +56,5 @@ pub fn init_metrics() -> PerformanceMonitor {
 
 /// Graceful shutdown of telemetry
 pub fn shutdown_telemetry() {
-    opentelemetry::global::shutdown_tracer_provider();
+    ::opentelemetry::global::shutdown_tracer_provider();
 }
