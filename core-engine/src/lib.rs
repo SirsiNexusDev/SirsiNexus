@@ -5,17 +5,16 @@ pub mod audit;
 pub mod auth;
 pub mod communication;
 pub mod compliance;
+pub mod components;
 pub mod config;
-pub mod db;
 pub mod error;
 pub mod hypervisor;
-pub mod mcp;
 pub mod middleware;
 pub mod models;
-pub mod proto;
 pub mod security;
 pub mod server;
 pub mod telemetry;
+pub mod mcp;
 
 // Alias for backward compatibility
 pub use proto as protos;
