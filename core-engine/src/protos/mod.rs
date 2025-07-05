@@ -333,20 +333,68 @@ pub mod sirsi {
                 pub custom_metrics: HashMap<String, f64>,
             }
             
-            // Mock gRPC service definitions
-            pub trait AgentService {
-                async fn create_session(&self, request: tonic::Request<CreateSessionRequest>) -> Result<tonic::Response<CreateSessionResponse>, tonic::Status>;
-                async fn get_session(&self, request: tonic::Request<GetSessionRequest>) -> Result<tonic::Response<GetSessionResponse>, tonic::Status>;
-                async fn delete_session(&self, request: tonic::Request<DeleteSessionRequest>) -> Result<tonic::Response<()>, tonic::Status>;
-                async fn create_agent(&self, request: tonic::Request<CreateAgentRequest>) -> Result<tonic::Response<CreateAgentResponse>, tonic::Status>;
-                async fn get_agent(&self, request: tonic::Request<GetAgentRequest>) -> Result<tonic::Response<GetAgentResponse>, tonic::Status>;
-                async fn list_agents(&self, request: tonic::Request<ListAgentsRequest>) -> Result<tonic::Response<ListAgentsResponse>, tonic::Status>;
-                async fn update_agent(&self, request: tonic::Request<UpdateAgentRequest>) -> Result<tonic::Response<UpdateAgentResponse>, tonic::Status>;
-                async fn delete_agent(&self, request: tonic::Request<DeleteAgentRequest>) -> Result<tonic::Response<()>, tonic::Status>;
-                async fn send_message(&self, request: tonic::Request<SendMessageRequest>) -> Result<tonic::Response<SendMessageResponse>, tonic::Status>;
-                async fn get_suggestions(&self, request: tonic::Request<GetSuggestionsRequest>) -> Result<tonic::Response<GetSuggestionsResponse>, tonic::Status>;
-                async fn get_agent_status(&self, request: tonic::Request<GetAgentStatusRequest>) -> Result<tonic::Response<GetAgentStatusResponse>, tonic::Status>;
-                async fn get_system_health(&self, request: tonic::Request<GetSystemHealthRequest>) -> Result<tonic::Response<GetSystemHealthResponse>, tonic::Status>;
+            // gRPC service definitions with async trait
+            #[tonic::async_trait]
+            pub trait AgentService: Send + Sync + 'static {
+                async fn create_session(
+                    &self, 
+                    request: tonic::Request<CreateSessionRequest>
+                ) -> Result<tonic::Response<CreateSessionResponse>, tonic::Status>;
+                
+                async fn get_session(
+                    &self, 
+                    request: tonic::Request<GetSessionRequest>
+                ) -> Result<tonic::Response<GetSessionResponse>, tonic::Status>;
+                
+                async fn delete_session(
+                    &self, 
+                    request: tonic::Request<DeleteSessionRequest>
+                ) -> Result<tonic::Response<()>, tonic::Status>;
+                
+                async fn create_agent(
+                    &self, 
+                    request: tonic::Request<CreateAgentRequest>
+                ) -> Result<tonic::Response<CreateAgentResponse>, tonic::Status>;
+                
+                async fn get_agent(
+                    &self, 
+                    request: tonic::Request<GetAgentRequest>
+                ) -> Result<tonic::Response<GetAgentResponse>, tonic::Status>;
+                
+                async fn list_agents(
+                    &self, 
+                    request: tonic::Request<ListAgentsRequest>
+                ) -> Result<tonic::Response<ListAgentsResponse>, tonic::Status>;
+                
+                async fn update_agent(
+                    &self, 
+                    request: tonic::Request<UpdateAgentRequest>
+                ) -> Result<tonic::Response<UpdateAgentResponse>, tonic::Status>;
+                
+                async fn delete_agent(
+                    &self, 
+                    request: tonic::Request<DeleteAgentRequest>
+                ) -> Result<tonic::Response<()>, tonic::Status>;
+                
+                async fn send_message(
+                    &self, 
+                    request: tonic::Request<SendMessageRequest>
+                ) -> Result<tonic::Response<SendMessageResponse>, tonic::Status>;
+                
+                async fn get_suggestions(
+                    &self, 
+                    request: tonic::Request<GetSuggestionsRequest>
+                ) -> Result<tonic::Response<GetSuggestionsResponse>, tonic::Status>;
+                
+                async fn get_agent_status(
+                    &self, 
+                    request: tonic::Request<GetAgentStatusRequest>
+                ) -> Result<tonic::Response<GetAgentStatusResponse>, tonic::Status>;
+                
+                async fn get_system_health(
+                    &self, 
+                    request: tonic::Request<GetSystemHealthRequest>
+                ) -> Result<tonic::Response<GetSystemHealthResponse>, tonic::Status>;
             }
             
             pub mod agent_service_server {
