@@ -14,11 +14,13 @@
 
 Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, TypeScript) with a Model Context Protocol (MCP) service suite, all orchestrated by the Sirsi AI Hypervisor. Key components include:
 
+- **AI Feature Awareness System**: Complete platform feature registry with automated discovery and documentation
 - **Sub-Agents**: Domain-specific services (DiscoveryAgent, AssessmentAgent, etc.)
 - **MCP Service**: Unified context and messaging API
 - **CockroachDB**: Distributed SQL database for sessions, agent events, and knowledge graph data
 - **UI**: Next.js + React frontend with Tailwind and shadcn/ui
 - **CLI**: Tauri + Rust-based command-line interface
+- **Hypervisor Feature Access**: AI agents can autonomously execute any platform feature
 
 ## Current Status
 
@@ -26,7 +28,8 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 **Phase**: 3 - Advanced AI Orchestration (98% Complete)  
 **Status**: ✅ Production-ready with Docker containerization complete  
 **AI Performance**: 88% accuracy, sub-second response times  
-**Infrastructure**: Production Docker Compose with monitoring
+**Infrastructure**: Production Docker Compose with monitoring  
+**NEW**: ✅ AI Feature Awareness System - Complete platform transparency and automation
 
 
 ## Prerequisites
