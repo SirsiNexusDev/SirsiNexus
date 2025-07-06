@@ -15,6 +15,8 @@ use crate::error::{AppError, AppResult};
 // New AI orchestration modules
 pub mod decision;
 pub mod orchestration;
+pub mod feature_awareness;
+pub mod hypervisor_integration;
 
 // Re-export key types from new modules
 pub use decision::{
@@ -25,6 +27,16 @@ pub use decision::{
 pub use orchestration::{
     AIOrchestrationEngine, OrchestrationTask, TaskType, TaskStatus,
     OrchestrationError, PerformanceMetrics, OptimizationResults
+};
+
+pub use feature_awareness::{
+    FeatureRegistry, Feature, FeatureCategory, FeatureStatus, 
+    AIContext, Workflow, AutomationLevel
+};
+
+pub use hypervisor_integration::{
+    HypervisorIntegration, HypervisorSession, ExecutionRequest, 
+    ExecutionResult, ExecutionStatus, Priority, SafetyLevel, Permission
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
