@@ -38,7 +38,8 @@ import {
   Clock,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
-import { aiInfrastructureService, AIGenerationRequest, AIGenerationResponse } from '@/services/aiInfrastructureService';
+import { aiInfrastructureService, AIGenerationRequest, AIGenerationResponse, AIProvider } from '@/services/aiInfrastructureService';
+import AIProviderSelector from '@/components/AIProviderSelector';
 
 interface InfrastructureTemplate {
   id: string;
@@ -2464,6 +2465,19 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                   </span>
                 )}
               </button>
+            </div>
+            
+            {/* AI Provider Selector */}
+            <div className="mt-3">
+              <label className={`block text-xs font-medium ${themeClasses.text} mb-2`}>
+                AI Engine
+              </label>
+              <AIProviderSelector 
+                isDarkMode={isDarkMode}
+                onProviderChange={(provider) => {
+                  console.log('AI Provider changed to:', provider);
+                }}
+              />
             </div>
           </div>
 

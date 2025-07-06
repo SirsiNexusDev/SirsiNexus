@@ -30,61 +30,190 @@ interface AIGenerationResponse {
   }[];
 }
 
+export type AIProvider = 'openai' | 'claude' | 'claude-code';
+
+interface AIProviderConfig {
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+  maxTokens: number;
+  temperature: number;
+}
+
 class AIInfrastructureService {
-  private apiKey: string;
-  private baseUrl: string = 'https://api.openai.com/v1';
-  private model: string = 'gpt-4';
+  private providers: Record<AIProvider, AIProviderConfig>;
+  private currentProvider: AIProvider = 'openai';
 
   constructor() {
-    // In production, this would come from environment variables
-    this.apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || '';
+    this.providers = {
+      openai: {
+        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
+        baseUrl: 'https://api.openai.com/v1',
+        model: 'gpt-4',
+        maxTokens: 4000,
+        temperature: 0.7
+      },
+      claude: {
+        apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY || '',
+        baseUrl: 'https://api.anthropic.com/v1',
+        model: 'claude-3-5-sonnet-20241022',
+        maxTokens: 4000,
+        temperature: 0.7
+      },
+      'claude-code': {
+        apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY || '',
+        baseUrl: 'https://api.anthropic.com/v1',
+        model: 'claude-3-5-sonnet-20241022',
+        maxTokens: 8000,
+        temperature: 0.3
+      }
+    };
+  }
+
+  /**
+   * Set the AI provider for infrastructure generation
+   */
+  setProvider(provider: AIProvider): void {
+    this.currentProvider = provider;
+  }
+
+  /**
+   * Get current AI provider
+   */
+  getCurrentProvider(): AIProvider {
+    return this.currentProvider;
+  }
+
+  /**
+   * Get available AI providers with their status
+   */
+  getAvailableProviders(): Array<{ id: AIProvider; name: string; description: string; available: boolean; model: string }> {
+    return [
+      {
+        id: 'openai',
+        name: 'OpenAI GPT-4',
+        description: 'Advanced reasoning and comprehensive infrastructure knowledge',
+        available: !!this.providers.openai.apiKey,
+        model: this.providers.openai.model
+      },
+      {
+        id: 'claude',
+        name: 'Claude 3.5 Sonnet',
+        description: 'Excellent analysis and detailed infrastructure explanations',
+        available: !!this.providers.claude.apiKey,
+        model: this.providers.claude.model
+      },
+      {
+        id: 'claude-code',
+        name: 'Claude Code',
+        description: 'Specialized for infrastructure code generation and optimization',
+        available: !!this.providers['claude-code'].apiKey,
+        model: this.providers['claude-code'].model
+      }
+    ];
   }
 
   /**
    * Generate infrastructure code using AI
    */
   async generateInfrastructure(request: AIGenerationRequest): Promise<AIGenerationResponse> {
-    if (!this.apiKey) {
+    const config = this.providers[this.currentProvider];
+    
+    if (!config.apiKey) {
       // Fallback to enhanced mock generation when no API key is available
       return this.generateMockInfrastructure(request);
     }
 
     try {
       const prompt = this.buildPrompt(request);
+      const systemPrompt = this.getSystemPrompt();
       
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: this.model,
-          messages: [
-            {
-              role: 'system',
-              content: this.getSystemPrompt()
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 4000
-        })
-      });
+      let response: Response;
+      
+      if (this.currentProvider === 'openai') {
+        response = await this.callOpenAI(prompt, systemPrompt, config);
+      } else if (this.currentProvider === 'claude' || this.currentProvider === 'claude-code') {
+        response = await this.callClaude(prompt, systemPrompt, config);
+      } else {
+        throw new Error(`Unsupported AI provider: ${this.currentProvider}`);
+      }
 
       if (!response.ok) {
         throw new Error(`AI service error: ${response.statusText}`);
       }
 
       const data = await response.json();
-      return this.parseAIResponse(data.choices[0].message.content, request);
+      return this.parseAIResponse(this.extractContentFromResponse(data), request);
     } catch (error) {
-      console.warn('AI service unavailable, using enhanced mock generation:', error);
+      console.warn(`${this.currentProvider} AI service unavailable, using enhanced mock generation:`, error);
       return this.generateMockInfrastructure(request);
     }
+  }
+
+  /**
+   * Call OpenAI API
+   */
+  private async callOpenAI(prompt: string, systemPrompt: string, config: AIProviderConfig): Promise<Response> {
+    return fetch(`${config.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${config.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: config.model,
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: config.temperature,
+        max_tokens: config.maxTokens
+      })
+    });
+  }
+
+  /**
+   * Call Claude API (Anthropic)
+   */
+  private async callClaude(prompt: string, systemPrompt: string, config: AIProviderConfig): Promise<Response> {
+    return fetch(`${config.baseUrl}/messages`, {
+      method: 'POST',
+      headers: {
+        'x-api-key': config.apiKey,
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: config.model,
+        max_tokens: config.maxTokens,
+        temperature: config.temperature,
+        system: systemPrompt,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+  }
+
+  /**
+   * Extract content from different AI provider responses
+   */
+  private extractContentFromResponse(data: any): string {
+    if (this.currentProvider === 'openai') {
+      return data.choices[0].message.content;
+    } else if (this.currentProvider === 'claude' || this.currentProvider === 'claude-code') {
+      return data.content[0].text;
+    }
+    return '';
   }
 
   /**
@@ -131,32 +260,74 @@ Format the response as JSON with the following structure:
   }
 
   /**
-   * System prompt for infrastructure generation
+   * System prompt for infrastructure generation - optimized per provider
    */
   private getSystemPrompt(): string {
-    return `
-You are an expert cloud infrastructure architect with deep knowledge of:
-- AWS, Azure, Google Cloud Platform, and Kubernetes
+    const basePrompt = `You are an expert cloud infrastructure architect with deep knowledge of:
+- AWS, Azure, Google Cloud Platform, Kubernetes, IBM Cloud, Oracle Cloud, Alibaba Cloud
 - Infrastructure as Code tools: Terraform, Bicep, CloudFormation, Pulumi, Ansible
-- Security best practices and compliance frameworks
+- Security best practices and compliance frameworks (SOC2, ISO27001, GDPR)
 - Cost optimization and resource management
 - DevOps and CI/CD pipelines
+- Container orchestration and microservices
 
 Your goal is to generate production-ready, secure, and cost-effective infrastructure code based on user requirements. Always consider:
-1. Security by design
+1. Security by design with zero-trust principles
 2. High availability and scalability
-3. Cost optimization
+3. Cost optimization and resource efficiency
 4. Best practices for the chosen cloud provider
-5. Monitoring and observability
-6. Disaster recovery considerations
+5. Monitoring, observability, and alerting
+6. Disaster recovery and backup strategies
+7. Compliance and governance requirements
 
 Provide code that is:
-- Syntactically correct and deployable
-- Following cloud provider best practices
-- Including proper resource naming and tagging
-- Implementing least privilege access
-- Including monitoring and alerting where appropriate
-`;
+- Syntactically correct and immediately deployable
+- Following cloud provider best practices and well-architected frameworks
+- Including proper resource naming, tagging, and organization
+- Implementing least privilege access and strong security controls
+- Including comprehensive monitoring, logging, and alerting
+- Optimized for performance and cost
+- Documentation-rich with clear explanations`;
+
+    // Provider-specific optimizations
+    if (this.currentProvider === 'claude-code') {
+      return basePrompt + `
+
+**CODE GENERATION FOCUS:**
+As a specialized code generation model, prioritize:
+- Clean, maintainable, and well-structured code
+- Comprehensive error handling and validation
+- Detailed inline comments and documentation
+- Modular and reusable infrastructure components
+- Advanced configuration patterns and best practices
+- Performance optimizations and resource efficiency
+- Security hardening and compliance controls`;
+    }
+
+    if (this.currentProvider === 'claude') {
+      return basePrompt + `
+
+**ANALYSIS AND EXPLANATION FOCUS:**
+Provide detailed analysis and comprehensive explanations:
+- Architectural reasoning and design decisions
+- Trade-offs and alternative approaches
+- Security considerations and risk assessments
+- Cost implications and optimization opportunities
+- Operational considerations and maintenance requirements
+- Integration patterns and dependency management`;
+    }
+
+    // Default for OpenAI
+    return basePrompt + `
+
+**COMPREHENSIVE SOLUTION FOCUS:**
+Balance technical depth with practical implementation:
+- Complete end-to-end solutions
+- Clear step-by-step implementation guidance
+- Real-world production considerations
+- Troubleshooting and debugging insights
+- Migration and deployment strategies
+- Scaling and evolution planning`;
   }
 
   /**
@@ -568,4 +739,4 @@ output "lambda_function_name" {
 }
 
 export const aiInfrastructureService = new AIInfrastructureService();
-export type { AIGenerationRequest, AIGenerationResponse };
+export type { AIGenerationRequest, AIGenerationResponse, AIProvider };
