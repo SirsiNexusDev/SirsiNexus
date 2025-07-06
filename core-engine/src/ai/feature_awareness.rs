@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use uuid::Uuid;
 
 /// AI Feature Awareness System
 /// This system enables AI agents and hypervisors to have complete understanding
@@ -154,7 +153,7 @@ pub struct WorkflowStep {
     pub ai_automatable: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum AutomationLevel {
     Manual,
     SemiAutomated,

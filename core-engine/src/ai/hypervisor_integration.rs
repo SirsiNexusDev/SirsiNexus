@@ -1,4 +1,4 @@
-use crate::ai::feature_awareness::{FeatureRegistry, Feature, Workflow, AIContext};
+use crate::ai::feature_awareness::{FeatureRegistry, Feature, AIContext};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::sync::RwLock;
@@ -8,7 +8,7 @@ use uuid::Uuid;
 /// Enables AI hypervisors to autonomously access and execute any platform feature
 /// with intelligent decision-making and safety constraints.
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct HypervisorIntegration {
     feature_registry: FeatureRegistry,
     active_sessions: RwLock<HashMap<String, HypervisorSession>>,
@@ -90,7 +90,7 @@ pub enum ExecutionStatus {
     SafetyBlocked,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Priority {
     Low,
     Medium,
@@ -107,7 +107,7 @@ pub enum SafetyLevel {
     Experimental,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Permission {
     ReadFeature,
     ExecuteFeature,
@@ -251,7 +251,7 @@ impl HypervisorIntegration {
                 error: Some("Safety checks failed".to_string()),
                 execution_time_ms: start_time.elapsed().as_millis() as u64,
                 resources_used: ResourceUsage::default(),
-                safety_checks,
+                safety_checks: safety_checks.clone(),
                 recommendations: self.generate_safety_recommendations(&safety_checks),
             });
         }
@@ -372,19 +372,19 @@ impl HypervisorIntegration {
         Ok(checks)
     }
 
-    fn has_feature_permission(&self, session: &HypervisorSession, feature: &Feature) -> bool {
-        // Check if session has permission to access this feature
+    fn has_feature_permission(&self, session: &HypervisorSession, _feature: &Feature) -> bool {
+        // Check if the session has the required permissions for this feature
         session.permissions.contains(&Permission::ReadFeature) ||
         session.permissions.contains(&Permission::ExecuteFeature)
     }
 
-    fn has_execution_permission(&self, session: &HypervisorSession, feature_id: &str) -> bool {
+    fn has_execution_permission(&self, session: &HypervisorSession, _feature_id: &str) -> bool {
+        // Check if the session can execute specific features
         session.permissions.contains(&Permission::ExecuteFeature)
     }
-
     async fn make_execution_decision(
         &self,
-        session: &HypervisorSession,
+        _session: &HypervisorSession,
         feature: &Feature,
         request: &ExecutionRequest,
     ) -> Result<DecisionTrace, String> {
@@ -489,7 +489,7 @@ impl HypervisorIntegration {
         }
     }
 
-    fn check_resource_limits(&self, request: &ExecutionRequest) -> SafetyCheck {
+    fn check_resource_limits(&self, _request: &ExecutionRequest) -> SafetyCheck {
         // Simulate resource limit checking
         SafetyCheck {
             check_type: "Resource Limits".to_string(),
@@ -560,7 +560,7 @@ impl HypervisorIntegration {
         if opportunity.contains("critical") { 0.6 } else { 0.9 }
     }
 
-    fn generate_implementation_steps(&self, opportunity: &str) -> Vec<String> {
+    fn generate_implementation_steps(&self, _opportunity: &str) -> Vec<String> {
         vec![
             "Analyze current state".to_string(),
             "Identify optimization targets".to_string(),
