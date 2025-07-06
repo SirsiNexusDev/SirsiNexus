@@ -22,6 +22,7 @@ import {
   Activity,
   Eye,
   Crown,
+  Brain,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -33,6 +34,7 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { label: 'Demo Scenarios', icon: Play, path: '/demos' },
   { label: 'Agent Management', icon: Sparkles, path: '/agents' },
+  { label: 'AI Orchestration', icon: Brain, path: '/ai-orchestration' },
   { label: 'SIRSI HYPERVISOR', icon: Crown, path: '/sirsi-hypervisor' },
   { label: 'Observability Dashboard', icon: Activity, path: '/observability' },
   { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
