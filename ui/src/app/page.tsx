@@ -13,6 +13,7 @@ import { useAppSelector, useAppDispatch } from '@/store';
 import { useAuthSync } from '@/hooks/useAuthSync';
 import { setModalState, selectJourney, markAsNotFirstTime } from '@/store/slices/uiSlice';
 import { login } from '@/store/slices/authSlice';
+import { EmbeddedAssistant } from '@/components/ai-assistant/EmbeddedAssistant';
 import {
   BarChart,
   Server,
@@ -125,6 +126,7 @@ export default function DashboardPage() {
   const userJourney = useAppSelector((state) => state.ui.userJourney);
   
   const [showCreateProjectModal, setShowCreateProjectModal] = useState(false);
+  const [showWelcomeAssistant, setShowWelcomeAssistant] = useState(false);
 
   // Show auth modal by default if user is not authenticated
   useEffect(() => {
@@ -143,6 +145,9 @@ export default function DashboardPage() {
       role: credentials.email.includes('admin') ? 'admin' : 'user'
     }));
     dispatch(setModalState({ modal: 'auth', visible: false }));
+    
+    // Show welcome AI assistant on login
+    setShowWelcomeAssistant(true);
     
     // Show journey selection for first-time users
     if (userJourney.isFirstTime) {
@@ -216,120 +221,94 @@ export default function DashboardPage() {
       
       {!hideMainContent && (
         <>
-          {/* Quick Actions - at the very top */}
-          <div className="mb-12 stagger-children">
-        <div className="card-action-premium mb-8 spring-entrance border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
-          <div className="card-action-glow"></div>
-          <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
-                <Sparkles className="h-6 w-6 text-white" />
+          {/* Quick Actions */}
+          <div className="mb-8">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-slate-900 mb-2">
+                Quick Actions
+              </h2>
+              <p className="text-sm text-slate-600">
+                Get started with common tasks
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <button
+                onClick={() => setShowCreateProjectModal(true)}
+                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-emerald-300 hover:shadow-sm transition-all duration-200 group text-left"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                    <Plus className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="font-medium text-slate-900 mb-1">New Project</h3>
+                <p className="text-sm text-slate-600">Start your migration journey</p>
+              </button>
+              
+              <button
+                onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
+                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:shadow-sm transition-all duration-200 group text-left"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="font-medium text-slate-900 mb-1">Demo Sign In</h3>
+                <p className="text-sm text-slate-600">Try the platform features</p>
+              </button>
+              
+              <button
+                onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
+                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-amber-300 hover:shadow-sm transition-all duration-200 group text-left"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition-colors">
+                    <Zap className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="font-medium text-slate-900 mb-1">Choose Journey</h3>
+                <p className="text-sm text-slate-600">Select your migration path</p>
+              </button>
+              
+              <button
+                onClick={() => window.location.href = '/analytics'}
+                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-purple-300 hover:shadow-sm transition-all duration-200 group text-left"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <BarChart className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="font-medium text-slate-900 mb-1">Analytics</h3>
+                <p className="text-sm text-slate-600">View detailed reports</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Dashboard Overview Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Monitor className="h-4 w-4 text-emerald-600" />
               </div>
               <div>
-                <h2 className="text-headline text-3xl group-hover:text-emerald-600 transition-colors">
-                  Quick Actions
-                </h2>
-                <p className="text-subheading group-hover:text-slate-700 transition-colors">
-                  Get started with common tasks
+                <h1 className="text-2xl font-semibold text-slate-900">
+                  Dashboard Overview
+                </h1>
+                <p className="text-sm text-slate-600">
+                  Real-time insights into your migration projects and infrastructure
                 </p>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-          <button
-            onClick={() => setShowCreateProjectModal(true)}
-            className="card-action-premium group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
-          >
-            <div className="card-action-glow"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-emerald-600">
-                  <Plus className="h-6 w-6 text-white" />
-                </div>
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              </div>
-              <h3 className="card-title mb-2 group-hover:text-emerald-600 transition-colors">New Project</h3>
-              <p className="text-body group-hover:text-slate-700">Start your migration journey</p>
-            </div>
-          </button>
           
-          <button
-            onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-            className="card-action-premium group relative overflow-hidden border-2 border-blue-500/30 hover:border-blue-500/60"
-          >
-            <div className="card-action-glow"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-blue-600">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              </div>
-              <h3 className="card-title mb-2 group-hover:text-blue-600 transition-colors">Demo Sign In</h3>
-              <p className="text-body group-hover:text-slate-700">Try the platform features</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-            className="card-action-premium group relative overflow-hidden border-2 border-amber-500/30 hover:border-amber-500/60"
-          >
-            <div className="card-action-glow"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-amber-600">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-              </div>
-              <h3 className="card-title mb-2 group-hover:text-amber-600 transition-colors">Choose Journey</h3>
-              <p className="text-body group-hover:text-slate-700">Select your migration path</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => window.location.href = '/analytics'}
-            className="card-action-premium group relative overflow-hidden border-2 border-purple-500/30 hover:border-purple-500/60"
-          >
-            <div className="card-action-glow"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-purple-600">
-                  <BarChart className="h-6 w-6 text-white" />
-                </div>
-                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              </div>
-              <h3 className="card-title mb-2 group-hover:text-purple-600 transition-colors">Analytics</h3>
-              <p className="text-body group-hover:text-slate-700">View detailed reports</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Dashboard Overview Header */}
-      <div className="card-action-premium mb-8 border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
-        <div className="card-action-glow"></div>
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
-              <Monitor className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-headline text-3xl group-hover:text-emerald-600 transition-colors">
-                Dashboard Overview
-              </h1>
-              <p className="text-subheading group-hover:text-slate-700 transition-colors">
-                Real-time insights into your migration projects and infrastructure
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Interactive Stats Grid */}
-      <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Stats Grid */}
+          <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {mockStats.map((stat, index) => {
           const Icon = stat.icon;
           const getNavigationPath = (name: string) => {
@@ -355,125 +334,125 @@ export default function DashboardPage() {
             <button
               key={stat.name}
               onClick={() => window.location.href = getNavigationPath(stat.name)}
-              className="card-action-premium text-left group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
+              className="p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 hover:shadow-sm transition-all duration-200 group text-left"
             >
-              <div className="card-action-glow"></div>
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="card-title text-base group-hover:text-emerald-600 transition-colors">
-                    {stat.name}
-                  </h3>
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-emerald-600">
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-slate-700">
+                  {stat.name}
+                </h3>
+                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                  <Icon className="h-4 w-4 text-slate-600" />
                 </div>
+              </div>
+            
+              <div className="mb-3">
+                <div className="text-2xl font-semibold text-slate-900 mb-1">
+                  {stat.value}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-emerald-600 font-medium">
+                    {stat.change}
+                  </span>
+                  <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                    {stat.percentage}
+                  </span>
+                </div>
+              </div>
               
-                <div className="mb-4">
-                  <div className="card-value text-3xl mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-subheading text-emerald-600">
-                      {stat.change}
-                    </span>
-                    <span className="text-caption text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full">
-                      {stat.percentage}
-                    </span>
-                  </div>
-                </div>
-                
-                <p className="text-body group-hover:text-slate-700 transition-colors">
-                  {stat.description}
-                </p>
-              </div>
+              <p className="text-xs text-slate-600">
+                {stat.description}
+              </p>
             </button>
           );
         })}
       </div>
 
-      
-      {/* Recent Activity */}
-      <div className="card-action-premium mb-8 border-2 border-emerald-500/30 hover:border-emerald-500/60 group relative overflow-hidden">
-        <div className="card-action-glow"></div>
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center border border-emerald-600 group-hover:scale-110 transition-transform duration-300">
-                <Activity className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-headline text-2xl group-hover:text-emerald-600 transition-colors">
-                  Recent Activity
-                </h2>
-                <p className="text-subheading group-hover:text-slate-700 transition-colors">
-                  Latest updates and project milestones
-                </p>
-              </div>
-            </div>
-            <button 
-              onClick={() => window.location.href = '/projects'}
-              className="btn-primary flex items-center btn-text-large px-6 py-3 hover:scale-[1.02] active:scale-[0.98] transition-all border border-emerald-600"
-            >
-              View All Projects
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        {mockRecentActivity.map((activity, index) => {
-          const getActivityPath = (activityId: string, type: string) => {
-            switch (type) {
-              case 'migration_completed':
-                return `/projects/${activityId}`;
-              case 'optimization_suggested':
-                return `/optimization?project=${activityId}`;
-              case 'validation_warning':
-                return `/projects/${activityId}?tab=logs`;
-              default:
-                return `/projects/${activityId}`;
-            }
-          };
           
-          return (
-            <button
-              key={activity.id}
-              onClick={() => window.location.href = getActivityPath(activity.id, activity.type)}
-              className="card-action-premium w-full text-left group relative overflow-hidden border-2 border-emerald-500/30 hover:border-emerald-500/60"
-            >
-              <div className="card-action-glow"></div>
-              <div className="relative z-10">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="card-title mb-2 group-hover:text-emerald-600 transition-colors">
-                      {activity.project}
-                    </h3>
-                    <p className="text-body group-hover:text-slate-700 transition-colors">
-                      {activity.timestamp} • {activity.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`px-3 py-1 rounded-full text-caption border ${
-                        activity.status === 'success'
-                          ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                          : activity.status === 'warning'
-                          ? 'bg-amber-100 text-amber-700 border-amber-200'
-                          : 'bg-blue-100 text-blue-700 border-blue-200'
-                      }`}
-                    >
-                      {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
-                    </span>
-                    <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
-                  </div>
+          {/* Recent Activity */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Activity className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-900">
+                    Recent Activity
+                  </h2>
+                  <p className="text-sm text-slate-600">
+                    Latest updates and project milestones
+                  </p>
                 </div>
               </div>
-            </button>
-          );
-        })}
-      </div>
+              <button 
+                onClick={() => window.location.href = '/projects'}
+                className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+              >
+                View All Projects
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {mockRecentActivity.map((activity, index) => {
+              const getActivityPath = (activityId: string, type: string) => {
+                switch (type) {
+                  case 'migration_completed':
+                    return `/projects/${activityId}`;
+                  case 'optimization_suggested':
+                    return `/optimization?project=${activityId}`;
+                  case 'validation_warning':
+                    return `/projects/${activityId}?tab=logs`;
+                  default:
+                    return `/projects/${activityId}`;
+                }
+              };
+              
+              return (
+                <button
+                  key={activity.id}
+                  onClick={() => window.location.href = getActivityPath(activity.id, activity.type)}
+                  className="w-full p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 hover:shadow-sm transition-all duration-200 group text-left"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium text-slate-900 mb-1">
+                        {activity.project}
+                      </h3>
+                      <p className="text-sm text-slate-600">
+                        {activity.timestamp} • {activity.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                          activity.status === 'success'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : activity.status === 'warning'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                        }`}
+                      >
+                        {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
+                      </span>
+                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </>
+      )}
+      
+      {/* Welcome AI Assistant on Login */}
+      {showWelcomeAssistant && isAuthenticated && (
+        <EmbeddedAssistant 
+          position="floating" 
+          showOnLogin={true} 
+          context="dashboard-welcome" 
+        />
       )}
       
       {/* Modals */}

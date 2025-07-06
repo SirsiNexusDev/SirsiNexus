@@ -26,8 +26,8 @@ export default function RootLayout({
           <AIContextProvider>
             <ErrorBoundary>
               <ClientLayout>
-                {children}
-                <AIContextToolbar position="bottom" showWhenIdle autoHide={false} />
+              {children}
+                <AIContextToolbar position="embedded" showWhenIdle autoHide={true} duration={5000} placement="sidebar" />
               </ClientLayout>
             </ErrorBoundary>
           </AIContextProvider>

@@ -24,6 +24,7 @@ import {
   Crown,
   Brain,
 } from 'lucide-react';
+import { EmbeddedAssistant } from './ai-assistant/EmbeddedAssistant';
 
 interface SidebarItem {
   label: string;
@@ -31,24 +32,58 @@ interface SidebarItem {
   path: string;
 }
 
-const sidebarItems: SidebarItem[] = [
-  { label: 'Demo Scenarios', icon: Play, path: '/demos' },
-  { label: 'Agent Management', icon: Sparkles, path: '/agents' },
-  { label: 'AI Orchestration', icon: Brain, path: '/ai-orchestration' },
-  { label: 'SIRSI HYPERVISOR', icon: Crown, path: '/sirsi-hypervisor' },
-  { label: 'Observability Dashboard', icon: Activity, path: '/observability' },
-  { label: 'Credential Management', icon: KeyRound, path: '/credentials' },
-  { label: 'Projects', icon: Folder, path: '/projects' },
-  { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
-  { label: 'Analytics & Reports', icon: BarChart, path: '/analytics' },
-  { label: 'Enhanced Analytics', icon: TrendingUp, path: '/analytics/enhanced' },
-  { label: 'Security', icon: Shield, path: '/security' },
-  { label: 'Scripting Console', icon: Terminal, path: '/console' },
-  { label: 'Backend Tests', icon: Rocket, path: '/test-backend' },
-  { label: 'Help & Tutorials', icon: HelpCircle, path: '/help' },
+interface SidebarProps {
+  aiAssistant?: boolean;
+}
+
+interface SidebarSection {
+  title: string;
+  items: SidebarItem[];
+}
+
+const sidebarSections: SidebarSection[] = [
+  {
+    title: 'Management',
+    items: [
+      { label: 'Projects', icon: Folder, path: '/projects' },
+      { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
+      { label: 'Credentials', icon: KeyRound, path: '/credentials' },
+    ]
+  },
+  {
+    title: 'AI & Automation',
+    items: [
+      { label: 'Agent Management', icon: Sparkles, path: '/agents' },
+      { label: 'AI Orchestration', icon: Brain, path: '/ai-orchestration' },
+      { label: 'SIRSI HYPERVISOR', icon: Crown, path: '/sirsi-hypervisor' },
+    ]
+  },
+  {
+    title: 'Analytics',
+    items: [
+      { label: 'Reports', icon: BarChart, path: '/analytics' },
+      { label: 'Enhanced Analytics', icon: TrendingUp, path: '/analytics/enhanced' },
+      { label: 'Observability', icon: Activity, path: '/observability' },
+    ]
+  },
+  {
+    title: 'Tools',
+    items: [
+      { label: 'Scripting Console', icon: Terminal, path: '/console' },
+      { label: 'Security', icon: Shield, path: '/security' },
+      { label: 'Demo Scenarios', icon: Play, path: '/demos' },
+    ]
+  },
+  {
+    title: 'Support',
+    items: [
+      { label: 'Help & Tutorials', icon: HelpCircle, path: '/help' },
+      { label: 'Backend Tests', icon: Rocket, path: '/test-backend' },
+    ]
+  }
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
   const pathname = usePathname();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
   const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
@@ -88,8 +123,8 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="glass-strong fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 overflow-y-auto hidden lg:block rounded-r-2xl border-r-0">
-      <nav className="p-6 space-y-4">
+    <div className="bg-white/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 shadow-sm">
+      <nav className="p-4 space-y-6">
         {/* Overview Section */}
         <div className="glass rounded-xl p-4 mb-6">
           <button
@@ -172,96 +207,104 @@ export const Sidebar: React.FC = () => {
           )}
         </div>
 
-        {/* Navigation Items */}
-        <div className="space-y-2">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.path;
-            const isMigrationSteps = item.path === '/steps';
-            
-            if (isMigrationSteps) {
-              return (
-                <div key={item.path} className="space-y-2">
-                  <button
-                    onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
-                    className={`w-full p-3 rounded-xl transition-all duration-300 group ${
-                      isActive
-                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg'
-                        : 'glass glass-hover text-slate-700'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          isActive ? 'bg-white/20' : 'bg-gradient-to-r from-emerald-500 to-green-600'
-                        }`}>
-                          <Icon className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="nav-item">{item.label}</span>
-                      </div>
-                      <ChevronDown className={`h-4 w-4 transition-transform ${migrationStepsExpanded ? 'rotate-180' : ''}`} />
-                    </div>
-                  </button>
+        {/* AI Assistant */}
+        {aiAssistant && (
+          <EmbeddedAssistant 
+            position="sidebar" 
+            compact={true} 
+            context="sidebar-navigation" 
+          />
+        )}
+
+        {/* Navigation Sections */}
+        <div className="space-y-6">
+          {sidebarSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                {section.title}
+              </h3>
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.path;
+                  const isMigrationSteps = item.path === '/steps';
                   
-                  {migrationStepsExpanded && (
-                    <div className="ml-4 space-y-1 fade-in">
-                      {migrationSteps.map((step, index) => {
-                        const isCompleted = index < 2;
-                        const isCurrent = index === 2;
-                        return (
-                          <button
-                            key={step.path}
-                            onClick={() => window.location.href = step.path}
-                            className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
-                              isCurrent
-                                ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                                : isCompleted
-                                ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                                : 'glass-subtle text-slate-600 hover:text-slate-800'
-                            }`}
-                          >
-                            <span>{step.label}</span>
-                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                              isCurrent
-                                ? 'bg-blue-200 text-blue-800'
-                                : isCompleted
-                                ? 'bg-emerald-200 text-emerald-800'
-                                : 'bg-slate-200 text-slate-600'
-                            }`}>
-                              {isCurrent ? 'ACTIVE' : isCompleted ? 'DONE' : 'TODO'}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            }
-            
-            return (
-              <button
-                key={item.path}
-                onClick={() => {
-                  window.location.href = item.path;
-                }}
-                className={`w-full p-3 rounded-xl transition-all duration-300 group ${
-                  isActive
-                    ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg'
-                    : 'glass glass-hover text-slate-700'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    isActive ? 'bg-white/20' : 'bg-gradient-to-r from-emerald-500 to-green-600'
-                  }`}>
-                    <Icon className="h-4 w-4 text-white" />
-                  </div>
-                  <span className={`text-sm ${isActive ? 'nav-item-active' : 'nav-item'}`}>{item.label}</span>
-                </div>
-              </button>
-            );
-          })}
+                  if (isMigrationSteps) {
+                    return (
+                      <div key={item.path} className="space-y-1">
+                        <button
+                          onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
+                          className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${
+                            isActive
+                              ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                              : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Icon className="h-4 w-4" />
+                              <span className="text-sm font-medium">{item.label}</span>
+                            </div>
+                            <ChevronDown className={`h-3 w-3 transition-transform ${migrationStepsExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                        
+                        {migrationStepsExpanded && (
+                          <div className="ml-6 space-y-1 fade-in">
+                            {migrationSteps.map((step, index) => {
+                              const isCompleted = index < 2;
+                              const isCurrent = index === 2;
+                              return (
+                                <button
+                                  key={step.path}
+                                  onClick={() => window.location.href = step.path}
+                                  className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
+                                    isCurrent
+                                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                      : isCompleted
+                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                      : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <span>{step.label}</span>
+                                  <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                                    isCurrent
+                                      ? 'bg-blue-100 text-blue-700'
+                                      : isCompleted
+                                      ? 'bg-emerald-100 text-emerald-700'
+                                      : 'bg-slate-100 text-slate-500'
+                                  }`}>
+                                    {isCurrent ? 'ACTIVE' : isCompleted ? 'DONE' : 'TODO'}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <button
+                      key={item.path}
+                      onClick={() => window.location.href = item.path}
+                      className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${
+                        isActive
+                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                          : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
         
         {/* Quick Action CTA */}

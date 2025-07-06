@@ -31,12 +31,12 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
     <div className="min-h-screen">
       <Header />
       <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6 ml-0 lg:ml-72 transition-all duration-300">
+        <Sidebar aiAssistant />
+        <main className="flex-1 p-6 ml-0 lg:ml-64 transition-all duration-300">
           {children}
         </main>
       </div>
-      <AgentChat />
+      <AgentChat autoExpand={false} />
       <NotificationCenter />
       <CommandPalette 
         isOpen={isCommandPaletteOpen}

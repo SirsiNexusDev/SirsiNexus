@@ -83,48 +83,38 @@ export const PathSelectionModal: React.FC<PathSelectionModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-3xl glass-ultra shadow-intense rounded-xl overflow-auto max-h-[80vh] text-slate-800"
+className="relative w-full max-w-2xl glass-ultra shadow-sm rounded-xl overflow-hidden max-h-[70vh] text-slate-800"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-300">
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-forest-500 to-forest-600 rounded-lg">
-                  <Sparkles className="h-6 w-6 text-white" />
+                <div className="p-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg">
+                  <Sparkles className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900">
-                    Welcome to Sirsi Nexus!
+                  <h2 className="text-lg font-semibold text-slate-900">
+                    Choose Your Path
                   </h2>
-                  <p className="text-sm text-slate-700 font-medium">
-                    What would you like to accomplish today?
+                  <p className="text-sm text-slate-600">
+                    Select your journey to get started
                   </p>
                 </div>
               </div>
               <button
                 onClick={(e) => {
-                  console.log('X button clicked');
                   e.preventDefault();
                   e.stopPropagation();
                   onClose();
                 }}
-                className="p-2 rounded-full hover:bg-white/20 transition-colors"
+                className="p-1.5 rounded-full hover:bg-slate-100 transition-colors"
               >
-                <X className="h-5 w-5 text-slate-600 hover:text-slate-800" />
+                <X className="h-4 w-4 text-slate-500 hover:text-slate-700" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-              <div className="mb-6 text-center">
-                <p className="text-lg text-slate-800 font-medium mb-2">
-                  Choose your journey to get started with a guided experience
-                </p>
-                <p className="text-sm text-slate-600 font-medium">
-                  You can always explore other options later from the dashboard
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {journeyOptions.map((journey) => {
                   const Icon = journey.icon;
                   return (
@@ -135,30 +125,27 @@ export const PathSelectionModal: React.FC<PathSelectionModalProps> = ({
                       transition={{ delay: journeyOptions.indexOf(journey) * 0.1 }}
                       onClick={() => onSelectPath(journey.id)}
                       className={`
-                        group relative p-6 rounded-xl border-2 transition-all duration-300
+                        group relative p-4 rounded-lg border transition-all duration-200
                         ${journey.bgColor} ${journey.borderColor}
-                        hover:scale-105 hover:shadow-lg
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forest-500
+                        hover:shadow-md
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
                       `}
                     >
                       {/* Icon */}
                       <div className={`
-                        inline-flex p-4 rounded-xl bg-gradient-to-r ${journey.gradient} 
-                        text-white mb-4 group-hover:scale-110 transition-transform
+                        inline-flex p-3 rounded-lg bg-gradient-to-r ${journey.gradient} 
+                        text-white mb-3 group-hover:scale-105 transition-transform
                       `}>
-                        <Icon className="h-8 w-8" />
+                        <Icon className="h-5 w-5" />
                       </div>
 
                       {/* Content */}
                       <div className="text-left">
-                        <h3 className={`text-xl font-bold mb-2 ${journey.textColor}`}>
+                        <h3 className={`text-lg font-semibold mb-2 ${journey.textColor}`}>
                           {journey.title}
                         </h3>
-                        <p className={`text-sm mb-4 ${journey.subtextColor}`}>
+                        <p className={`text-sm ${journey.subtextColor}`}>
                           {journey.description}
-                        </p>
-                        <p className={`text-xs ${journey.subtextColor} opacity-80`}>
-                          {journey.longDescription}
                         </p>
                       </div>
 
@@ -178,12 +165,12 @@ export const PathSelectionModal: React.FC<PathSelectionModalProps> = ({
               </div>
 
               {/* Skip option */}
-              <div className="mt-8 text-center">
+              <div className="mt-4 text-center">
                 <button
                   onClick={onClose}
-                  className="text-slate-600 hover:text-slate-800 text-sm font-medium transition-colors"
+                  className="text-slate-500 hover:text-slate-700 text-sm transition-colors"
                 >
-                  I&apos;ll explore on my own
+                  I'll explore on my own
                 </button>
               </div>
             </div>
