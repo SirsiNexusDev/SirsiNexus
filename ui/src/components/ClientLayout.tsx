@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { AgentChat } from '@/components/AgentChat';
@@ -13,6 +14,22 @@ interface ClientLayoutProps {
 
 export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const pathname = usePathname();
+  
+  // Infrastructure builder uses its own dark mode
+  const isInfrastructurePage = pathname === '/infrastructure';
+  
+  // Load dark mode preference from localStorage
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setIsDarkMode(savedDarkMode);
+  }, []);
+  
+  // Handle navigation to infrastructure with query
+  const handleNavigateToInfrastructure = () => {
+    window.location.href = '/infrastructure';
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -27,11 +44,28 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Don't render layout for infrastructure page (it has its own layout)
+  if (isInfrastructurePage) {
+    return (
+      <>
+        {children}
+        <CommandPalette 
+          isOpen={isCommandPaletteOpen}
+          onClose={() => setIsCommandPaletteOpen(false)}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <Header />
       <div className="flex">
-        <Sidebar aiAssistant />
+        <Sidebar 
+          aiAssistant 
+          isDarkMode={isDarkMode}
+          onNavigateToInfrastructure={handleNavigateToInfrastructure}
+        />
         <main className="flex-1 p-6 ml-0 lg:ml-64 transition-all duration-300">
           {children}
         </main>

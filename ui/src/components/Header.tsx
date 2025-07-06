@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsDropDown } from './SettingsDropDown';
+import { GlobalSearch } from './GlobalSearch';
 import Image from 'next/image';
 
 export const Header: React.FC = () => {
@@ -27,11 +28,25 @@ export const Header: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = React.useState(false);
+  const [showSearch, setShowSearch] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Global search shortcut
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
+        setShowSearch(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleThemeToggle = () => {
@@ -56,35 +71,50 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="glass-strong sticky top-0 z-50 border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex h-20 items-center justify-between">
+    <header className="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200">
+      <div className="max-w-full mx-auto px-6">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-xl font-black text-white">S</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
+                <span className="text-sm font-bold text-white">S</span>
               </div>
               <div>
-                <h1 className="text-2xl font-black text-slate-800">
-                  Sirsi Nexus
+                <h1 className="text-lg font-semibold text-slate-900">
+                  SirsiNexus
                 </h1>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-600 bg-gradient-to-r from-emerald-100 to-teal-100 px-3 py-1 rounded-full border border-emerald-200">
-                    v0.3.2
+                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                    v0.4.2
                   </span>
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span className="text-xs font-semibold text-emerald-600">Live</span>
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+                    <span className="text-xs text-slate-600">Live</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md mx-8">
+            <button
+              onClick={() => setShowSearch(true)}
+              className="w-full flex items-center gap-3 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors text-left"
+            >
+              <Search className="h-4 w-4 text-slate-500" />
+              <span className="text-sm text-slate-500 flex-1">Search...</span>
+              <div className="flex items-center gap-1 text-xs text-slate-400">
+                <Command className="h-3 w-3" />
+                <span>K</span>
+              </div>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
             <button
               onClick={handleThemeToggle}
-              className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-500/10 rounded border border-transparent hover:border-orange-500/20 transition-all"
+              className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
               title={`Current: ${theme} mode - Click to cycle`}
             >
               {theme === 'dark' ? (
@@ -96,61 +126,64 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-          <NotificationDropdown />
+            <NotificationDropdown />
 
-          <div className="relative">
-            <button
-              onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-              className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-500/10 rounded border border-transparent hover:border-orange-500/20 transition-all"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-            <SettingsDropDown 
-              isOpen={showSettingsMenu} 
-              onClose={() => setShowSettingsMenu(false)} 
-            />
-          </div>
+            <div className="relative">
+              <button
+                onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+                className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <Settings className="h-4 w-4" />
+              </button>
+              <SettingsDropDown 
+                isOpen={showSettingsMenu} 
+                onClose={() => setShowSettingsMenu(false)} 
+              />
+            </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-3 p-2 text-slate-700 hover:bg-white/20 rounded-lg transition-all"
-            >
-              <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                {user?.avatar ? (
-                  <Image
-                    src={user.avatar}
-                    alt={user.name || 'User avatar'}
-                    width={32}
-                    height={32}
-                    className="h-full w-full rounded-lg object-cover"
-                    priority
-                  />
-                ) : (
-                  <User className="h-4 w-4 text-orange-600" />
-                )}
-              </div>
-              <span className="text-sm font-medium">
-                {user?.name || 'Guest User'}
-              </span>
-              <ChevronDown className="h-4 w-4 text-slate-600" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center">
+                  {user?.avatar ? (
+                    <Image
+                      src={user.avatar}
+                      alt={user.name || 'User avatar'}
+                      width={24}
+                      height={24}
+                      className="h-full w-full rounded-full object-cover"
+                      priority
+                    />
+                  ) : (
+                    <User className="h-3 w-3 text-slate-600" />
+                  )}
+                </div>
+                <span className="text-sm text-slate-700">
+                  {user?.name || 'Guest'}
+                </span>
+                <ChevronDown className="h-3 w-3 text-slate-500" />
+              </button>
 
-            {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-1">
-                <button
-                  onClick={handleLogout}
-                  className="flex w-full items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-all"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </button>
-              </div>
-            )}
-          </div>
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-sm p-1">
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+      
+      {/* Global Search Modal */}
+      <GlobalSearch isOpen={showSearch} onClose={() => setShowSearch(false)} />
     </header>
   );
 };

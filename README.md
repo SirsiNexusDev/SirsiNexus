@@ -8,6 +8,7 @@
 
 ## 📋 **Documentation**
 
+- **[INFRASTRUCTURE_BUILDER.md](./ui/INFRASTRUCTURE_BUILDER.md)**: AI-powered infrastructure generation and template management
 - **[PROJECT_TRACKER.md](./PROJECT_TRACKER.md)**: Current status, planning, and development tracking
 - **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)**: Implementation guidance, troubleshooting, and resumption instructions
 - **[COMPREHENSIVE_DEVELOPMENT_BLUEPRINT.md](./COMPREHENSIVE_DEVELOPMENT_BLUEPRINT.md)**: Detailed technical architecture and design principles
@@ -18,11 +19,12 @@
 
 Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, TypeScript) with a Model Context Protocol (MCP) service suite, all orchestrated by the Sirsi AI Hypervisor. Key components include:
 
+- **Infrastructure Builder**: AI-powered multi-cloud infrastructure generation with natural language interface
 - **AI Feature Awareness System**: Complete platform feature registry with automated discovery and documentation
 - **Sub-Agents**: Domain-specific services (DiscoveryAgent, AssessmentAgent, etc.)
 - **MCP Service**: Unified context and messaging API
 - **CockroachDB**: Distributed SQL database for sessions, agent events, and knowledge graph data
-- **UI**: Next.js + React frontend with Tailwind and shadcn/ui
+- **UI**: Next.js + React frontend with Tailwind, dark mode, and integrated AI assistant
 - **CLI**: Tauri + Rust-based command-line interface
 - **Hypervisor Feature Access**: AI agents can autonomously execute any platform feature
 
@@ -231,7 +233,9 @@ sirsi-nexus/
 ├── mcp/                       # MCP Protocol & SDK Clients
 ├── connectors/                # Go: Cloud Connectors (AWS, Azure, GCP, vSphere)
 ├── planner/                   # Python: AI Orchestration & Pipelines
-├── ui/                        # Next.js + React Frontend with Enhanced Form Validation & Testing
+├── ui/                        # Next.js + React Frontend with Infrastructure Builder & AI Integration
+│   ├── src/components/       # React components including InfrastructureBuilder
+│   ├── src/app/infrastructure/ # Infrastructure Builder page and routing
 │   └── dashboard/            # Observability Dashboard UI (Future Phase)
 ├── cli/                       # Tauri + Rust CLI
 ├── subagents/                 # Agent Modules

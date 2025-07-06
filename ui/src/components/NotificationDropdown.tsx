@@ -68,11 +68,11 @@ export const NotificationDropdown: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="card-professional p-3 rounded-xl hover-glow transition-all relative"
+        className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors relative"
       >
-        <Bell className="h-5 w-5 text-slate-800" />
+        <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <span className="absolute right-1 top-1 h-3 w-3 rounded-full bg-red-500 border-2 border-white" />
+          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500" />
         )}
       </button>
 
@@ -85,12 +85,12 @@ export const NotificationDropdown: React.FC = () => {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-20 animate-slide-up">
-              <div className="p-4 border-b border-gray-200">
+          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-sm border border-slate-200 z-20 animate-slide-up">
+              <div className="p-3 border-b border-slate-200">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                  <h3 className="text-sm font-semibold text-slate-900">Notifications</h3>
                   {unreadCount > 0 && (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
+                    <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded">
                       {unreadCount} new
                     </span>
                   )}
@@ -99,12 +99,12 @@ export const NotificationDropdown: React.FC = () => {
 
               <div className="max-h-96 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-8 text-center">
-                    <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No notifications</p>
+                  <div className="p-6 text-center">
+                    <Bell className="h-8 w-8 text-slate-300 mx-auto mb-3" />
+                    <p className="text-sm text-slate-500">No notifications</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-slate-100">
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import {
   Home,
@@ -20,11 +20,12 @@ import {
   Sparkles,
   Rocket,
   Activity,
-  Eye,
   Crown,
   Brain,
+  Code,
+  Send,
+  Command,
 } from 'lucide-react';
-import { EmbeddedAssistant } from './ai-assistant/EmbeddedAssistant';
 
 interface SidebarItem {
   label: string;
@@ -34,6 +35,8 @@ interface SidebarItem {
 
 interface SidebarProps {
   aiAssistant?: boolean;
+  isDarkMode?: boolean;
+  onNavigateToInfrastructure?: () => void;
 }
 
 interface SidebarSection {
@@ -43,8 +46,9 @@ interface SidebarSection {
 
 const sidebarSections: SidebarSection[] = [
   {
-    title: 'Management',
+    title: 'Build & Deploy',
     items: [
+      { label: 'Infrastructure Builder', icon: Code, path: '/infrastructure' },
       { label: 'Projects', icon: Folder, path: '/projects' },
       { label: 'Migration Steps', icon: GitBranch, path: '/steps' },
       { label: 'Credentials', icon: KeyRound, path: '/credentials' },
@@ -72,21 +76,22 @@ const sidebarSections: SidebarSection[] = [
       { label: 'Scripting Console', icon: Terminal, path: '/console' },
       { label: 'Security', icon: Shield, path: '/security' },
       { label: 'Demo Scenarios', icon: Play, path: '/demos' },
-    ]
-  },
-  {
-    title: 'Support',
-    items: [
       { label: 'Help & Tutorials', icon: HelpCircle, path: '/help' },
       { label: 'Backend Tests', icon: Rocket, path: '/test-backend' },
     ]
   }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  aiAssistant = false,
+  isDarkMode = false,
+  onNavigateToInfrastructure
+}) => {
   const pathname = usePathname();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
   const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
+  const [nlpQuery, setNlpQuery] = useState('');
+  const nlpInputRef = useRef<HTMLTextAreaElement>(null);
   
   const migrationSteps = [
     { label: 'PLAN', path: '/migration/plan' },
@@ -122,30 +127,97 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
     },
   ];
 
+  const handleNlpSubmit = () => {
+    if (!nlpQuery.trim()) return;
+    
+    if (onNavigateToInfrastructure) {
+      onNavigateToInfrastructure();
+    } else {
+      window.location.href = `/infrastructure?query=${encodeURIComponent(nlpQuery)}`;
+    }
+    setNlpQuery('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      handleNlpSubmit();
+    }
+  };
+
+  // Centralized styling for theme consistency
+  const getActiveStyles = (isActive: boolean) => isActive
+    ? (isDarkMode 
+      ? 'bg-purple-100 text-purple-700 border border-purple-200'
+      : 'bg-emerald-100 text-emerald-700 border border-emerald-200')
+    : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900';
+
+  const getIconBg = (isActive: boolean) => isActive
+    ? (isDarkMode ? 'bg-purple-200' : 'bg-emerald-200')
+    : 'bg-slate-200';
+
+  const themeClasses = isDarkMode ? {
+    bg: 'bg-slate-900/95',
+    border: 'border-slate-700',
+    text: 'text-slate-100',
+    textSecondary: 'text-slate-400',
+    input: 'bg-slate-800 border-slate-600 text-slate-100',
+    button: 'bg-purple-600 hover:bg-purple-700'
+  } : {
+    bg: 'bg-white/95',
+    border: 'border-slate-200',
+    text: 'text-slate-900',
+    textSecondary: 'text-slate-600',
+    input: 'bg-white border-slate-200 text-slate-900',
+    button: 'bg-emerald-600 hover:bg-emerald-700'
+  };
+
   return (
-    <div className="bg-white/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 shadow-sm">
+    <div className={`${themeClasses.bg} backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r ${themeClasses.border}`}>
       <nav className="p-4 space-y-6">
+        {/* Natural Language AI Assistant */}
+        <div className="mb-6">
+          <div className="mb-3">
+            <label className={`block text-xs font-semibold ${themeClasses.text} mb-2 flex items-center gap-2`}>
+              <Sparkles className="h-3 w-3" />
+              Sirsi AI Assistant
+            </label>
+            <div className="relative">
+              <textarea
+                ref={nlpInputRef}
+                value={nlpQuery}
+                onChange={(e) => setNlpQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask anything or describe what you need..."
+                className={`w-full p-3 text-sm rounded-lg resize-none min-h-[60px] max-h-[120px] ${themeClasses.input} placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
+              />
+              <button
+                onClick={handleNlpSubmit}
+                disabled={!nlpQuery.trim()}
+                className={`absolute bottom-2 right-2 p-1.5 ${themeClasses.button} text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                <Send className="h-3 w-3" />
+              </button>
+            </div>
+            <p className={`text-xs ${themeClasses.textSecondary} mt-1 flex items-center gap-1`}>
+              <Command className="h-3 w-3" />
+              <span>Cmd+Enter to send</span>
+            </p>
+          </div>
+        </div>
+
         {/* Overview Section */}
-        <div className="glass rounded-xl p-4 mb-6">
+        <div className="mb-6">
           <button
             onClick={() => window.location.pathname !== '/' ? window.location.href = '/' : null}
-            className={`w-full text-left transition-all duration-300 group ${
-              pathname === '/'
-                ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg rounded-xl p-4 -m-4'
-                : 'hover:bg-white/20 rounded-xl p-4 -m-4'
-            }`}
+            className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(pathname === '/')}`}
           >
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                pathname === '/'
-                  ? 'bg-white/20'
-                  : 'bg-gradient-to-r from-emerald-500 to-green-600'
-              }`}>
-                <Home className="h-5 w-5 text-white" />
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${getIconBg(pathname === '/')}`}>
+                <Home className="h-4 w-4" />
               </div>
               <div>
-                <h2 className={`text-lg ${pathname === '/' ? 'nav-item-active' : 'text-headline'}`}>Overview</h2>
-                <p className={`text-xs ${pathname === '/' ? 'text-white/80' : 'text-caption'}`}>Dashboard and insights</p>
+                <h2 className="text-sm font-medium">Overview</h2>
+                <p className={`text-xs ${themeClasses.textSecondary}`}>Dashboard and insights</p>
               </div>
             </div>
           </button>
@@ -155,47 +227,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
         <div className="mb-6">
           <button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            className="w-full glass glass-hover rounded-xl p-4 mb-4"
+            className={`w-full p-3 rounded-lg transition-colors mb-3 ${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-50 hover:bg-slate-100'}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                  <Wand2 className="h-4 w-4 text-white" />
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-purple-100' : 'bg-indigo-100'}`}>
+                  <Wand2 className={`h-3 w-3 ${isDarkMode ? 'text-purple-600' : 'text-indigo-600'}`} />
                 </div>
-                <span className="nav-item">Smart Wizards</span>
+                <span className={`text-sm font-medium ${themeClasses.text}`}>Smart Wizards</span>
               </div>
-              <ChevronDown className={`h-4 w-4 text-slate-600 transition-transform ${wizardsExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3 w-3 ${themeClasses.textSecondary} transition-transform ${wizardsExpanded ? 'rotate-180' : ''}`} />
             </div>
           </button>
           
           {wizardsExpanded && (
-            <div className="space-y-3 fade-in">
+            <div className="space-y-2 fade-in">
               {wizards.map((wizard) => {
                 const WizardIcon = wizard.icon;
                 const isActive = pathname === wizard.path;
                 return (
                   <button
                     key={wizard.path}
-                    onClick={() => {
-                      window.location.href = wizard.path;
-                    }}
-                    className={`w-full p-4 rounded-xl transition-all duration-300 group ${
-                      isActive
-                        ? `bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg scale-105`
-                        : 'glass glass-hover text-slate-700'
-                    }`}
+                    onClick={() => window.location.href = wizard.path}
+                    className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                        isActive 
-                          ? 'bg-white/20' 
-                          : `bg-gradient-to-r ${wizard.gradient}`
-                      }`}>
-                        <WizardIcon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-white'}`} />
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${getIconBg(isActive)}`}>
+                        <WizardIcon className="h-3 w-3 text-slate-600" />
                       </div>
                       <div className="text-left">
-                        <div className={`text-sm ${isActive ? 'nav-item-active' : 'card-title'}`}>{wizard.label}</div>
-                        <div className={`text-xs mt-1 ${isActive ? 'text-white/80' : 'text-caption'}`}>
+                        <div className="text-sm font-medium">{wizard.label}</div>
+                        <div className={`text-xs ${themeClasses.textSecondary} mt-0.5`}>
                           {wizard.description}
                         </div>
                       </div>
@@ -207,20 +269,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
           )}
         </div>
 
-        {/* AI Assistant */}
-        {aiAssistant && (
-          <EmbeddedAssistant 
-            position="sidebar" 
-            compact={true} 
-            context="sidebar-navigation" 
-          />
-        )}
-
         {/* Navigation Sections */}
         <div className="space-y-6">
           {sidebarSections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              <h3 className={`text-xs font-semibold ${themeClasses.textSecondary} uppercase tracking-wider mb-3`}>
                 {section.title}
               </h3>
               <div className="space-y-1">
@@ -234,11 +287,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
                       <div key={item.path} className="space-y-1">
                         <button
                           onClick={() => setMigrationStepsExpanded(!migrationStepsExpanded)}
-                          className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${
-                            isActive
-                              ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                              : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
-                          }`}
+                          className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -289,11 +338,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
                     <button
                       key={item.path}
                       onClick={() => window.location.href = item.path}
-                      className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${
-                        isActive
-                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                          : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
-                      }`}
+                      className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
                     >
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4" />
@@ -308,18 +353,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ aiAssistant = false }) => {
         </div>
         
         {/* Quick Action CTA */}
-        <div className="mt-8 pt-6">
+        <div className={`mt-8 pt-6 border-t ${themeClasses.border}`}>
           <button 
-            onClick={() => window.location.href = '/migration'}
-            className="w-full btn-primary rounded-xl p-4 group"
+            onClick={() => window.location.href = '/infrastructure'}
+            className={`w-full ${themeClasses.button} text-white rounded-lg p-3 transition-colors group mb-3`}
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <Rocket className="h-4 w-4 text-white" />
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-purple-500' : 'bg-emerald-500'}`}>
+                <Code className="h-3 w-3 text-white" />
               </div>
               <div className="text-left">
-                <div className="nav-item text-sm">Start Migration</div>
-                <div className="text-xs text-white/80">Begin your journey</div>
+                <div className="text-sm font-medium">Infrastructure Builder</div>
+                <div className={`text-xs ${isDarkMode ? 'text-purple-100' : 'text-emerald-100'}`}>AI-powered infrastructure</div>
               </div>
             </div>
           </button>
