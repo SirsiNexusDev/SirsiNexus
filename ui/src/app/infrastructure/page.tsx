@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { InfrastructureBuilder } from '@/components/InfrastructureBuilder';
 import { useAppSelector } from '@/store';
 
-export default function InfrastructurePage() {
+function InfrastructurePageContent() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get('query') || '';
+  const initialQuery = searchParams?.get('query') || '';
   
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
@@ -68,5 +68,17 @@ export default function InfrastructurePage() {
         onThemeToggle={handleThemeToggle}
       />
     </div>
+  );
+}
+
+export default function InfrastructurePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+    }>
+      <InfrastructurePageContent />
+    </Suspense>
   );
 }

@@ -187,7 +187,7 @@ BATCH_SIZE=1000`}
             <h3 className="text-xl font-bold text-gray-900 mb-3">Performance Metrics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">< 100ms</div>
+                <div className="text-2xl font-bold text-purple-600">&lt; 100ms</div>
                 <div className="text-sm text-gray-600">Query Response Time</div>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">

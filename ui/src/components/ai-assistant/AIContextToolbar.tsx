@@ -83,7 +83,7 @@ export default function AIContextToolbar({
   useEffect(() => {
     const generateSmartSuggestions = () => {
       const path = window.location.pathname;
-      const suggestions = [];
+      const suggestions: string[] = [];
 
       if (path.includes('/docs')) {
         suggestions.push('Explain this concept', 'Show me examples', 'Related tutorials');

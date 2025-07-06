@@ -257,7 +257,7 @@ export class AIContextService {
           label: 'Check System Health',
           description: 'View system health dashboard',
           type: 'navigate',
-          action: () => window.open('/observability', '_blank')
+          action: () => { window.open('/observability', '_blank'); }
         },
         {
           id: 'view-logs',
@@ -312,7 +312,7 @@ export class AIContextService {
           label: 'Start Tutorial',
           description: 'Begin the step-by-step guide',
           type: 'navigate',
-          action: () => window.location.href = `/${this.context?.feature}/tutorial`
+          action: () => { window.location.href = `/${this.context?.feature}/tutorial`; }
         },
         {
           id: 'quick-setup',
@@ -336,7 +336,7 @@ export class AIContextService {
           label: 'View API Documentation',
           description: 'Open complete API reference',
           type: 'navigate',
-          action: () => window.open(`/${this.context?.feature}/docs#api-reference`, '_blank')
+          action: () => { window.open(`/${this.context?.feature}/docs#api-reference`, '_blank'); }
         },
         {
           id: 'test-api',
@@ -369,7 +369,7 @@ export class AIContextService {
           label: 'View Detailed Metrics',
           description: 'Open performance dashboard',
           type: 'navigate',
-          action: () => window.open('/analytics', '_blank')
+          action: () => { window.open('/analytics', '_blank'); }
         },
         {
           id: 'optimize',
@@ -487,7 +487,7 @@ export class AIContextService {
 
   private getValidationHelp(fieldName: string, value: any, rules?: any): AIResponse {
     let message = `There's an issue with the ${fieldName} field. `;
-    const suggestions = [];
+    const suggestions: string[] = [];
 
     if (rules?.required && !value) {
       message += "This field is required.";

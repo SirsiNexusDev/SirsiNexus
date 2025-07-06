@@ -15,6 +15,7 @@ pub mod models;
 pub mod proto;
 pub mod security;
 pub mod server;
+pub mod services;
 pub mod telemetry;
 pub mod mcp;
 

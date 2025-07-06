@@ -285,7 +285,7 @@ spec:
 {`# agent-config.yaml
 agent:
   type: infrastructure
-  name: agent-${HOSTNAME}
+  name: agent-\${HOSTNAME}
   tags:
     environment: production
     region: us-west-2
@@ -335,16 +335,16 @@ tasks:
                     <code className="text-xs">POST /api/agents/deploy</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
-                    <code className="text-xs">GET /api/agents/{id}/status</code>
+                    <code className="text-xs">GET /api/agents/&#123;id&#125;/status</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
-                    <code className="text-xs">PUT /api/agents/{id}/config</code>
+                    <code className="text-xs">PUT /api/agents/&#123;id&#125;/config</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
-                    <code className="text-xs">POST /api/agents/{id}/tasks</code>
+                    <code className="text-xs">POST /api/agents/&#123;id&#125;/tasks</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
-                    <code className="text-xs">DELETE /api/agents/{id}</code>
+                    <code className="text-xs">DELETE /api/agents/&#123;id&#125;</code>
                   </Badge>
                 </div>
               </div>
@@ -427,7 +427,7 @@ tasks:
           </Card>
         </div>
 
-        <AIAssistantButton feature="agents" />
+        <AIAssistantButton />
       </div>
     </div>
   );

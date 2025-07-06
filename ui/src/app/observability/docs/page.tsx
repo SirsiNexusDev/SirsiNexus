@@ -371,7 +371,7 @@ scrape_configs:
                     <code className="text-xs">GET /api/logs/search</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
-                    <code className="text-xs">GET /api/traces/{traceId}</code>
+                    <code className="text-xs">GET /api/traces/&#123;traceId&#125;</code>
                   </Badge>
                   <Badge variant="outline" className="justify-start p-3">
                     <code className="text-xs">POST /api/alerts/rules</code>
@@ -457,7 +457,7 @@ scrape_configs:
           </Card>
         </div>
 
-        <AIAssistantButton feature="observability" />
+        <AIAssistantButton />
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ import {
   Unlock,
   Play,
   Pause,
-  Stop,
+  Square,
   RefreshCw,
   AlertTriangle,
   CheckCircle,

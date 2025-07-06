@@ -5,7 +5,7 @@
 
 interface AIGenerationRequest {
   query: string;
-  preferredProvider?: 'aws' | 'azure' | 'gcp' | 'kubernetes' | 'multi';
+  preferredProvider?: 'aws' | 'azure' | 'gcp' | 'kubernetes' | 'multi' | 'ibm' | 'oracle' | 'alibaba';
   preferredFormat?: 'terraform' | 'bicep' | 'cloudformation' | 'pulumi' | 'ansible' | 'yaml';
   complexity?: 'basic' | 'intermediate' | 'advanced';
   includeMonitoring?: boolean;
@@ -679,7 +679,7 @@ output "lambda_function_name" {
   }
 
   private generateAlternatives(provider: string, query: string): Array<{provider: string, rationale: string}> {
-    const alternatives = [];
+    const alternatives: Array<{provider: string, rationale: string}> = [];
     
     if (provider !== 'aws') {
       alternatives.push({
@@ -721,7 +721,7 @@ output "lambda_function_name" {
 
   private extractRecommendationsFromResponse(content: string): string[] {
     // Extract bullet points or numbered lists
-    const recommendations = [];
+    const recommendations: string[] = [];
     const lines = content.split('\n');
     
     for (const line of lines) {
@@ -739,4 +739,4 @@ output "lambda_function_name" {
 }
 
 export const aiInfrastructureService = new AIInfrastructureService();
-export type { AIGenerationRequest, AIGenerationResponse, AIProvider };
+export type { AIGenerationRequest, AIGenerationResponse };

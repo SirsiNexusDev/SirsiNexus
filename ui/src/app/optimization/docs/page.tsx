@@ -278,7 +278,7 @@ export default function OptimizationDocsPage() {
           </Card>
         </div>
 
-        <AIAssistantButton feature="optimization" />
+        <AIAssistantButton />
       </div>
     </div>
   );

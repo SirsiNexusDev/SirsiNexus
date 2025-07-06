@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  poweredByHeader: false, // Remove X-Powered-By header
+  poweredByHeader: false,
   
   images: {
-    loader: 'custom',
-    loaderFile: './src/lib/image-loader.ts',
     remotePatterns: [
       {
         protocol: 'https',
@@ -57,38 +55,6 @@ const nextConfig = {
     ];
   },
 
-  // Allow only specific origins for development
-  allowedDevOrigins: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://sirsinexus.com',
-  ],
-
-  // Configure rewrites with security in mind
-  async rewrites() {
-    return {
-      beforeFiles: [
-        // Add security checks for your API routes
-        {
-          source: '/api/:path*',
-          has: [
-            {
-              type: 'header',
-              key: 'x-api-key',
-            },
-          ],
-          destination: '/api/:path*',
-        },
-      ],
-      afterFiles: [
-        // Redirect insecure requests to secure endpoints
-        {
-          source: '/api/public/:path*',
-          destination: '/api/secure/:path*',
-        },
-      ],
-    };
-  },
 };
 
 module.exports = nextConfig;

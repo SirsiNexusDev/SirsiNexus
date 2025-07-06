@@ -367,7 +367,7 @@ curl -X POST "https://api.sirsinexus.com/v1/optimization/initialize" \\
           </Card>
         </div>
 
-        <AIAssistantButton feature="optimization" />
+        <AIAssistantButton />
       </div>
     </div>
   );

@@ -1014,14 +1014,14 @@ impl AIOrchestrationEngine {
         let enriched_context = context.clone();
 
         // Get cost predictions
-        if let Ok(cost_predictions) = self.prediction_models.predict_costs(context).await {
-            // Add predictions to context (this would require expanding DecisionContext)
+        if let Ok(_cost_predictions) = self.prediction_models.predict_costs(context).await {
+            // TODO: Add predictions to context (this would require expanding DecisionContext)
             // For now, we'll return the original context
         }
 
         // Get performance predictions
-        if let Ok(performance_predictions) = self.prediction_models.predict_performance(context).await {
-            // Add predictions to context
+        if let Ok(_performance_predictions) = self.prediction_models.predict_performance(context).await {
+            // TODO: Add predictions to context
         }
 
         Ok(enriched_context)

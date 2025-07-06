@@ -70,7 +70,7 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
-      <AgentChat autoExpand={false} />
+      <AgentChat />
       <NotificationCenter />
       <CommandPalette 
         isOpen={isCommandPaletteOpen}

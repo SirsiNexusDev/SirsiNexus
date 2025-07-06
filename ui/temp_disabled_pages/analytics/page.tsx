@@ -164,7 +164,7 @@ export default function AnalyticsDashboardPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Query Response:</span>
-                  <span className="font-medium">< 100ms</span>
+                  <span className="font-medium">&lt; 100ms</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Data Freshness:</span>

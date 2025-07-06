@@ -2762,7 +2762,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                                 {request.result.explanation}
                               </p>
                               
-                              {request.result.templates.length > 0 && (
+                              {request.result.templates && request.result.templates.length > 0 && (
                                 <div>
                                   <p className={`text-xs font-medium ${themeClasses.text} mb-2`}>Generated Templates:</p>
                                   <div className="flex gap-2">

@@ -150,7 +150,7 @@ impl SirsiNexusPlatform {
         // Ensure CockroachDB is running
         match self.ensure_database().await {
             Ok(_) => info!("✅ Database service ready"),
-            Err(e) => {
+            Err(_e) => {
                 warn!("⚠️  Database not available, starting embedded instance...");
                 self.start_embedded_database().await?;
             }
@@ -159,7 +159,7 @@ impl SirsiNexusPlatform {
         // Ensure Redis is running
         match self.ensure_redis().await {
             Ok(_) => info!("✅ Redis cache service ready"),
-            Err(e) => {
+            Err(_e) => {
                 warn!("⚠️  Redis not available, starting embedded instance...");
                 self.start_embedded_redis().await?;
             }

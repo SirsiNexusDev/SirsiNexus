@@ -384,14 +384,14 @@ impl DecisionEngine {
 
     async fn record_decision(
         &self,
-        context: &DecisionContext,
+        _context: &DecisionContext,
         decision: &Decision,
     ) -> Result<(), DecisionError> {
         let mut history = self.decision_history.write().await;
         history.push(decision.clone());
 
-        // Implement learning from decision history here
-        // This would feed back into ML model training
+        // TODO: Implement learning from decision history here
+        // This would feed back into ML model training using context data
 
         Ok(())
     }

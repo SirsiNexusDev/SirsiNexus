@@ -171,8 +171,8 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
     }
   };
 
-  const generateOptimizationRecommendations = (score: number) => {
-    const recommendations = [];
+  const generateOptimizationRecommendations = (score: number): string[] => {
+    const recommendations: string[] = [];
     
     if (score < 70) {
       recommendations.push('Consider right-sizing instances to reduce costs');

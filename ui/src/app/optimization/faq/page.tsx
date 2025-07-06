@@ -1,15 +1,11 @@
-import { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp, HelpCircle, Zap, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import AIAssistantButton from '@/components/ai-assistant/AIAssistantButton';
-
-export const metadata: Metadata = {
-  title: 'Optimization FAQ - SirsiNexus',
-  description: 'Frequently asked questions about SirsiNexus platform optimization features',
-};
 
 export default function OptimizationFAQPage() {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
@@ -260,7 +256,7 @@ export default function OptimizationFAQPage() {
           </Card>
         </div>
 
-        <AIAssistantButton feature="optimization" />
+        <AIAssistantButton />
       </div>
     </div>
   );
