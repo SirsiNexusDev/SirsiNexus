@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ClientLayout } from '@/components/ClientLayout';
+import { AIContextProvider } from '@/contexts/AIContextProvider';
+import AIContextToolbar from '@/components/ai-assistant/AIContextToolbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,11 +23,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <ErrorBoundary>
-            <ClientLayout>
-              {children}
-            </ClientLayout>
-          </ErrorBoundary>
+          <AIContextProvider>
+            <ErrorBoundary>
+              <ClientLayout>
+                {children}
+                <AIContextToolbar position="bottom" showWhenIdle autoHide={false} />
+              </ClientLayout>
+            </ErrorBoundary>
+          </AIContextProvider>
         </Providers>
       </body>
     </html>
