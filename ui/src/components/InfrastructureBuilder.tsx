@@ -1114,7 +1114,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: \${{ github.repository }}
 
 jobs:
   # Code Quality and Security
@@ -1144,8 +1144,8 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
 
       - name: Security scan
         uses: securecodewarrior/github-action-add-sarif@v1
@@ -1169,15 +1169,15 @@ jobs:
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: \${{ env.REGISTRY }}
+          username: \${{ github.actor }}
+          password: \${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: \${{ env.REGISTRY }}/\${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -1190,8 +1190,8 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: \${{ steps.meta.outputs.tags }}
+          labels: \${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -1220,8 +1220,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Update kubeconfig
@@ -1232,8 +1232,8 @@ jobs:
           helm upgrade --install myapp ./helm-chart \
             --namespace staging \
             --create-namespace \
-            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=${{ github.sha }} \
+            --set image.repository=\${{ env.REGISTRY }}/\${{ env.IMAGE_NAME }} \
+            --set image.tag=\${{ github.sha }} \
             --set environment=staging \
             --wait
 
@@ -1263,8 +1263,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Update kubeconfig
@@ -1275,8 +1275,8 @@ jobs:
           helm upgrade --install myapp ./helm-chart \
             --namespace production \
             --create-namespace \
-            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=${{ github.sha }} \
+            --set image.repository=\${{ env.REGISTRY }}/\${{ env.IMAGE_NAME }} \
+            --set image.tag=\${{ github.sha }} \
             --set environment=production \
             --set replicaCount=3 \
             --wait
@@ -1289,9 +1289,9 @@ jobs:
       - name: Notify deployment
         uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
+          status: \${{ job.status }}
           channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          webhook_url: \${{ secrets.SLACK_WEBHOOK }}
         if: always()`
     }
   }
