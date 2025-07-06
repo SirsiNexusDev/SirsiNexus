@@ -12,6 +12,21 @@ use std::collections::HashMap;
 
 use crate::error::{AppError, AppResult};
 
+// New AI orchestration modules
+pub mod decision;
+pub mod orchestration;
+
+// Re-export key types from new modules
+pub use decision::{
+    DecisionEngine, DecisionContext, DecisionOption, Decision,
+    UserPreferences, CloudState, DecisionError
+};
+
+pub use orchestration::{
+    AIOrchestrationEngine, OrchestrationTask, TaskType, TaskStatus,
+    OrchestrationError, PerformanceMetrics, OptimizationResults
+};
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AIConfig {
     pub openai_api_key: Option<String>,

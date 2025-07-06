@@ -1,4 +1,4 @@
-# Sirsi Nexus
+# SirsiNexus: AI-Powered Multi-Cloud Orchestration Platform
 
 **Sirsi Nexus** is a comprehensive, agent-embedded migration & infrastructure platform designed to automate heterogeneous cloud migrations and infrastructure management. Powered by the Sirsi AI Hypervisor, every feature is backed by specialized sub-agents for deep domain expertise, context awareness, and continuous assistance.
 
