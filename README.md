@@ -23,17 +23,52 @@ Sirsi Nexus combines a polyglot microservices architecture (Rust, Go, Python, Ty
 ## Current Status
 
 **Version**: v3.0.0  
-**Phase**: 3 - Advanced AI Orchestration (95% Complete)  
-**Status**: ✅ Production-ready with 88% AI accuracy and sub-second response times
+**Phase**: 3 - Advanced AI Orchestration (98% Complete)  
+**Status**: ✅ Production-ready with Docker containerization complete  
+**AI Performance**: 88% accuracy, sub-second response times  
+**Infrastructure**: Production Docker Compose with monitoring
 
 
 ## Prerequisites
 
+**For Production Deployment:**
+- Docker 20.10+
+- Docker Compose 2.0+
+- OpenSSL (for SSL certificate generation)
+
+**For Development:**
 - GitHub account
 - Access to GitHub Codespaces or Gitpod (recommended) or local VS Code with GitHub Copilot
 - Git installed (for local development)
 
 ## Getting Started
+
+### 🚀 Production Deployment (Recommended)
+
+**Quick Start - Production Ready in 5 minutes:**
+
+```bash
+# Clone repository
+git clone https://github.com/SirsiMaster/SirsiNexus.git
+cd SirsiNexus
+
+# Generate SSL certificates
+./scripts/generate-ssl.sh
+
+# Deploy all services with monitoring
+./scripts/deploy-production.sh
+
+# Access the application
+open https://localhost
+```
+
+**Services Available:**
+- 🌐 **Main Application**: https://localhost
+- 📊 **Monitoring Dashboard**: http://localhost:3001 (admin/admin123)
+- 📈 **Prometheus Metrics**: http://localhost:9000
+- 💾 **Database Admin**: http://localhost:8081
+
+### 🛠️ Development Setup
 
 ### Cloud IDE Setup
 
