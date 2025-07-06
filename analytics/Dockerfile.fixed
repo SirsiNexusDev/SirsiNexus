@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install required packages
+RUN pip install flask requests
+
+# Copy the Python application
+COPY app.py .
+
+EXPOSE 8000
+
+CMD ["python", "app.py"]
