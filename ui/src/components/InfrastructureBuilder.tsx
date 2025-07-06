@@ -38,13 +38,14 @@ import {
   Clock,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
+import { aiInfrastructureService, AIGenerationRequest, AIGenerationResponse } from '@/services/aiInfrastructureService';
 
 interface InfrastructureTemplate {
   id: string;
   name: string;
   description: string;
   category: 'api' | 'database' | 'compute' | 'storage' | 'networking' | 'security' | 'monitoring' | 'cicd';
-  provider: 'aws' | 'azure' | 'gcp' | 'multi' | 'kubernetes';
+  provider: 'aws' | 'azure' | 'gcp' | 'multi' | 'kubernetes' | 'ibm' | 'oracle' | 'alibaba';
   formats: ('terraform' | 'bicep' | 'cloudformation' | 'pulumi' | 'ansible' | 'yaml')[];
   complexity: 'basic' | 'intermediate' | 'advanced';
   estimatedCost: string;
@@ -62,10 +63,28 @@ interface GenerationRequest {
   query: string;
   timestamp: Date;
   status: 'pending' | 'generating' | 'completed' | 'error';
+  preferredProvider?: 'aws' | 'azure' | 'gcp' | 'kubernetes' | 'multi' | 'ibm' | 'oracle' | 'alibaba';
+  preferredFormat?: 'terraform' | 'bicep' | 'cloudformation' | 'pulumi' | 'ansible' | 'yaml';
+  complexity?: 'basic' | 'intermediate' | 'advanced';
+  includeMonitoring?: boolean;
+  includeSecurity?: boolean;
+  estimatedBudget?: string;
   result?: {
-    templates: InfrastructureTemplate[];
+    infrastructure?: {
+      code: string;
+      format: string;
+      provider: string;
+    };
+    templates?: InfrastructureTemplate[];
     explanation: string;
     recommendations: string[];
+    securityConsiderations?: string[];
+    alternatives?: {
+      provider: string;
+      rationale: string;
+    }[];
+    estimatedCost?: string;
+    deploymentTime?: string;
   };
 }
 
@@ -1294,6 +1313,913 @@ jobs:
           webhook_url: \${{ secrets.SLACK_WEBHOOK }}
         if: always()`
     }
+  },
+  {
+    id: 'ibm-cloud-foundry',
+    name: 'IBM Cloud Foundry Application',
+    description: 'Cloud-native application deployment on IBM Cloud with built-in DevOps and AI services',
+    category: 'compute',
+    provider: 'ibm',
+    formats: ['terraform', 'yaml'],
+    complexity: 'intermediate',
+    estimatedCost: '$80-300/month',
+    deploymentTime: '20-40 minutes',
+    tags: ['ibm-cloud', 'cloud-foundry', 'paas', 'devops', 'watson'],
+    content: {
+      terraform: `# IBM Cloud Foundry Application with Watson AI Services
+terraform {
+  required_providers {
+    ibm = {
+      source = "IBM-Cloud/ibm"
+      version = "~> 1.0"
+    }
+  }
+}
+
+variable "ibm_api_key" {
+  description = "IBM Cloud API Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "app_name" {
+  description = "Application name"
+  type        = string
+  default     = "my-ibm-app"
+}
+
+variable "region" {
+  description = "IBM Cloud region"
+  type        = string
+  default     = "us-south"
+}
+
+# Configure the IBM Provider
+provider "ibm" {
+  ibmcloud_api_key = var.ibm_api_key
+  region          = var.region
+}
+
+# Resource Group
+resource "ibm_resource_group" "main" {
+  name = "\${var.app_name}-rg"
+}
+
+# Cloud Foundry Organization
+resource "ibm_org" "main" {
+  name = "\${var.app_name}-org"
+}
+
+# Cloud Foundry Space
+resource "ibm_space" "main" {
+  name = "\${var.app_name}-space"
+  org  = ibm_org.main.name
+}
+
+# Watson Language Translator Service
+resource "ibm_resource_instance" "watson_translate" {
+  name              = "\${var.app_name}-translator"
+  service           = "language-translator"
+  plan              = "lite"
+  location          = var.region
+  resource_group_id = ibm_resource_group.main.id
+
+  tags = ["watson", "ai", "translation"]
+}
+
+# Watson Natural Language Understanding
+resource "ibm_resource_instance" "watson_nlu" {
+  name              = "\${var.app_name}-nlu"
+  service           = "natural-language-understanding"
+  plan              = "lite"
+  location          = var.region
+  resource_group_id = ibm_resource_group.main.id
+
+  tags = ["watson", "ai", "nlu"]
+}
+
+# Cloudant Database
+resource "ibm_resource_instance" "cloudant" {
+  name              = "\${var.app_name}-db"
+  service           = "cloudantnosqldb"
+  plan              = "lite"
+  location          = var.region
+  resource_group_id = ibm_resource_group.main.id
+
+  tags = ["database", "nosql"]
+}
+
+# Cloud Foundry Application
+resource "ibm_app" "main" {
+  name             = var.app_name
+  space_guid       = ibm_space.main.id
+  buildpack        = "nodejs_buildpack"
+  disk_quota       = 1024
+  instances        = 2
+  memory           = 256
+  
+  environment_json = {
+    WATSON_TRANSLATOR_URL = ibm_resource_instance.watson_translate.dashboard_url
+    WATSON_NLU_URL       = ibm_resource_instance.watson_nlu.dashboard_url
+    CLOUDANT_URL         = ibm_resource_instance.cloudant.dashboard_url
+  }
+
+  service_instance {
+    service_instance_guid = ibm_resource_instance.watson_translate.guid
+  }
+  
+  service_instance {
+    service_instance_guid = ibm_resource_instance.watson_nlu.guid
+  }
+  
+  service_instance {
+    service_instance_guid = ibm_resource_instance.cloudant.guid
+  }
+}
+
+# IBM Cloud Internet Services (Optional)
+resource "ibm_cis" "main" {
+  name              = "\${var.app_name}-cis"
+  plan              = "standard"
+  resource_group_id = ibm_resource_group.main.id
+}
+
+# Outputs
+output "app_url" {
+  description = "Application URL"
+  value       = "https://\${ibm_app.main.name}.\${var.region}.cf.appdomain.cloud"
+}
+
+output "watson_services" {
+  description = "Watson AI Services"
+  value = {
+    translator = ibm_resource_instance.watson_translate.dashboard_url
+    nlu        = ibm_resource_instance.watson_nlu.dashboard_url
+  }
+}
+
+output "database_url" {
+  description = "Cloudant Database URL"
+  value       = ibm_resource_instance.cloudant.dashboard_url
+  sensitive   = true
+}`,
+      yaml: `# IBM Cloud DevOps Pipeline Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ibm-cloud-config
+data:
+  pipeline.yml: |
+    version: '1'
+    setup:
+      image: ibmcom/pipeline-base-image:2.15
+    stages:
+    - name: BUILD
+      image: ibmcom/pipeline-base-image:2.15
+      script: |
+        #!/bin/bash
+        npm install
+        npm run build
+        npm test
+    - name: DEPLOY
+      image: ibmcom/pipeline-base-image:2.15
+      script: |
+        #!/bin/bash
+        cf login -a https://api.\${REGION}.cf.cloud.ibm.com
+        cf target -o \${ORG_NAME} -s \${SPACE_NAME}
+        cf push \${APP_NAME}
+    trigger:
+      type: git
+      branch: main`
+    },
+    variables: {
+      app_name: 'my-ibm-app',
+      region: 'us-south',
+      org_name: 'my-organization',
+      space_name: 'development'
+    }
+  },
+  {
+    id: 'oracle-cloud-infrastructure',
+    name: 'Oracle Cloud Infrastructure (OCI) Compute',
+    description: 'High-performance compute instances on Oracle Cloud with autonomous database integration',
+    category: 'compute',
+    provider: 'oracle',
+    formats: ['terraform', 'yaml'],
+    complexity: 'advanced',
+    estimatedCost: '$150-500/month',
+    deploymentTime: '30-60 minutes',
+    tags: ['oracle-cloud', 'oci', 'compute', 'autonomous-database', 'load-balancer'],
+    content: {
+      terraform: `# Oracle Cloud Infrastructure (OCI) Compute with Autonomous Database
+terraform {
+  required_providers {
+    oci = {
+      source = "oracle/oci"
+      version = "~> 4.0"
+    }
+  }
+}
+
+variable "tenancy_ocid" {
+  description = "OCID of the tenancy"
+  type        = string
+}
+
+variable "user_ocid" {
+  description = "OCID of the user"
+  type        = string
+}
+
+variable "fingerprint" {
+  description = "Fingerprint of the public key"
+  type        = string
+}
+
+variable "private_key_path" {
+  description = "Path to the private key"
+  type        = string
+}
+
+variable "region" {
+  description = "OCI region"
+  type        = string
+  default     = "us-phoenix-1"
+}
+
+variable "compartment_name" {
+  description = "Name of the compartment"
+  type        = string
+  default     = "terraform-compartment"
+}
+
+# Configure OCI Provider
+provider "oci" {
+  tenancy_ocid     = var.tenancy_ocid
+  user_ocid        = var.user_ocid
+  fingerprint      = var.fingerprint
+  private_key_path = var.private_key_path
+  region           = var.region
+}
+
+# Get availability domains
+data "oci_identity_availability_domains" "ads" {
+  compartment_id = var.tenancy_ocid
+}
+
+# Create compartment
+resource "oci_identity_compartment" "main" {
+  compartment_id = var.tenancy_ocid
+  description    = "Compartment for \${var.compartment_name}"
+  name           = var.compartment_name
+  enable_delete  = true
+}
+
+# Virtual Cloud Network (VCN)
+resource "oci_core_vcn" "main" {
+  cidr_block     = "10.0.0.0/16"
+  compartment_id = oci_identity_compartment.main.id
+  display_name   = "\${var.compartment_name}-vcn"
+  dns_label      = "mainvcn"
+}
+
+# Internet Gateway
+resource "oci_core_internet_gateway" "main" {
+  compartment_id = oci_identity_compartment.main.id
+  vcn_id         = oci_core_vcn.main.id
+  display_name   = "\${var.compartment_name}-igw"
+  enabled        = true
+}
+
+# Route Table
+resource "oci_core_route_table" "main" {
+  compartment_id = oci_identity_compartment.main.id
+  vcn_id         = oci_core_vcn.main.id
+  display_name   = "\${var.compartment_name}-rt"
+
+  route_rules {
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_internet_gateway.main.id
+  }
+}
+
+# Security List
+resource "oci_core_security_list" "main" {
+  compartment_id = oci_identity_compartment.main.id
+  vcn_id         = oci_core_vcn.main.id
+  display_name   = "\${var.compartment_name}-sl"
+
+  egress_security_rules {
+    destination = "0.0.0.0/0"
+    protocol    = "all"
+  }
+
+  ingress_security_rules {
+    protocol = "6" # TCP
+    source   = "0.0.0.0/0"
+    
+    tcp_options {
+      min = 80
+      max = 80
+    }
+  }
+
+  ingress_security_rules {
+    protocol = "6" # TCP
+    source   = "0.0.0.0/0"
+    
+    tcp_options {
+      min = 443
+      max = 443
+    }
+  }
+
+  ingress_security_rules {
+    protocol = "6" # TCP
+    source   = "0.0.0.0/0"
+    
+    tcp_options {
+      min = 22
+      max = 22
+    }
+  }
+}
+
+# Subnet
+resource "oci_core_subnet" "main" {
+  availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+  cidr_block          = "10.0.1.0/24"
+  display_name        = "\${var.compartment_name}-subnet"
+  compartment_id      = oci_identity_compartment.main.id
+  vcn_id              = oci_core_vcn.main.id
+  route_table_id      = oci_core_route_table.main.id
+  security_list_ids   = [oci_core_security_list.main.id]
+  dns_label           = "mainsubnet"
+}
+
+# Autonomous Database
+resource "oci_database_autonomous_database" "main" {
+  compartment_id                = oci_identity_compartment.main.id
+  db_name                      = "\${replace(var.compartment_name, "-", "")}"
+  display_name                 = "\${var.compartment_name}-adb"
+  admin_password               = "WelcomePass123#"
+  cpu_core_count              = 1
+  data_storage_size_in_tbs    = 1
+  db_workload                 = "OLTP"
+  is_auto_scaling_enabled     = true
+  is_free_tier               = false
+  license_model              = "LICENSE_INCLUDED"
+}
+
+# Compute Instance
+resource "oci_core_instance" "main" {
+  availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+  compartment_id      = oci_identity_compartment.main.id
+  display_name        = "\${var.compartment_name}-instance"
+  shape               = "VM.Standard.E4.Flex"
+
+  shape_config {
+    ocpus         = 2
+    memory_in_gbs = 8
+  }
+
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.main.id
+    display_name     = "\${var.compartment_name}-vnic"
+    assign_public_ip = true
+  }
+
+  source_details {
+    source_type = "image"
+    source_id   = "ocid1.image.oc1.phx.aaaaaaaa6hooptnlbfwr5lwemqjbu3uqidntrlhnt45yihfj222zahe7p3wq" # Oracle Linux 8
+  }
+
+  metadata = {
+    ssh_authorized_keys = file("~/.ssh/id_rsa.pub")
+    user_data = base64encode(templatefile("cloud-init.yaml", {
+      db_connection_string = oci_database_autonomous_database.main.connection_strings[0].high
+    }))
+  }
+}
+
+# Load Balancer
+resource "oci_load_balancer_load_balancer" "main" {
+  compartment_id = oci_identity_compartment.main.id
+  display_name   = "\${var.compartment_name}-lb"
+  shape          = "flexible"
+  
+  shape_details {
+    maximum_bandwidth_in_mbps = 100
+    minimum_bandwidth_in_mbps = 10
+  }
+
+  subnet_ids = [oci_core_subnet.main.id]
+}
+
+# Outputs
+output "instance_public_ip" {
+  description = "Public IP of the compute instance"
+  value       = oci_core_instance.main.public_ip
+}
+
+output "autonomous_db_connection" {
+  description = "Autonomous Database connection string"
+  value       = oci_database_autonomous_database.main.connection_strings[0].high
+  sensitive   = true
+}
+
+output "load_balancer_ip" {
+  description = "Load balancer IP address"
+  value       = oci_load_balancer_load_balancer.main.ip_address_details[0].ip_address
+}`,
+      yaml: `# OCI Cloud-Init Configuration
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - nginx
+  - nodejs
+  - npm
+  - oracle-instantclient-basic
+  - oracle-instantclient-sqlplus
+
+write_files:
+  - path: /etc/nginx/nginx.conf
+    content: |
+      events {}
+      http {
+        upstream app {
+          server 127.0.0.1:3000;
+        }
+        server {
+          listen 80;
+          location / {
+            proxy_pass http://app;
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+          }
+        }
+      }
+
+  - path: /home/opc/app.js
+    content: |
+      const express = require('express');
+      const oracledb = require('oracledb');
+      const app = express();
+      
+      app.get('/', (req, res) => {
+        res.json({ message: 'Hello from Oracle Cloud!', timestamp: new Date() });
+      });
+      
+      app.get('/health', async (req, res) => {
+        try {
+          const connection = await oracledb.getConnection({
+            connectionString: process.env.DB_CONNECTION_STRING
+          });
+          await connection.close();
+          res.json({ status: 'healthy', database: 'connected' });
+        } catch (error) {
+          res.status(500).json({ status: 'unhealthy', error: error.message });
+        }
+      });
+      
+      app.listen(3000, () => {
+        console.log('Server running on port 3000');
+      });
+
+runcmd:
+  - systemctl enable nginx
+  - systemctl start nginx
+  - cd /home/opc && npm init -y
+  - cd /home/opc && npm install express oracledb
+  - cd /home/opc && node app.js &`
+    },
+    variables: {
+      compartment_name: 'my-oci-project',
+      region: 'us-phoenix-1',
+      instance_shape: 'VM.Standard.E4.Flex',
+      db_admin_password: 'WelcomePass123#'
+    }
+  },
+  {
+    id: 'alibaba-cloud-ecs',
+    name: 'Alibaba Cloud Elastic Compute Service',
+    description: 'Scalable cloud computing solution with Alibaba Cloud ECS, RDS, and SLB for global applications',
+    category: 'compute',
+    provider: 'alibaba',
+    formats: ['terraform', 'yaml'],
+    complexity: 'intermediate',
+    estimatedCost: '$100-400/month',
+    deploymentTime: '25-45 minutes',
+    tags: ['alibaba-cloud', 'ecs', 'rds', 'slb', 'vpc', 'scaling'],
+    content: {
+      terraform: `# Alibaba Cloud ECS with RDS and Server Load Balancer
+terraform {
+  required_providers {
+    alicloud = {
+      source  = "aliyun/alicloud"
+      version = "~> 1.0"
+    }
+  }
+}
+
+variable "access_key" {
+  description = "Alibaba Cloud Access Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "secret_key" {
+  description = "Alibaba Cloud Secret Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "region" {
+  description = "Alibaba Cloud region"
+  type        = string
+  default     = "cn-hangzhou"
+}
+
+variable "project_name" {
+  description = "Project name"
+  type        = string
+  default     = "alibaba-cloud-project"
+}
+
+# Configure Alibaba Cloud Provider
+provider "alicloud" {
+  access_key = var.access_key
+  secret_key = var.secret_key
+  region     = var.region
+}
+
+# Get availability zones
+data "alicloud_zones" "main" {
+  available_instance_type = "ecs.n1.medium"
+  available_disk_category = "cloud_efficiency"
+}
+
+# VPC
+resource "alicloud_vpc" "main" {
+  vpc_name   = "\${var.project_name}-vpc"
+  cidr_block = "10.0.0.0/16"
+  
+  tags = {
+    Name        = "\${var.project_name}-vpc"
+    Environment = "production"
+  }
+}
+
+# VSwitch (Subnet)
+resource "alicloud_vswitch" "main" {
+  vswitch_name = "\${var.project_name}-vswitch"
+  vpc_id       = alicloud_vpc.main.id
+  cidr_block   = "10.0.1.0/24"
+  zone_id      = data.alicloud_zones.main.zones.0.id
+}
+
+resource "alicloud_vswitch" "secondary" {
+  vswitch_name = "\${var.project_name}-vswitch-secondary"
+  vpc_id       = alicloud_vpc.main.id
+  cidr_block   = "10.0.2.0/24"
+  zone_id      = data.alicloud_zones.main.zones.1.id
+}
+
+# Security Group
+resource "alicloud_security_group" "main" {
+  name   = "\${var.project_name}-sg"
+  vpc_id = alicloud_vpc.main.id
+  
+  tags = {
+    Name = "\${var.project_name}-security-group"
+  }
+}
+
+# Security Group Rules
+resource "alicloud_security_group_rule" "http" {
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "80/80"
+  priority          = 1
+  security_group_id = alicloud_security_group.main.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+resource "alicloud_security_group_rule" "https" {
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "443/443"
+  priority          = 1
+  security_group_id = alicloud_security_group.main.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+resource "alicloud_security_group_rule" "ssh" {
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 1
+  security_group_id = alicloud_security_group.main.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+# ECS Key Pair
+resource "alicloud_ecs_key_pair" "main" {
+  key_pair_name = "\${var.project_name}-keypair"
+  public_key    = file("~/.ssh/id_rsa.pub")
+}
+
+# ECS Instances
+resource "alicloud_instance" "web" {
+  count = 2
+  
+  instance_name              = "\${var.project_name}-web-\${count.index + 1}"
+  instance_type              = "ecs.n1.medium"
+  image_id                   = "centos_8_4_x64_20G_alibase_20210824.vhd"
+  vswitch_id                 = alicloud_vswitch.main.id
+  security_groups            = [alicloud_security_group.main.id]
+  key_name                   = alicloud_ecs_key_pair.main.key_pair_name
+  internet_max_bandwidth_out = 100
+  
+  system_disk_category = "cloud_efficiency"
+  system_disk_size     = 40
+  
+  user_data = base64encode(templatefile("user-data.sh", {
+    db_host     = alicloud_db_instance.main.connection_string
+    db_username = alicloud_db_instance.main.connection_string
+  }))
+  
+  tags = {
+    Name = "\${var.project_name}-web-\${count.index + 1}"
+    Type = "WebServer"
+  }
+}
+
+# RDS Instance
+resource "alicloud_db_instance" "main" {
+  engine               = "MySQL"
+  engine_version       = "8.0"
+  instance_type        = "rds.mysql.s1.small"
+  instance_storage     = 20
+  instance_charge_type = "Postpaid"
+  instance_name        = "\${var.project_name}-rds"
+  vswitch_id          = alicloud_vswitch.secondary.id
+  monitoring_period    = 60
+  
+  tags = {
+    Name = "\${var.project_name}-database"
+  }
+}
+
+# RDS Database
+resource "alicloud_db_database" "main" {
+  instance_id = alicloud_db_instance.main.id
+  name        = "appdb"
+  character_set = "utf8"
+}
+
+# RDS Account
+resource "alicloud_db_account" "main" {
+  db_instance_id   = alicloud_db_instance.main.id
+  account_name     = "appuser"
+  account_password = "AppPass123!"
+  account_type     = "Normal"
+}
+
+# Grant database privileges
+resource "alicloud_db_account_privilege" "main" {
+  instance_id  = alicloud_db_instance.main.id
+  account_name = alicloud_db_account.main.account_name
+  privilege    = "ReadWrite"
+  db_names     = [alicloud_db_database.main.name]
+}
+
+# Server Load Balancer (SLB)
+resource "alicloud_slb_load_balancer" "main" {
+  load_balancer_name = "\${var.project_name}-slb"
+  vswitch_id        = alicloud_vswitch.main.id
+  load_balancer_spec = "slb.s1.small"
+  
+  tags = {
+    Name = "\${var.project_name}-load-balancer"
+  }
+}
+
+# SLB Listener
+resource "alicloud_slb_listener" "main" {
+  load_balancer_id          = alicloud_slb_load_balancer.main.id
+  backend_port              = 80
+  frontend_port             = 80
+  protocol                  = "http"
+  bandwidth                 = 10
+  health_check_connect_port = 80
+  healthy_threshold         = 2
+  unhealthy_threshold       = 2
+  health_check_timeout      = 5
+  health_check_interval     = 2
+  health_check_http_code    = "http_2xx,http_3xx"
+}
+
+# Attach ECS instances to SLB
+resource "alicloud_slb_attachment" "main" {
+  load_balancer_id = alicloud_slb_load_balancer.main.id
+  instance_ids     = alicloud_instance.web[*].id
+  weight           = 100
+}
+
+# Auto Scaling Group
+resource "alicloud_ess_scaling_group" "main" {
+  min_size           = 2
+  max_size           = 6
+  scaling_group_name = "\${var.project_name}-asg"
+  vswitch_ids        = [alicloud_vswitch.main.id]
+  loadbalancer_ids   = [alicloud_slb_load_balancer.main.id]
+  removal_policies   = ["OldestInstance"]
+}
+
+# Auto Scaling Configuration
+resource "alicloud_ess_scaling_configuration" "main" {
+  scaling_group_id  = alicloud_ess_scaling_group.main.id
+  image_id          = "centos_8_4_x64_20G_alibase_20210824.vhd"
+  instance_type     = "ecs.n1.medium"
+  security_group_id = alicloud_security_group.main.id
+  force_delete      = true
+  active            = true
+  enable            = true
+  user_data         = base64encode(file("user-data.sh"))
+  key_name          = alicloud_ecs_key_pair.main.key_pair_name
+  
+  system_disk_category = "cloud_efficiency"
+  system_disk_size     = 40
+}
+
+# Outputs
+output "load_balancer_ip" {
+  description = "Load balancer public IP"
+  value       = alicloud_slb_load_balancer.main.address
+}
+
+output "web_server_ips" {
+  description = "Web server public IPs"
+  value       = alicloud_instance.web[*].public_ip
+}
+
+output "database_connection" {
+  description = "RDS connection string"
+  value       = alicloud_db_instance.main.connection_string
+  sensitive   = true
+}
+
+output "vpc_id" {
+  description = "VPC ID"
+  value       = alicloud_vpc.main.id
+}`,
+      yaml: `# Alibaba Cloud ECS User Data Script
+#!/bin/bash
+yum update -y
+yum install -y nginx nodejs npm mysql
+
+# Configure Nginx
+cat > /etc/nginx/nginx.conf << 'EOF'
+events {}
+http {
+    upstream app {
+        server 127.0.0.1:3000;
+    }
+    
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://app;
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        }
+        
+        location /health {
+            access_log off;
+            return 200 'OK';
+            add_header Content-Type text/plain;
+        }
+    }
+}
+EOF
+
+# Create Node.js application
+mkdir -p /opt/app
+cd /opt/app
+
+cat > package.json << 'EOF'
+{
+  "name": "alibaba-cloud-app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.18.0",
+    "mysql2": "^3.0.0"
+  }
+}
+EOF
+
+cat > app.js << 'EOF'
+const express = require('express');
+const mysql = require('mysql2');
+const app = express();
+
+// Database connection
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Hello from Alibaba Cloud!',
+    timestamp: new Date(),
+    server: require('os').hostname()
+  });
+});
+
+app.get('/health', (req, res) => {
+  db.ping((err) => {
+    if (err) {
+      res.status(500).json({ status: 'unhealthy', database: 'disconnected' });
+    } else {
+      res.json({ status: 'healthy', database: 'connected' });
+    }
+  });
+});
+
+app.get('/data', (req, res) => {
+  db.query('SELECT NOW() as server_time', (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json({ data: results });
+    }
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+EOF
+
+# Install dependencies and start services
+npm install
+
+# Set environment variables
+echo 'export DB_HOST="\${db_host}"' >> /etc/environment
+echo 'export DB_USER="\${db_username}"' >> /etc/environment
+echo 'export DB_PASSWORD="AppPass123!"' >> /etc/environment
+echo 'export DB_NAME="appdb"' >> /etc/environment
+
+# Create systemd service
+cat > /etc/systemd/system/app.service << 'EOF'
+[Unit]
+Description=Node.js App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/app
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/node app.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start services
+systemctl enable nginx
+systemctl start nginx
+systemctl enable app
+systemctl start app
+
+# Configure firewall
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --reload`
+    },
+    variables: {
+      project_name: 'my-alibaba-project',
+      region: 'cn-hangzhou',
+      instance_type: 'ecs.n1.medium',
+      db_password: 'AppPass123!'
+    }
   }
 ];
 
@@ -1313,6 +2239,9 @@ const providers = [
   { id: 'gcp', name: 'GCP', color: 'bg-green-100 text-green-700', count: 1 },
   { id: 'kubernetes', name: 'Kubernetes', color: 'bg-purple-100 text-purple-700', count: 1 },
   { id: 'multi', name: 'Multi-Cloud', color: 'bg-gray-100 text-gray-700', count: 2 },
+  { id: 'ibm', name: 'IBM Cloud', color: 'bg-indigo-100 text-indigo-700', count: 1 },
+  { id: 'oracle', name: 'Oracle Cloud', color: 'bg-red-100 text-red-700', count: 1 },
+  { id: 'alibaba', name: 'Alibaba Cloud', color: 'bg-yellow-100 text-yellow-700', count: 1 },
 ];
 
 const formats = [
@@ -1339,6 +2268,16 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
     templates: true
   });
+  
+  // Enhanced AI Generation Settings
+  const [aiSettings, setAiSettings] = useState({
+    includeMonitoring: true,
+    includeSecurity: true,
+    complexity: 'intermediate' as 'basic' | 'intermediate' | 'advanced',
+    estimatedBudget: '',
+    useAdvancedMode: false
+  });
+  const [showAiSettings, setShowAiSettings] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -1358,34 +2297,72 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
       id: Date.now().toString(),
       query,
       timestamp: new Date(),
-      status: 'pending'
+      status: 'pending',
+      preferredProvider: selectedProvider === 'all' ? undefined : selectedProvider as any,
+      preferredFormat: selectedFormat as any,
+      complexity: aiSettings.complexity,
+      includeMonitoring: aiSettings.includeMonitoring,
+      includeSecurity: aiSettings.includeSecurity,
+      estimatedBudget: aiSettings.estimatedBudget || undefined
     };
 
     setGenerationHistory(prev => [newRequest, ...prev]);
     setIsGenerating(true);
 
-    // Simulate AI generation
-    setTimeout(() => {
+    try {
+      // Use real AI service for generation
+      const aiRequest: AIGenerationRequest = {
+        query: newRequest.query,
+        preferredProvider: newRequest.preferredProvider,
+        preferredFormat: newRequest.preferredFormat,
+        complexity: newRequest.complexity,
+        includeMonitoring: newRequest.includeMonitoring,
+        includeSecurity: newRequest.includeSecurity,
+        estimatedBudget: newRequest.estimatedBudget
+      };
+
+      const aiResponse = await aiInfrastructureService.generateInfrastructure(aiRequest);
+      
       const updatedRequest: GenerationRequest = {
         ...newRequest,
         status: 'completed',
         result: {
-          templates: mockTemplates.slice(0, 2),
-          explanation: `Generated infrastructure based on your request: "${query}". The solution includes serverless components for cost efficiency and auto-scaling capabilities.`,
-          recommendations: [
-            'Consider adding monitoring and alerting',
-            'Implement proper security groups and IAM policies',
-            'Add backup and disaster recovery strategies',
-            'Enable cost optimization features'
-          ]
+          infrastructure: aiResponse.infrastructure,
+          explanation: aiResponse.explanation,
+          recommendations: aiResponse.recommendations,
+          securityConsiderations: aiResponse.securityConsiderations,
+          alternatives: aiResponse.alternatives,
+          estimatedCost: aiResponse.estimatedCost,
+          deploymentTime: aiResponse.deploymentTime,
+          // Include template suggestions based on AI result
+          templates: mockTemplates.filter(t => 
+            t.provider === aiResponse.infrastructure.provider ||
+            t.category === 'api' || t.category === 'compute'
+          ).slice(0, 2)
         }
       };
 
       setGenerationHistory(prev => 
         prev.map(req => req.id === newRequest.id ? updatedRequest : req)
       );
+    } catch (error) {
+      console.error('AI generation failed:', error);
+      const errorRequest: GenerationRequest = {
+        ...newRequest,
+        status: 'error',
+        result: {
+          explanation: 'AI generation failed. Please try again or check your connection.',
+          recommendations: ['Try rephrasing your request', 'Check AI service availability'],
+          templates: mockTemplates.slice(0, 2)
+        }
+      };
+      
+      setGenerationHistory(prev => 
+        prev.map(req => req.id === newRequest.id ? errorRequest : req)
+      );
+    } finally {
       setIsGenerating(false);
-    }, 3000);
+    }
   };
 
   const filteredTemplates = mockTemplates.filter(template => {
