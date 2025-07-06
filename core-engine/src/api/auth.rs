@@ -11,6 +11,15 @@ use crate::{
     models::user::User,
 };
 
+// Router function for backwards compatibility
+use axum::{routing::post, Router};
+
+pub fn router() -> Router<PgPool> {
+    Router::new()
+        .route("/register", post(register_handler))
+        .route("/login", post(login_handler))
+}
+
 #[derive(Debug, Deserialize, Validate, Clone)]
 pub struct RegisterRequest {
     #[validate(length(min = 1))]

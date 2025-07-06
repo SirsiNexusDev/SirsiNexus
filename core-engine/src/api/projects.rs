@@ -13,6 +13,18 @@ use crate::{
     models::project::{CreateProject, Project, ProjectStatus},
 };
 
+// Router function for backwards compatibility
+use axum::{routing::{get, post, put, delete}, Router};
+
+pub fn router() -> Router<PgPool> {
+    Router::new()
+        .route("/", get(list_projects_handler))
+        .route("/", post(create_project_handler))
+        .route("/:id", get(get_project_handler))
+        .route("/:id", put(update_project_handler))
+        .route("/:id", delete(delete_project_handler))
+}
+
 #[derive(Debug, Deserialize, Validate)]
 pub struct CreateProjectRequest {
     #[validate(length(min = 1, max = 255))]

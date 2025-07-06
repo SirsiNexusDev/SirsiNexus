@@ -1,0 +1,9 @@
+[0;34m[2025-07-06 10:47:09][0m 🚀 Starting SirsiNexus Load Testing...
+[0;34m[2025-07-06 10:47:09][0m Test Directory: load-test-20250706_104709
+[0;34m[2025-07-06 10:47:09][0m Configuration: 10 users, 30s duration, 10s ramp-up
+[0;34m[2025-07-06 10:47:09][0m 🔍 Checking Prerequisites...
+[0;32m✅ Apache Bench (ab) available[0m
+[0;32m✅ All prerequisites satisfied[0m
+[0;34m[2025-07-06 10:47:09][0m 🌐 Checking Service Availability...
+[0;31m❌ //localhost is not accessible at http[0m
+[0;35mℹ️  Make sure all services are running before load testing[0m

@@ -1,12 +1,12 @@
 mod production;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use config::ConfigError;
 
 pub use production::*;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct DatabaseConfig {
     pub host: String,
     pub port: u16,
@@ -17,6 +17,7 @@ pub struct DatabaseConfig {
     pub ssl_ca_cert: Option<String>,
     // CockroachDB-specific settings
     pub sslmode: Option<String>,
+    pub url: String,
 }
 
 impl Default for DatabaseConfig {
@@ -30,30 +31,32 @@ impl Default for DatabaseConfig {
             max_connections: 20,
             ssl_ca_cert: None,
             sslmode: Some("require".to_string()),
+            url: "postgresql://root@localhost:26257/sirsi_nexus?sslmode=require".to_string(),
         }
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ServerConfig {
     pub http_addr: SocketAddr,
     pub grpc_addr: SocketAddr,
+    pub websocket_addr: SocketAddr,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct JwtConfig {
     pub secret: String,
     pub expiration: i64,  // in minutes
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct TelemetryConfig {
     pub service_name: String,
     pub environment: String,
     pub otlp_endpoint: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct RedisConfig {
     pub url: String,
 }
@@ -66,7 +69,7 @@ impl Default for RedisConfig {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AppConfig {
     pub database: DatabaseConfig,
     pub server: ServerConfig,

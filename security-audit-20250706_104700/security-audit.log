@@ -1,0 +1,49 @@
+[0;34m[2025-07-06 10:47:00][0m 🔍 Starting SirsiNexus Security Audit...
+[0;34m[2025-07-06 10:47:00][0m Audit Directory: security-audit-20250706_104700
+[0;34m[2025-07-06 10:47:00][0m 🔒 Auditing Network Security...
+[0;34m[2025-07-06 10:47:00][0m Checking open ports...
+[1;33m⚠️  Port 26257 is not accessible[0m
+[1;33m⚠️  Port 6379 is not accessible[0m
+[1;33m⚠️  Port 8080 is not accessible[0m
+[1;33m⚠️  Port 3000 is not accessible[0m
+[0;34m[2025-07-06 10:47:00][0m 🔐 Auditing Authentication Security...
+[0;34m[2025-07-06 10:47:00][0m Checking JWT token configuration...
+[1;33m⚠️  JWT_SECRET not found in .env file[0m
+[0;34m[2025-07-06 10:47:00][0m Checking password hashing implementation...
+[0;32m✅ Argon2 password hashing detected[0m
+[0;34m[2025-07-06 10:47:00][0m 🗄️ Auditing Database Security...
+[0;34m[2025-07-06 10:47:00][0m Checking CockroachDB security configuration...
+[1;33m⚠️  CockroachDB running in insecure mode (development only)[0m
+[0;32m✅ Database connectivity and permissions check passed[0m
+[0;34m[2025-07-06 10:47:00][0m Checking Redis security configuration...
+[1;33m⚠️  Redis accessible without authentication (development mode)[0m
+[0;34m[2025-07-06 10:47:00][0m 🛡️ Auditing Application Security...
+[0;34m[2025-07-06 10:47:00][0m Scanning for hardcoded secrets...
+[1;33m⚠️  Potential hardcoded passwords found[0m
+[0;34m[2025-07-06 10:47:00][0m Checking TypeScript security configuration...
+[1;33m⚠️  TypeScript strict mode not enabled[0m
+[0;34m[2025-07-06 10:47:00][0m 🐳 Auditing Docker Security...
+[0;34m[2025-07-06 10:47:00][0m Checking Docker configuration...
+[0;32m✅ Non-root user specified in ./ui/Dockerfile.prod[0m
+[1;33m⚠️  No non-root user specified in ./frontend/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./core-engine-demo/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./core-engine-demo/Dockerfile-fixed[0m
+[1;33m⚠️  No non-root user specified in ./core-engine-demo/Dockerfile.simple[0m
+[0;32m✅ Non-root user specified in ./core-engine/Dockerfile.prod[0m
+[0;32m✅ Non-root user specified in ./core-engine/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/alpine/3.3/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/debian/7.5/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/debian/7.3/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/debian/7.4/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/debian/7.6/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/fedora/20/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/ubuntu/14.04/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./node_modules/getos/tests/ubuntu/13.10/Dockerfile[0m
+[0;32m✅ Non-root user specified in ./analytics-platform/Dockerfile.prod[0m
+[1;33m⚠️  No non-root user specified in ./analytics/Dockerfile[0m
+[1;33m⚠️  No non-root user specified in ./analytics/Dockerfile.fixed[0m
+[0;34m[2025-07-06 10:47:01][0m 📊 Generating Security Report...
+[0;32m✅ Security report generated: security-audit-20250706_104700/security-report.md[0m
+[0;34m[2025-07-06 10:47:01][0m 🎉 Security audit completed!
+[0;34m[2025-07-06 10:47:01][0m 📁 Results available in: security-audit-20250706_104700/

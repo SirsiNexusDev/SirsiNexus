@@ -1,20 +1,20 @@
 [package]
-name = "sirsi-core"
-version = "0.2.1"
+name = "sirsi-nexus"
+version = "3.0.0"
 edition = "2021"
+description = "SirsiNexus - AI-Powered Infrastructure Management Platform"
+authors = ["SirsiNexus Team"]
+license = "MIT"
+repository = "https://github.com/sirsinexus/sirsi-nexus"
+keywords = ["infrastructure", "ai", "cloud", "optimization", "management"]
+categories = ["command-line-utilities", "web-programming"]
 
+# Single unified binary entry point
 [[bin]]
-name = "sirsi-core"
+name = "sirsi-nexus"
 path = "src/main.rs"
 
-[[bin]]
-name = "agent-server"
-path = "src/bin/agent-server.rs"
-
-[[bin]]
-name = "combined-server"
-path = "src/bin/combined-server.rs"
-
+# Library for internal components
 [lib]
 name = "sirsi_core"
 path = "src/lib.rs"

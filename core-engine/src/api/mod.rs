@@ -4,9 +4,27 @@ use axum::{
 };
 use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
 
-mod auth;
-mod projects;
+pub mod auth;
+pub mod projects;
 mod resources;
+
+// Individual module routers for backwards compatibility
+pub mod health {
+    use axum::{routing::get, Router};
+    
+    pub fn router() -> Router {
+        Router::new().route("/health", get(super::health_check))
+    }
+}
+
+pub mod users {
+    use axum::Router;
+    
+    pub fn router() -> Router {
+        Router::new()
+        // Add user-specific routes here if needed
+    }
+}
 
 pub fn create_router(db: PgPool) -> Router {
     Router::new()
