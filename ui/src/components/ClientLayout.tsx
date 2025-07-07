@@ -14,17 +14,10 @@ interface ClientLayoutProps {
 
 export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
   
   // Infrastructure builder uses its own dark mode
   const isInfrastructurePage = pathname === '/infrastructure';
-  
-  // Load dark mode preference from localStorage
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    setIsDarkMode(savedDarkMode);
-  }, []);
   
   // Handle navigation to infrastructure with query
   const handleNavigateToInfrastructure = () => {
@@ -63,7 +56,6 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
       <div className="flex">
         <Sidebar 
           aiAssistant 
-          isDarkMode={isDarkMode}
           onNavigateToInfrastructure={handleNavigateToInfrastructure}
         />
         <main className="flex-1 p-6 ml-0 lg:ml-64 transition-all duration-300">

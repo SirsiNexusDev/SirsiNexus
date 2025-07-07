@@ -135,14 +135,15 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, authModalOpen, journeySelectionModalOpen, dispatch]);
 
-  const handleSignIn = (credentials: { email: string; password: string }) => {
+  const handleSignIn = (credentials: { email: string; password: string; rememberMe?: boolean }) => {
     console.log('Signing in with:', credentials);
     
     dispatch(login({ 
       id: '1', 
       email: credentials.email, 
       name: credentials.email.split('@')[0], 
-      role: credentials.email.includes('admin') ? 'admin' : 'user'
+      role: credentials.email.includes('admin') ? 'admin' : 'user',
+      rememberMe: credentials.rememberMe || true // Default to true for persistent sessions
     }));
     dispatch(setModalState({ modal: 'auth', visible: false }));
     

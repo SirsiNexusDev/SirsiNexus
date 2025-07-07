@@ -5,7 +5,6 @@ import projectReducer from './slices/projectSlice';
 import migrationReducer from './slices/migrationSlice';
 import uiReducer from './slices/uiSlice';
 import agentReducer from './slices/agentSlice';
-import themeReducer from './slices/themeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,7 +13,6 @@ export const store = configureStore({
     migrations: migrationReducer,
     ui: uiReducer,
     agent: agentReducer,
-    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

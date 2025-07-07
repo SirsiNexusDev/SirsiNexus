@@ -16,7 +16,7 @@ import {
 interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSignIn: (credentials: { email: string; password: string }) => void;
+  onSignIn: (credentials: { email: string; password: string; rememberMe?: boolean }) => void;
   onRegister?: (userData: { name: string; email: string; password: string; confirmPassword: string }) => void;
   onOAuthLogin?: (provider: string) => void;
 }
@@ -76,7 +76,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
         if (isValid) {
           setShowSuccess(true);
           setTimeout(() => {
-            onSignIn({ email, password });
+            onSignIn({ email, password, rememberMe });
             onClose();
           }, 2000);
         } else {
@@ -216,7 +216,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
                     <p className="text-sm text-green-600">
                       {activeTab === 'signin' 
                         ? 'Welcome back! Redirecting to dashboard...' 
-                        : 'A verification email has been sent to your inbox. Please verify your account.'
+                        : 'Account created successfully! A verification email has been sent to your inbox. Please check your email and verify your account.'
                       }
                     </p>
                   </div>

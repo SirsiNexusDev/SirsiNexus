@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Home,
   Wand2,
@@ -88,6 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNavigateToInfrastructure
 }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
   const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
   const [nlpQuery, setNlpQuery] = useState('');
@@ -209,9 +210,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="mb-6">
           <button
             onClick={() => {
-              if (window.location.pathname !== '/') {
-                window.history.pushState({}, '', '/');
-                window.dispatchEvent(new PopStateEvent('popstate'));
+              if (pathname !== '/') {
+                router.push('/');
               }
             }}
             className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(pathname === '/')}`}
@@ -254,9 +254,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     key={wizard.path}
                     onClick={() => {
-                      if (window.location.pathname !== wizard.path) {
-                        window.history.pushState({}, '', wizard.path);
-                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      if (pathname !== wizard.path) {
+                        router.push(wizard.path);
                       }
                     }}
                     className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
@@ -317,9 +316,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 <button
                                   key={step.path}
                                   onClick={() => {
-                                    if (window.location.pathname !== step.path) {
-                                      window.history.pushState({}, '', step.path);
-                                      window.dispatchEvent(new PopStateEvent('popstate'));
+                                    if (pathname !== step.path) {
+                                      router.push(step.path);
                                     }
                                   }}
                                   className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
@@ -353,9 +351,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       key={item.path}
                       onClick={() => {
-                        if (window.location.pathname !== item.path) {
-                          window.history.pushState({}, '', item.path);
-                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        if (pathname !== item.path) {
+                          router.push(item.path);
                         }
                       }}
                       className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
@@ -376,9 +373,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className={`mt-8 pt-6 border-t ${themeClasses.border}`}>
           <button 
             onClick={() => {
-              if (window.location.pathname !== '/infrastructure') {
-                window.history.pushState({}, '', '/infrastructure');
-                window.dispatchEvent(new PopStateEvent('popstate'));
+              if (pathname !== '/infrastructure') {
+                router.push('/infrastructure');
               }
             }}
             className={`w-full ${themeClasses.button} text-white rounded-lg p-3 transition-colors group mb-3`}

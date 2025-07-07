@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { logout } from '@/store/slices/authSlice';
-import { toggleTheme } from '@/store/slices/themeSlice';
+import { useTheme } from 'next-themes';
 import { useToast } from '@/components/ui/toast';
 import {
   User, Shield, Key, Bell, Database, Users, Palette, Code, 
@@ -24,11 +24,18 @@ interface SettingsSection {
 export default function SettingsPage() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
-  const isDarkMode = useAppSelector((state) => state.theme.isDarkMode);
+  const { theme, setTheme } = useTheme();
   const { showToast } = useToast();
   
   const [activeSection, setActiveSection] = useState('account');
   const [searchQuery, setSearchQuery] = useState('');
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  const isDarkMode = theme === 'dark';
 
   // Settings state
   const [settings, setSettings] = useState({
@@ -63,7 +70,6 @@ export default function SettingsPage() {
     teamNotifications: true,
     
     // Appearance
-    theme: 'auto' as 'light' | 'dark' | 'auto',
     compactMode: false,
     animationsEnabled: true,
     sidebarCollapsed: false,
@@ -121,15 +127,10 @@ export default function SettingsPage() {
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
-    
-    // Special handling for theme changes
-    if (key === 'theme') {
-      if (value === 'dark' || (value === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        if (!isDarkMode) dispatch(toggleTheme());
-      } else {
-        if (isDarkMode) dispatch(toggleTheme());
-      }
-    }
+  };
+  
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme);
   };
 
   const handleSaveSetting = (setting: string, successMessage: string) => {
@@ -211,6 +212,10 @@ export default function SettingsPage() {
     sidebarInactive: isDarkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className={`min-h-screen ${themeClasses.bg} flex`}>
       {/* Sidebar */}
@@ -290,15 +295,80 @@ export default function SettingsPage() {
             {activeSection === 'account' && (
               <div className="p-6">
                 <div className="space-y-6">
+                  {/* User Profile Card */}
+                  <div className={`p-6 rounded-lg ${themeClasses.border} border`}>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-2xl font-bold text-white">
+                          {user?.name?.charAt(0).toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className={`text-xl font-semibold ${themeClasses.text}`}>
+                          {user?.name || 'User'}
+                        </h3>
+                        <p className={`${themeClasses.textSecondary}`}>
+                          {user?.email || 'user@example.com'}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            user?.role === 'admin' 
+                              ? 'bg-purple-100 text-purple-800' 
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {user?.role?.toUpperCase() || 'USER'}
+                          </span>
+                          <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                            Active
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Account Stats */}
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <div className="text-center">
+                        <div className={`text-lg font-semibold ${themeClasses.text}`}>
+                          {user?.createdAt ? Math.floor((new Date().getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) : 0}
+                        </div>
+                        <div className={`text-xs ${themeClasses.textSecondary}`}>Days Active</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={`text-lg font-semibold ${themeClasses.text}`}>12</div>
+                        <div className={`text-xs ${themeClasses.textSecondary}`}>Projects</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={`text-lg font-semibold ${themeClasses.text}`}>
+                          {user?.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Today'}
+                        </div>
+                        <div className={`text-xs ${themeClasses.textSecondary}`}>Last Login</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <label className={`block text-sm font-medium ${themeClasses.text} mb-2`}>
-                      Email
+                      Email Address
                     </label>
                     <input
                       type="email"
                       value={settings.email}
                       onChange={(e) => handleSettingChange('email', e.target.value)}
                       className={`w-full px-3 py-2 rounded-lg ${themeClasses.input} ${themeClasses.border} border focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium ${themeClasses.text} mb-2`}>
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      value={user?.name || ''}
+                      onChange={(e) => handleSettingChange('username', e.target.value)}
+                      className={`w-full px-3 py-2 rounded-lg ${themeClasses.input} ${themeClasses.border} border focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      placeholder="Enter your username"
                     />
                   </div>
 
@@ -484,26 +554,26 @@ export default function SettingsPage() {
                       {[
                         { value: 'light', label: 'Light', icon: Sun },
                         { value: 'dark', label: 'Dark', icon: Moon },
-                        { value: 'auto', label: 'Auto', icon: Monitor },
+                        { value: 'system', label: 'System', icon: Monitor },
                       ].map(({ value, label, icon: Icon }) => (
                         <label key={value} className="flex items-center gap-3 cursor-pointer">
                           <input
                             type="radio"
                             name="theme"
                             value={value}
-                            checked={settings.theme === value}
+                            checked={theme === value}
                             onChange={(e) => {
-                              handleSettingChange('theme', e.target.value);
+                              handleThemeChange(e.target.value);
                               handleSaveSetting('theme', `Theme changed to ${label}`);
                             }}
                             className="sr-only"
                           />
                           <div className={`w-4 h-4 rounded-full border-2 ${
-                            settings.theme === value 
+                            theme === value 
                               ? 'border-blue-500 bg-blue-500' 
                               : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                           }`}>
-                            {settings.theme === value && (
+                            {theme === value && (
                               <div className="w-full h-full rounded-full bg-white scale-50" />
                             )}
                           </div>

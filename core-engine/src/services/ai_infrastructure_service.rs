@@ -1,8 +1,9 @@
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use anyhow::Result;
-use tracing::{info, warn, error};
-use async_openai::{Client as OpenAIClient, types::CreateCompletionRequestArgs};
+use tracing::{info, warn};
+use async_openai::{Client as OpenAIClient, types::{CreateChatCompletionRequestArgs, ChatCompletionRequestSystemMessageArgs, ChatCompletionRequestUserMessageArgs}};
+use reqwest::Client as HttpClient;
+use serde_json::json;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InfrastructureRequest {
@@ -77,111 +78,15 @@ pub struct InfrastructureResponse {
 
 pub struct AIInfrastructureService {
     openai_client: Option<OpenAIClient<async_openai::config::OpenAIConfig>>,
-    claude_client: Option<ClaudeClient>,
+    http_client: HttpClient,
+    anthropic_api_key: Option<String>,
     mock_mode: bool,
 }
 
-// Mock Claude client for now - would be replaced with actual Anthropic SDK
-struct ClaudeClient {
-    api_key: String,
-}
-
-impl ClaudeClient {
-    pub fn new(api_key: String) -> Self {
-        Self { api_key }
-    }
-
-    pub async fn generate_completion(&self, prompt: &str) -> Result<String> {
-        // TODO: Implement actual Claude API integration
-        warn!("Claude API integration not yet implemented, using mock response");
-        Ok(self.generate_mock_response(prompt))
-    }
-
-    fn generate_mock_response(&self, prompt: &str) -> String {
-        if prompt.contains("terraform") || prompt.contains("AWS") {
-            return r#"
-# Generated AWS Infrastructure with Terraform
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-west-2"
-}
-
-resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  tags = {
-    Name = "sirsi-nexus-vpc"
-  }
-}
-
-resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-west-2a"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "sirsi-nexus-public-subnet"
-  }
-}
-
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "sirsi-nexus-igw"
-  }
-}
-
-resource "aws_security_group" "web" {
-  name_prefix = "sirsi-nexus-web"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "sirsi-nexus-web-sg"
-  }
-}
-"#.to_string();
-        }
-
-        "# Generated infrastructure template\n# This is a mock response from Claude".to_string()
-    }
-}
 
 impl AIInfrastructureService {
     pub fn new() -> Self {
-        let openai_client = if let Ok(api_key) = std::env::var("OPENAI_API_KEY") {
+        let openai_client = if let Ok(_api_key) = std::env::var("OPENAI_API_KEY") {
             info!("OpenAI API key found, enabling real AI integration");
             Some(OpenAIClient::new())
         } else {
@@ -189,19 +94,20 @@ impl AIInfrastructureService {
             None
         };
 
-        let claude_client = if let Ok(api_key) = std::env::var("ANTHROPIC_API_KEY") {
+        let anthropic_api_key = if let Ok(api_key) = std::env::var("ANTHROPIC_API_KEY") {
             info!("Anthropic API key found, enabling Claude integration");
-            Some(ClaudeClient::new(api_key))
+            Some(api_key)
         } else {
             warn!("Anthropic API key not found, Claude service will use mock mode");
             None
         };
 
-        let mock_mode = openai_client.is_none() && claude_client.is_none();
+        let mock_mode = openai_client.is_none() && anthropic_api_key.is_none();
 
         Self {
             openai_client,
-            claude_client,
+            http_client: HttpClient::new(),
+            anthropic_api_key,
             mock_mode,
         }
     }
@@ -223,17 +129,81 @@ impl AIInfrastructureService {
         if let Some(ref client) = self.openai_client {
             let prompt = self.build_prompt(&request);
             
-            let completion_request = CreateCompletionRequestArgs::default()
-                .model("gpt-3.5-turbo-instruct")
-                .prompt(&prompt)
-                .max_tokens(2048_u16)
-                .temperature(0.7)
+            let system_message = ChatCompletionRequestSystemMessageArgs::default()
+                .content("You are an expert infrastructure architect. Generate production-ready infrastructure templates with best practices, security, and cost optimization.")
+                .build()?;
+            
+            let user_message = ChatCompletionRequestUserMessageArgs::default()
+                .content(prompt.clone())
+                .build()?;
+            
+            let chat_request = CreateChatCompletionRequestArgs::default()
+                .model("gpt-4-turbo-preview")
+                .messages(vec![system_message.into(), user_message.into()])
+                .max_tokens(3000_u16)
+                .temperature(0.3)
                 .build()?;
 
-            let response = client.completions().create(completion_request).await?;
+            let response = client.chat().create(chat_request).await?;
             
             if let Some(choice) = response.choices.first() {
-                let template = choice.text.clone();
+                if let Some(ref message) = choice.message.content {
+                    let template = message.clone();
+                    
+                    return Ok(InfrastructureResponse {
+                        template,
+                        template_type: self.get_template_type(&request.cloud_provider),
+                        estimated_cost: self.estimate_cost(&request),
+                        security_recommendations: self.generate_security_recommendations(&request),
+                        optimization_suggestions: self.generate_optimization_suggestions(&request),
+                        deployment_instructions: self.generate_deployment_instructions(&request),
+                        ai_provider_used: request.ai_provider,
+                        confidence_score: 0.92, // Higher confidence with GPT-4
+                    });
+                }
+            }
+        }
+
+        // Fallback to mock if OpenAI fails
+        self.generate_mock_infrastructure(request).await
+    }
+
+    async fn generate_with_claude(&self, request: InfrastructureRequest) -> Result<InfrastructureResponse> {
+        if let Some(ref api_key) = self.anthropic_api_key {
+            let prompt = self.build_prompt(&request);
+            
+            let system_prompt = "You are an expert infrastructure architect specializing in cloud infrastructure as code. Generate production-ready, secure, and cost-optimized infrastructure templates with comprehensive documentation and best practices.";
+            
+            let request_body = json!({
+                "model": "claude-3-5-sonnet-20241022",
+                "max_tokens": 3000,
+                "temperature": 0.3,
+                "messages": [{
+                    "role": "user",
+                    "content": format!("{} {}", system_prompt, prompt)
+                }]
+            });
+            
+            let response = self.http_client
+                .post("https://api.anthropic.com/v1/messages")
+                .header("Content-Type", "application/json")
+                .header("x-api-key", api_key)
+                .header("anthropic-version", "2023-06-01")
+                .json(&request_body)
+                .send()
+                .await?;
+            
+            if response.status().is_success() {
+                let response_json: serde_json::Value = response.json().await?;
+                
+                let mut template = String::new();
+                if let Some(content_array) = response_json["content"].as_array() {
+                    for content in content_array {
+                        if let Some(text) = content["text"].as_str() {
+                            template.push_str(text);
+                        }
+                    }
+                }
                 
                 return Ok(InfrastructureResponse {
                     template,
@@ -243,30 +213,11 @@ impl AIInfrastructureService {
                     optimization_suggestions: self.generate_optimization_suggestions(&request),
                     deployment_instructions: self.generate_deployment_instructions(&request),
                     ai_provider_used: request.ai_provider,
-                    confidence_score: 0.85,
+                    confidence_score: 0.94, // Higher confidence with Claude-3.5-Sonnet
                 });
+            } else {
+                warn!("Claude API request failed with status: {}", response.status());
             }
-        }
-
-        // Fallback to mock if OpenAI fails
-        self.generate_mock_infrastructure(request).await
-    }
-
-    async fn generate_with_claude(&self, request: InfrastructureRequest) -> Result<InfrastructureResponse> {
-        if let Some(ref client) = self.claude_client {
-            let prompt = self.build_prompt(&request);
-            let template = client.generate_completion(&prompt).await?;
-            
-            return Ok(InfrastructureResponse {
-                template,
-                template_type: self.get_template_type(&request.cloud_provider),
-                estimated_cost: self.estimate_cost(&request),
-                security_recommendations: self.generate_security_recommendations(&request),
-                optimization_suggestions: self.generate_optimization_suggestions(&request),
-                deployment_instructions: self.generate_deployment_instructions(&request),
-                ai_provider_used: request.ai_provider,
-                confidence_score: 0.88,
-            });
         }
 
         // Fallback to mock if Claude fails

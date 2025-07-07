@@ -16,6 +16,20 @@ const nextConfig = {
     ],
   },
 
+  // API rewrites for backend communication
+  async rewrites() {
+    return [
+      {
+        source: '/api/ai/:path*',
+        destination: 'http://localhost:8080/api/ai/:path*',
+      },
+      {
+        source: '/api/health',
+        destination: 'http://localhost:8080/api/health',
+      },
+    ];
+  },
+
   // Security headers
   async headers() {
     return [

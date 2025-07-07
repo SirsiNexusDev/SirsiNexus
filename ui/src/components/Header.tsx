@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store';
-import { toggleTheme } from '@/store/slices/uiSlice';
 import { logout } from '@/store/slices/authSlice';
 import { useTheme } from 'next-themes';
 import {
@@ -59,7 +58,6 @@ export const Header: React.FC = () => {
       newTheme = 'light';
     }
     setTheme(newTheme);
-    dispatch(toggleTheme());
   };
 
   if (!mounted) {

@@ -7,6 +7,7 @@ use sqlx::PgPool; // CockroachDB uses PostgreSQL protocol
 pub mod auth;
 pub mod projects;
 mod resources;
+pub mod ai;
 
 // Individual module routers for backwards compatibility
 pub mod health {
@@ -44,6 +45,11 @@ pub fn create_router(db: PgPool) -> Router {
         .route("/resources/:id", get(resources::get_resource_handler))
         .route("/resources/:id", put(resources::update_resource_handler))
         .route("/resources/:id", delete(resources::delete_resource_handler))
+        // AI routes
+        .route("/ai/health", get(ai::ai_health_check_wrapper))
+        .route("/ai/infrastructure/generate", post(ai::generate_infrastructure_wrapper))
+        .route("/ai/optimization/analyze", post(ai::optimize_infrastructure_wrapper))
+        .route("/ai/capabilities", get(ai::get_ai_capabilities_wrapper))
         .with_state(db)
 }
 

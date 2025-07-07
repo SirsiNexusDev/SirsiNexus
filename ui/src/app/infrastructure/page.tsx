@@ -2,42 +2,51 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { InfrastructureBuilder } from '@/components/InfrastructureBuilder';
 import { useAppSelector } from '@/store';
 
 function InfrastructurePageContent() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const initialQuery = searchParams?.get('query') || '';
   
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-
-  // Load dark mode preference from localStorage
+  
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    setIsDarkMode(savedDarkMode);
+    setMounted(true);
   }, []);
+  
+  const isDarkMode = theme === 'dark';
 
-  // Save dark mode preference to localStorage
   const handleThemeToggle = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    localStorage.setItem('darkMode', newDarkMode.toString());
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   // Add dark mode class to body
   useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
+    if (mounted) {
+      if (isDarkMode) {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
+      }
     }
     
     return () => {
       document.body.classList.remove('dark');
     };
-  }, [isDarkMode]);
+  }, [isDarkMode, mounted]);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

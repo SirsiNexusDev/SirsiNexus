@@ -117,35 +117,48 @@ class AIInfrastructureService {
    * Generate infrastructure code using AI
    */
   async generateInfrastructure(request: AIGenerationRequest): Promise<AIGenerationResponse> {
-    const config = this.providers[this.currentProvider];
-    
-    if (!config.apiKey) {
-      // Fallback to enhanced mock generation when no API key is available
-      return this.generateMockInfrastructure(request);
-    }
-
     try {
-      const prompt = this.buildPrompt(request);
-      const systemPrompt = this.getSystemPrompt();
-      
-      let response: Response;
-      
-      if (this.currentProvider === 'openai') {
-        response = await this.callOpenAI(prompt, systemPrompt, config);
-      } else if (this.currentProvider === 'claude' || this.currentProvider === 'claude-code') {
-        response = await this.callClaude(prompt, systemPrompt, config);
-      } else {
-        throw new Error(`Unsupported AI provider: ${this.currentProvider}`);
-      }
+      // Call our backend API instead of directly calling AI services
+      const response = await fetch('/api/ai/infrastructure/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add auth header if available
+          ...(this.getAuthHeader() ? { 'Authorization': this.getAuthHeader()! } : {})
+        },
+        body: JSON.stringify({
+          description: request.query,
+          cloud_provider: this.mapProvider(request.preferredProvider || 'aws'),
+          ai_provider: this.mapAIProvider(this.currentProvider),
+          requirements: {
+            budget_limit: this.parseBudget(request.estimatedBudget),
+            performance_tier: this.mapComplexity(request.complexity || 'intermediate'),
+            security_level: request.includeSecurity ? 'Enhanced' : 'Basic',
+            compliance_requirements: [],
+            scaling_requirements: {
+              min_instances: 1,
+              max_instances: request.includeMonitoring ? 10 : 5,
+              auto_scaling: true,
+              load_balancing: true
+            }
+          }
+        })
+      });
 
       if (!response.ok) {
-        throw new Error(`AI service error: ${response.statusText}`);
+        throw new Error(`Backend API error: ${response.statusText}`);
       }
 
       const data = await response.json();
-      return this.parseAIResponse(this.extractContentFromResponse(data), request);
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Backend API returned error');
+      }
+
+      // Transform backend response to frontend format
+      return this.transformBackendResponse(data.data, request);
     } catch (error) {
-      console.warn(`${this.currentProvider} AI service unavailable, using enhanced mock generation:`, error);
+      console.warn('Backend AI service unavailable, using enhanced mock generation:', error);
       return this.generateMockInfrastructure(request);
     }
   }
@@ -703,6 +716,122 @@ output "lambda_function_name" {
     }
     
     return alternatives.slice(0, 2); // Return top 2 alternatives
+  }
+
+  /**
+   * Get authentication header from stored auth state
+   */
+  private getAuthHeader(): string | null {
+    // In a real app, this would get the JWT token from your auth store
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      return token ? `Bearer ${token}` : null;
+    }
+    return null;
+  }
+
+  /**
+   * Map frontend provider names to backend format
+   */
+  private mapProvider(provider: string): string {
+    const mapping: Record<string, string> = {
+      'aws': 'AWS',
+      'azure': 'Azure', 
+      'gcp': 'GCP',
+      'kubernetes': 'Kubernetes',
+      'multi': 'AWS', // Default multi-cloud to AWS
+      'ibm': 'IBM',
+      'oracle': 'Oracle',
+      'alibaba': 'Alibaba'
+    };
+    return mapping[provider] || 'AWS';
+  }
+
+  /**
+   * Map frontend AI provider to backend format
+   */
+  private mapAIProvider(provider: AIProvider): string {
+    const mapping: Record<AIProvider, string> = {
+      'openai': 'OpenAI',
+      'claude': 'Claude3_5Sonnet',
+      'claude-code': 'ClaudeCode'
+    };
+    return mapping[provider] || 'OpenAI';
+  }
+
+  /**
+   * Map complexity to performance tier
+   */
+  private mapComplexity(complexity: string): string {
+    const mapping: Record<string, string> = {
+      'basic': 'Basic',
+      'intermediate': 'Standard',
+      'advanced': 'Premium'
+    };
+    return mapping[complexity] || 'Standard';
+  }
+
+  /**
+   * Parse budget string to number
+   */
+  private parseBudget(budget?: string): number | null {
+    if (!budget) return null;
+    const match = budget.match(/\$?(\d+)/);
+    return match ? parseInt(match[1]) : null;
+  }
+
+  /**
+   * Transform backend response to frontend format
+   */
+  private transformBackendResponse(backendData: any, request: AIGenerationRequest): AIGenerationResponse {
+    return {
+      infrastructure: {
+        code: backendData.template || '# Generated infrastructure template',
+        format: backendData.template_type?.toLowerCase() || request.preferredFormat || 'terraform',
+        provider: request.preferredProvider || 'aws'
+      },
+      explanation: this.generateExplanationFromBackend(backendData, request),
+      recommendations: backendData.optimization_suggestions || [
+        'Follow cloud provider best practices',
+        'Enable monitoring and alerting',
+        'Implement proper security controls'
+      ],
+      estimatedCost: backendData.estimated_cost ? `$${backendData.estimated_cost}/month` : '$50-200/month',
+      deploymentTime: this.estimateDeploymentTimeFromTemplate(backendData.template),
+      securityConsiderations: backendData.security_recommendations || [
+        'Enable encryption at rest and in transit',
+        'Implement least privilege access control',
+        'Configure proper network security groups',
+        'Enable audit logging and monitoring'
+      ],
+      alternatives: this.generateAlternatives(request.preferredProvider || 'aws', request.query)
+    };
+  }
+
+  /**
+   * Generate explanation from backend data
+   */
+  private generateExplanationFromBackend(backendData: any, request: AIGenerationRequest): string {
+    if (backendData.explanation) {
+      return backendData.explanation;
+    }
+    
+    const provider = request.preferredProvider || 'aws';
+    const confidence = backendData.confidence_score ? Math.round(backendData.confidence_score * 100) : 85;
+    
+    return `Based on your request "${request.query}", I've generated a comprehensive ${provider.toUpperCase()} infrastructure solution using AI with ${confidence}% confidence. This includes production-ready components with security best practices, monitoring, and scalability considerations.`;
+  }
+
+  /**
+   * Estimate deployment time from template complexity
+   */
+  private estimateDeploymentTimeFromTemplate(template?: string): string {
+    if (!template) return '15-30 minutes';
+    
+    const lineCount = template.split('\n').length;
+    if (lineCount > 200) return '45-90 minutes';
+    if (lineCount < 50) return '5-15 minutes';
+    return '15-30 minutes';
   }
 
   // Utility methods for parsing unstructured AI responses

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Settings, 
@@ -19,8 +20,14 @@ interface SettingsDropDownProps {
 }
 
 export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
+
+  const handleNavigateToSettings = () => {
+    onClose();
+    router.push('/settings');
+  };
 
   return (
     <AnimatePresence>
@@ -86,13 +93,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
 
               {/* Account Settings */}
               <button 
-                onClick={() => {
-                  onClose();
-                  if (window.location.pathname !== '/settings') {
-                    window.history.pushState({}, '', '/settings');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }
-                }}
+                onClick={handleNavigateToSettings}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
                 <User className="h-4 w-4 text-slate-600" />
@@ -101,13 +102,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
 
               {/* Security */}
               <button 
-                onClick={() => {
-                  onClose();
-                  if (window.location.pathname !== '/settings') {
-                    window.history.pushState({}, '', '/settings');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }
-                }}
+                onClick={handleNavigateToSettings}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
                 <Lock className="h-4 w-4 text-slate-600" />
@@ -116,13 +111,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
 
               {/* Display */}
               <button 
-                onClick={() => {
-                  onClose();
-                  if (window.location.pathname !== '/settings') {
-                    window.history.pushState({}, '', '/settings');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }
-                }}
+                onClick={handleNavigateToSettings}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
                 <Monitor className="h-4 w-4 text-slate-600" />
@@ -132,13 +121,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
 
             <div className="p-3 border-t border-gray-200">
               <button 
-                onClick={() => {
-                  onClose();
-                  if (window.location.pathname !== '/settings') {
-                    window.history.pushState({}, '', '/settings');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }
-                }}
+                onClick={handleNavigateToSettings}
                 className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 All Settings
