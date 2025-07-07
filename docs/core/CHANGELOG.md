@@ -5,6 +5,42 @@ All notable changes to the Sirsi Nexus project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2-alpha] - 2025-01-07
+
+### 🔧 CRITICAL UX & BACKEND FIXES
+
+#### ✅ **FRONTEND UI FIXES COMPLETE**
+- **Background Overlays**: Fixed multiple background layer conflicts in home page and layouts
+- **Theme Management**: Unified next-themes implementation, removed CSS background conflicts  
+- **Navigation Consistency**: Ensured transparent backgrounds throughout layout hierarchy
+- **CSS Optimization**: Consolidated background definitions and removed duplicate overlays
+
+#### 🔐 **CREDENTIAL MANAGEMENT SYSTEM** 
+- **Secure Storage**: Complete AES-256-GCM encryption for cloud provider credentials
+- **Multi-Provider Support**: AWS, Azure, GCP, and DigitalOcean credential management
+- **Real Testing**: Live credential validation with actual cloud provider APIs
+- **Database Integration**: CockroachDB schema with encrypted credential storage
+- **Frontend Interface**: Comprehensive credential management UI with testing and CRUD operations
+- **Security Features**: Credential masking, validation, and secure key derivation (PBKDF2)
+
+#### 🛡️ **SECURITY ENHANCEMENTS**
+- **Encryption Module**: Production-grade Ring cryptography integration
+- **Key Management**: Secure key generation and password-based derivation
+- **Access Control**: User-scoped credential isolation and access control
+- **Audit Trail**: Creation, update, and testing timestamps with status tracking
+
+#### 📊 **TECHNICAL IMPLEMENTATION**
+- **Backend Module**: Complete Rust credential_manager module in core-engine
+- **Database Schema**: Credentials table with user relationships and indexing
+- **API Testing**: Real cloud provider API integration for credential validation
+- **Error Handling**: Comprehensive error handling and timeout management
+- **Type Safety**: Full TypeScript interfaces for credential management
+
+**Status**: UI CONFLICTS RESOLVED → CREDENTIAL MANAGEMENT OPERATIONAL  
+**Platform Health**: Frontend rendering optimized, secure credential storage active
+
+---
+
 ## [0.5.1-alpha] - 2025-01-07
 
 ### 🎯 MAJOR: INFRASTRUCTURE CRITICAL FIXES

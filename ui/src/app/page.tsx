@@ -220,7 +220,7 @@ export default function DashboardPage() {
   const hideMainContent = !isAuthenticated || authModalOpen || journeySelectionModalOpen;
 
   return (
-    <div>
+    <div className="bg-transparent">
       <Breadcrumb />
       
       {!hideMainContent && (

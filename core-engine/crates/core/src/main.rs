@@ -1,5 +1,7 @@
 mod api;
+mod auth;
 mod config;
+mod credential_manager;
 mod db;
 mod error;
 mod models;
@@ -19,6 +21,9 @@ async fn main() -> Result<()> {
 
     // Connect to database
     let pool = db::create_db_pool(&config.database_url).await?;
+    
+    // Initialize credential management tables
+    credential_manager::initialize_tables(&pool).await?;
 
     // Create API router
     let app = api::create_router(pool.clone());

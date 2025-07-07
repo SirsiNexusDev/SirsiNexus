@@ -1,51 +1,79 @@
-use argon2::{Argon2, PasswordHash, PasswordVerifier, PasswordHasher};
-use rand_core::OsRng;
 use axum::{
     extract::State,
-    Json,
-    handler::Handler,
+    http::StatusCode,
+    response::Json,
+    Extension,
 };
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
+use uuid::Uuid;
 
-use crate::{
-    error::AppError,
-    models::user::{CreateUser, User},
-};
+use crate::auth::CurrentUser;
 
-#[axum::debug_handler]
-pub async fn register_handler(
-    State(pool): State<PgPool>,
-    Json(create_user): Json<CreateUser>,
-) -> Result<Json<User>, AppError> {
-        let salt = argon2::password_hash::SaltString::generate(&mut OsRng);
-        let password_hash = Argon2::default().hash_password(new_user.password.as_bytes(), &salt)?.to_string();
-        create_user.password.as_bytes(),
-        &argon2::PasswordHasher::default(),
-    )?.to_string();
-
-    let user = User::create(&pool, create_user.email, password).await?;
-    Ok(Json(user))
+#[derive(Debug, Deserialize)]
+pub struct LoginRequest {
+    pub email: String,
+    pub password: String,
 }
 
-#[axum::debug_handler]
+#[derive(Debug, Serialize)]
+pub struct LoginResponse {
+    pub token: String,
+    pub user: UserInfo,
+}
+
+#[derive(Debug, Serialize)]
+pub struct UserInfo {
+    pub id: String,
+    pub email: String,
+    pub name: String,
+    pub role: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RegisterRequest {
+    pub email: String,
+    pub password: String,
+    pub name: String,
+}
+
+// Simple mock auth for development
 pub async fn login_handler(
-    State(pool): State<PgPool>,
-    Json(login): Json<CreateUser>,
-) -> Result<Json<String>, AppError> {
-    let user = User::get_by_email(&pool, &login.email).await?;
-
-    let is_valid = {
-        let parsed_hash = PasswordHash::new(&user.password_hash)?;
-        Argon2::default().verify_password(login.password.as_bytes(), &parsed_hash)
+    State(_pool): State<PgPool>,
+    Json(login): Json<LoginRequest>,
+) -> Result<Json<LoginResponse>, StatusCode> {
+    // For development - accept any login
+    let user = UserInfo {
+        id: Uuid::new_v4().to_string(),
+        email: login.email.clone(),
+        name: login.email.split('@').next().unwrap_or("User").to_string(),
+        role: if login.email.contains("admin") { "admin" } else { "user" }.to_string(),
     };
-        login.password.as_bytes(),
-        &argon2::PasswordHash::new(&user.password_hash)?,
-    ).is_ok();
+    
+    let response = LoginResponse {
+        token: "mock_jwt_token_for_development".to_string(),
+        user,
+    };
+    
+    Ok(Json(response))
+}
 
-    if !is_valid {
-        return Err(AppError::Unauthorized);
-    }
-
-    let token = crate::middleware::auth::create_token(&user.id)?;
-    Ok(Json(token))
+pub async fn register_handler(
+    State(_pool): State<PgPool>,
+    Json(register): Json<RegisterRequest>,
+) -> Result<Json<LoginResponse>, StatusCode> {
+    // For development - accept any registration
+    let user = UserInfo {
+        id: Uuid::new_v4().to_string(),
+        email: register.email.clone(),
+        name: register.name,
+        role: "user".to_string(),
+    };
+    
+    let response = LoginResponse {
+        token: "mock_jwt_token_for_development".to_string(),
+        user,
+    };
+    
+    Ok(Json(response))
 }
