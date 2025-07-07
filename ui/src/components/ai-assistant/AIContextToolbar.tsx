@@ -11,13 +11,19 @@ interface AIContextToolbarProps {
   showWhenIdle?: boolean;
   autoHide?: boolean;
   compact?: boolean;
+  feature?: string;
+  page?: string;
+  userAction?: string;
 }
 
 export default function AIContextToolbar({
   position = 'bottom',
   showWhenIdle = true,
   autoHide = false,
-  compact = false
+  compact = false,
+  feature,
+  page,
+  userAction
 }: AIContextToolbarProps) {
   const [isVisible, setIsVisible] = useState(showWhenIdle);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -29,29 +35,39 @@ export default function AIContextToolbar({
   // Auto-detect page context and update AI awareness
   useEffect(() => {
     const detectPageContext = () => {
-      const path = window.location.pathname;
-      const segments = path.split('/').filter(Boolean);
+      // Use props if provided, otherwise detect from URL
+      let contextFeature = feature;
+      let contextPage = page;
+      let contextUserAction = userAction;
       
-      let feature = 'general';
-      let page = 'dashboard';
+      if (!contextFeature || !contextPage) {
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean);
+        
+        if (!contextFeature) {
+          contextFeature = segments.length > 0 ? segments[0] : 'general';
+        }
+        if (!contextPage) {
+          contextPage = segments.length > 1 ? segments.slice(1).join('/') : 'overview';
+        }
+      }
       
-      if (segments.length > 0) {
-        feature = segments[0];
-        page = segments.length > 1 ? segments.slice(1).join('/') : 'overview';
+      if (!contextUserAction) {
+        contextUserAction = 'browsing';
       }
 
       // Update AI context
       aiContextService.setContext({
-        feature,
-        page,
-        userAction: 'browsing',
+        feature: contextFeature,
+        page: contextPage,
+        userAction: contextUserAction,
         systemState: {
-          url: path,
+          url: window.location.pathname,
           timestamp: new Date().toISOString()
         }
       });
 
-      setCurrentContext(`${feature}/${page}`);
+      setCurrentContext(`${contextFeature}/${contextPage}`);
       updateContextHelp();
     };
 
@@ -77,29 +93,34 @@ export default function AIContextToolbar({
       window.removeEventListener('popstate', handleNavigation);
       observer.disconnect();
     };
-  }, [currentContext]);
+  }, [feature, page, userAction, currentContext]);
 
   // Generate smart suggestions based on current context
   useEffect(() => {
     const generateSmartSuggestions = () => {
-      const path = window.location.pathname;
-      const suggestions: string[] = [];
+      try {
+        const path = window?.location?.pathname || '';
+        const suggestions: string[] = [];
 
-      if (path.includes('/docs')) {
-        suggestions.push('Explain this concept', 'Show me examples', 'Related tutorials');
-      } else if (path.includes('/tutorial')) {
-        suggestions.push('Next step', 'Explain current step', 'Skip to section');
-      } else if (path.includes('/analytics')) {
-        suggestions.push('Interpret these metrics', 'Setup alerts', 'Forecast trends');
-      } else if (path.includes('/optimization')) {
-        suggestions.push('Optimize settings', 'Cost recommendations', 'Performance tips');
-      } else if (path.includes('/migration')) {
-        suggestions.push('Start migration', 'Check readiness', 'Best practices');
-      } else {
-        suggestions.push('Get started', 'Show features', 'Help me navigate');
+        if (path.includes('/docs')) {
+          suggestions.push('Explain this concept', 'Show me examples', 'Related tutorials');
+        } else if (path.includes('/tutorial')) {
+          suggestions.push('Next step', 'Explain current step', 'Skip to section');
+        } else if (path.includes('/analytics')) {
+          suggestions.push('Interpret these metrics', 'Setup alerts', 'Forecast trends');
+        } else if (path.includes('/optimization')) {
+          suggestions.push('Optimize settings', 'Cost recommendations', 'Performance tips');
+        } else if (path.includes('/migration')) {
+          suggestions.push('Start migration', 'Check readiness', 'Best practices');
+        } else {
+          suggestions.push('Get started', 'Show features', 'Help me navigate');
+        }
+
+        setSmartSuggestions(suggestions);
+      } catch (error) {
+        console.warn('Failed to generate smart suggestions:', error);
+        setSmartSuggestions(['Get started', 'Show features', 'Help me navigate']);
       }
-
-      setSmartSuggestions(suggestions);
     };
 
     generateSmartSuggestions();
@@ -226,9 +247,9 @@ export default function AIContextToolbar({
 
           {/* Smart Suggestions - Always Visible */}
           <div className="flex flex-wrap gap-1 mb-2">
-            {smartSuggestions.slice(0, compact ? 2 : 3).map((suggestion, index) => (
+            {smartSuggestions && smartSuggestions.slice(0, compact ? 2 : 3).map((suggestion, index) => (
               <Badge
-                key={index}
+                key={`smart-suggestion-${index}-${suggestion.replace(/\s+/g, '-').toLowerCase()}`}
                 variant="outline"
                 className="text-xs cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-colors"
                 onClick={() => handleSuggestionClick(suggestion)}
@@ -284,7 +305,7 @@ export default function AIContextToolbar({
                   <div className="flex flex-wrap gap-1">
                     {contextHelp.suggestions.slice(0, 4).map((suggestion, index) => (
                       <button
-                        key={index}
+                        key={`help-suggestion-${index}-${suggestion.replace(/\s+/g, '-').toLowerCase()}`}
                         onClick={() => handleSuggestionClick(suggestion)}
                         className="text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                       >
@@ -302,7 +323,7 @@ export default function AIContextToolbar({
                   <div className="space-y-1">
                     {contextHelp.actions.slice(0, 3).map((action, index) => (
                       <button
-                        key={index}
+                        key={`action-${action.id || index}-${action.label.replace(/\s+/g, '-').toLowerCase()}`}
                         onClick={() => executeAction(action)}
                         className="flex items-center space-x-1 text-xs text-green-600 hover:text-green-800 transition-colors"
                       >
@@ -323,7 +344,7 @@ export default function AIContextToolbar({
                   </div>
                   <ul className="text-xs text-gray-600 space-y-0.5 ml-4">
                     {contextHelp.tips.slice(0, 3).map((tip, index) => (
-                      <li key={index}>• {tip}</li>
+                      <li key={`tip-${index}-${tip.substring(0, 20).replace(/\s+/g, '-').toLowerCase()}`}>• {tip}</li>
                     ))}
                   </ul>
                 </div>
@@ -338,7 +359,7 @@ export default function AIContextToolbar({
                   </div>
                   <ul className="text-xs text-orange-600 space-y-0.5 ml-4">
                     {contextHelp.warnings.slice(0, 2).map((warning, index) => (
-                      <li key={index}>• {warning}</li>
+                      <li key={`warning-${index}-${warning.substring(0, 20).replace(/\s+/g, '-').toLowerCase()}`}>• {warning}</li>
                     ))}
                   </ul>
                 </div>
@@ -349,7 +370,7 @@ export default function AIContextToolbar({
                 <div className="text-xs">
                   <span className="text-gray-600">Related docs: </span>
                   {contextHelp.documentation.slice(0, 2).map((doc, index) => (
-                    <span key={index}>
+                    <span key={`doc-${index}-${doc.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`}>
                       <button
                         onClick={() => window.open(`/${doc}`, '_blank')}
                         className="text-blue-600 hover:underline"

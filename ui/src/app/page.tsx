@@ -146,12 +146,12 @@ export default function DashboardPage() {
     }));
     dispatch(setModalState({ modal: 'auth', visible: false }));
     
-    // Show welcome AI assistant on login
-    setShowWelcomeAssistant(true);
-    
     // Show journey selection for first-time users
     if (userJourney.isFirstTime) {
       dispatch(setModalState({ modal: 'journeySelection', visible: true }));
+    } else {
+      // Only show welcome AI assistant if no other modals will be shown
+      setTimeout(() => setShowWelcomeAssistant(true), 500);
     }
   };
 
@@ -165,7 +165,7 @@ export default function DashboardPage() {
     }));
     dispatch(setModalState({ modal: 'auth', visible: false }));
     
-    // Show journey selection for new users
+    // Show journey selection for new users (no AI assistant during onboarding)
     dispatch(setModalState({ modal: 'journeySelection', visible: true }));
   };
 
@@ -182,6 +182,9 @@ export default function DashboardPage() {
     // Show journey selection for OAuth users
     if (userJourney.isFirstTime) {
       dispatch(setModalState({ modal: 'journeySelection', visible: true }));
+    } else {
+      // Only show welcome AI assistant if no other modals will be shown
+      setTimeout(() => setShowWelcomeAssistant(true), 500);
     }
   };
 
@@ -446,13 +449,15 @@ export default function DashboardPage() {
         </>
       )}
       
-      {/* Welcome AI Assistant on Login */}
-      {showWelcomeAssistant && isAuthenticated && (
-        <EmbeddedAssistant 
-          position="floating" 
-          showOnLogin={true} 
-          context="dashboard-welcome" 
-        />
+      {/* Welcome AI Assistant on Login - Only show after full authentication */}
+      {showWelcomeAssistant && isAuthenticated && !authModalOpen && !journeySelectionModalOpen && (
+        <React.Suspense fallback={<div className="fixed bottom-4 right-4 w-12 h-12 bg-purple-500 rounded-full animate-pulse" />}>
+          <EmbeddedAssistant 
+            position="floating" 
+            showOnLogin={true} 
+            context="dashboard-welcome" 
+          />
+        </React.Suspense>
       )}
       
       {/* Modals */}

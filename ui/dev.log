@@ -1,33 +1,12 @@
 
-> @sirsi-nexus/ui@0.4.2 dev
+> @sirsi-nexus/ui@0.5.0-alpha dev
 > next dev
 
    ▲ Next.js 15.3.4
    - Local:        http://localhost:3000
-   - Network:      http://10.1.10.180:3000
+   - Network:      http://192.168.1.157:3000
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 916ms
- ✓ Compiled /middleware in 90ms (108 modules)
- ○ Compiling /analytics/enhanced ...
- ✓ Compiled /analytics/enhanced in 1260ms (1735 modules)
- GET /analytics/enhanced 200 in 1540ms
- ✓ Compiled / in 377ms (1745 modules)
- GET / 200 in 643ms
- ○ Compiling /analytics ...
- ✓ Compiled /analytics in 1462ms (2917 modules)
- GET /analytics 200 in 1901ms
- ✓ Compiled /analytics/enhanced in 94ms (1513 modules)
- GET /analytics/enhanced 200 in 271ms
- ✓ Compiled /agents in 240ms (2956 modules)
- GET /agents 200 in 400ms
- GET / 200 in 79ms
- GET /analytics 200 in 234ms
- GET /analytics/enhanced 200 in 57ms
- GET /agents 200 in 42ms
- GET / 200 in 48ms
- GET /analytics 200 in 113ms
- GET /analytics/enhanced 200 in 47ms
- GET /agents 200 in 45ms
+ ✓ Ready in 860ms
 [?25h

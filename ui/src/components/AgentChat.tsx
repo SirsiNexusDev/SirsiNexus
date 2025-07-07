@@ -285,12 +285,12 @@ export const AgentChat: React.FC<AgentChatProps> = ({
             {/* Messages */}
             <div className="h-[340px] overflow-y-auto p-4">
               {/* Enhanced Suggestions */}
-              {suggestions.length > 0 && (
+              {suggestions && suggestions.length > 0 && (
                 <div className="mb-4 space-y-2">
                   <strong className="text-sm text-sirsi-700">AI Suggestions:</strong>
-                  {suggestions.map((suggestion) => (
+                  {suggestions.map((suggestion, index) => (
                     <div 
-                      key={suggestion.suggestionId}
+                      key={suggestion.suggestionId || `suggestion-${index}`}
                       onClick={() => handleSuggestionClick(suggestion)}
                       className="cursor-pointer rounded-lg bg-sirsi-50 p-3 text-sm text-sirsi-700 hover:bg-sirsi-100 transition-colors"
                     >
@@ -300,7 +300,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                           <strong>{suggestion.title}</strong>
                         </div>
                         <span className="text-xs opacity-70">
-                          {Math.round(suggestion.confidence * 100)}%
+                          {Math.round((suggestion.confidence || 0) * 100)}%
                         </span>
                       </div>
                       <p className="mt-1 text-xs opacity-80">{suggestion.description}</p>
@@ -310,20 +310,20 @@ export const AgentChat: React.FC<AgentChatProps> = ({
               )}
 
               {/* Legacy contextual hints */}
-              {contextualHints.length > 0 && (
+              {contextualHints && contextualHints.length > 0 && (
                 <div className="mb-4 rounded-lg bg-sirsi-50 p-3 text-sm text-sirsi-700">
                   <strong>Quick Tips:</strong>
                   <ul className="ml-4 list-disc">
                     {contextualHints.map((hint, index) => (
-                      <li key={index}>{hint}</li>
+                      <li key={`hint-${index}`}>{hint}</li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {messages.map((message) => (
+              {messages && messages.length > 0 && messages.map((message, messageIndex) => (
                 <div
-                  key={message.id}
+                  key={message.id || `message-${messageIndex}`}
                   className={`mb-4 flex ${
                     message.type === 'user' ? 'justify-end' : 'justify-start'
                   }`}
@@ -360,7 +360,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                     {message.attachments && message.attachments.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {message.attachments.map((attachment, idx) => (
-                          <div key={idx} className="flex items-center space-x-2 text-xs opacity-75">
+                          <div key={`attachment-${messageIndex}-${idx}`} className="flex items-center space-x-2 text-xs opacity-75">
                             <Paperclip className="h-3 w-3" />
                             <span>{attachment.name} ({(attachment.sizeBytes / 1024).toFixed(1)}KB)</span>
                           </div>
@@ -379,16 +379,19 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                   </div>
                 </div>
               )}
+              
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
             <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white">
               {/* Attachments Preview */}
-              {attachments.length > 0 && (
+              {attachments && attachments.length > 0 && (
                 <div className="border-b border-gray-100 p-2">
                   <div className="flex flex-wrap gap-2">
                     {attachments.map((file, index) => (
-                      <div key={index} className="flex items-center space-x-2 bg-gray-100 rounded px-2 py-1 text-xs">
+                      <div key={`attachment-preview-${index}-${file.name}`} className="flex items-center space-x-2 bg-gray-100 rounded px-2 py-1 text-xs">
                         <Paperclip className="h-3 w-3" />
                         <span className="truncate max-w-20">{file.name}</span>
                         <button

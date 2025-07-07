@@ -5,7 +5,8 @@ import { Providers } from './providers';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ClientLayout } from '@/components/ClientLayout';
 import { AIContextProvider } from '@/contexts/AIContextProvider';
-import AIContextToolbar from '@/components/ai-assistant/AIContextToolbar';
+import ConditionalAIToolbar from '@/components/ai-assistant/ConditionalAIToolbar';
+import { ToastProvider } from '@/components/ui/toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,14 +24,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <AIContextProvider>
-            <ErrorBoundary>
-              <ClientLayout>
-              {children}
-                <AIContextToolbar />
-              </ClientLayout>
-            </ErrorBoundary>
-          </AIContextProvider>
+          <ToastProvider>
+            <AIContextProvider>
+              <ErrorBoundary>
+                <ClientLayout>
+                {children}
+                  <ErrorBoundary>
+                    <ConditionalAIToolbar />
+                  </ErrorBoundary>
+                </ClientLayout>
+              </ErrorBoundary>
+            </AIContextProvider>
+          </ToastProvider>
         </Providers>
       </body>
     </html>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -67,9 +67,9 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
     if (stepData || discoveredResources.length > 0) {
       runAIAnalysis();
     }
-  }, [stepData, discoveredResources]);
+  }, [stepData, discoveredResources, runAIAnalysis]);
 
-  const runAIAnalysis = async () => {
+  const runAIAnalysis = useCallback(async () => {
     setIsAnalyzing(true);
     const insights: AIInsight[] = [];
 
@@ -169,7 +169,7 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [stepName, discoveredResources, onAIInsight]);
 
   const generateOptimizationRecommendations = (score: number): string[] => {
     const recommendations: string[] = [];

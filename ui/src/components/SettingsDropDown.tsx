@@ -87,8 +87,11 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Account Settings */}
               <button 
                 onClick={() => {
-                  console.log('Opening account settings');
-                  window.location.href = '/settings/account';
+                  onClose();
+                  if (window.location.pathname !== '/settings') {
+                    window.history.pushState({}, '', '/settings');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
                 }}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
@@ -99,8 +102,11 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Security */}
               <button 
                 onClick={() => {
-                  console.log('Opening security settings');
-                  window.location.href = '/settings/security';
+                  onClose();
+                  if (window.location.pathname !== '/settings') {
+                    window.history.pushState({}, '', '/settings');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
                 }}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
@@ -111,8 +117,11 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Display */}
               <button 
                 onClick={() => {
-                  console.log('Opening display settings');
-                  window.location.href = '/settings/display';
+                  onClose();
+                  if (window.location.pathname !== '/settings') {
+                    window.history.pushState({}, '', '/settings');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
                 }}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
               >
@@ -124,12 +133,15 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
             <div className="p-3 border-t border-gray-200">
               <button 
                 onClick={() => {
-                  console.log('Opening advanced settings');
-                  window.location.href = '/settings/advanced';
+                  onClose();
+                  if (window.location.pathname !== '/settings') {
+                    window.history.pushState({}, '', '/settings');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
                 }}
                 className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
-                Advanced Settings
+                All Settings
               </button>
             </div>
           </motion.div>

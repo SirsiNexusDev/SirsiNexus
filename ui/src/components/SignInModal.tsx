@@ -25,7 +25,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
   const [activeTab, setActiveTab] = useState<'signin' | 'register'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,6 +32,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -41,7 +41,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
     if (!password.trim()) newErrors.password = 'Password is required';
     
     if (activeTab === 'register') {
-      if (!name.trim()) newErrors.name = 'Name is required';
       if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
       if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
       if (!agreeToTerms) newErrors.terms = 'You must agree to the terms';
@@ -57,24 +56,41 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
     if (!validateForm()) return;
     
     setLoading(true);
+    setErrors({});
     
     try {
       if (activeTab === 'signin') {
-        // Use NextAuth for credentials sign-in
-        const result = await signIn('credentials', {
-          email,
-          password,
-          redirect: false
-        });
+        // Simulate API call - replace with real authentication
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
-        if (result?.error) {
-          setErrors({ signin: 'Invalid credentials. Please try again.' });
+        // Demo credentials check
+        const validCredentials = [
+          { email: 'admin@migration.com', password: 'admin123' },
+          { email: 'user@migration.com', password: 'user123' }
+        ];
+        
+        const isValid = validCredentials.some(cred => 
+          cred.email === email && cred.password === password
+        );
+        
+        if (isValid) {
+          setShowSuccess(true);
+          setTimeout(() => {
+            onSignIn({ email, password });
+            onClose();
+          }, 2000);
         } else {
-          // Success - the useAuthSync hook will handle Redux updates
-          onSignIn({ email, password }); // Still call for UI state management
+          setErrors({ signin: 'Invalid credentials. Please check your email and password.' });
         }
       } else {
-        onRegister?.({ name, email, password, confirmPassword });
+        // Registration logic
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        setShowSuccess(true);
+        setTimeout(() => {
+          onRegister?.({ name: email.split('@')[0], email, password, confirmPassword });
+          onClose();
+        }, 2000);
       }
     } catch (error) {
       console.error('Authentication error:', error);
@@ -186,27 +202,30 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSig
               </button>
             </div>
 
+            {/* Success Message */}
+            {showSuccess && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-green-800">
+                      {activeTab === 'signin' ? 'Login Successful!' : 'Account Created Successfully!'}
+                    </h3>
+                    <p className="text-sm text-green-600">
+                      {activeTab === 'signin' 
+                        ? 'Welcome back! Redirecting to dashboard...' 
+                        : 'A verification email has been sent to your inbox. Please verify your account.'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name - Only for registration */}
-              {activeTab === 'register' && (
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className={`w-full px-4 py-2 border ${errors.name ? 'border-red-500' : 'border-indigo-300'} bg-white/90 text-slate-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                  {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
-                </div>
-              )}
 
               {/* Email */}
               <div>

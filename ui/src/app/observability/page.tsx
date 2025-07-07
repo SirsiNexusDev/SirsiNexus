@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Activity, 
   Server, 
@@ -152,7 +152,7 @@ const ObservabilityDashboard: React.FC = () => {
   }));
 
   // Fetch data function with real API calls
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       // Fetch dashboard data from the core-engine API
@@ -181,7 +181,7 @@ const ObservabilityDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Auto-refresh effect
   useEffect(() => {
@@ -191,7 +191,7 @@ const ObservabilityDashboard: React.FC = () => {
       const interval = setInterval(fetchData, 5000); // Refresh every 5 seconds
       return () => clearInterval(interval);
     }
-  }, [autoRefresh]);
+  }, [autoRefresh, fetchData]);
 
   const getHealthColor = (status: string) => {
     switch (status) {

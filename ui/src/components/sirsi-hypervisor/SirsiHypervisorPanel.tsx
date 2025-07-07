@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Crown,
   Shield,
@@ -166,7 +166,7 @@ const SirsiHypervisorPanel: React.FC = () => {
     }
   });
 
-  const generateMockStatus = (): SystemStatus => ({
+  const generateMockStatus = useCallback((): SystemStatus => ({
     sirsi_active: true,
     hypervisor_mode: hypervisorMode,
     total_agents: 12,
@@ -179,10 +179,10 @@ const SirsiHypervisorPanel: React.FC = () => {
       storage: 67 + Math.random() * 10,
     },
     security_level: 'High'
-  });
+  }), [hypervisorMode]);
 
   // Fetch Sirsi status and capabilities
-  const fetchSirsiData = async () => {
+  const fetchSirsiData = useCallback(async () => {
     setIsLoading(true);
     try {
       // TODO: Replace with actual API calls to Sirsi endpoints
@@ -198,7 +198,7 @@ const SirsiHypervisorPanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [generateMockStatus]);
 
   // Execute Sirsi command
   const executeSirsiCommand = async (category: string, command: string) => {
@@ -243,7 +243,7 @@ const SirsiHypervisorPanel: React.FC = () => {
     fetchSirsiData();
     const interval = setInterval(fetchSirsiData, 3000);
     return () => clearInterval(interval);
-  }, [hypervisorMode]);
+  }, [hypervisorMode, fetchSirsiData]);
 
   const getHealthColor = (health: string) => {
     switch (health) {

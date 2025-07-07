@@ -41,9 +41,10 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
   useEffect(() => {
     if (showOnLogin) {
       setIsExpanded(true);
-      // Add welcome message
+      // Add welcome message with unique ID
+      const welcomeId = `welcome-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       setMessages([{
-        id: '1',
+        id: welcomeId,
         text: 'Hi! I\'m your AI assistant. I can help you navigate SirsiNexus, understand migration processes, or answer questions about your infrastructure. What would you like to know?',
         sender: 'assistant',
         timestamp: new Date()
@@ -61,22 +62,25 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    const messageId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: messageId,
       text: inputValue,
       sender: 'user',
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const userInput = inputValue;
     setInputValue('');
     setIsTyping(true);
 
     // Simulate AI response
     setTimeout(() => {
+      const assistantId = `assistant-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: getContextualResponse(inputValue, context),
+        id: assistantId,
+        text: getContextualResponse(userInput, context),
         sender: 'assistant',
         timestamp: new Date()
       };
@@ -132,9 +136,9 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
             >
               <div className="p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
                 <div className="space-y-2 mb-3 max-h-32 overflow-y-auto">
-                  {messages.map((message) => (
+                  {messages.map((message, index) => (
                     <div
-                      key={message.id}
+                      key={`compact-message-${message.id}-${index}`}
                       className={`text-xs p-2 rounded ${
                         message.sender === 'user'
                           ? 'bg-indigo-100 text-indigo-800 ml-4'
@@ -223,9 +227,9 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
 
             {/* Messages */}
             <div className="h-64 overflow-y-auto p-4 space-y-3">
-              {messages.map((message) => (
+            {messages.map((message, index) => (
                 <div
-                  key={message.id}
+                  key={`floating-message-${message.id}-${index}`}
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div

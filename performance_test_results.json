@@ -1,0 +1,49 @@
+{
+  "buildPerformance": {
+    "buildSize": 496726849,
+    "staticSize": 2693826,
+    "chunkCount": 25
+  },
+  "componentLoadTimes": {
+    "Sidebar.tsx": 0.048791999999998836,
+    "Header.tsx": 0.020375000000001364,
+    "MigrationSteps.tsx": 0.028375000000000483,
+    "EnhancedAnalyticsDashboard.tsx": 0.026624999999999233,
+    "page.tsx": 0.03162500000000179
+  },
+  "memoryUsage": {
+    "rss": 52527104,
+    "heapTotal": 7929856,
+    "heapUsed": 4797040,
+    "external": 1504057,
+    "rssMB": "50.09",
+    "heapTotalMB": "7.56",
+    "heapUsedMB": "4.57"
+  },
+  "fileSystemPerformance": {
+    "createDirTime": 0.1045829999999981,
+    "writeTime": 3.2535419999999995,
+    "readTime": 4.698416999999999,
+    "listTime": 0.06195799999999707,
+    "writeSpeed": "3073.57",
+    "readSpeed": "2128.38"
+  },
+  "codeComplexity": {
+    "totalFiles": 160,
+    "totalLines": 37256,
+    "totalFunctions": 1028,
+    "totalComponents": 261,
+    "complexityScore": 1101,
+    "avgComplexityPerFile": 6.88125,
+    "avgLinesPerFile": 232.85
+  },
+  "scalabilityMetrics": {
+    "totalComponents": 79,
+    "reusableComponents": 71,
+    "largeComponents": 38,
+    "componentFiles": 82,
+    "pageFiles": 44,
+    "reusabilityRatio": "89.9",
+    "componentComplexityRatio": "48.1"
+  }
+}

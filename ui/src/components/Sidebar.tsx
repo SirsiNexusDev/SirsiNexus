@@ -208,7 +208,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Overview Section */}
         <div className="mb-6">
           <button
-            onClick={() => window.location.pathname !== '/' ? window.location.href = '/' : null}
+            onClick={() => {
+              if (window.location.pathname !== '/') {
+                window.history.pushState({}, '', '/');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            }}
             className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(pathname === '/')}`}
           >
             <div className="flex items-center gap-3">
@@ -248,7 +253,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 return (
                   <button
                     key={wizard.path}
-                    onClick={() => window.location.href = wizard.path}
+                    onClick={() => {
+                      if (window.location.pathname !== wizard.path) {
+                        window.history.pushState({}, '', wizard.path);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }
+                    }}
                     className={`w-full p-3 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
                   >
                     <div className="flex items-start gap-3">
@@ -306,7 +316,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               return (
                                 <button
                                   key={step.path}
-                                  onClick={() => window.location.href = step.path}
+                                  onClick={() => {
+                                    if (window.location.pathname !== step.path) {
+                                      window.history.pushState({}, '', step.path);
+                                      window.dispatchEvent(new PopStateEvent('popstate'));
+                                    }
+                                  }}
                                   className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
                                     isCurrent
                                       ? 'bg-blue-50 text-blue-700 border border-blue-200'
@@ -337,7 +352,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   return (
                     <button
                       key={item.path}
-                      onClick={() => window.location.href = item.path}
+                      onClick={() => {
+                        if (window.location.pathname !== item.path) {
+                          window.history.pushState({}, '', item.path);
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        }
+                      }}
                       className={`w-full p-2 rounded-lg transition-all duration-200 group text-left ${getActiveStyles(isActive)}`}
                     >
                       <div className="flex items-center gap-2">
@@ -355,7 +375,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Quick Action CTA */}
         <div className={`mt-8 pt-6 border-t ${themeClasses.border}`}>
           <button 
-            onClick={() => window.location.href = '/infrastructure'}
+            onClick={() => {
+              if (window.location.pathname !== '/infrastructure') {
+                window.history.pushState({}, '', '/infrastructure');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            }}
             className={`w-full ${themeClasses.button} text-white rounded-lg p-3 transition-colors group mb-3`}
           >
             <div className="flex items-center gap-3">
