@@ -21,14 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning className="h-full">
+      <body className={`${inter.className} h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100`}>
         <Providers>
           <ToastProvider>
             <AIContextProvider>
               <ErrorBoundary>
                 <ClientLayout>
-                {children}
+                  {children}
                   <ErrorBoundary>
                     <ConditionalAIToolbar />
                   </ErrorBoundary>

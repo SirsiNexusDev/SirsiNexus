@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import {
   Home,
   Wand2,
@@ -89,10 +90,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme } = useTheme();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
   const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
   const [nlpQuery, setNlpQuery] = useState('');
   const nlpInputRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Use actual theme state instead of prop
+  const isActuallyDarkMode = theme === 'dark';
   
   const migrationSteps = [
     { label: 'PLAN', path: '/migration/plan' },
@@ -147,16 +152,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // Centralized styling for theme consistency
   const getActiveStyles = (isActive: boolean) => isActive
-    ? (isDarkMode 
-      ? 'bg-purple-100 text-purple-700 border border-purple-200'
-      : 'bg-emerald-100 text-emerald-700 border border-emerald-200')
-    : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900';
+    ? 'bg-emerald-100 dark:bg-purple-900/30 text-emerald-700 dark:text-purple-300 border border-emerald-200 dark:border-purple-700'
+    : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100';
 
   const getIconBg = (isActive: boolean) => isActive
-    ? (isDarkMode ? 'bg-purple-200' : 'bg-emerald-200')
-    : 'bg-slate-200';
+    ? 'bg-emerald-200 dark:bg-purple-700'
+    : 'bg-slate-200 dark:bg-slate-700';
 
-  const themeClasses = isDarkMode ? {
+  const themeClasses = isActuallyDarkMode ? {
     bg: 'bg-slate-900/95',
     border: 'border-slate-700',
     text: 'text-slate-100',
@@ -173,12 +176,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className={`${themeClasses.bg} backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r ${themeClasses.border}`}>
+    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 dark:border-slate-700">
       <nav className="p-4 space-y-6">
         {/* Natural Language AI Assistant */}
         <div className="mb-6">
           <div className="mb-3">
-            <label className={`block text-xs font-semibold ${themeClasses.text} mb-2 flex items-center gap-2`}>
+            <label className="block text-xs font-semibold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2">
               <Sparkles className="h-3 w-3" />
               Sirsi AI Assistant
             </label>
@@ -189,17 +192,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onChange={(e) => setNlpQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask anything or describe what you need..."
-                className={`w-full p-3 text-sm rounded-lg resize-none min-h-[60px] max-h-[120px] ${themeClasses.input} placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
+                className="w-full p-3 text-sm rounded-lg resize-none min-h-[60px] max-h-[120px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
               <button
                 onClick={handleNlpSubmit}
                 disabled={!nlpQuery.trim()}
-                className={`absolute bottom-2 right-2 p-1.5 ${themeClasses.button} text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                className="absolute bottom-2 right-2 p-1.5 bg-emerald-600 dark:bg-purple-600 hover:bg-emerald-700 dark:hover:bg-purple-700 text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="h-3 w-3" />
               </button>
             </div>
-            <p className={`text-xs ${themeClasses.textSecondary} mt-1 flex items-center gap-1`}>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-1">
               <Command className="h-3 w-3" />
               <span>Cmd+Enter to send</span>
             </p>
@@ -222,7 +225,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <div>
                 <h2 className="text-sm font-medium">Overview</h2>
-                <p className={`text-xs ${themeClasses.textSecondary}`}>Dashboard and insights</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">Dashboard and insights</p>
               </div>
             </div>
           </button>
@@ -232,16 +235,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="mb-6">
           <button
             onClick={() => setWizardsExpanded(!wizardsExpanded)}
-            className={`w-full p-3 rounded-lg transition-colors mb-3 ${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-50 hover:bg-slate-100'}`}
+            className="w-full p-3 rounded-lg transition-colors mb-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-purple-100' : 'bg-indigo-100'}`}>
-                  <Wand2 className={`h-3 w-3 ${isDarkMode ? 'text-purple-600' : 'text-indigo-600'}`} />
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-indigo-100 dark:bg-purple-100">
+                  <Wand2 className="h-3 w-3 text-indigo-600 dark:text-purple-600" />
                 </div>
-                <span className={`text-sm font-medium ${themeClasses.text}`}>Smart Wizards</span>
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100">Smart Wizards</span>
               </div>
-              <ChevronDown className={`h-3 w-3 ${themeClasses.textSecondary} transition-transform ${wizardsExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3 w-3 text-slate-600 dark:text-slate-400 transition-transform ${wizardsExpanded ? 'rotate-180' : ''}`} />
             </div>
           </button>
           
@@ -266,7 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </div>
                       <div className="text-left">
                         <div className="text-sm font-medium">{wizard.label}</div>
-                        <div className={`text-xs ${themeClasses.textSecondary} mt-0.5`}>
+                        <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                           {wizard.description}
                         </div>
                       </div>
@@ -282,7 +285,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="space-y-6">
           {sidebarSections.map((section) => (
             <div key={section.title}>
-              <h3 className={`text-xs font-semibold ${themeClasses.textSecondary} uppercase tracking-wider mb-3`}>
+              <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-3">
                 {section.title}
               </h3>
               <div className="space-y-1">
@@ -322,19 +325,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   }}
                                   className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all ${
                                     isCurrent
-                                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
                                       : isCompleted
-                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                      : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                                      ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700'
+                                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
                                   }`}
                                 >
                                   <span>{step.label}</span>
                                   <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                                     isCurrent
-                                      ? 'bg-blue-100 text-blue-700'
+                                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200'
                                       : isCompleted
-                                      ? 'bg-emerald-100 text-emerald-700'
-                                      : 'bg-slate-100 text-slate-500'
+                                      ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200'
+                                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                                   }`}>
                                     {isCurrent ? 'ACTIVE' : isCompleted ? 'DONE' : 'TODO'}
                                   </span>
@@ -370,22 +373,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
         
         {/* Quick Action CTA */}
-        <div className={`mt-8 pt-6 border-t ${themeClasses.border}`}>
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
           <button 
             onClick={() => {
               if (pathname !== '/infrastructure') {
                 router.push('/infrastructure');
               }
             }}
-            className={`w-full ${themeClasses.button} text-white rounded-lg p-3 transition-colors group mb-3`}
+            className="w-full bg-emerald-600 dark:bg-purple-600 hover:bg-emerald-700 dark:hover:bg-purple-700 text-white rounded-lg p-3 transition-colors group mb-3"
           >
             <div className="flex items-center gap-3">
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-purple-500' : 'bg-emerald-500'}`}>
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-emerald-500 dark:bg-purple-500">
                 <Code className="h-3 w-3 text-white" />
               </div>
               <div className="text-left">
                 <div className="text-sm font-medium">Infrastructure Builder</div>
-                <div className={`text-xs ${isDarkMode ? 'text-purple-100' : 'text-emerald-100'}`}>AI-powered infrastructure</div>
+                <div className="text-xs text-emerald-100 dark:text-purple-100">AI-powered infrastructure</div>
               </div>
             </div>
           </button>

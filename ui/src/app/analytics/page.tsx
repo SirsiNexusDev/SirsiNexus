@@ -168,36 +168,36 @@ const Analytics = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-emerald-600" />
-          <p className="text-gray-600">Loading analytics...</p>
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-emerald-600 dark:text-emerald-400" />
+          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-4 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <BarChart className="h-8 w-8 text-emerald-600" />
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+                <BarChart className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
                 Analytics Dashboard
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
                 Monitor your infrastructure performance, costs, and optimization opportunities
               </p>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
+                <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <select 
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="1d">Last 24 hours</option>
                   <option value="7d">Last 7 days</option>
@@ -238,8 +238,8 @@ const Analytics = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">{metric.title}</p>
-                      <p className="text-2xl font-bold text-gray-900 mt-2">{metric.value}</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{metric.title}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{metric.value}</p>
                       <div className="flex items-center mt-2">
                         <Badge 
                           variant={metric.changeType === 'positive' ? 'default' : 'destructive'}
@@ -247,11 +247,11 @@ const Analytics = () => {
                         >
                           {metric.change}
                         </Badge>
-                        <span className="text-xs text-gray-500 ml-2">vs last period</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">vs last period</span>
                       </div>
                     </div>
-                    <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                      <Icon className="h-6 w-6 text-emerald-600" />
+                    <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                      <Icon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                     </div>
                   </div>
                 </CardContent>
@@ -285,11 +285,11 @@ const Analytics = () => {
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-4 h-4 rounded-full bg-emerald-${(index + 1) * 100}`}></div>
-                          <span className="font-medium">{item.name}</span>
+                          <span className="font-medium dark:text-gray-200">{item.name}</span>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold">${item.value}</p>
-                          <p className={`text-sm ${item.change && item.change > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          <p className="font-semibold dark:text-gray-100">${item.value}</p>
+                          <p className={`text-sm ${item.change && item.change > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
                             {item.change && `${item.change > 0 ? '+' : ''}${item.change}%`}
                           </p>
                         </div>
@@ -311,15 +311,15 @@ const Analytics = () => {
                   <div className="space-y-4">
                     {performanceData.map((item, index) => (
                       <div key={index} className="flex items-center justify-between">
-                        <span className="text-sm font-medium">{item.name}</span>
+                        <span className="text-sm font-medium dark:text-gray-200">{item.name}</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div 
-                              className="bg-emerald-600 h-2 rounded-full" 
+                              className="bg-emerald-600 dark:bg-emerald-500 h-2 rounded-full" 
                               style={{ width: `${item.value}%` }}
                             ></div>
                           </div>
-                          <span className="text-sm font-semibold w-12">{item.value}%</span>
+                          <span className="text-sm font-semibold w-12 dark:text-gray-200">{item.value}%</span>
                         </div>
                       </div>
                     ))}
@@ -336,9 +336,9 @@ const Analytics = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12">
-                  <DollarSign className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Advanced Cost Analytics</h3>
-                  <p className="text-gray-600 mb-4">
+                  <DollarSign className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Advanced Cost Analytics</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
                     Detailed cost breakdown, forecasting, and optimization recommendations
                   </p>
                   <Button className="bg-emerald-600 hover:bg-emerald-700">
@@ -356,9 +356,9 @@ const Analytics = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12">
-                  <Activity className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Performance Metrics</h3>
-                  <p className="text-gray-600 mb-4">
+                  <Activity className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Real-time Performance Metrics</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
                     CPU, memory, network, and custom application metrics
                   </p>
                   <Button className="bg-emerald-600 hover:bg-emerald-700">
@@ -380,15 +380,15 @@ const Analytics = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentAlerts.map((alert) => (
-                    <div key={alert.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={alert.id} className="flex items-center justify-between p-4 border dark:border-gray-700 rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${
                           alert.type === 'error' ? 'bg-red-500' :
                           alert.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
                         }`}></div>
                         <div>
-                          <p className="font-medium">{alert.title}</p>
-                          <p className="text-sm text-gray-600">{alert.resource} • {alert.time}</p>
+                          <p className="font-medium dark:text-gray-200">{alert.title}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{alert.resource} • {alert.time}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

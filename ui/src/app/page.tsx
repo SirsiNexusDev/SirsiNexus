@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SignInModal } from '@/components/SignInModal';
 import { MigrationWelcomeModal } from '@/components/MigrationWelcomeModal';
@@ -116,6 +117,7 @@ const mockRecentActivity = [
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const authSync = useAuthSync(); // Sync NextAuth with Redux
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const welcomeModalOpen = useAppSelector((state) => state.ui.modals.welcome);
@@ -196,7 +198,7 @@ export default function DashboardPage() {
 
   const handleStartMigration = () => {
     // Navigate to migration wizard or create new project
-    window.location.href = '/migration';
+    router.push('/migration');
   };
 
   const handleJourneySelection = (journey: 'migration' | 'optimization' | 'scaling') => {
@@ -206,13 +208,13 @@ export default function DashboardPage() {
   const handleStartOptimization = () => {
     // Navigate to optimization wizard
     console.log('Starting optimization journey');
-    window.location.href = '/optimization';
+    router.push('/optimization');
   };
 
   const handleStartScaling = () => {
     // Navigate to scaling wizard
     console.log('Starting scaling journey');
-    window.location.href = '/scaling';
+    router.push('/scaling');
   };
 
   // Only show dashboard content if user is authenticated and has completed onboarding
@@ -220,7 +222,7 @@ export default function DashboardPage() {
   const hideMainContent = !isAuthenticated || authModalOpen || journeySelectionModalOpen;
 
   return (
-    <div className="bg-transparent">
+    <div className="bg-slate-50 dark:bg-slate-900">
       <Breadcrumb />
       
       {!hideMainContent && (
@@ -228,68 +230,68 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <div className="mb-8">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-slate-900 mb-2">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 Quick Actions
               </h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Get started with common tasks
               </p>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <button
                 onClick={() => setShowCreateProjectModal(true)}
-                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-emerald-300 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-emerald-300 dark:hover:border-emerald-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <Plus className="h-4 w-4 text-emerald-600" />
+                  <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors">
+                    <Plus className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                 </div>
-                <h3 className="font-medium text-slate-900 mb-1">New Project</h3>
-                <p className="text-sm text-slate-600">Start your migration journey</p>
+                <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-1">New Project</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Start your migration journey</p>
               </button>
               
               <button
                 onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <Shield className="h-4 w-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                    <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                 </div>
-                <h3 className="font-medium text-slate-900 mb-1">Demo Sign In</h3>
-                <p className="text-sm text-slate-600">Try the platform features</p>
+                <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-1">Demo Sign In</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Try the platform features</p>
               </button>
               
               <button
                 onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-amber-300 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-amber-300 dark:hover:border-amber-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-                    <Zap className="h-4 w-4 text-amber-600" />
+                  <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors">
+                    <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
                 </div>
-                <h3 className="font-medium text-slate-900 mb-1">Choose Journey</h3>
-                <p className="text-sm text-slate-600">Select your migration path</p>
+                <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-1">Choose Journey</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Select your migration path</p>
               </button>
               
               <button
                 onClick={() => window.location.href = '/analytics'}
-                className="p-4 bg-white border border-slate-200 rounded-lg hover:border-purple-300 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                    <BarChart className="h-4 w-4 text-purple-600" />
+                  <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
+                    <BarChart className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
                 </div>
-                <h3 className="font-medium text-slate-900 mb-1">Analytics</h3>
-                <p className="text-sm text-slate-600">View detailed reports</p>
+                <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-1">Analytics</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">View detailed reports</p>
               </button>
             </div>
           </div>
@@ -297,14 +299,14 @@ export default function DashboardPage() {
           {/* Dashboard Overview Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <Monitor className="h-4 w-4 text-emerald-600" />
+              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                <Monitor className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-slate-900">
+                <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
                   Dashboard Overview
                 </h1>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                   Real-time insights into your migration projects and infrastructure
                 </p>
               </div>
@@ -337,33 +339,33 @@ export default function DashboardPage() {
           return (
             <button
               key={stat.name}
-              onClick={() => window.location.href = getNavigationPath(stat.name)}
-              className="p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 hover:shadow-sm transition-all duration-200 group text-left"
+              onClick={() => router.push(getNavigationPath(stat.name))}
+              className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
             >
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-slate-700">
+                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   {stat.name}
                 </h3>
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition-colors">
-                  <Icon className="h-4 w-4 text-slate-600" />
+                <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors">
+                  <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                 </div>
               </div>
             
               <div className="mb-3">
-                <div className="text-2xl font-semibold text-slate-900 mb-1">
+                <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">
                   {stat.value}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-emerald-600 font-medium">
+                  <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
                     {stat.change}
                   </span>
-                  <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full">
                     {stat.percentage}
                   </span>
                 </div>
               </div>
               
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-slate-600 dark:text-slate-400">
                 {stat.description}
               </p>
             </button>
@@ -376,21 +378,21 @@ export default function DashboardPage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Activity className="h-4 w-4 text-blue-600" />
+                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Activity className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900">
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                     Recent Activity
                   </h2>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     Latest updates and project milestones
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => window.location.href = '/projects'}
-                className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-emerald-600 dark:bg-emerald-700 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors flex items-center gap-2"
               >
                 View All Projects
                 <ArrowRight className="h-4 w-4" />
@@ -416,15 +418,15 @@ export default function DashboardPage() {
               return (
                 <button
                   key={activity.id}
-                  onClick={() => window.location.href = getActivityPath(activity.id, activity.type)}
-                  className="w-full p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 hover:shadow-sm transition-all duration-200 group text-left"
+                  onClick={() => router.push(getActivityPath(activity.id, activity.type))}
+                  className="w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-medium text-slate-900 mb-1">
+                      <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-1">
                         {activity.project}
                       </h3>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
                         {activity.timestamp} • {activity.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                       </p>
                     </div>
@@ -432,15 +434,15 @@ export default function DashboardPage() {
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium border ${
                           activity.status === 'success'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700'
                             : activity.status === 'warning'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                            ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-700'
+                            : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-700'
                         }`}
                       >
                         {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
                       </span>
-                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                      <ArrowRight className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
                     </div>
                   </div>
                 </button>

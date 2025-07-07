@@ -35,6 +35,13 @@ export const Header: React.FC = () => {
     setMounted(true);
   }, []);
 
+  // Debug theme changes
+  useEffect(() => {
+    if (mounted) {
+      console.log('Current theme:', theme);
+    }
+  }, [theme, mounted]);
+
   // Global search shortcut
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -49,15 +56,28 @@ export const Header: React.FC = () => {
   }, []);
 
   const handleThemeToggle = () => {
-    let newTheme: string;
-    if (theme === 'light') {
-      newTheme = 'dark';
-    } else if (theme === 'dark') {
-      newTheme = 'system';
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    console.log('Theme toggle:', { current: theme, new: newTheme });
+    console.log('localStorage theme before:', localStorage.getItem('theme'));
+    
+    // Force apply theme to document immediately
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
-      newTheme = 'light';
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
+    
+    // Clear any cached theme and set new one
+    localStorage.removeItem('theme');
     setTheme(newTheme);
+    
+    // Verify it was set
+    setTimeout(() => {
+      console.log('localStorage theme after:', localStorage.getItem('theme'));
+      console.log('Document class:', document.documentElement.className);
+    }, 100);
   };
 
   if (!mounted) {
@@ -69,25 +89,25 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200">
+    <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
       <div className="max-w-full mx-auto px-6">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold text-white">S</span>
+              <div className="w-8 h-8 bg-slate-900 dark:bg-slate-100 rounded-lg flex items-center justify-center">
+                <span className="text-sm font-bold text-white dark:text-slate-900">S</span>
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-slate-900">
+                <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   SirsiNexus
                 </h1>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
                     v0.4.2
                   </span>
                   <div className="flex items-center gap-1">
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                    <span className="text-xs text-slate-600">Live</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-300">Live</span>
                   </div>
                 </div>
               </div>
@@ -98,11 +118,11 @@ export const Header: React.FC = () => {
           <div className="flex-1 max-w-md mx-8">
             <button
               onClick={() => setShowSearch(true)}
-              className="w-full flex items-center gap-3 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors text-left"
+              className="w-full flex items-center gap-3 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors text-left"
             >
-              <Search className="h-4 w-4 text-slate-500" />
-              <span className="text-sm text-slate-500 flex-1">Search...</span>
-              <div className="flex items-center gap-1 text-xs text-slate-400">
+              <Search className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+              <span className="text-sm text-slate-500 dark:text-slate-400 flex-1">Search...</span>
+              <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
                 <Command className="h-3 w-3" />
                 <span>K</span>
               </div>
@@ -112,15 +132,13 @@ export const Header: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={handleThemeToggle}
-              className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-              title={`Current: ${theme} mode - Click to cycle`}
+              className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               {theme === 'dark' ? (
                 <Sun className="h-4 w-4" />
-              ) : theme === 'light' ? (
-                <Moon className="h-4 w-4" />
               ) : (
-                <Monitor className="h-4 w-4" />
+                <Moon className="h-4 w-4" />
               )}
             </button>
 
@@ -129,7 +147,7 @@ export const Header: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-                className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <Settings className="h-4 w-4" />
               </button>
@@ -142,9 +160,9 @@ export const Header: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
-                <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
                   {user?.avatar ? (
                     <Image
                       src={user.avatar}
@@ -155,20 +173,20 @@ export const Header: React.FC = () => {
                       priority
                     />
                   ) : (
-                    <User className="h-3 w-3 text-slate-600" />
+                    <User className="h-3 w-3 text-slate-600 dark:text-slate-300" />
                   )}
                 </div>
-                <span className="text-sm text-slate-700">
+                <span className="text-sm text-slate-700 dark:text-slate-200">
                   {user?.name || 'Guest'}
                 </span>
-                <ChevronDown className="h-3 w-3 text-slate-500" />
+                <ChevronDown className="h-3 w-3 text-slate-500 dark:text-slate-400" />
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-sm p-1">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm p-1">
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="flex w-full items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out

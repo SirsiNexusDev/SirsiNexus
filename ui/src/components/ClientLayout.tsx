@@ -51,14 +51,14 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <Header />
       <div className="flex">
         <Sidebar 
           aiAssistant 
           onNavigateToInfrastructure={handleNavigateToInfrastructure}
         />
-        <main className="flex-1 p-6 ml-0 lg:ml-64 transition-all duration-300 bg-transparent">
+        <main className="flex-1 p-6 ml-0 lg:ml-64 transition-all duration-300 bg-slate-50 dark:bg-slate-900">
           {children}
         </main>
       </div>
