@@ -249,19 +249,19 @@ Total: $1,937`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Terminal className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <Terminal className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             Scripting Console
-            <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+            <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 border-blue-200 dark:border-blue-700">
               <Zap className="h-3 w-3 mr-1" />
               Interactive
             </Badge>
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Execute scripts, automate tasks, and interact with your infrastructure
           </p>
         </div>
@@ -284,8 +284,8 @@ Total: $1,937`);
                         onClick={() => setSelectedLanguage(lang.id)}
                         className={`w-full flex items-center gap-2 p-2 rounded-lg text-left transition-colors ${
                           selectedLanguage === lang.id
-                            ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                            : 'hover:bg-gray-50 text-gray-600'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         <Icon className="h-4 w-4" />
@@ -311,10 +311,10 @@ Total: $1,937`);
                     <div
                       key={script.id}
                       onClick={() => loadScript(script)}
-                      className="p-3 border rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+                      className="p-3 border dark:border-gray-700 rounded-lg cursor-pointer hover:shadow-md transition-shadow hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
-                      <h4 className="font-medium text-sm">{script.name}</h4>
-                      <p className="text-xs text-gray-500 mt-1">{script.lastModified}</p>
+                      <h4 className="font-medium text-sm dark:text-gray-200">{script.name}</h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{script.lastModified}</p>
                       <div className="flex items-center gap-1 mt-2">
                         <Badge variant="outline" className="text-xs">
                           {script.language}
@@ -361,14 +361,14 @@ Total: $1,937`);
                   value={currentScript}
                   onChange={(e) => setCurrentScript(e.target.value)}
                   placeholder={`Enter your ${languages.find(l => l.id === selectedLanguage)?.name} script here...`}
-                  className="w-full h-64 font-mono text-sm border border-gray-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none bg-gray-50"
+                  className="w-full h-64 font-mono text-sm border border-gray-200 dark:border-gray-600 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 />
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">
                       {selectedLanguage}
                     </Badge>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       Lines: {currentScript.split('\n').length}
                     </span>
                   </div>

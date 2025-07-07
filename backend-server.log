@@ -1,0 +1,248 @@
+warning: field `storage_client` is never read
+  --> core-engine/src/agent/connectors/azure.rs:47:5
+   |
+43 | pub struct AzureAgent {
+   |            ---------- field in this struct
+...
+47 |     storage_client: Option<StorageClient>,
+   |     ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: methods `discover_virtual_machines_mock`, `get_all_resource_groups`, `vm_to_azure_resource`, and `extract_resource_group_from_id` are never used
+   --> core-engine/src/agent/connectors/azure.rs:362:14
+    |
+53  | impl AzureAgent {
+    | --------------- methods in this implementation
+...
+362 |     async fn discover_virtual_machines_mock(&self) -> AppResult<Vec<AzureResource>> {
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+441 |     async fn get_all_resource_groups(&self) -> AppResult<Vec<String>> {
+    |              ^^^^^^^^^^^^^^^^^^^^^^^
+...
+471 |     fn vm_to_azure_resource(&self, vm: &azure_mgmt_compute::models::VirtualMachine, resource_group: &str) -> Option<AzureRe...
+    |        ^^^^^^^^^^^^^^^^^^^^
+...
+528 |     fn extract_resource_group_from_id(&self, resource_id: &str) -> String {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: field `storage_client` is never read
+  --> core-engine/src/agent/connectors/gcp.rs:43:5
+   |
+41 | pub struct GcpAgent {
+   |            -------- field in this struct
+42 |     config: GcpConfig,
+43 |     storage_client: Option<StorageClient>,
+   |     ^^^^^^^^^^^^^^
+
+warning: method `bucket_to_resource` is never used
+   --> core-engine/src/agent/connectors/gcp.rs:178:8
+    |
+48  | impl GcpAgent {
+    | ------------- method in this implementation
+...
+178 |     fn bucket_to_resource(&self, bucket_name: &str) -> Option<GcpResource> {
+    |        ^^^^^^^^^^^^^^^^^^
+
+warning: fields `role` and `memory` are never read
+  --> core-engine/src/agent/manager.rs:86:5
+   |
+81 | struct AgentState {
+   |        ---------- fields in this struct
+...
+86 |     role: AgentRole,
+   |     ^^^^
+...
+91 |     memory: HashMap<String, String>,
+   |     ^^^^^^
+
+warning: field `methods` is never read
+   --> core-engine/src/ai/decision/engine.rs:151:5
+    |
+150 | pub struct MCDMSolver {
+    |            ---------- field in this struct
+151 |     methods: Vec<MCDMMethod>,
+    |     ^^^^^^^
+    |
+    = note: `MCDMSolver` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `entities` and `relationships` are never read
+   --> core-engine/src/ai/decision/engine.rs:178:5
+    |
+176 | pub struct KnowledgeGraph {
+    |            -------------- fields in this struct
+177 |     // Simplified knowledge graph for decision support
+178 |     entities: HashMap<String, Entity>,
+    |     ^^^^^^^^
+179 |     relationships: Vec<Relationship>,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `KnowledgeGraph` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `knowledge_graph` is never read
+   --> core-engine/src/ai/decision/engine.rs:210:5
+    |
+207 | pub struct DecisionEngine {
+    |            -------------- field in this struct
+...
+210 |     knowledge_graph: KnowledgeGraph,
+    |     ^^^^^^^^^^^^^^^
+
+warning: fields `execution_policies` and `safety_constraints` are never read
+  --> core-engine/src/ai/hypervisor_integration.rs:15:5
+   |
+12 | pub struct HypervisorIntegration {
+   |            --------------------- fields in this struct
+...
+15 |     execution_policies: ExecutionPolicies,
+   |     ^^^^^^^^^^^^^^^^^^
+16 |     safety_constraints: SafetyConstraints,
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `HypervisorIntegration` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `pool` is never read
+  --> core-engine/src/compliance/gdpr.rs:78:5
+   |
+77 | pub struct GdprComplianceManager {
+   |            --------------------- field in this struct
+78 |     pool: PgPool,
+   |     ^^^^
+   |
+   = note: `GdprComplianceManager` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `event_receiver` is never read
+   --> core-engine/src/hypervisor/coordinator.rs:135:5
+    |
+115 | pub struct HypervisorCoordinator {
+    |            --------------------- field in this struct
+...
+135 |     event_receiver: Option<broadcast::Receiver<AgentEvent>>,
+    |     ^^^^^^^^^^^^^^
+
+warning: field `context_store` is never read
+  --> core-engine/src/server/agent_service_impl.rs:15:5
+   |
+13 | pub struct AgentServiceImpl {
+   |            ---------------- field in this struct
+14 |     agent_manager: Arc<RwLock<AgentManager>>,
+15 |     context_store: Arc<ContextStore>,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `AgentServiceImpl` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: `sirsi-nexus` (lib) generated 12 warnings
+warning: unused variable: `port`
+   --> core-engine/src/main.rs:340:38
+    |
+340 |     async fn start_websocket_service(port: u16, config: &AppConfig) -> anyhow::Result<()> {
+    |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_port`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `config`
+   --> core-engine/src/main.rs:340:49
+    |
+340 |     async fn start_websocket_service(port: u16, config: &AppConfig) -> anyhow::Result<()> {
+    |                                                 ^^^^^^ help: if this is intentional, prefix it with an underscore: `_config`
+
+warning: unused variable: `config`
+   --> core-engine/src/main.rs:345:37
+    |
+345 |     async fn start_analytics_engine(config: &AppConfig) -> anyhow::Result<()> {
+    |                                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_config`
+
+warning: unused variable: `config`
+   --> core-engine/src/main.rs:350:36
+    |
+350 |     async fn start_security_engine(config: &AppConfig) -> anyhow::Result<()> {
+    |                                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_config`
+
+warning: unused variable: `port`
+   --> core-engine/src/main.rs:439:32
+    |
+439 |         Some(Commands::Start { port }) => {
+    |                                ^^^^ help: try ignoring the field: `port: _`
+
+warning: fields `name`, `port`, `pid`, and `uptime` are never read
+  --> core-engine/src/main.rs:73:5
+   |
+72 | struct ServiceStatus {
+   |        ------------- fields in this struct
+73 |     name: String,
+   |     ^^^^
+74 |     status: String,
+75 |     port: Option<u16>,
+   |     ^^^^
+76 |     pid: Option<u32>,
+   |     ^^^
+77 |     uptime: std::time::SystemTime,
+   |     ^^^^^^
+   |
+   = note: `ServiceStatus` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` on by default
+
+warning: `sirsi-nexus` (bin "sirsi-nexus") generated 6 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running `target/debug/sirsi-nexus`
+Warning: Tracing subscriber already initialized: a global default trace dispatcher has already been set
+
+███████╗██╗██████╗ ███████╗██╗    ███╗   ██╗███████╗██╗  ██╗██╗   ██╗███████╗
+██╔════╝██║██╔══██╗██╔════╝██║    ████╗  ██║██╔════╝╚██╗██╔╝██║   ██║██╔════╝
+███████╗██║██████╔╝███████╗██║    ██╔██╗ ██║█████╗   ╚███╔╝ ██║   ██║███████╗
+╚════██║██║██╔══██╗╚════██║██║    ██║╚██╗██║██╔══╝   ██╔██╗ ██║   ██║╚════██║
+███████║██║██║  ██║███████║██║    ██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║
+╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝    ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+🌟 AI-Powered Infrastructure Management Platform v3.0.0
+📊 Optimization • Scaling • Security • Operations • Analytics
+
+[2m2025-07-07T23:32:56.360726Z[0m [32m INFO[0m 🚀 Starting SirsiNexus Infrastructure Management Platform v3.0.0
+[2m2025-07-07T23:32:56.360837Z[0m [32m INFO[0m 🔍 Running platform preflight checks...
+[2m2025-07-07T23:32:56.360850Z[0m [32m INFO[0m ✅ System requirements satisfied
+[2m2025-07-07T23:32:56.367527Z[0m [32m INFO[0m ✅ Database service ready
+[2m2025-07-07T23:32:56.368411Z[0m [32m INFO[0m ✅ Redis cache service ready
+[2m2025-07-07T23:32:56.368429Z[0m [32m INFO[0m ✅ Configuration validated
+[2m2025-07-07T23:32:56.368438Z[0m [32m INFO[0m ✅ All preflight checks passed
+[2m2025-07-07T23:32:56.368445Z[0m [32m INFO[0m 🌟 Starting all platform services...
+
+🎉 SirsiNexus Platform is ready!
+
+📡 Services running:
+   ✅ ai-agent (running)
+   ✅ websocket (running)
+   ✅ rest-api (running)
+   ✅ analytics (running)
+   ✅ security (running)
+
+🌐 Access your infrastructure management dashboard:
+   → http://localhost:3000
+
+📊 Platform capabilities available:
+   • Infrastructure optimization and scaling
+   • Security audits and compliance monitoring
+   • Database performance tuning
+   • Load balancing optimization
+   • Cost analysis and reduction
+   • Predictive maintenance
+   • Real-time infrastructure health
+
+⏹️  Press Ctrl+C to shutdown
+
+[2m2025-07-07T23:32:56.368901Z[0m [32m INFO[0m 🤖 AI Infrastructure Agent starting on port 50051
+[2m2025-07-07T23:32:56.368900Z[0m [32m INFO[0m 🌐 REST API Service starting on port 8080
+[2m2025-07-07T23:32:56.369005Z[0m [32m INFO[0m 📊 Analytics Engine starting...
+[2m2025-07-07T23:32:56.369007Z[0m [32m INFO[0m 🔒 Security Engine starting...
+[2m2025-07-07T23:32:56.369010Z[0m [32m INFO[0m 🔌 WebSocket Service starting on port 8081
+[2m2025-07-07T23:32:56.369024Z[0m [32m INFO[0m ✅ analytics service completed
+[2m2025-07-07T23:32:56.369046Z[0m [32m INFO[0m Starting gRPC server on 0.0.0.0:50051
+[2m2025-07-07T23:32:56.369043Z[0m [32m INFO[0m ✅ websocket service completed
+[2m2025-07-07T23:32:56.369033Z[0m [32m INFO[0m ✅ security service completed
+[2m2025-07-07T23:32:56.369493Z[0m [32m INFO[0m Redis connection established successfully
+[2m2025-07-07T23:32:56.372436Z[0m [32m INFO[0m Agent service initialized, starting server...
+[2m2025-07-07T23:34:10.594586Z[0m [32m INFO[0m 🛑 Received SIGTERM, initiating graceful shutdown
+[2m2025-07-07T23:34:10.594824Z[0m [32m INFO[0m 🛑 Shutting down all platform services...
+[2m2025-07-07T23:34:10.594853Z[0m [32m INFO[0m ✅ All services shut down gracefully
+
+👋 SirsiNexus Platform stopped. Thank you for using our infrastructure management platform!
