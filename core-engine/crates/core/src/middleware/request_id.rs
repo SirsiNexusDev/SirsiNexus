@@ -8,8 +8,8 @@ use uuid::Uuid;
 /// Middleware that adds a request ID to each request for tracing purposes.
 pub async fn request_id(
     mut request: Request<Body>,
-    next: Next<Body>,
-) -> Response {
+    next: Next,
+) -> Response<Body> {
     let request_id = Uuid::new_v4().to_string();
     
     // Add request ID to headers

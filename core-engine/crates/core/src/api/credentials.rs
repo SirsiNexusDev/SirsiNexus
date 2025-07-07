@@ -43,10 +43,13 @@ pub async fn list_credentials_handler(
     let credential_manager = CredentialManager::new(pool, encryption_key);
 
     match credential_manager.list_credentials(user.id).await {
-        Ok(credentials) => Ok(Json(ListCredentialsResponse {
-            credentials,
-            total: credentials.len(),
-        })),
+        Ok(credentials) => {
+            let total = credentials.len();
+            Ok(Json(ListCredentialsResponse {
+                credentials,
+                total,
+            }))
+        }
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(ErrorResponse {

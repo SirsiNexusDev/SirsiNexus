@@ -91,8 +91,8 @@ impl CredentialManager {
                 provider,
                 alias: row.alias,
                 credentials,
-                created_at: row.created_at,
-                updated_at: row.updated_at,
+                created_at: row.created_at.unwrap_or_else(|| sqlx::types::time::OffsetDateTime::now_utc()),
+                updated_at: row.updated_at.unwrap_or_else(|| sqlx::types::time::OffsetDateTime::now_utc()),
             }))
         } else {
             Ok(None)
@@ -122,8 +122,8 @@ impl CredentialManager {
                     id: row.id,
                     provider,
                     alias: row.alias,
-                    created_at: row.created_at,
-                    updated_at: row.updated_at,
+                    created_at: row.created_at.unwrap_or_else(|| sqlx::types::time::OffsetDateTime::now_utc()),
+                    updated_at: row.updated_at.unwrap_or_else(|| sqlx::types::time::OffsetDateTime::now_utc()),
                 }
             })
             .collect();

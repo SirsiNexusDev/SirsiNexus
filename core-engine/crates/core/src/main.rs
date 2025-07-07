@@ -4,8 +4,9 @@ mod config;
 mod credential_manager;
 mod db;
 mod error;
+mod middleware;
 mod models;
-mod telemetry;
+// mod telemetry; // Disabled temporarily
 
 use anyhow::Result;
 use std::net::SocketAddr;
@@ -13,11 +14,14 @@ use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Initialize tracing
+    tracing_subscriber::fmt::init();
+    
     // Load configuration
-    let config = config::Settings::new()?;
+    let config = config::Config::from_env()?;
 
-    // Initialize telemetry
-    telemetry::init_telemetry()?;
+    // Initialize telemetry - disabled for now
+    // telemetry::init_telemetry()?;
 
     // Connect to database
     let pool = db::create_db_pool(&config.database_url).await?;

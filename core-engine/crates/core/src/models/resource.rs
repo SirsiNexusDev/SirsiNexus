@@ -10,7 +10,9 @@ pub struct Resource {
     pub data: serde_json::Value,
     pub owner_id: Uuid,
     pub project_id: Uuid,
+    #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
     pub updated_at: OffsetDateTime,
 }
 

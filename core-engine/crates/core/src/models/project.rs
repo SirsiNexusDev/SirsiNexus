@@ -6,21 +6,23 @@ use uuid::Uuid;
 pub struct Project {
     pub id: Uuid,
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub status: ProjectStatus,
     pub owner_id: Uuid,
+    #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
     pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateProject {
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub status: ProjectStatus,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::Type)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "project_status", rename_all = "lowercase")]
 pub enum ProjectStatus {
     Active,

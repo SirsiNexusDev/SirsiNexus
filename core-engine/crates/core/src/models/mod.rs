@@ -5,7 +5,3 @@ pub mod resource;
 pub use project::{Project, ProjectStatus, CreateProject};
 pub use user::{User, CreateUser};
 pub use resource::{Resource, CreateResource};
-
-pub use project::{Project, ProjectStatus, CreateProject};
-pub use user::{User, CreateUser};
-pub use resource::{Resource, CreateResource};

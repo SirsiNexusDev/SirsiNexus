@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::str::FromStr;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
+use sqlx::types::time::OffsetDateTime;
 use anyhow::{Result, anyhow};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -88,8 +88,8 @@ pub struct StoredCredential {
     pub provider: CloudProvider,
     pub alias: Option<String>,
     pub credentials: ProviderCredentials,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub created_at: OffsetDateTime,
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -97,8 +97,10 @@ pub struct CredentialSummary {
     pub id: Uuid,
     pub provider: CloudProvider,
     pub alias: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::iso8601")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -128,8 +130,10 @@ pub struct CredentialResponse {
     pub id: Uuid,
     pub provider: CloudProvider,
     pub alias: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::iso8601")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub updated_at: OffsetDateTime,
     pub test_result: Option<CredentialTestResult>,
 }
 

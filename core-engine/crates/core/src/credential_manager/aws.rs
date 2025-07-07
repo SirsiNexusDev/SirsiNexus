@@ -14,7 +14,7 @@ pub async fn test_aws_credentials(credentials: &ProviderCredentials) -> Result<C
 async fn test_aws_credentials_impl(creds: &AWSCredentials) -> Result<CredentialTestResult> {
     use aws_config::{BehaviorVersion, Region};
     use aws_credential_types::Credentials;
-    use aws_sts::Client as StsClient;
+    use aws_sdk_sts::Client as StsClient;
 
     // Validate credentials first
     creds.validate()?;
@@ -113,7 +113,7 @@ pub async fn test_aws_role_assumption(
 ) -> Result<CredentialTestResult> {
     use aws_config::{BehaviorVersion, Region};
     use aws_credential_types::Credentials;
-    use aws_sts::Client as StsClient;
+    use aws_sdk_sts::Client as StsClient;
 
     // Validate credentials first
     creds.validate()?;
@@ -161,14 +161,14 @@ pub async fn test_aws_role_assumption(
             
             if let Some(credentials) = assume_role_output.credentials() {
                 details.insert("assumed_role_id".to_string(), 
-                    credentials.access_key_id().unwrap_or("unknown").to_string());
+                    credentials.access_key_id().to_string());
             }
             
             if let Some(assumed_role_user) = assume_role_output.assumed_role_user() {
-                if let Some(arn) = assumed_role_user.arn() {
+                if let arn = assumed_role_user.arn() {
                     details.insert("assumed_role_arn".to_string(), arn.to_string());
                 }
-                if let Some(id) = assumed_role_user.assumed_role_id() {
+                if let id = assumed_role_user.assumed_role_id() {
                     details.insert("assumed_role_user_id".to_string(), id.to_string());
                 }
             }
@@ -214,7 +214,7 @@ pub async fn test_aws_role_assumption(
 pub async fn list_aws_regions(creds: &AWSCredentials) -> Result<Vec<String>> {
     use aws_config::{BehaviorVersion, Region};
     use aws_credential_types::Credentials;
-    use aws_ec2::Client as Ec2Client;
+    use aws_sdk_ec2::Client as Ec2Client;
 
     // Create AWS credentials
     let aws_creds = Credentials::new(

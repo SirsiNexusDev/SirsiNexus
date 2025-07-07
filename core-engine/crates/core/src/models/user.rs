@@ -7,7 +7,9 @@ pub struct User {
     pub id: Uuid,
     pub email: String,
     pub password_hash: String,
+    #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
     pub updated_at: OffsetDateTime,
 }
 

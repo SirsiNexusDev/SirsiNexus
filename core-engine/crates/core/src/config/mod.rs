@@ -12,15 +12,12 @@ pub struct Config {
 
 impl Config {
     pub fn from_env() -> Result<Self, config::ConfigError> {
-        let mut cfg = config::Config::default();
+        let cfg = config::Config::builder()
+            .set_default("http_port", 8080)?
+            .set_default("log_level", "info")?
+            .add_source(config::Environment::default())
+            .build()?;
         
-        // Add in defaults
-        cfg.set_default("http_port", 8080)?;
-        cfg.set_default("log_level", "info")?;
-        
-        // Layer on environment variables
-        cfg.merge(config::Environment::default())?;
-        
-        cfg.try_into()
+        cfg.try_deserialize()
     }
 }
