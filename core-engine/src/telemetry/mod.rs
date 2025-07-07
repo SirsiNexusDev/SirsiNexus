@@ -38,13 +38,20 @@ pub fn init_tracing(service_name: &str, otlp_endpoint: Option<&str>) -> AppResul
         .install_batch(Tokio)
         .map_err(|e| crate::error::AppError::Configuration(format!("Failed to initialize tracing: {}", e)))?;
 
-    tracing_subscriber::registry()
+    // Only initialize if no global subscriber is already set
+    match tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(
             std::env::var("RUST_LOG").unwrap_or_else(|_| "sirsi_core=debug,tower_http=debug".into())
         ))
         .with(tracing_subscriber::fmt::layer())
         .with(tracing_opentelemetry::layer().with_tracer(tracer))
-        .init();
+        .try_init() {
+        Ok(_) => {},
+        Err(e) => {
+            // If tracing is already initialized, just log a warning
+            eprintln!("Warning: Tracing subscriber already initialized: {}", e);
+        }
+    }
 
     Ok(())
 }

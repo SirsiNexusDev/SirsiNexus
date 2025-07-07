@@ -62,13 +62,6 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
   const [optimizationScore, setOptimizationScore] = useState<number>(0);
   const [aiMetrics, setAiMetrics] = useState<AIMetrics | null>(null);
 
-  useEffect(() => {
-    // Auto-run AI analysis when step data changes
-    if (stepData || discoveredResources.length > 0) {
-      runAIAnalysis();
-    }
-  }, [stepData, discoveredResources, runAIAnalysis]);
-
   const runAIAnalysis = useCallback(async () => {
     setIsAnalyzing(true);
     const insights: AIInsight[] = [];
@@ -170,6 +163,13 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
       setIsAnalyzing(false);
     }
   }, [stepName, discoveredResources, onAIInsight]);
+
+  useEffect(() => {
+    // Auto-run AI analysis when step data changes
+    if (stepData || discoveredResources.length > 0) {
+      runAIAnalysis();
+    }
+  }, [stepData, discoveredResources, runAIAnalysis]);
 
   const generateOptimizationRecommendations = (score: number): string[] => {
     const recommendations: string[] = [];

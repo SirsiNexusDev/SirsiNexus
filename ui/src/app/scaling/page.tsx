@@ -23,7 +23,7 @@ import {
   Pause,
   BarChart3,
   Cpu,
-  Memory,
+  HardDrive,
   Network,
   DollarSign,
   Shield,
@@ -52,9 +52,18 @@ interface ScalingPolicy {
   enabled: boolean;
 }
 
+interface WizardData {
+  resourceType: string;
+  resourceSelection: string[];
+  scalingObjectives: string[];
+  predictiveScaling: boolean;
+  costOptimization: boolean;
+  performanceTarget: number;
+}
+
 const AutoScalingWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [wizardData, setWizardData] = useState({
+  const [wizardData, setWizardData] = useState<WizardData>({
     resourceType: 'ec2',
     resourceSelection: [],
     scalingObjectives: [],

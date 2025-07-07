@@ -279,16 +279,7 @@ async fn start_websocket_server(port: u16, config: &AppConfig) -> anyhow::Result
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    // Initialize logging
-    let log_level: tracing::Level = cli.log_level.parse()
-        .unwrap_or(tracing::Level::INFO);
-    
-    tracing_subscriber::fmt()
-        .with_max_level(log_level)
-        .with_target(false)
-        .init();
-
-    // Load configuration
+    // Load configuration first
     let mut config = AppConfig::load_from_file(&cli.config)?;
     
     // Apply CLI overrides
@@ -308,7 +299,7 @@ async fn main() -> anyhow::Result<()> {
         config.database.url = database_url;
     }
 
-    // Initialize telemetry
+    // Initialize telemetry (includes tracing)
     telemetry::init(&config).await?;
 
     // Start the service orchestrator
