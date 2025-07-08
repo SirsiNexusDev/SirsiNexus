@@ -46,6 +46,7 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
     monthly: 2800,
     savings: 15,
   });
+  const [backendAnalysis, setBackendAnalysis] = useState<any>(null);
 
   const [riskAssessment, setRiskAssessment] = useState<RiskAssessment>({
     score: 75,
@@ -66,13 +67,46 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
     ],
   });
 
+  const runBackendAnalysis = async () => {
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch('/api/migration/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resources,
+          requirements,
+        }),
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setBackendAnalysis(result.data);
+          setCostEstimate(result.data.costEstimate);
+          setRiskAssessment(result.data.riskAssessment);
+        }
+      }
+    } catch (error) {
+      console.warn('Backend analysis failed, using mock data:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const artifact = {
       name: 'Requirements Specification',
       type: 'JSON',
       size: '156 KB',
-      content: JSON.stringify(requirements, null, 2)
+      content: JSON.stringify({
+        requirements,
+        backendAnalysis,
+        timestamp: new Date().toISOString()
+      }, null, 2)
     };
     onComplete(artifact);
   };
@@ -271,12 +305,21 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
                 <p className="text-sm text-sirsi-600">AI-powered cost and risk analysis</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setShowAssessmentAgent(!showAssessmentAgent)}
-            >
-              {showAssessmentAgent ? 'Hide Analysis' : 'Show Analysis'}
-            </Button>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                onClick={runBackendAnalysis}
+                disabled={isAnalyzing}
+              >
+                {isAnalyzing ? 'Analyzing...' : 'Run AI Analysis'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowAssessmentAgent(!showAssessmentAgent)}
+              >
+                {showAssessmentAgent ? 'Hide Analysis' : 'Show Analysis'}
+              </Button>
+            </div>
           </div>
           
           <AnimatePresence>

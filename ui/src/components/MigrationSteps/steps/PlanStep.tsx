@@ -540,6 +540,46 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
     setIsDiscovering(true);
     setShowAgentChat(true);
     
+    // Call backend discovery API
+    try {
+      setAgentMessage('Connecting to backend discovery service...');
+      const response = await fetch('/api/migration/discovery', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceType: 'hybrid',
+          credentials: 'mock-credentials',
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Backend discovery service unavailable');
+      }
+      
+      const result = await response.json();
+      if (result.success) {
+        setAgentMessage('Backend discovery completed successfully!');
+        setResources(result.data.resources);
+        setResourceTypes(result.data.summary.typeCounts.map((tc: any) => ({
+          ...tc,
+          icon: {
+            Compute: Server,
+            Database: Database,
+            Network: Cloud,
+            Storage: Database,
+          }[tc.type] || Server
+        })));
+        setDiscoveryProgress(100);
+        setIsDiscovering(false);
+        return;
+      }
+    } catch (error) {
+      console.warn('Backend discovery failed, falling back to mock discovery:', error);
+      setAgentMessage('Backend unavailable, using comprehensive mock discovery...');
+    }
+    
     const comprehensiveMessages = [
       'Initializing comprehensive infrastructure scan...',
       'Scanning network topology and devices...',

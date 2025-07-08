@@ -20,51 +20,60 @@ import { MigrationAuditComponent } from '@/components/Migration/MigrationAuditCo
 type MigrationStep = 'environment' | 'plan' | 'specify' | 'test' | 'build' | 'transfer' | 'validate' | 'optimize' | 'support';
 type MigrationStatus = 'not_started' | 'in_progress' | 'completed' | 'failed' | 'warning';
 
-const STEPS: Record<MigrationStep, { title: string; description: string; icon: React.ElementType }> = {
+const STEPS: Record<MigrationStep, { title: string; description: string; icon: React.ElementType; features: string[] }> = {
   environment: {
     title: 'Environment Setup',
     description: 'Configure source and destination credentials',
     icon: Lock,
+    features: ['Multi-cloud credentials', 'Connection validation', 'Security protocols']
   },
   plan: {
     title: 'Plan Migration',
-    description: 'Discover resources and create migration strategy',
+    description: 'AI-powered discovery and strategic planning',
     icon: Search,
+    features: ['User agreements', 'Asset discovery', 'Security validation', 'Audit logging']
   },
   specify: {
     title: 'Specify Requirements',
-    description: 'Define migration parameters and constraints',
+    description: 'Define migration parameters with AI insights',
     icon: Settings,
+    features: ['Resource specifications', 'Cost optimization', 'Risk assessment', 'AI recommendations']
   },
   test: {
     title: 'Test Configuration',
-    description: 'Validate migration settings and permissions',
+    description: 'Comprehensive validation and infrastructure preview',
     icon: TestTube,
+    features: ['Infrastructure as Code', 'Configuration tests', 'Error resolution', 'Flow diagrams']
   },
   build: {
     title: 'Build Infrastructure',
-    description: 'Prepare target environment and dependencies',
+    description: 'Automated infrastructure deployment',
     icon: Wrench,
+    features: ['Network configuration', 'Storage provisioning', 'Compute deployment', 'Monitoring setup']
   },
   transfer: {
     title: 'Transfer Resources',
-    description: 'Execute the migration process',
+    description: 'Real-time migration with progress monitoring',
     icon: ArrowLeftRight,
+    features: ['Live transfer tracking', 'Progress metrics', 'Error handling', 'Performance monitoring']
   },
   validate: {
     title: 'Validate Migration',
-    description: 'Verify successful resource transfer',
+    description: 'Comprehensive post-migration verification',
     icon: Shield,
+    features: ['Data integrity checks', 'Performance validation', 'Security verification', 'Network testing']
   },
   optimize: {
     title: 'Optimize Resources',
-    description: 'Fine-tune performance and costs',
+    description: 'AI-driven cost and performance optimization',
     icon: BarChart,
+    features: ['Cost analysis', 'Performance tuning', 'Resource rightsizing', 'Efficiency metrics']
   },
   support: {
     title: 'Support & Monitor',
-    description: 'Ongoing maintenance and improvements',
+    description: 'Ongoing monitoring and support automation',
     icon: Settings,
+    features: ['24/7 monitoring', 'Alert management', 'Support ticketing', 'Knowledge base']
   },
 };
 
@@ -97,6 +106,29 @@ export default function WizardPage() {
   const [securityValidated, setSecurityValidated] = useState(false);
   const [userAgreementApproved, setUserAgreementApproved] = useState(false);
   const [auditEvents, setAuditEvents] = useState<any[]>([]);
+  
+  // Backend audit integration
+  const logAuditEvent = async (event: any) => {
+    try {
+      const response = await fetch('/api/migration/audit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Audit event logged to backend:', result.data.eventId);
+      }
+    } catch (error) {
+      console.warn('Failed to log audit event to backend:', error);
+    }
+    
+    // Always add to local state for UI
+    setAuditEvents(prev => [event, ...prev]);
+  };
 
   const steps = Object.keys(STEPS) as MigrationStep[];
 
@@ -297,11 +329,31 @@ Start New Migration
                           }`}>
                             {config.title}
                           </h3>
-                          <p className={`text-xs ${
+                          <p className={`text-xs mb-2 ${
                             isActive ? 'text-blue-600 dark:text-blue-300' : isCompleted ? 'text-green-600 dark:text-green-300' : 'text-slate-600 dark:text-slate-400'
                           }`}>
                             {config.description}
                           </p>
+                          {/* Feature List */}
+                          <div className="space-y-1">
+                            {config.features.slice(0, 2).map((feature, idx) => (
+                              <div key={idx} className={`flex items-center text-xs ${
+                                isActive ? 'text-blue-700 dark:text-blue-200' : isCompleted ? 'text-green-700 dark:text-green-200' : 'text-slate-500 dark:text-slate-400'
+                              }`}>
+                                <div className={`w-1 h-1 rounded-full mr-2 ${
+                                  isActive ? 'bg-blue-500' : isCompleted ? 'bg-green-500' : 'bg-slate-400'
+                                }`}></div>
+                                <span>{feature}</span>
+                              </div>
+                            ))}
+                            {config.features.length > 2 && (
+                              <div className={`text-xs ${
+                                isActive ? 'text-blue-600 dark:text-blue-300' : isCompleted ? 'text-green-600 dark:text-green-300' : 'text-slate-500 dark:text-slate-400'
+                              }`}>
+                                +{config.features.length - 2} more features
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -404,7 +456,7 @@ Start New Migration
                           success: approved,
                           details: { agreementStatus: approved ? 'approved' : 'rejected' }
                         };
-                        setAuditEvents(prev => [auditEvent, ...prev]);
+                        logAuditEvent(auditEvent);
                       }}
                     />
                     <SecurityStatusComponent 
@@ -421,7 +473,7 @@ Start New Migration
                           success: validated,
                           details: { securityStatus: validated ? 'all_protocols_active' : 'issues_detected' }
                         };
-                        setAuditEvents(prev => [auditEvent, ...prev]);
+                        logAuditEvent(auditEvent);
                       }}
                       onRefresh={() => {
                         console.log('Refreshing security protocols...');
