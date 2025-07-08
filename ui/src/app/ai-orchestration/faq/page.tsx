@@ -78,7 +78,7 @@ export default function AIOrchestrationFAQPage() {
   const categories = Array.from(new Set(faqData.map(item => item.category)));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:to-gray-800 dark:from-gray-900 to-indigo-100 dark:to-gray-800 dark:from-gray-900 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -92,26 +92,26 @@ export default function AIOrchestrationFAQPage() {
               <Brain className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">AI Orchestration FAQ</h1>
-              <p className="text-gray-600">Frequently Asked Questions & Troubleshooting</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Orchestration FAQ</h1>
+              <p className="text-gray-600 dark:text-gray-400">Frequently Asked Questions & Troubleshooting</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Documentation Navigation</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Documentation Navigation</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">Documentation</span>
             </a>
-            <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">Tutorial</span>
             </a>
             <a href="/ai-orchestration/faq" className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
               <span className="font-medium text-blue-900">FAQ</span>
             </a>
-            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 rounded-lg">
+            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 text-white p-3 rounded-lg">
               <Brain className="h-4 w-4" />
               <span className="font-medium">AI Guide</span>
             </button>
@@ -119,8 +119,8 @@ export default function AIOrchestrationFAQPage() {
         </div>
 
         {/* FAQ Categories */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">FAQ Categories</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">FAQ Categories</h2>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <span key={category} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
@@ -133,9 +133,9 @@ export default function AIOrchestrationFAQPage() {
         {/* FAQ Items */}
         <div className="space-y-4">
           {categories.map((category) => (
-            <div key={category} className="bg-white rounded-xl shadow-lg border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-bold text-gray-900">{category}</h3>
+            <div key={category} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{category}</h3>
               </div>
               <div className="divide-y divide-gray-200">
                 {faqData
@@ -150,7 +150,7 @@ export default function AIOrchestrationFAQPage() {
                           onClick={() => toggleItem(globalIndex)}
                           className="flex items-center justify-between w-full text-left"
                         >
-                          <h4 className="font-semibold text-gray-900 pr-4">{item.question}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100 pr-4">{item.question}</h4>
                           {isExpanded ? (
                             <ChevronDown className="h-5 w-5 text-gray-500 flex-shrink-0" />
                           ) : (
@@ -159,7 +159,7 @@ export default function AIOrchestrationFAQPage() {
                         </button>
                         
                         {isExpanded && (
-                          <div className="mt-4 text-gray-600 leading-relaxed">
+                          <div className="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
                             {item.answer}
                           </div>
                         )}
@@ -172,16 +172,16 @@ export default function AIOrchestrationFAQPage() {
         </div>
 
         {/* Contact Support */}
-        <div className="mt-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg text-white p-6">
+        <div className="mt-8 bg-gradient-to-r from-blue-50 dark:to-gray-800 dark:from-gray-9000 to-indigo-600 rounded-xl shadow-lg text-white p-6">
           <h3 className="text-xl font-bold mb-2">Still Need Help?</h3>
           <p className="mb-4">
             Can't find the answer you're looking for? Our AI-powered support is available 24/7.
           </p>
           <div className="flex gap-4">
-            <button className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
+            <button className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
               Contact Support
             </button>
-            <button className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
+            <button className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
               View Documentation
             </button>
           </div>

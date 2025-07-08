@@ -83,10 +83,10 @@ export default function HelpPage() {
       <Breadcrumb />
       
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">
           Help & Support
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">
           Find guides, tutorials, and documentation
         </p>
       </div>
@@ -98,7 +98,7 @@ export default function HelpPage() {
           <input
             type="text"
             placeholder="Search documentation..."
-            className="w-full rounded-lg border border-gray-200 bg-white py-3 pl-12 pr-4 focus:border-sirsi-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-3 pl-12 pr-4 focus:border-sirsi-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
           />
         </div>
       </div>
@@ -110,15 +110,15 @@ export default function HelpPage() {
           return (
             <div
               key={link.name}
-              className="group rounded-lg border border-gray-200 bg-white p-6 hover:border-sirsi-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-sirsi-400"
+              className="group rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:border-sirsi-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-sirsi-400"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-sirsi-100 text-sirsi-600 group-hover:bg-sirsi-500 group-hover:text-white dark:bg-sirsi-900 dark:text-sirsi-400 dark:group-hover:bg-sirsi-500 dark:group-hover:text-white">
                 <Icon className="h-6 w-6" />
               </div>
-              <h3 className="mb-1 font-medium text-gray-900 dark:text-gray-100">
+              <h3 className="mb-1 font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
                 {link.name}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
                 {link.description}
               </p>
             </div>
@@ -128,14 +128,14 @@ export default function HelpPage() {
 
       {/* Popular Topics */}
       <div className="mb-8">
-        <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
           Popular Topics
         </h2>
         <div className="flex flex-wrap gap-2">
           {mockPopularTopics.map((topic) => (
             <button
               key={topic}
-              className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700"
+              className="rounded-full border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700"
             >
               {topic}
             </button>
@@ -146,7 +146,7 @@ export default function HelpPage() {
       {/* Featured Guides */}
       <div>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
             Featured Guides
           </h2>
           <button className="flex items-center text-sm text-sirsi-600 hover:text-sirsi-700 dark:text-sirsi-400 dark:hover:text-sirsi-300">
@@ -161,7 +161,7 @@ export default function HelpPage() {
             return (
               <div
                 key={guide.id}
-                className="group rounded-lg border border-gray-200 bg-white p-6 hover:border-sirsi-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-sirsi-400"
+                className="group rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:border-sirsi-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-sirsi-400"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div
@@ -179,10 +179,10 @@ export default function HelpPage() {
                     {guide.duration}
                   </span>
                 </div>
-                <h3 className="mb-1 font-medium text-gray-900 group-hover:text-sirsi-500 dark:text-gray-100 dark:group-hover:text-sirsi-400">
+                <h3 className="mb-1 font-medium text-gray-900 dark:text-gray-100 group-hover:text-sirsi-500 dark:text-gray-100 dark:group-hover:text-sirsi-400">
                   {guide.title}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
                   {guide.description}
                 </p>
               </div>

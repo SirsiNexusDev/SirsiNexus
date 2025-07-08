@@ -49,10 +49,10 @@ export default function ProjectsPage() {
 
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">
             Projects
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">
             Manage your migration projects
           </p>
         </div>
@@ -70,11 +70,11 @@ export default function ProjectsPage() {
             <input
               type="text"
               placeholder="Search projects..."
-              className="w-full rounded-md border border-gray-200 bg-white py-2 pl-10 pr-4 focus:border-sirsi-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
+              className="w-full rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-2 pl-10 pr-4 focus:border-sirsi-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
             />
           </div>
         </div>
-        <button className="flex items-center rounded-md border border-gray-200 px-4 py-2 text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600">
+        <button className="flex items-center rounded-md border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600">
           <Filter className="mr-2 h-5 w-5" />
           Filters
         </button>
@@ -85,26 +85,26 @@ export default function ProjectsPage() {
         {mockProjects.map((project) => (
           <div
             key={project.id}
-            className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+            className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 dark:border-gray-700 dark:bg-gray-800"
           >
             <div className="mb-4 flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
                   {project.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
                   {project.description}
                 </p>
               </div>
-              <button className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <button className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
                 <MoreVertical className="h-5 w-5" />
               </button>
             </div>
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Progress</span>
-                <span className="font-medium text-gray-900 dark:text-gray-100">
+                <span className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Progress</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
                   {project.progress}%
                 </span>
               </div>
@@ -120,7 +120,7 @@ export default function ProjectsPage() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Cloud className="h-5 w-5 text-gray-400" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
                     {project.source} → {project.target}
                   </span>
                 </div>
@@ -130,7 +130,7 @@ export default function ProjectsPage() {
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400'
                       : project.status === 'in_progress'
                       ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
                   }`}
                 >
                   {project.status.split('_').join(' ')}
@@ -140,7 +140,7 @@ export default function ProjectsPage() {
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Updated {project.updatedAt}
                 </span>
-                <button className="flex items-center rounded-md border border-gray-200 px-3 py-1 text-sm hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600">
+                <button className="flex items-center rounded-md border border-gray-200 dark:border-gray-700 px-3 py-1 text-sm hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600">
                   Open
                   <ArrowUpRight className="ml-1 h-4 w-4" />
                 </button>

@@ -190,10 +190,10 @@ export default function DemosPage() {
 
   const getComplexityColor = (complexity: string) => {
     switch (complexity) {
-      case 'Low': return 'text-green-600 bg-green-100';
-      case 'Medium': return 'text-yellow-600 bg-yellow-100';
-      case 'High': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'Low': return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900';
+      case 'Medium': return 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900';
+      case 'High': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
+      default: return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
     }
   };
 
@@ -202,10 +202,10 @@ export default function DemosPage() {
       <Breadcrumb />
       
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Demo Scenarios
         </h1>
-        <p className="text-slate-700 font-medium">
+        <p className="text-slate-700 dark:text-slate-300 font-medium">
           Choose a business entity and demo type to experience Sirsi Nexus capabilities
         </p>
       </div>
@@ -213,7 +213,7 @@ export default function DemosPage() {
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Business Entity Selection */}
         <div>
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
             Select Business Entity
           </h2>
           <div className="space-y-4">
@@ -235,14 +235,14 @@ export default function DemosPage() {
                 >
                   <div className="flex items-start gap-4">
                     <div className={`rounded-lg p-3 ${
-                      isSelected ? 'bg-sirsi-500 text-white' : 'bg-gray-100 text-gray-600'
+                      isSelected ? 'bg-sirsi-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                     }`}>
                       <Icon className="h-6 w-6" />
                     </div>
                     
                     <div className="flex-1">
                       <div className="mb-2 flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-slate-900">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                           {entity.name}
                         </h3>
                         <span className={`rounded-full px-2 py-1 text-xs font-medium ${getComplexityColor(entity.metrics.complexity)}`}>
@@ -250,26 +250,26 @@ export default function DemosPage() {
                         </span>
                       </div>
                       
-                      <p className="mb-3 text-sm font-medium text-sirsi-600">
+                      <p className="mb-3 text-sm font-medium text-sirsi-600 dark:text-sirsi-400">
                         {entity.industry}
                       </p>
                       
-                      <p className="mb-4 text-sm text-slate-800 font-medium">
+                      <p className="mb-4 text-sm text-slate-800 dark:text-slate-200 font-medium">
                         {entity.description}
                       </p>
                       
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4 text-gray-400" />
-                          <span className="text-slate-800 font-medium">{entity.metrics.monthlySpend}/mo</span>
+                          <DollarSign className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.monthlySpend}/mo</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-gray-400" />
-                          <span className="text-slate-800 font-medium">{entity.metrics.users}</span>
+                          <Users className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.users}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Database className="h-4 w-4 text-gray-400" />
-                          <span className="text-slate-800 font-medium">{entity.metrics.dataVolume}</span>
+                          <Database className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.dataVolume}</span>
                         </div>
                       </div>
                     </div>
@@ -282,14 +282,14 @@ export default function DemosPage() {
 
         {/* Demo Type Selection */}
         <div>
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
             Select Demo Type
           </h2>
           
           {!selectedEntity ? (
-            <div className="rounded-lg border border-gray-200 p-8 text-center dark:border-gray-700">
-              <Building2 className="mx-auto h-12 w-12 text-gray-400" />
-              <p className="mt-2 text-sm text-slate-800 font-medium">
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
+              <Building2 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+              <p className="mt-2 text-sm text-slate-800 dark:text-slate-200 font-medium">
                 Select a business entity first to see available demo types
               </p>
             </div>
@@ -316,33 +316,33 @@ export default function DemosPage() {
                   >
                     <div className="flex items-start gap-4">
                       <div className={`rounded-lg p-3 ${
-                        isSelected ? 'bg-sirsi-500 text-white' : 'bg-gray-100 text-gray-600'
+                        isSelected ? 'bg-sirsi-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                       }`}>
                         <DemoIcon className="h-6 w-6" />
                       </div>
                       
                       <div className="flex-1">
                         <div className="mb-2 flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-slate-900">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                             {demoConfig.title}
                           </h3>
-                          <div className="flex items-center gap-1 text-sm text-slate-700 font-medium">
+                          <div className="flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300 font-medium">
                             <Clock className="h-4 w-4" />
                             {config.duration}
                           </div>
                         </div>
                         
-                        <p className="mb-3 text-sm text-slate-800 font-medium">
+                        <p className="mb-3 text-sm text-slate-800 dark:text-slate-200 font-medium">
                           {demoConfig.description}
                         </p>
                         
                         <div className="space-y-1">
-                          <p className="text-sm font-medium text-slate-900">
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                             Key Highlights:
                           </p>
                           <ul className="space-y-1">
                             {config.highlights.map((highlight, idx) => (
-                              <li key={idx} className="flex items-center gap-2 text-sm text-slate-800 font-medium">
+                              <li key={idx} className="flex items-center gap-2 text-sm text-slate-800 dark:text-slate-200 font-medium">
                                 <CheckCircle className="h-3 w-3 text-green-500" />
                                 {highlight}
                               </li>
@@ -368,10 +368,10 @@ export default function DemosPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Ready to Start Demo
               </h3>
-              <p className="text-sm text-slate-800 font-medium">
+              <p className="text-sm text-slate-800 dark:text-slate-200 font-medium">
                 {demoTypeConfig[selectedDemoType].title} for {selectedEntity.name}
               </p>
             </div>

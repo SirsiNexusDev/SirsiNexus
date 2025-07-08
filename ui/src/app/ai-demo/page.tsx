@@ -33,13 +33,13 @@ export default function AIDemoPage() {
   const environmentSuggestions = ['development', 'staging', 'production'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 dark:to-gray-800 dark:from-gray-900 to-slate-100 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 rounded-xl">
                 <Brain className="h-8 w-8 text-white" />
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -59,7 +59,7 @@ export default function AIDemoPage() {
                   className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm transition-all ${
                     isAIEnabled 
                       ? 'bg-green-100 text-green-700 border border-green-300' 
-                      : 'bg-gray-100 text-gray-600 border border-gray-300'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300'
                   }`}
                 >
                   <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-green-500' : 'bg-gray-400'}`} />
@@ -210,7 +210,7 @@ export default function AIDemoPage() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-colors"
                   >
                     <RefreshCw className="h-4 w-4" />
                     Reset

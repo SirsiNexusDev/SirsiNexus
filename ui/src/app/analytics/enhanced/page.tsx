@@ -168,7 +168,7 @@ const EnhancedAnalytics = () => {
       case 'high': return 'text-red-600 bg-red-50 border-red-200';
       case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
       case 'low': return 'text-green-600 bg-green-50 border-green-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700';
     }
   };
 
@@ -177,7 +177,7 @@ const EnhancedAnalytics = () => {
       case 'high': return 'text-red-600';
       case 'medium': return 'text-yellow-600';
       case 'low': return 'text-green-600';
-      default: return 'text-gray-600';
+      default: return 'text-gray-600 dark:text-gray-400';
     }
   };
 
@@ -185,7 +185,7 @@ const EnhancedAnalytics = () => {
     switch (trend) {
       case 'up': return <ArrowUpRight className="h-4 w-4 text-green-600" />;
       case 'down': return <ArrowDownRight className="h-4 w-4 text-red-600" />;
-      default: return <Clock className="h-4 w-4 text-gray-600" />;
+      default: return <Clock className="h-4 w-4 text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -194,20 +194,20 @@ const EnhancedAnalytics = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <Brain className="h-8 w-8 animate-pulse mx-auto mb-4 text-purple-600" />
-          <p className="text-gray-600">Loading AI-enhanced analytics...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading AI-enhanced analytics...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:to-gray-800 dark:from-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-4 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
                 <Brain className="h-8 w-8 text-purple-600" />
                 Enhanced Analytics
                 <Badge className="bg-purple-100 text-purple-800 border-purple-200">
@@ -215,7 +215,7 @@ const EnhancedAnalytics = () => {
                   AI-Powered
                 </Badge>
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
                 Advanced insights with machine learning predictions and anomaly detection
               </p>
             </div>
@@ -258,13 +258,13 @@ const EnhancedAnalytics = () => {
                   
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Current</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Current</span>
                       <span className="font-semibold">
                         {key === 'cost' ? `$${metric.current}` : `${metric.current}%`}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Predicted</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Predicted</span>
                       <span className="font-semibold text-purple-600">
                         {key === 'cost' ? `$${metric.predicted}` : `${metric.predicted}%`}
                       </span>
@@ -387,7 +387,7 @@ const EnhancedAnalytics = () => {
                               {suggestion.impact} impact
                             </Badge>
                           </div>
-                          <p className="text-gray-600 text-sm mb-3">{suggestion.description}</p>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">{suggestion.description}</p>
                           
                           <div className="flex items-center gap-4 text-sm">
                             <span className={`font-medium ${getEffortColor(suggestion.effort)}`}>
@@ -491,7 +491,7 @@ const EnhancedAnalytics = () => {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-gray-600 text-sm mb-2">{anomaly.description}</p>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{anomaly.description}</p>
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <span>{anomaly.timestamp}</span>
                             <span>Confidence: {anomaly.confidence}%</span>

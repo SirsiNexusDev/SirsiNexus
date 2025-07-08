@@ -6,7 +6,7 @@ import AIAssistantButton from '@/components/ai-assistant/AIAssistantButton';
 
 export default function SecurityPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 dark:from-red-900/20 dark:to-rose-900/20 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 dark:to-gray-800 dark:from-gray-900 to-rose-100 dark:to-gray-800 dark:from-gray-900 dark:from-red-900/20 dark:to-rose-900/20 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -15,8 +15,8 @@ export default function SecurityPage() {
               <Shield className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Security & Compliance Center</h1>
-              <p className="text-gray-600 dark:text-gray-400">Comprehensive security management and compliance tracking</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">Security & Compliance Center</h1>
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Comprehensive security management and compliance tracking</p>
             </div>
           </div>
           
@@ -35,19 +35,19 @@ export default function SecurityPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <a href="/security/docs" className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <a href="/security/docs" className="flex items-center gap-3 bg-white dark:bg-gray-800 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 hover:shadow-md transition-shadow">
             <FileText className="h-5 w-5 text-red-500" />
             <span className="font-medium dark:text-gray-100">Documentation</span>
           </a>
-          <a href="/security/tutorial" className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <a href="/security/tutorial" className="flex items-center gap-3 bg-white dark:bg-gray-800 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 hover:shadow-md transition-shadow">
             <Play className="h-5 w-5 text-green-500" />
             <span className="font-medium dark:text-gray-100">Tutorial</span>
           </a>
-          <a href="/security/faq" className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <a href="/security/faq" className="flex items-center gap-3 bg-white dark:bg-gray-800 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 hover:shadow-md transition-shadow">
             <HelpCircle className="h-5 w-5 text-red-500" />
             <span className="font-medium dark:text-gray-100">FAQ</span>
           </a>
-          <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors">
+          <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 text-white p-4 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors">
             <Brain className="h-5 w-5" />
             <span className="font-medium">AI Guide</span>
           </button>
@@ -58,21 +58,21 @@ export default function SecurityPage() {
           {/* Security Dashboard */}
           <div className="lg:col-span-2 space-y-6">
             {/* Security Overview */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Security Dashboard</h2>
+            <div className="bg-white dark:bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-4">Security Dashboard</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-700">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">98%</div>
-                  <div className="text-gray-600 dark:text-gray-400">Security Score</div>
+                  <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Security Score</div>
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">5</div>
-                  <div className="text-gray-600 dark:text-gray-400">Active Policies</div>
+                  <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Active Policies</div>
                 </div>
                 <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-700">
                   <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">2</div>
-                  <div className="text-gray-600 dark:text-gray-400">Alerts</div>
+                  <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Alerts</div>
                 </div>
               </div>
 
@@ -80,41 +80,41 @@ export default function SecurityPage() {
                 <button className="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors">
                   Run Security Scan
                 </button>
-                <button className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg transition-colors">
+                <button className="w-full bg-gray-100 dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg transition-colors">
                   View Security Reports
                 </button>
               </div>
             </div>
 
             {/* Credential Management */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <Key className="h-5 w-5 text-red-500" />
                 Credential Management
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Secure credential storage, rotation, and access management with encryption and audit trails.
               </p>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="font-semibold text-gray-900">Stored Credentials</div>
-                  <div className="text-sm text-gray-600 mt-1">24 credentials managed</div>
+                <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                  <div className="font-semibold text-gray-900 dark:text-gray-100">Stored Credentials</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">24 credentials managed</div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="font-semibold text-gray-900">Rotation Status</div>
-                  <div className="text-sm text-gray-600 mt-1">All up to date</div>
+                <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                  <div className="font-semibold text-gray-900 dark:text-gray-100">Rotation Status</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">All up to date</div>
                 </div>
               </div>
             </div>
 
             {/* Compliance Tracking */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500" />
                 Compliance Tracking
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Monitor compliance with industry standards including SOC 2, GDPR, HIPAA, and custom policies.
               </p>
               
@@ -138,30 +138,30 @@ export default function SecurityPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Security Status */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Security Services</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Security Services</h3>
               
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Identity & Access</span>
+                  <span className="text-gray-600 dark:text-gray-400">Identity & Access</span>
                   <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded border border-green-200">
                     Active
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Encryption</span>
+                  <span className="text-gray-600 dark:text-gray-400">Encryption</span>
                   <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded border border-green-200">
                     Enabled
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Audit Logging</span>
+                  <span className="text-gray-600 dark:text-gray-400">Audit Logging</span>
                   <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded border border-green-200">
                     Recording
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Threat Detection</span>
+                  <span className="text-gray-600 dark:text-gray-400">Threat Detection</span>
                   <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded border border-green-200">
                     Monitoring
                   </span>
@@ -170,36 +170,36 @@ export default function SecurityPage() {
             </div>
 
             {/* Security Policies */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Active Policies</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Active Policies</h3>
               
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Password Policy</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Password Policy</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">MFA Enforcement</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">MFA Enforcement</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Data Encryption</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Data Encryption</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Access Control</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Access Control</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Vulnerability Scanning</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Vulnerability Scanning</span>
                 </div>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h3>
               
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-2">

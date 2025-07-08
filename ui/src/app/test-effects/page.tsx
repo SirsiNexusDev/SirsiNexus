@@ -11,11 +11,11 @@ export default function TestEffectsPage() {
           <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl">
             <Leaf className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-7xl font-black bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+          <h1 className="text-7xl font-black bg-gradient-to-r from-emerald-600 to-green-500 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent">
             Glass Effects Demo
           </h1>
         </div>
-        <p className="text-2xl text-slate-700 font-semibold">
+        <p className="text-2xl text-slate-700 dark:text-slate-300 font-semibold">
           Testing WORKING glass morphism with GREEN branding
         </p>
       </div>

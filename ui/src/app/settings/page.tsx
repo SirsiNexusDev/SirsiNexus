@@ -274,7 +274,7 @@ export default function SettingsPage() {
       }`}
     >
       <span
-        className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+        className={`inline-block h-3 w-3 transform rounded-full bg-white dark:bg-gray-800 transition-transform ${
           checked ? 'translate-x-5' : 'translate-x-1'
         }`}
       />
@@ -282,15 +282,15 @@ export default function SettingsPage() {
   );
 
   const themeClasses = {
-    bg: isDarkMode ? 'bg-gray-900' : 'bg-gray-50',
-    contentBg: isDarkMode ? 'bg-gray-800' : 'bg-white',
-    sidebarBg: isDarkMode ? 'bg-gray-900' : 'bg-white',
-    text: isDarkMode ? 'text-white' : 'text-gray-900',
-    textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
-    border: isDarkMode ? 'border-gray-700' : 'border-gray-200',
-    input: isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900',
+    bg: isDarkMode ? 'bg-gray-900' : 'bg-gray-50 dark:bg-gray-900',
+    contentBg: isDarkMode ? 'bg-gray-800' : 'bg-white dark:bg-gray-800',
+    sidebarBg: isDarkMode ? 'bg-gray-900' : 'bg-white dark:bg-gray-800',
+    text: isDarkMode ? 'text-white' : 'text-gray-900 dark:text-gray-100',
+    textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600 dark:text-gray-400',
+    border: isDarkMode ? 'border-gray-700' : 'border-gray-200 dark:border-gray-700',
+    input: isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white dark:bg-gray-800 border-gray-300 text-gray-900 dark:text-gray-100',
     sidebarActive: isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700',
-    sidebarInactive: isDarkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+    sidebarInactive: isDarkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:bg-gray-900'
   };
 
   if (!mounted) {
@@ -302,7 +302,7 @@ export default function SettingsPage() {
       {/* Sidebar */}
       <div className={`w-64 ${themeClasses.sidebarBg} ${themeClasses.border} border-r flex flex-col`}>
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 dark:border-gray-700">
           <h1 className={`text-xl font-semibold ${themeClasses.text}`}>Settings</h1>
         </div>
 
@@ -359,7 +359,7 @@ export default function SettingsPage() {
             {activeSection === 'account' && (
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
                 <LogOut className="h-4 w-4" />
                 Log out
@@ -379,7 +379,7 @@ export default function SettingsPage() {
                   {/* User Profile Card */}
                   <div className={`p-6 rounded-lg ${themeClasses.border} border`}>
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-50 dark:to-gray-800 dark:from-gray-9000 to-purple-600 rounded-full flex items-center justify-center">
                         <span className="text-2xl font-bold text-white">
                           {user?.name?.charAt(0).toUpperCase() || 'U'}
                         </span>
@@ -407,7 +407,7 @@ export default function SettingsPage() {
                     </div>
                     
                     {/* Account Stats */}
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                       <div className="text-center">
                         <div className={`text-lg font-semibold ${themeClasses.text}`}>
                           {user?.createdAt ? Math.floor((new Date().getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) : 0}
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                     />
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Change Password</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
@@ -470,7 +470,7 @@ export default function SettingsPage() {
                           <button
                             type="button"
                             onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
-                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600`}
+                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600 dark:text-gray-400`}
                           >
                             {showPasswords.current ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                           <button
                             type="button"
                             onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
-                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600`}
+                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600 dark:text-gray-400`}
                           >
                             {showPasswords.new ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
@@ -510,7 +510,7 @@ export default function SettingsPage() {
                           <button
                             type="button"
                             onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
-                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600`}
+                            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.textSecondary} hover:text-gray-600 dark:text-gray-400`}
                           >
                             {showPasswords.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
@@ -754,7 +754,7 @@ export default function SettingsPage() {
                               : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                           }`}>
                             {theme === value && (
-                              <div className="w-full h-full rounded-full bg-white scale-50" />
+                              <div className="w-full h-full rounded-full bg-white dark:bg-gray-800 scale-50" />
                             )}
                           </div>
                           <Icon className={`h-4 w-4 ${themeClasses.textSecondary}`} />
@@ -1029,7 +1029,7 @@ export default function SettingsPage() {
                     </select>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className={`font-medium ${themeClasses.text}`}>Export Data</h3>
@@ -1037,7 +1037,7 @@ export default function SettingsPage() {
                       </div>
                       <button
                         onClick={handleDataExport}
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 transition-colors"
                       >
                         <Download className="h-4 w-4" />
                         Export Data
@@ -1100,13 +1100,13 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <div className="flex gap-3">
                       <Link href="/credentials" className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         <ExternalLink className="h-4 w-4" />
                         <span>Manage Credentials</span>
                       </Link>
-                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 transition-colors">
                         <Plus className="h-4 w-4" />
                         <span>Add New</span>
                       </button>
@@ -1426,29 +1426,29 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Platform Capabilities</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
                         <div className={`font-medium ${themeClasses.text}`}>AI Models</div>
                         <div className={themeClasses.textSecondary}>GPT-4, Claude 3.5 Sonnet</div>
                       </div>
-                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
                         <div className={`font-medium ${themeClasses.text}`}>Cloud Providers</div>
                         <div className={themeClasses.textSecondary}>AWS, Azure, GCP, DigitalOcean</div>
                       </div>
-                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
                         <div className={`font-medium ${themeClasses.text}`}>Architecture</div>
                         <div className={themeClasses.textSecondary}>Rust + Python + TypeScript</div>
                       </div>
-                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                      <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
                         <div className={`font-medium ${themeClasses.text}`}>Database</div>
                         <div className={themeClasses.textSecondary}>CockroachDB + Redis</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Support</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -1472,7 +1472,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Legal</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">

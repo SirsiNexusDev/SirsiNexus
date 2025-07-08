@@ -74,7 +74,7 @@ export default function BackendTestPage() {
       case 'pending':
         return <Clock className="h-5 w-5 text-yellow-600" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-600" />;
+        return <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -101,10 +101,10 @@ export default function BackendTestPage() {
       <Breadcrumb />
       
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           Backend Integration Tests
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Test the connection and functionality of the Rust core engine backend
         </p>
       </div>
@@ -127,7 +127,7 @@ export default function BackendTestPage() {
         {testReport && (
           <button
             onClick={handleDownloadReport}
-            className="flex items-center space-x-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+            className="flex items-center space-x-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:bg-gray-900"
           >
             <Download className="h-5 w-5" />
             <span>Download Report</span>
@@ -185,12 +185,12 @@ export default function BackendTestPage() {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-3">
-                <div className="rounded-lg bg-white p-2">
+                <div className="rounded-lg bg-white dark:bg-gray-800 p-2">
                   {getTestIcon(result.testName)}
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">{result.testName}</h3>
-                  <p className="text-sm text-gray-600">{result.message}</p>
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100">{result.testName}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{result.message}</p>
                   <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
                     <span>
                       Completed: {result.timestamp.toLocaleTimeString()}
@@ -225,10 +225,10 @@ export default function BackendTestPage() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <RefreshCw className="mx-auto h-12 w-12 animate-spin text-sirsi-500" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
               Running Integration Tests
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
               Testing backend connectivity and functionality...
             </p>
           </div>
@@ -237,17 +237,17 @@ export default function BackendTestPage() {
 
       {/* Empty State */}
       {!isRunning && testResults.length === 0 && (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 py-12 text-center">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 py-12 text-center">
           <Terminal className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
             No Tests Run Yet
           </h3>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             Click &ldquo;Run Integration Tests&rdquo; to validate backend connectivity and functionality.
           </p>
           <div className="mt-6">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Test Coverage:</h4>
-            <div className="text-sm text-gray-600 space-y-1">
+            <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Test Coverage:</h4>
+            <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
               <div>• HTTP Health Check</div>
               <div>• WebSocket Connection</div>
               <div>• Agent Message Flow</div>

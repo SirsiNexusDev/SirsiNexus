@@ -161,14 +161,14 @@ export default function MigrationStepsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Migration Steps
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 dark:text-gray-400">
             Track your migration progress through our structured 7-step process
           </p>
         </div>
@@ -176,8 +176,8 @@ export default function MigrationStepsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Steps Navigation */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Migration Progress
               </h2>
               <div className="space-y-3">
@@ -192,7 +192,7 @@ export default function MigrationStepsPage() {
                       className={`w-full p-3 rounded-lg transition-all duration-200 text-left border ${
                         isSelected
                           ? 'border-blue-200 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:bg-gray-900'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -204,10 +204,10 @@ export default function MigrationStepsPage() {
                         </div>
                         <Icon className="h-4 w-4 text-gray-400" />
                       </div>
-                      <h3 className="font-medium text-gray-900 mb-1">
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                         {step.title}
                       </h3>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
                         {step.estimatedTime}
                       </p>
                     </button>
@@ -219,7 +219,7 @@ export default function MigrationStepsPage() {
 
           {/* Step Details */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                   <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(selectedStep.status)}`}>
@@ -227,10 +227,10 @@ export default function MigrationStepsPage() {
                     {selectedStep.label}
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                       {selectedStep.title}
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-400">
                       Estimated time: {selectedStep.estimatedTime}
                     </p>
                   </div>
@@ -245,25 +245,25 @@ export default function MigrationStepsPage() {
               </div>
 
               <div className="mb-8">
-                <p className="text-lg text-gray-600 mb-6">
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                   {selectedStep.description}
                 </p>
 
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Key Tasks
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {selectedStep.tasks.map((task, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"
                     >
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                         selectedStep.status === 'completed'
                           ? 'bg-emerald-100 text-emerald-600'
                           : selectedStep.status === 'active'
                           ? 'bg-blue-100 text-blue-600'
-                          : 'bg-gray-100 text-gray-400'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                       }`}>
                         {selectedStep.status === 'completed' ? (
                           <CheckCircle className="h-4 w-4" />
@@ -271,7 +271,7 @@ export default function MigrationStepsPage() {
                           <div className="w-2 h-2 rounded-full bg-current" />
                         )}
                       </div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {task}
                       </span>
                     </div>
@@ -280,8 +280,8 @@ export default function MigrationStepsPage() {
               </div>
 
               {/* Progress Overview */}
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Overall Progress
                 </h3>
                 <div className="flex items-center gap-4 mb-4">
@@ -293,7 +293,7 @@ export default function MigrationStepsPage() {
                       }}
                     />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     {migrationSteps.filter(s => s.status === 'completed').length} of {migrationSteps.length} completed
                   </span>
                 </div>
@@ -311,11 +311,11 @@ export default function MigrationStepsPage() {
                     </div>
                     <div className="text-sm text-blue-600">Active</div>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-gray-600">
+                  <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                       {migrationSteps.filter(s => s.status === 'pending').length}
                     </div>
-                    <div className="text-sm text-gray-600">Pending</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Pending</div>
                   </div>
                 </div>
               </div>

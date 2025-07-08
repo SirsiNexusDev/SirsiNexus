@@ -240,7 +240,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <button
                 onClick={() => setShowCreateProjectModal(true)}
-                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-emerald-300 dark:hover:border-emerald-500 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-emerald-300 dark:hover:border-emerald-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors">
@@ -254,7 +254,7 @@ export default function DashboardPage() {
               
               <button
                 onClick={() => dispatch(setModalState({ modal: 'auth', visible: true }))}
-                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
@@ -268,7 +268,7 @@ export default function DashboardPage() {
               
               <button
                 onClick={() => dispatch(setModalState({ modal: 'journeySelection', visible: true }))}
-                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-amber-300 dark:hover:border-amber-500 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-amber-300 dark:hover:border-amber-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors">
@@ -282,7 +282,7 @@ export default function DashboardPage() {
               
               <button
                 onClick={() => window.location.href = '/analytics'}
-                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:shadow-sm transition-all duration-200 group text-left"
+                className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:shadow-sm transition-all duration-200 group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
@@ -340,7 +340,7 @@ export default function DashboardPage() {
             <button
               key={stat.name}
               onClick={() => router.push(getNavigationPath(stat.name))}
-              className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
+              className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -419,7 +419,7 @@ export default function DashboardPage() {
                 <button
                   key={activity.id}
                   onClick={() => router.push(getActivityPath(activity.id, activity.type))}
-                  className="w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
+                  className="w-full p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
                 >
                   <div className="flex items-center justify-between">
                     <div>

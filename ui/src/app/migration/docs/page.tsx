@@ -39,8 +39,8 @@ export default function MigrationDocsPage() {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Migration Wizard Overview</h2>
-              <p className="text-lg text-gray-600 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Migration Wizard Overview</h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                 The Migration Wizard is a comprehensive tool that guides users through cloud migration 
                 processes with AI-powered planning, automated discovery, and intelligent recommendations.
               </p>
@@ -72,7 +72,7 @@ export default function MigrationDocsPage() {
             </div>
 
             <div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Migration Process Flow</h3>
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Migration Process Flow</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { step: 1, title: 'Discovery', desc: 'Automated infrastructure scanning' },
@@ -80,35 +80,35 @@ export default function MigrationDocsPage() {
                   { step: 3, title: 'Execution', desc: 'Monitored migration process' },
                   { step: 4, title: 'Validation', desc: 'Post-migration verification' }
                 ].map((item) => (
-                  <div key={item.step} className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div key={item.step} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                     <div className="text-2xl font-bold text-emerald-600 mb-2">Step {item.step}</div>
-                    <div className="text-lg font-semibold text-gray-900 mb-1">{item.title}</div>
-                    <div className="text-gray-600">{item.desc}</div>
+                    <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
+                    <div className="text-gray-600 dark:text-gray-400">{item.desc}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Version Information</h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Version Information</h3>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                 <table className="w-full">
                   <tbody className="space-y-2">
                     <tr>
-                      <td className="font-semibold text-gray-900 pr-4">Current Version:</td>
-                      <td className="text-gray-600">v2.1.0</td>
+                      <td className="font-semibold text-gray-900 dark:text-gray-100 pr-4">Current Version:</td>
+                      <td className="text-gray-600 dark:text-gray-400">v2.1.0</td>
                     </tr>
                     <tr>
-                      <td className="font-semibold text-gray-900 pr-4">Last Updated:</td>
-                      <td className="text-gray-600">January 6, 2025</td>
+                      <td className="font-semibold text-gray-900 dark:text-gray-100 pr-4">Last Updated:</td>
+                      <td className="text-gray-600 dark:text-gray-400">January 6, 2025</td>
                     </tr>
                     <tr>
-                      <td className="font-semibold text-gray-900 pr-4">Compatibility:</td>
-                      <td className="text-gray-600">AWS, Azure, GCP, Multi-cloud</td>
+                      <td className="font-semibold text-gray-900 dark:text-gray-100 pr-4">Compatibility:</td>
+                      <td className="text-gray-600 dark:text-gray-400">AWS, Azure, GCP, Multi-cloud</td>
                     </tr>
                     <tr>
-                      <td className="font-semibold text-gray-900 pr-4">Phase:</td>
-                      <td className="text-gray-600">Phase 1 (Stable)</td>
+                      <td className="font-semibold text-gray-900 dark:text-gray-100 pr-4">Phase:</td>
+                      <td className="text-gray-600 dark:text-gray-400">Phase 1 (Stable)</td>
                     </tr>
                   </tbody>
                 </table>
@@ -120,12 +120,12 @@ export default function MigrationDocsPage() {
       case 'architecture':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Architecture</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Architecture</h2>
             
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">System Architecture</h3>
-              <div className="bg-gray-100 rounded-lg p-8 text-center">
-                <div className="text-gray-600 mb-4">[Architecture Diagram]</div>
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">System Architecture</h3>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
+                <div className="text-gray-600 dark:text-gray-400 mb-4">[Architecture Diagram]</div>
                 <p className="text-sm text-gray-500">
                   Interactive architecture diagram showing Migration Wizard components
                 </p>
@@ -133,9 +133,9 @@ export default function MigrationDocsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Core Components</h4>
-                <ul className="space-y-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Core Components</h4>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                   <li>• Discovery Engine</li>
                   <li>• Planning AI</li>
                   <li>• Execution Engine</li>
@@ -144,9 +144,9 @@ export default function MigrationDocsPage() {
                 </ul>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">External Integrations</h4>
-                <ul className="space-y-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">External Integrations</h4>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                   <li>• Cloud Provider APIs</li>
                   <li>• Container Orchestrators</li>
                   <li>• CI/CD Pipelines</li>
@@ -194,7 +194,7 @@ export default function MigrationDocsPage() {
       case 'features':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Features</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Features</h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {[
@@ -239,9 +239,9 @@ export default function MigrationDocsPage() {
                   ]
                 }
               ].map((section, index) => (
-                <div key={index} className="bg-white border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{section.title}</h3>
-                  <p className="text-gray-600 mb-4">{section.description}</p>
+                <div key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{section.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{section.description}</p>
                   <ul className="space-y-2">
                     {section.features.map((feature, i) => (
                       <li key={i} className="flex items-center gap-2 text-gray-700">
@@ -259,7 +259,7 @@ export default function MigrationDocsPage() {
       case 'security':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Security</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Security</h2>
             
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -288,13 +288,13 @@ export default function MigrationDocsPage() {
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Compliance Standards</h3>
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Compliance Standards</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {['SOC 2', 'ISO 27001', 'GDPR', 'HIPAA'].map((standard) => (
-                  <div key={standard} className="text-center p-4 bg-gray-50 rounded-lg">
+                  <div key={standard} className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                    <div className="font-semibold text-gray-900">{standard}</div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">{standard}</div>
                   </div>
                 ))}
               </div>
@@ -305,10 +305,10 @@ export default function MigrationDocsPage() {
       case 'api':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">API Reference</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">API Reference</h2>
             
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">REST API Endpoints</h3>
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">REST API Endpoints</h3>
               <div className="space-y-4">
                 {[
                   { method: 'POST', endpoint: '/api/migration/discover', description: 'Start infrastructure discovery' },
@@ -316,22 +316,22 @@ export default function MigrationDocsPage() {
                   { method: 'POST', endpoint: '/api/migration/execute', description: 'Execute migration plan' },
                   { method: 'GET', endpoint: '/api/migration/status/{id}', description: 'Get migration status' }
                 ].map((api, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <span className={`px-3 py-1 rounded text-sm font-mono ${
                       api.method === 'GET' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                     }`}>
                       {api.method}
                     </span>
-                    <code className="font-mono text-gray-900">{api.endpoint}</code>
-                    <span className="text-gray-600 ml-auto">{api.description}</span>
+                    <code className="font-mono text-gray-900 dark:text-gray-100">{api.endpoint}</code>
+                    <span className="text-gray-600 dark:text-gray-400 ml-auto">{api.description}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Authentication</h3>
-              <div className="bg-gray-100 rounded-lg p-4">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Authentication</h3>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
                 <code className="text-sm">
                   Authorization: Bearer {'{'}your-jwt-token{'}'}
                 </code>
@@ -343,21 +343,21 @@ export default function MigrationDocsPage() {
       case 'dependencies':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Dependencies</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Dependencies</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Core Dependencies</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Core Dependencies</h3>
                 <div className="space-y-3">
                   {[
                     { name: 'SirsiNexus Core Engine', version: 'v2.1.0', status: 'Required' },
                     { name: 'Agent Manager', version: 'v1.8.2', status: 'Required' },
                     { name: 'Analytics Engine', version: 'v1.5.1', status: 'Optional' }
                   ].map((dep, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
-                        <div className="font-semibold text-gray-900">{dep.name}</div>
-                        <div className="text-sm text-gray-600">{dep.version}</div>
+                        <div className="font-semibold text-gray-900 dark:text-gray-100">{dep.name}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{dep.version}</div>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded ${
                         dep.status === 'Required' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
@@ -369,16 +369,16 @@ export default function MigrationDocsPage() {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">External Services</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">External Services</h3>
                 <div className="space-y-3">
                   {[
                     { name: 'Cloud Provider APIs', type: 'Integration' },
                     { name: 'Kubernetes API', type: 'Orchestration' },
                     { name: 'Prometheus', type: 'Monitoring' }
                   ].map((service, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="font-semibold text-gray-900">{service.name}</div>
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                      <div className="font-semibold text-gray-900 dark:text-gray-100">{service.name}</div>
                       <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
                         {service.type}
                       </span>
@@ -393,28 +393,28 @@ export default function MigrationDocsPage() {
       case 'deployment':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Deployment</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Deployment</h2>
             
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Deployment Options</h3>
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Deployment Options</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { title: 'Docker', desc: 'Container deployment', cmd: 'docker run sirsi/migration:latest' },
                   { title: 'Kubernetes', desc: 'Orchestrated deployment', cmd: 'kubectl apply -f migration.yaml' },
                   { title: 'Helm', desc: 'Package manager', cmd: 'helm install migration sirsi/migration' }
                 ].map((option, index) => (
-                  <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                    <h4 className="font-semibold text-gray-900 mb-2">{option.title}</h4>
-                    <p className="text-gray-600 mb-3">{option.desc}</p>
-                    <code className="text-xs bg-gray-100 p-2 rounded block">{option.cmd}</code>
+                  <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{option.title}</h4>
+                    <p className="text-gray-600 dark:text-gray-400 mb-3">{option.desc}</p>
+                    <code className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded block">{option.cmd}</code>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Configuration</h3>
-              <div className="bg-gray-100 rounded-lg p-4">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Configuration</h3>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
                 <pre className="text-sm overflow-x-auto">
 {`# migration-config.yaml
 migration:
@@ -436,12 +436,12 @@ migration:
       case 'monitoring':
         return (
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Monitoring</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Monitoring</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Metrics</h3>
-                <ul className="space-y-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Metrics</h3>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                   <li>• Migration success rate</li>
                   <li>• Average migration time</li>
                   <li>• Resource utilization</li>
@@ -450,9 +450,9 @@ migration:
                 </ul>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Alerts</h3>
-                <ul className="space-y-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Alerts</h3>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                   <li>• Migration failures</li>
                   <li>• Performance degradation</li>
                   <li>• Security violations</li>
@@ -462,11 +462,11 @@ migration:
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Dashboard</h3>
-              <div className="bg-gray-100 rounded-lg p-8 text-center">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Dashboard</h3>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
                 <Monitor className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Interactive monitoring dashboard with real-time migration metrics
                 </p>
               </div>
@@ -480,14 +480,14 @@ migration:
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Migration Wizard Documentation</h1>
-              <p className="text-xl text-gray-600 mt-2">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Migration Wizard Documentation</h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400 mt-2">
                 Complete technical documentation and specifications
               </p>
             </div>
@@ -507,8 +507,8 @@ migration:
         <div className="flex gap-8">
           {/* Sidebar Navigation */}
           <div className="w-64 flex-shrink-0">
-            <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <h3 className="font-semibold text-gray-900 mb-4">Documentation</h3>
+            <nav className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Documentation</h3>
               <ul className="space-y-2">
                 {documentationSections.map((section) => {
                   const Icon = section.icon;
@@ -519,7 +519,7 @@ migration:
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
                           activeSection === section.id
                             ? 'bg-blue-100 text-blue-800'
-                            : 'text-gray-600 hover:bg-gray-100'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800'
                         }`}
                       >
                         <Icon className="h-4 w-4" />
@@ -534,7 +534,7 @@ migration:
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8">
               {renderContent()}
             </div>
           </div>

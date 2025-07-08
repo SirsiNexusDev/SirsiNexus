@@ -42,7 +42,7 @@ function InfrastructurePageContent() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
       </div>
     );
@@ -50,12 +50,12 @@ function InfrastructurePageContent() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-4">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Authentication Required
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             Please sign in to access the Infrastructure Builder.
           </p>
           <button
@@ -83,7 +83,7 @@ function InfrastructurePageContent() {
 export default function InfrastructurePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
       </div>
     }>

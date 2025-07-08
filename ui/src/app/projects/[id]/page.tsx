@@ -11,8 +11,10 @@ interface ProjectPageProps {
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { id } = await params;
   return (
-    <Suspense fallback={<ProjectDetailSkeleton />}>
-      <ProjectDetail id={id} />
-    </Suspense>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Suspense fallback={<ProjectDetailSkeleton />}>
+        <ProjectDetail id={id} />
+      </Suspense>
+    </div>
   );
 }

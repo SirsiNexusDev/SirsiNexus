@@ -169,24 +169,24 @@ const Analytics = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-emerald-600 dark:text-emerald-400" />
-          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Loading analytics...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-4 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 flex items-center gap-3">
                 <BarChart className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
                 Analytics Dashboard
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-2">
                 Monitor your infrastructure performance, costs, and optimization opportunities
               </p>
             </div>
@@ -197,7 +197,7 @@ const Analytics = () => {
                 <select 
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="border border-gray-200 dark:border-gray-700 dark:border-gray-600 bg-white dark:bg-gray-800 dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="1d">Last 24 hours</option>
                   <option value="7d">Last 7 days</option>
@@ -238,8 +238,8 @@ const Analytics = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{metric.title}</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{metric.value}</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-400">{metric.title}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mt-2">{metric.value}</p>
                       <div className="flex items-center mt-2">
                         <Badge 
                           variant={metric.changeType === 'positive' ? 'default' : 'destructive'}
@@ -337,8 +337,8 @@ const Analytics = () => {
               <CardContent>
                 <div className="text-center py-12">
                   <DollarSign className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Advanced Cost Analytics</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-2">Advanced Cost Analytics</h3>
+                  <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mb-4">
                     Detailed cost breakdown, forecasting, and optimization recommendations
                   </p>
                   <Button className="bg-emerald-600 hover:bg-emerald-700">
@@ -357,8 +357,8 @@ const Analytics = () => {
               <CardContent>
                 <div className="text-center py-12">
                   <Activity className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Real-time Performance Metrics</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-2">Real-time Performance Metrics</h3>
+                  <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mb-4">
                     CPU, memory, network, and custom application metrics
                   </p>
                   <Button className="bg-emerald-600 hover:bg-emerald-700">
@@ -388,7 +388,7 @@ const Analytics = () => {
                         }`}></div>
                         <div>
                           <p className="font-medium dark:text-gray-200">{alert.title}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{alert.resource} • {alert.time}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">{alert.resource} • {alert.time}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

@@ -220,7 +220,7 @@ export default function CredentialsPage() {
             value={formData.alias}
             onChange={(e) => setFormData({ ...formData, alias: e.target.value })}
             placeholder={`e.g., Production ${currentProvider.name}`}
-            className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
           />
         </div>
 
@@ -240,7 +240,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, access_key_id: e.target.value }
                 })}
                 placeholder="AKIAIOSFODNN7EXAMPLE"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -256,7 +256,7 @@ export default function CredentialsPage() {
                     credentials: { ...creds, secret_access_key: e.target.value }
                   })}
                   placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
+                  className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
                 />
                 <button
                   type="button"
@@ -279,7 +279,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, region: e.target.value }
                 })}
                 placeholder="us-east-1"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, client_id: e.target.value }
                 })}
                 placeholder="12345678-1234-1234-1234-123456789012"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -316,7 +316,7 @@ export default function CredentialsPage() {
                     credentials: { ...creds, client_secret: e.target.value }
                   })}
                   placeholder="Client secret value"
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
+                  className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
                 />
                 <button
                   type="button"
@@ -339,7 +339,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, tenant_id: e.target.value }
                 })}
                 placeholder="87654321-4321-4321-4321-210987654321"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -354,7 +354,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, subscription_id: e.target.value }
                 })}
                 placeholder="11111111-1111-1111-1111-111111111111"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -375,7 +375,7 @@ export default function CredentialsPage() {
                 })}
                 placeholder="Paste your service account JSON key file content here"
                 rows={6}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-mono text-sm"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-mono text-sm"
               />
             </div>
             <div>
@@ -390,7 +390,7 @@ export default function CredentialsPage() {
                   credentials: { ...creds, project_id: e.target.value }
                 })}
                 placeholder="my-gcp-project"
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -412,7 +412,7 @@ export default function CredentialsPage() {
                     credentials: { ...creds, api_token: e.target.value }
                   })}
                   placeholder="dop_v1_..."
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
+                  className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent pr-10"
                 />
                 <button
                   type="button"
@@ -473,7 +473,7 @@ export default function CredentialsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg border border-slate-200">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Key className="h-4 w-4 text-emerald-600" />
@@ -484,7 +484,7 @@ export default function CredentialsPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-lg border border-slate-200">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <CheckCircle className="h-4 w-4 text-green-600" />
@@ -497,7 +497,7 @@ export default function CredentialsPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-lg border border-slate-200">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
                 <XCircle className="h-4 w-4 text-red-600" />
@@ -510,7 +510,7 @@ export default function CredentialsPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-lg border border-slate-200">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
                 <AlertTriangle className="h-4 w-4 text-amber-600" />
@@ -540,7 +540,7 @@ export default function CredentialsPage() {
           {credentials.map((credential) => (
           <div
             key={credential.id}
-            className="bg-white border border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors"
+            className="bg-white dark:bg-gray-800 border border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -631,7 +631,7 @@ export default function CredentialsPage() {
       {/* Create Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <h2 className="text-xl font-semibold text-slate-900">
                 Add Cloud Credential

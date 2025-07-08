@@ -180,7 +180,7 @@ export default function AgentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Agent Management</h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Manage and interact with AI agents for cloud operations and migration assistance
           </p>
         </div>
@@ -277,7 +277,7 @@ export default function AgentsPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* Conversation */}
-                      <div className="h-96 overflow-y-auto space-y-3 p-4 bg-gray-50 rounded-lg">
+                      <div className="h-96 overflow-y-auto space-y-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                         {conversation.length === 0 ? (
                           <p className="text-gray-500 text-center">
                             Start a conversation with the {selectedAgent.agentType} agent
@@ -292,7 +292,7 @@ export default function AgentsPage() {
                                 className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                                   msg.type === 'user'
                                     ? 'bg-sirsi-500 text-white'
-                                    : 'bg-white border border-gray-200'
+                                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
                                 }`}
                               >
                                 <p className="text-sm">{msg.content}</p>
@@ -341,7 +341,7 @@ export default function AgentsPage() {
                     <CardContent className="space-y-4">
                       <div>
                         <label className="text-sm font-medium">Type</label>
-                        <p className="text-sm text-gray-600 capitalize">{selectedAgent.agentType}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{selectedAgent.agentType}</p>
                       </div>
                       <div>
                         <label className="text-sm font-medium">Status</label>
@@ -425,7 +425,7 @@ export default function AgentsPage() {
                       suggestions.map(suggestion => (
                         <div
                           key={suggestion.suggestionId}
-                          className="p-3 border border-gray-200 rounded-lg space-y-2"
+                          className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg space-y-2"
                         >
                           <div className="flex items-center justify-between">
                             <h4 className="font-medium text-sm">{suggestion.title}</h4>
@@ -433,7 +433,7 @@ export default function AgentsPage() {
                               {Math.round(suggestion.confidence * 100)}%
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-600">{suggestion.description}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{suggestion.description}</p>
                           <Badge variant="secondary" className="text-xs">
                             {suggestion.action.actionType}
                           </Badge>

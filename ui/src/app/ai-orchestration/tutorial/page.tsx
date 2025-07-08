@@ -146,7 +146,7 @@ ALERT_THRESHOLDS='{
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:to-gray-800 dark:from-gray-900 to-indigo-100 dark:to-gray-800 dark:from-gray-900 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -160,27 +160,27 @@ ALERT_THRESHOLDS='{
               <Brain className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">AI Orchestration Tutorial</h1>
-              <p className="text-gray-600">Step-by-step guide to mastering AI orchestration</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Orchestration Tutorial</h1>
+              <p className="text-gray-600 dark:text-gray-400">Step-by-step guide to mastering AI orchestration</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Documentation Navigation</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Documentation Navigation</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">Documentation</span>
             </a>
             <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
               <Play className="h-4 w-4 text-blue-500" />
               <span className="font-medium text-blue-900">Tutorial</span>
             </a>
-            <a href="/ai-orchestration/faq" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/ai-orchestration/faq" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">FAQ</span>
             </a>
-            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 rounded-lg">
+            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 text-white p-3 rounded-lg">
               <Brain className="h-4 w-4" />
               <span className="font-medium">AI Guide</span>
             </button>
@@ -188,10 +188,10 @@ ALERT_THRESHOLDS='{
         </div>
 
         {/* Progress Bar */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-900">Tutorial Progress</h3>
-            <span className="text-sm text-gray-600">{Math.round(progress)}% Complete</span>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Tutorial Progress</h3>
+            <span className="text-sm text-gray-600 dark:text-gray-400">{Math.round(progress)}% Complete</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
@@ -202,8 +202,8 @@ ALERT_THRESHOLDS='{
         </div>
 
         {/* Step Navigator */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Tutorial Steps</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Tutorial Steps</h3>
           <div className="flex flex-wrap gap-2">
             {steps.map((step, index) => (
               <button
@@ -214,7 +214,7 @@ ALERT_THRESHOLDS='{
                     ? 'bg-blue-100 text-blue-800 border-blue-300'
                     : step.completed
                     ? 'bg-green-100 text-green-800 border-green-300'
-                    : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                    : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800'
                 }`}
               >
                 {step.completed ? (
@@ -229,21 +229,21 @@ ALERT_THRESHOLDS='{
         </div>
 
         {/* Current Step Content */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
               {currentStep + 1}
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">{currentStepData.title}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{currentStepData.title}</h2>
           </div>
 
-          <p className="text-gray-600 mb-6 leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
             {currentStepData.description}
           </p>
 
           {currentStepData.command && (
             <div className="mb-6">
-              <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
                 <Terminal className="h-4 w-4" />
                 Command
               </h4>
@@ -255,11 +255,11 @@ ALERT_THRESHOLDS='{
 
           {currentStepData.code && (
             <div className="mb-6">
-              <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
                 <Code className="h-4 w-4" />
                 {currentStepData.command ? 'Expected Response' : 'Configuration'}
               </h4>
-              <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg">
+              <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
                 <pre className="text-sm text-gray-800 overflow-x-auto">
                   {currentStepData.code}
                 </pre>
@@ -269,12 +269,12 @@ ALERT_THRESHOLDS='{
 
           {currentStepData.tips && (
             <div className="mb-6">
-              <h4 className="font-semibold text-gray-900 mb-2">💡 Pro Tips</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">💡 Pro Tips</h4>
               <ul className="space-y-2">
                 {currentStepData.tips.map((tip, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <ChevronRight className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-600 text-sm">{tip}</span>
+                    <span className="text-gray-600 dark:text-gray-400 text-sm">{tip}</span>
                   </li>
                 ))}
               </ul>
@@ -285,7 +285,7 @@ ALERT_THRESHOLDS='{
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Previous Step
             </button>
@@ -310,17 +310,17 @@ ALERT_THRESHOLDS='{
 
         {/* Completion */}
         {steps.every(step => step.completed) && (
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg text-white p-6">
+          <div className="bg-gradient-to-r from-green-50 dark:to-gray-800 dark:from-gray-9000 to-emerald-600 rounded-xl shadow-lg text-white p-6">
             <h3 className="text-xl font-bold mb-2">🎉 Tutorial Complete!</h3>
             <p className="mb-4">
               Congratulations! You've successfully completed the AI Orchestration tutorial. 
               You're now ready to leverage the full power of intelligent workflow automation.
             </p>
             <div className="flex gap-4">
-              <a href="/ai-orchestration" className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
+              <a href="/ai-orchestration" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
                 Go to AI Orchestration
               </a>
-              <a href="/ai-orchestration/docs" className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
+              <a href="/ai-orchestration/docs" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
                 View Documentation
               </a>
             </div>

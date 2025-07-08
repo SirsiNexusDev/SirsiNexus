@@ -195,31 +195,31 @@ const ObservabilityDashboard: React.FC = () => {
 
   const getHealthColor = (status: string) => {
     switch (status) {
-      case 'Healthy': return 'text-emerald-600 bg-emerald-100';
-      case 'Degraded': return 'text-amber-600 bg-amber-100';
-      case 'Unhealthy': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'Healthy': return 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900';
+      case 'Degraded': return 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900';
+      case 'Unhealthy': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
+      default: return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
     }
   };
 
   const getAlertColor = (severity: string) => {
     switch (severity) {
-      case 'Critical': return 'text-red-600 bg-red-100 border-red-200';
-      case 'Warning': return 'text-amber-600 bg-amber-100 border-amber-200';
-      case 'Info': return 'text-blue-600 bg-blue-100 border-blue-200';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+      case 'Critical': return 'text-red-600 bg-red-100 border-red-200 dark:text-red-400 dark:bg-red-900 dark:border-red-800';
+      case 'Warning': return 'text-amber-600 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-900 dark:border-amber-800';
+      case 'Info': return 'text-blue-600 bg-blue-100 border-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:border-blue-800';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700';
     }
   };
 
   if (isLoading && !dashboardData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
+                <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
               ))}
             </div>
           </div>
@@ -229,32 +229,32 @@ const ObservabilityDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 rounded-xl flex items-center justify-center">
                 <Activity className="h-6 w-6 text-white" />
               </div>
               Observability Dashboard
             </h1>
-            <p className="text-slate-600 mt-2">
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
               Real-time monitoring and performance insights for SirsiNexus
             </p>
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="text-sm text-slate-600">
+            <div className="text-sm text-slate-600 dark:text-slate-400">
               Last updated: {lastUpdate.toLocaleTimeString()}
             </div>
             <button
               onClick={() => setAutoRefresh(!autoRefresh)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 autoRefresh 
-                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
-                  : 'bg-slate-100 text-slate-700 border border-slate-200'
+                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800' 
+                  : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
               }`}
             >
               <RefreshCw className={`h-4 w-4 ${autoRefresh ? 'animate-spin' : ''}`} />
@@ -284,10 +284,10 @@ const ObservabilityDashboard: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-800">
+                  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
                     System Status: {dashboardData.health_status.overall}
                   </h2>
-                  <p className="text-slate-600">
+                  <p className="text-slate-600 dark:text-slate-400">
                     All systems operational • {dashboardData.active_alerts.length} active alerts
                   </p>
                 </div>
@@ -333,8 +333,8 @@ const ObservabilityDashboard: React.FC = () => {
                           <Cpu className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800">CPU Usage</h3>
-                          <p className="text-2xl font-bold text-slate-900">
+                          <h3 className="font-semibold text-slate-800 dark:text-slate-100">CPU Usage</h3>
+                          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                             {dashboardData.system_overview.cpu_usage_percent.toFixed(1)}%
                           </p>
                         </div>
@@ -354,8 +354,8 @@ const ObservabilityDashboard: React.FC = () => {
                           <Server className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800">Memory</h3>
-                          <p className="text-2xl font-bold text-slate-900">
+                          <h3 className="font-semibold text-slate-800 dark:text-slate-100">Memory</h3>
+                          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                             {dashboardData.system_overview.memory_usage_percent.toFixed(1)}%
                           </p>
                         </div>
@@ -375,14 +375,14 @@ const ObservabilityDashboard: React.FC = () => {
                           <Users className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800">Active Agents</h3>
-                          <p className="text-2xl font-bold text-slate-900">
+                          <h3 className="font-semibold text-slate-800 dark:text-slate-100">Active Agents</h3>
+                          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                             {dashboardData.application_status.active_agents}
                           </p>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                       Processing {dashboardData.application_status.requests_per_second.toFixed(1)} req/s
                     </p>
                   </Card>

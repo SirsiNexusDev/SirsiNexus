@@ -5,7 +5,7 @@ import { Shield, ArrowLeft, Lock, Key, Eye, AlertTriangle, CheckCircle } from 'l
 
 export default function SecurityDocsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 dark:to-gray-800 dark:from-gray-900 to-orange-100 dark:to-gray-800 dark:from-gray-900 p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -19,57 +19,57 @@ export default function SecurityDocsPage() {
               <Shield className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Security Documentation</h1>
-              <p className="text-gray-600">Comprehensive security and compliance guide</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Security Documentation</h1>
+              <p className="text-gray-600 dark:text-gray-400">Comprehensive security and compliance guide</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Documentation Navigation</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Documentation Navigation</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <a href="/security/docs" className="flex items-center gap-3 bg-red-50 p-3 rounded-lg border border-red-200">
               <Shield className="h-4 w-4 text-red-500" />
               <span className="font-medium text-red-900">Documentation</span>
             </a>
-            <a href="/security/tutorial" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/security/tutorial" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">Tutorial</span>
             </a>
-            <a href="/security/faq" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/security/faq" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">FAQ</span>
             </a>
-            <a href="/security/ai-guide" className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100">
+            <a href="/security/ai-guide" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">AI Guide</span>
             </a>
           </div>
         </div>
 
         {/* Overview */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Security & Compliance Overview</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Security & Compliance Overview</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Lock className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Access Control</h3>
-              <p className="text-gray-600 text-sm">Role-based access control with multi-factor authentication</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Access Control</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Role-based access control with multi-factor authentication</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Key className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Encryption</h3>
-              <p className="text-gray-600 text-sm">End-to-end encryption for data at rest and in transit</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Encryption</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">End-to-end encryption for data at rest and in transit</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Eye className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Monitoring</h3>
-              <p className="text-gray-600 text-sm">Real-time security monitoring and threat detection</p>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Monitoring</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Real-time security monitoring and threat detection</p>
             </div>
           </div>
 
@@ -81,86 +81,86 @@ export default function SecurityDocsPage() {
         </div>
 
         {/* Core Features */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Core Security Features</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Core Security Features</h2>
           
           <div className="space-y-6">
             <div className="border-l-4 border-red-500 pl-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Identity & Access Management</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">Identity & Access Management</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Multi-Factor Authentication</h4>
-                    <p className="text-gray-600 text-sm">TOTP, SMS, and hardware key support for enhanced security</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Multi-Factor Authentication</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">TOTP, SMS, and hardware key support for enhanced security</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Role-Based Access Control</h4>
-                    <p className="text-gray-600 text-sm">Granular permissions with least-privilege principles</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Role-Based Access Control</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">Granular permissions with least-privilege principles</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Single Sign-On (SSO)</h4>
-                    <p className="text-gray-600 text-sm">SAML and OAuth integration with enterprise identity providers</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Single Sign-On (SSO)</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">SAML and OAuth integration with enterprise identity providers</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="border-l-4 border-orange-500 pl-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Data Protection</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">Data Protection</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Encryption at Rest</h4>
-                    <p className="text-gray-600 text-sm">AES-256 encryption for all stored data and backups</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Encryption at Rest</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">AES-256 encryption for all stored data and backups</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Encryption in Transit</h4>
-                    <p className="text-gray-600 text-sm">TLS 1.3 for all network communications</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Encryption in Transit</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">TLS 1.3 for all network communications</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Key Management</h4>
-                    <p className="text-gray-600 text-sm">Hardware Security Module (HSM) integration</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Key Management</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">Hardware Security Module (HSM) integration</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="border-l-4 border-yellow-500 pl-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Threat Detection</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">Threat Detection</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Behavioral Analytics</h4>
-                    <p className="text-gray-600 text-sm">Machine learning-based anomaly detection</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Behavioral Analytics</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">Machine learning-based anomaly detection</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Real-time Monitoring</h4>
-                    <p className="text-gray-600 text-sm">24/7 security event monitoring and alerting</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Real-time Monitoring</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">24/7 security event monitoring and alerting</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Incident Response</h4>
-                    <p className="text-gray-600 text-sm">Automated response workflows and escalation</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Incident Response</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">Automated response workflows and escalation</p>
                   </div>
                 </div>
               </div>
@@ -169,8 +169,8 @@ export default function SecurityDocsPage() {
         </div>
 
         {/* Compliance */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Compliance Standards</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Compliance Standards</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
@@ -199,11 +199,11 @@ export default function SecurityDocsPage() {
         </div>
 
         {/* Configuration */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Security Configuration</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Security Configuration</h2>
           
-          <div className="bg-gray-50 rounded-lg p-6 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Basic Security Setup</h3>
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-6">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Security Setup</h3>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
 {`# Security Configuration
 SECURITY_ENABLED=true

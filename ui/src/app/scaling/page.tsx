@@ -208,7 +208,7 @@ const AutoScalingWizard = () => {
                       className={`cursor-pointer transition-all hover:shadow-md ${
                         wizardData.resourceType === type.id 
                           ? 'border-emerald-500 bg-emerald-50' 
-                          : 'border-gray-200'
+                          : 'border-gray-200 dark:border-gray-700'
                       }`}
                       onClick={() => handleResourceTypeChange(type.id)}
                     >
@@ -219,7 +219,7 @@ const AutoScalingWizard = () => {
                           </div>
                           <div>
                             <h4 className="font-semibold">{type.name}</h4>
-                            <p className="text-sm text-gray-600">{type.description}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{type.description}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -246,7 +246,7 @@ const AutoScalingWizard = () => {
                       className={`cursor-pointer transition-all hover:shadow-md ${
                         isSelected 
                           ? 'border-emerald-500 bg-emerald-50' 
-                          : 'border-gray-200'
+                          : 'border-gray-200 dark:border-gray-700'
                       }`}
                       onClick={() => handleObjectiveToggle(objective.id)}
                     >
@@ -257,7 +257,7 @@ const AutoScalingWizard = () => {
                           </div>
                           <div>
                             <h4 className="font-semibold">{objective.name}</h4>
-                            <p className="text-sm text-gray-600">{objective.description}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{objective.description}</p>
                           </div>
                           {isSelected && <CheckCircle className="h-5 w-5 text-emerald-600" />}
                         </div>
@@ -279,7 +279,7 @@ const AutoScalingWizard = () => {
                   step={5}
                   className="w-full"
                 />
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Target CPU utilization: {wizardData.performanceTarget}%
                 </p>
               </div>
@@ -355,7 +355,7 @@ const AutoScalingWizard = () => {
                           </div>
                           <div>
                             <Label>Metric</Label>
-                            <select className="w-full mt-1 border border-gray-200 rounded-md px-3 py-2">
+                            <select className="w-full mt-1 border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2">
                               <option value="cpu_utilization">CPU Utilization</option>
                               <option value="memory_utilization">Memory Utilization</option>
                               <option value="network_in">Network In</option>
@@ -467,11 +467,11 @@ const AutoScalingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 flex items-center gap-3">
             <Zap className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             Auto-Scaling Wizard
             <Badge className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-700">
@@ -479,7 +479,7 @@ const AutoScalingWizard = () => {
               AI-Powered
             </Badge>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-2">
             Configure intelligent auto-scaling for your infrastructure
           </p>
         </div>
@@ -501,7 +501,7 @@ const AutoScalingWizard = () => {
                           ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-700'
                           : currentStep > step.number
                           ? 'bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200'
-                          : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                          : 'bg-gray-50 dark:bg-gray-900 dark:bg-gray-700 text-gray-600 dark:text-gray-400 dark:text-gray-300'
                       }`}
                       onClick={() => setCurrentStep(step.number)}
                     >
@@ -511,7 +511,7 @@ const AutoScalingWizard = () => {
                             ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
                             : currentStep > step.number
                             ? 'bg-green-600 dark:bg-green-500 text-white'
-                            : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+                            : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-300'
                         }`}>
                           {currentStep > step.number ? <CheckCircle className="h-4 w-4" /> : step.number}
                         </div>
@@ -618,7 +618,7 @@ const AutoScalingWizard = () => {
                           }`}></div>
                           <div>
                             <p className="font-medium text-sm dark:text-gray-200">{event.action}: {event.instances}</p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">{event.reason}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-400">{event.reason}</p>
                           </div>
                         </div>
                         <span className="text-xs text-gray-500 dark:text-gray-400">{event.time}</span>

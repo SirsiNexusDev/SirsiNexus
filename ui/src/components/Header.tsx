@@ -58,26 +58,7 @@ export const Header: React.FC = () => {
   const handleThemeToggle = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     console.log('Theme toggle:', { current: theme, new: newTheme });
-    console.log('localStorage theme before:', localStorage.getItem('theme'));
-    
-    // Force apply theme to document immediately
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    }
-    
-    // Clear any cached theme and set new one
-    localStorage.removeItem('theme');
     setTheme(newTheme);
-    
-    // Verify it was set
-    setTimeout(() => {
-      console.log('localStorage theme after:', localStorage.getItem('theme'));
-      console.log('Document class:', document.documentElement.className);
-    }, 100);
   };
 
   if (!mounted) {
