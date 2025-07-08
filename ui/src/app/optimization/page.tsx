@@ -197,7 +197,7 @@ export default function OptimizationWizardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">

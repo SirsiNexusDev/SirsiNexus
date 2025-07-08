@@ -278,10 +278,10 @@ Start New Migration
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-900 dark:via-blue-900 dark:to-indigo-900 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Migration Wizard</h1>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Migration Wizard</h1>
           <p className="text-lg text-slate-600 dark:text-slate-400">Seamlessly migrate your infrastructure to the cloud</p>
         </div>
 

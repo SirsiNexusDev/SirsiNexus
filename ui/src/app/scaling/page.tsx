@@ -63,6 +63,9 @@ interface WizardData {
 
 const AutoScalingWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [autoRefresh, setAutoRefresh] = useState(true);
   const [wizardData, setWizardData] = useState<WizardData>({
     resourceType: 'ec2',
     resourceSelection: [],
@@ -467,21 +470,42 @@ const AutoScalingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-gray-900 dark:to-gray-800 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <Zap className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
-            Auto-Scaling Wizard
-            <Badge className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-700">
-              <Sparkles className="h-3 w-3 mr-1" />
-              AI-Powered
-            </Badge>
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Configure intelligent auto-scaling for your infrastructure
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 rounded-xl flex items-center justify-center">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              Auto-Scaling Wizard
+              <Badge className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-700">
+                <Sparkles className="h-3 w-3 mr-1" />
+                AI-Powered
+              </Badge>
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
+              Configure intelligent auto-scaling for your infrastructure
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Last updated: {lastUpdate.toLocaleTimeString()}
+            </div>
+            <button
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                autoRefresh 
+                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800' 
+                  : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
+              }`}
+            >
+              <RefreshCw className={`h-4 w-4 ${autoRefresh ? 'animate-spin' : ''}`} />
+              Auto-refresh {autoRefresh ? 'ON' : 'OFF'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

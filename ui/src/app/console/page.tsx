@@ -243,9 +243,25 @@ Total: $1,937`);
     URL.revokeObjectURL(url);
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(currentScript);
-    addOutput('info', 'Script copied to clipboard');
+  const copyToClipboard = async () => {
+    try {
+      if (typeof window !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(currentScript);
+        addOutput('info', 'Script copied to clipboard');
+      } else {
+        // Fallback for browsers without clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = currentScript;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        addOutput('info', 'Script copied to clipboard');
+      }
+    } catch (error) {
+      addOutput('error', 'Failed to copy script to clipboard');
+      console.error('Copy to clipboard failed:', error);
+    }
   };
 
   return (

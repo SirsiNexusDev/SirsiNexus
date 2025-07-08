@@ -6,18 +6,19 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Loader,
   BarChart,
   Shield,
   Database,
   Network,
+  ArrowRight,
   RefreshCw,
-  Info,
+  Loader,
+  Info
 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { aiService } from '@/lib/ai-services';
-import { trackMigrationStep, trackUserInteraction, trackError, trackPerformance } from '@/lib/analytics';
-import ResourceDependencyGraph from '@/components/ui/resource-dependency-graph';
+import MigrationProgress, { ProgressTask } from '@/components/ui/migration-progress';
+import { trackMigrationStep, trackUserInteraction, trackError } from '@/lib/analytics';
 
 interface ValidationCheck {
   id: string;
@@ -40,11 +41,9 @@ interface ValidateStepProps {
 
 export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
   const [isValidating, setIsValidating] = useState(false);
-  const [validationError, setValidationError] = useState<{ checkId: string; message: string } | null>(null);
+  const [completedChecks, setCompletedChecks] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState<{checkId: string; message: string} | null>(null);
   const [showErrorResolution, setShowErrorResolution] = useState(false);
-  const [aiInsights, setAiInsights] = useState<any[]>([]);
-  const [performanceBaseline, setPerformanceBaseline] = useState<any>(null);
-  const [validationStartTime, setValidationStartTime] = useState<number>(0);
   const [validationChecks, setValidationChecks] = useState<ValidationCheck[]>([
     {
       id: 'perf-1',
@@ -189,6 +188,22 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
     );
   };
 
+  const startValidation = async () => {
+    setIsValidating(true);
+    setValidationError(null);
+    setShowErrorResolution(false);
+    trackMigrationStep('validation_started', { checksCount: validationChecks.length });
+    
+    try {
+      await continueWithChecks(validationChecks);
+      trackMigrationStep('validation_completed', { 
+        checksCompleted: validationChecks.filter(c => c.status === 'passed').length
+      });
+    } catch (error) {
+      trackError(error as Error, { component: 'ValidateStep', action: 'startValidation' });
+    }
+  };
+
   const startValidationFromCheck = async (startCheckId: string) => {
     setIsValidating(true);
     const startIndex = validationChecks.findIndex(c => c.id === startCheckId);
@@ -205,87 +220,27 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
             c.id === check.id ? { ...c, status: 'running' } : c
           )
         );
-
-        // Simulate validation check with potential failure
-        await new Promise((resolve) => setTimeout(resolve, 2000));
         
-        // Simulate potential validation failures
-        if (Math.random() < 0.3) { // 30% chance of failure
-          const errorMessages = {
-            'perf-1': 'Performance validation failed. Response times exceed acceptable thresholds.',
-            'sec-1': 'Security validation failed. SSL/TLS configuration or access control issues detected.',
-            'data-1': 'Data integrity validation failed. Checksum mismatch or missing records found.',
-            'net-1': 'Network validation failed. DNS resolution or firewall configuration issues.',
-          };
-          throw new Error(errorMessages[check.id as keyof typeof errorMessages] || 'Unknown validation error occurred.');
-        }
-
-        // Update check status to final state
+        // Simulate validation
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Mark as passed (simplified)
         setValidationChecks((prev) =>
           prev.map((c) =>
-            c.id === check.id
-              ? {
-                  ...c,
-                  status: Math.random() > 0.2 ? 'passed' : 'warning',
-                }
-              : c
+            c.id === check.id ? { ...c, status: 'passed' } : c
           )
         );
+        
+        setCompletedChecks(prev => [...prev, check.id]);
+        trackUserInteraction('validation_check_completed', 'ValidateStep', { checkId: check.id });
+        
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown validation error occurred.';
-        handleValidationError(check.id, errorMessage);
-        return; // Stop validation on error
+        handleValidationError(check.id, 'Validation failed');
+        break;
       }
     }
     
     setIsValidating(false);
-  };
-
-  const startValidation = async () => {
-    setValidationError(null);
-    setShowErrorResolution(false);
-    setValidationStartTime(Date.now());
-    
-    trackMigrationStep('validation_started', { checksCount: validationChecks.length });
-    
-    // Capture performance baseline
-    const baseline = {
-      startTime: Date.now(),
-      userAgent: navigator.userAgent,
-      viewport: `${window.innerWidth}x${window.innerHeight}`
-    };
-    setPerformanceBaseline(baseline);
-    
-    try {
-      // Get AI insights for validation optimization
-      const insights = await aiService.analyzeResources({
-        resources: [], // Mock resources for validation context
-        context: {
-          environment: 'validation'
-        }
-      });
-      
-      setAiInsights(insights.insights || []);
-      
-      await continueWithChecks(validationChecks);
-      
-      // Track performance metrics
-      const validationDuration = Date.now() - validationStartTime;
-      trackPerformance({
-        pageLoadTime: validationDuration,
-        componentRenderTime: 0,
-        apiResponseTime: 0,
-        userInteractionLatency: 0
-      });
-      
-      trackMigrationStep('validation_completed', { 
-        duration: validationDuration,
-        checksCompleted: validationChecks.filter(c => c.status === 'passed').length
-      });
-      
-    } catch (error) {
-      trackError(error as Error, { component: 'ValidateStep', action: 'startValidation' });
-    }
   };
 
   const getStatusBadge = (status: ValidationCheck['status']) => {

@@ -176,56 +176,56 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-gray-900 dark:to-gray-800 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="mb-4 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-                <BarChart className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
-                Analytics Dashboard
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Monitor your infrastructure performance, costs, and optimization opportunities
-              </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 rounded-xl flex items-center justify-center">
+                <BarChart className="h-6 w-6 text-white" />
+              </div>
+              Analytics Dashboard
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
+              Monitor your infrastructure performance, costs, and optimization opportunities
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <select 
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="1d">Last 24 hours</option>
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
+                <option value="90d">Last 90 days</option>
+              </select>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                <select 
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(e.target.value)}
-                  className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="1d">Last 24 hours</option>
-                  <option value="7d">Last 7 days</option>
-                  <option value="30d">Last 30 days</option>
-                  <option value="90d">Last 90 days</option>
-                </select>
-              </div>
-              
-              <Button
-                onClick={handleRefresh}
-                disabled={refreshing}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-              
-              <Button
-                onClick={exportReport}
-                size="sm"
-                className="bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </div>
+            <Button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            
+            <Button
+              onClick={exportReport}
+              size="sm"
+              className="bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
           </div>
         </div>
 

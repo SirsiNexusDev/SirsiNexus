@@ -175,15 +175,21 @@ export default function AgentsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Agent Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Manage and interact with AI agents for cloud operations and migration assistance
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 rounded-xl flex items-center justify-center">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              Agent Management
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
+              Manage and interact with AI agents for cloud operations and migration assistance
+            </p>
+          </div>
         {!activeSession && webSocket.isConnected() && (
           <Button onClick={handleStartSession} disabled={isLoading}>
             <Bot className="mr-2 h-4 w-4" />
@@ -536,6 +542,7 @@ export default function AgentsPage() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

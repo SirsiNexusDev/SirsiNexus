@@ -191,7 +191,7 @@ const EnhancedAnalytics = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 flex items-center justify-center">
         <div className="text-center">
           <Brain className="h-8 w-8 animate-pulse mx-auto mb-4 text-purple-600" />
           <p className="text-gray-600 dark:text-gray-400">Loading AI-enhanced analytics...</p>
@@ -201,7 +201,7 @@ const EnhancedAnalytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">

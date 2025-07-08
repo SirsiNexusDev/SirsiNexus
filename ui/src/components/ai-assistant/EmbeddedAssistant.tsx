@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageCircle, 
@@ -36,13 +36,26 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const idCounterRef = useRef(0);
+  
+  // Generate stable IDs
+  const generateId = (prefix: string) => {
+    idCounterRef.current += 1;
+    return `${prefix}-${idCounterRef.current}`;
+  };
+  
+  // Only show component after mount to prevent hydration issues
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Show assistant briefly on login
   useEffect(() => {
-    if (showOnLogin) {
+    if (showOnLogin && isMounted) {
       setIsExpanded(true);
-      // Add welcome message with unique ID
-      const welcomeId = `welcome-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Add welcome message with stable ID
+      const welcomeId = generateId('welcome');
       setMessages([{
         id: welcomeId,
         text: 'Hi! I\'m your AI assistant. I can help you navigate SirsiNexus, understand migration processes, or answer questions about your infrastructure. What would you like to know?',
@@ -57,12 +70,12 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
       
       return () => clearTimeout(timer);
     }
-  }, [showOnLogin]);
+  }, [showOnLogin, isMounted]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    const messageId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const messageId = generateId('user');
     const userMessage: Message = {
       id: messageId,
       text: inputValue,
@@ -77,7 +90,7 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
 
     // Simulate AI response
     setTimeout(() => {
-      const assistantId = `assistant-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const assistantId = generateId('assistant');
       const assistantMessage: Message = {
         id: assistantId,
         text: getContextualResponse(userInput, context),
@@ -108,6 +121,10 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
     return 'I understand you\'re asking about that. Based on your current context, I\'d suggest checking the relevant documentation section or exploring the wizard tools. Can you provide more specific details about what you\'re trying to accomplish?';
   };
 
+  if (!isMounted) {
+    return null;
+  }
+  
   if (position === 'sidebar' && compact) {
     return (
       <div className="mb-4">

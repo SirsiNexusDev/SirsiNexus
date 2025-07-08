@@ -6,17 +6,17 @@ import AIAssistantButton from '@/components/ai-assistant/AIAssistantButton';
 
 export default function AIOrchestrationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:from-gray-900 dark:to-gray-800 to-indigo-100 dark:from-gray-900 dark:to-gray-800 dark:to-black p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 dark:from-purple-900 dark:via-indigo-900 dark:to-blue-900 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/200 dark:bg-blue-700 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 dark:from-purple-600 dark:to-indigo-700 rounded-xl flex items-center justify-center">
               <Brain className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Orchestration Engine</h1>
-              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-300">Intelligent workflow automation and decision making</p>
+              <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">AI Orchestration Engine</h1>
+              <p className="text-slate-600 dark:text-slate-400">Intelligent workflow automation and decision making</p>
             </div>
           </div>
           
@@ -47,7 +47,7 @@ export default function AIOrchestrationPage() {
             <HelpCircle className="h-5 w-5 text-purple-500" />
             <span className="font-medium text-gray-900 dark:text-gray-100">FAQ</span>
           </a>
-          <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:from-gray-900 dark:to-gray-8000 text-white p-4 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors">
+          <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-4 rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-colors">
             <Brain className="h-5 w-5" />
             <span className="font-medium">AI Guide</span>
           </button>
@@ -77,10 +77,10 @@ export default function AIOrchestrationPage() {
               </div>
 
               <div className="space-y-4">
-                <button className="w-full bg-blue-50 dark:bg-blue-900/200 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors">
+                <button className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white px-6 py-3 rounded-lg transition-colors">
                   Start New Orchestration
                 </button>
-                <button className="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-3 rounded-lg transition-colors">
+                <button className="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-6 py-3 rounded-lg transition-colors">
                   View Orchestration History
                 </button>
               </div>

@@ -222,7 +222,7 @@ export default function DashboardPage() {
   const hideMainContent = !isAuthenticated || authModalOpen || journeySelectionModalOpen;
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-900">
+<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
       <Breadcrumb />
       
       {!hideMainContent && (
@@ -337,22 +337,22 @@ export default function DashboardPage() {
           };
           
           return (
-            <button
+<button
               key={stat.name}
               onClick={() => router.push(getNavigationPath(stat.name))}
-              className="p-4 bg-white dark:bg-gray-800 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all duration-200 group text-left"
+              className="p-4 space-y-3 bg-white dark:bg-gray-800 dark:bg-slate-800 glass border-0 rounded-xl hover:shadow-lg transition-all duration-200 group text-left"
             >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Icon className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="font-medium text-slate-800 dark:text-slate-100">
                   {stat.name}
                 </h3>
-                <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors">
-                  <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                </div>
               </div>
-            
-              <div className="mb-3">
-                <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">
+
+              <div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {stat.value}
                 </div>
                 <div className="flex items-center gap-2">
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                   </span>
                 </div>
               </div>
-              
+
               <p className="text-xs text-slate-600 dark:text-slate-400">
                 {stat.description}
               </p>

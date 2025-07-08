@@ -395,14 +395,14 @@ const ObservabilityDashboard: React.FC = () => {
                           <Clock className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800">Avg Response</h3>
-                          <p className="text-2xl font-bold text-slate-900">
+                          <h3 className="font-semibold text-slate-800 dark:text-slate-100">Avg Response</h3>
+                          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                             {dashboardData.application_status.avg_response_time_ms.toFixed(0)}ms
                           </p>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                       {dashboardData.application_status.error_rate_percent.toFixed(2)}% error rate
                     </p>
                   </Card>
@@ -410,7 +410,7 @@ const ObservabilityDashboard: React.FC = () => {
 
                 {/* Performance Chart */}
                 <Card className="p-6 glass border-0">
-                  <h3 className="text-lg font-semibold text-slate-800 mb-6">System Performance (24h)</h3>
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">System Performance (24h)</h3>
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={performanceData}>
@@ -454,13 +454,13 @@ const ObservabilityDashboard: React.FC = () => {
                       <Zap className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-800">Messages Processed</h3>
-                      <p className="text-2xl font-bold text-slate-900">
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">Messages Processed</h3>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {agentMetrics.messages_processed.toLocaleString()}
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     {agentMetrics.operations_completed.toLocaleString()} operations completed
                   </p>
                 </Card>
@@ -471,13 +471,13 @@ const ObservabilityDashboard: React.FC = () => {
                       <TrendingUp className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-800">Avg Response Time</h3>
-                      <p className="text-2xl font-bold text-slate-900">
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">Avg Response Time</h3>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {agentMetrics.average_response_time_ms.toFixed(1)}ms
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     {agentMetrics.errors_encountered} errors encountered
                   </p>
                 </Card>
@@ -488,13 +488,13 @@ const ObservabilityDashboard: React.FC = () => {
                       <Activity className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-800">Active Sessions</h3>
-                      <p className="text-2xl font-bold text-slate-900">
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">Active Sessions</h3>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {agentMetrics.custom_metrics.active_sessions_count}
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     {agentMetrics.custom_metrics.active_agents_count} agents running
                   </p>
                 </Card>
