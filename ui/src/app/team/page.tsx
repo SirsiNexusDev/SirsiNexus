@@ -154,10 +154,10 @@ export default function TeamPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Team Management
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Manage your migration team members and their assignments
             </p>
           </div>
@@ -172,57 +172,57 @@ export default function TeamPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="h-4 w-4 text-blue-600" />
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="font-medium text-gray-900">Total Members</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Total Members</h3>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{teamMembers.length}</div>
-            <p className="text-sm text-gray-600">Across all departments</p>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{teamMembers.length}</div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Across all departments</p>
           </div>
           
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <Activity className="h-4 w-4 text-emerald-600" />
+              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900 rounded-lg flex items-center justify-center">
+                <Activity className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="font-medium text-gray-900">Active Now</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Active Now</h3>
             </div>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {teamMembers.filter(m => m.status === 'active').length}
             </div>
-            <p className="text-sm text-gray-600">Currently online</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Currently online</p>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Award className="h-4 w-4 text-purple-600" />
+              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                <Award className="h-4 w-4 text-purple-600 dark:text-purple-400" />
               </div>
-              <h3 className="font-medium text-gray-900">Departments</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Departments</h3>
             </div>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {new Set(teamMembers.map(m => m.department)).size}
             </div>
-            <p className="text-sm text-gray-600">Different teams</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Different teams</p>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Clock className="h-4 w-4 text-amber-600" />
+              <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center">
+                <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               </div>
-              <h3 className="font-medium text-gray-900">Avg. Tenure</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Avg. Tenure</h3>
             </div>
-            <div className="text-2xl font-bold text-gray-900">1.2</div>
-            <p className="text-sm text-gray-600">Years with company</p>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">1.2</div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Years with company</p>
           </div>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -232,7 +232,7 @@ export default function TeamPage() {
                   placeholder="Search team members..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function TeamPage() {
               <select
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               >
                 {departments.map(dept => (
                   <option key={dept} value={dept}>{dept}</option>
@@ -249,7 +249,7 @@ export default function TeamPage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               >
                 {statuses.map(status => (
                   <option key={status} value={status}>
@@ -266,7 +266,7 @@ export default function TeamPage() {
           {filteredMembers.map(member => (
             <div
               key={member.id}
-              className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -274,28 +274,28 @@ export default function TeamPage() {
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">{member.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{member.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${getStatusDot(member.status)}`} />
-                  <button className="p-1 hover:bg-gray-100 rounded">
+                  <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
                     <MoreHorizontal className="h-4 w-4 text-gray-400" />
                   </button>
                 </div>
               </div>
 
               <div className="space-y-3 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Mail className="h-4 w-4" />
                   {member.email}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <MapPin className="h-4 w-4" />
                   {member.location}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Activity className="h-4 w-4" />
                   Last active: {member.lastActive}
                 </div>
@@ -308,10 +308,10 @@ export default function TeamPage() {
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">Current Projects</h4>
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Current Projects</h4>
                 <div className="space-y-1">
                   {member.projects.slice(0, 2).map((project, index) => (
-                    <div key={index} className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                    <div key={index} className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded">
                       {project}
                     </div>
                   ))}
@@ -319,15 +319,15 @@ export default function TeamPage() {
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Skills</h4>
                 <div className="flex flex-wrap gap-1">
                   {member.skills.slice(0, 3).map((skill, index) => (
-                    <span key={index} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                    <span key={index} className="text-xs bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">
                       {skill}
                     </span>
                   ))}
                   {member.skills.length > 3 && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       +{member.skills.length - 3} more
                     </span>
                   )}
@@ -337,15 +337,15 @@ export default function TeamPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setSelectedMember(member)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
                 >
                   <Eye className="h-4 w-4" />
                   View
                 </button>
-                <button className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                <button className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                   <Mail className="h-4 w-4" />
                 </button>
-                <button className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                <button className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                   <Edit className="h-4 w-4" />
                 </button>
               </div>
@@ -356,8 +356,8 @@ export default function TeamPage() {
         {filteredMembers.length === 0 && (
           <div className="text-center py-12">
             <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No team members found</h3>
-            <p className="text-gray-600">Try adjusting your search criteria or add new team members.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No team members found</h3>
+            <p className="text-gray-600 dark:text-gray-400">Try adjusting your search criteria or add new team members.</p>
           </div>
         )}
       </div>
@@ -365,21 +365,21 @@ export default function TeamPage() {
       {/* Member Detail Modal */}
       {selectedMember && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                     {selectedMember.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{selectedMember.name}</h2>
-                    <p className="text-gray-600">{selectedMember.role}</p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{selectedMember.name}</h2>
+                    <p className="text-gray-600 dark:text-gray-400">{selectedMember.role}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedMember(null)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 dark:text-gray-400"
                 >
                   ✕
                 </button>
@@ -389,58 +389,58 @@ export default function TeamPage() {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Contact Information</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Contact Information</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <Mail className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{selectedMember.email}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{selectedMember.email}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{selectedMember.phone}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{selectedMember.phone}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{selectedMember.location}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{selectedMember.location}</span>
                     </div>
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Work Information</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Work Information</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <Shield className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{selectedMember.department}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{selectedMember.department}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">Joined {selectedMember.joinDate}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">Joined {selectedMember.joinDate}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Activity className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">Last active {selectedMember.lastActive}</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">Last active {selectedMember.lastActive}</span>
                     </div>
                   </div>
                 </div>
               </div>
               
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Current Projects</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Current Projects</h3>
                 <div className="space-y-2">
                   {selectedMember.projects.map((project, index) => (
-                    <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium text-gray-900">{project}</span>
+                    <div key={index} className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{project}</span>
                     </div>
                   ))}
                 </div>
               </div>
               
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Skills & Expertise</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Skills & Expertise</h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedMember.skills.map((skill, index) => (
-                    <span key={index} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+                    <span key={index} className="px-3 py-1 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
                       {skill}
                     </span>
                   ))}
@@ -448,12 +448,12 @@ export default function TeamPage() {
               </div>
             </div>
             
-            <div className="p-6 border-t border-gray-200 flex gap-3">
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex gap-3">
               <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 <Mail className="h-4 w-4" />
                 Send Message
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+              <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                 <Edit className="h-4 w-4" />
                 Edit Profile
               </button>
