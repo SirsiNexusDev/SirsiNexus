@@ -12,6 +12,10 @@ import { TransferStep } from '@/components/MigrationSteps/steps/TransferStep';
 import { ValidateStep } from '@/components/MigrationSteps/steps/ValidateStep';
 import { OptimizeStep } from '@/components/MigrationSteps/steps/OptimizeStep';
 import { SupportStep } from '@/components/MigrationSteps/steps/SupportStep';
+import { UserAgreementComponent } from '@/components/Migration/UserAgreementComponent';
+import { ProcessCatalogComponent } from '@/components/Migration/ProcessCatalogComponent';
+import { SecurityStatusComponent } from '@/components/Migration/SecurityStatusComponent';
+import { MigrationAuditComponent } from '@/components/Migration/MigrationAuditComponent';
 
 type MigrationStep = 'environment' | 'plan' | 'specify' | 'test' | 'build' | 'transfer' | 'validate' | 'optimize' | 'support';
 type MigrationStatus = 'not_started' | 'in_progress' | 'completed' | 'failed' | 'warning';
@@ -90,6 +94,9 @@ export default function WizardPage() {
   const [artifacts, setArtifacts] = useState<StepArtifact[]>([]);
   const [discoveredResources, setDiscoveredResources] = useState<any[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [securityValidated, setSecurityValidated] = useState(false);
+  const [userAgreementApproved, setUserAgreementApproved] = useState(false);
+  const [auditEvents, setAuditEvents] = useState<any[]>([]);
 
   const steps = Object.keys(STEPS) as MigrationStep[];
 
@@ -380,12 +387,150 @@ Start New Migration
                 )}
 
                 {currentStep === 'plan' && (
-                  <PlanStep 
-                    onComplete={(artifact) => {
-                      console.log('PlanStep completed with artifact:', artifact);
-                      handleStepComplete(currentStep, artifact);
-                    }}
-                  />
+                  <div className="space-y-6">
+                    <UserAgreementComponent 
+                      onComplete={(approved) => {
+                        console.log('UserAgreement completed:', approved);
+                        setUserAgreementApproved(approved);
+                        // Log audit event
+                        const auditEvent = {
+                          id: `evt-${Date.now()}`,
+                          timestamp: new Date().toISOString(),
+                          eventType: 'migration',
+                          action: approved ? 'user_agreement_approved' : 'user_agreement_rejected',
+                          resourceType: 'migration_plan',
+                          userId: 'user-001',
+                          userName: 'john.doe@company.com',
+                          success: approved,
+                          details: { agreementStatus: approved ? 'approved' : 'rejected' }
+                        };
+                        setAuditEvents(prev => [auditEvent, ...prev]);
+                      }}
+                    />
+                    <SecurityStatusComponent 
+                      onSecurityValidated={(validated) => {
+                        console.log('Security validated:', validated);
+                        setSecurityValidated(validated);
+                        // Log audit event
+                        const auditEvent = {
+                          id: `evt-${Date.now()}`,
+                          timestamp: new Date().toISOString(),
+                          eventType: 'security',
+                          action: 'security_protocols_validated',
+                          resourceType: 'security_protocols',
+                          success: validated,
+                          details: { securityStatus: validated ? 'all_protocols_active' : 'issues_detected' }
+                        };
+                        setAuditEvents(prev => [auditEvent, ...prev]);
+                      }}
+                      onRefresh={() => {
+                        console.log('Refreshing security protocols...');
+                        // Log audit event
+                        const auditEvent = {
+                          id: `evt-${Date.now()}`,
+                          timestamp: new Date().toISOString(),
+                          eventType: 'system',
+                          action: 'security_protocols_refreshed',
+                          resourceType: 'security_protocols',
+                          success: true,
+                          details: { action: 'manual_refresh' }
+                        };
+                        setAuditEvents(prev => [auditEvent, ...prev]);
+                      }}
+                    />
+                    <ProcessCatalogComponent 
+                      onAssetSelect={(asset) => {
+                        console.log('Asset selected:', asset);
+                        // Log audit event
+                        const auditEvent = {
+                          id: `evt-${Date.now()}`,
+                          timestamp: new Date().toISOString(),
+                          eventType: 'migration',
+                          action: 'asset_selected',
+                          resourceType: 'discovered_asset',
+                          resourceId: asset.id,
+                          success: true,
+                          details: { assetType: asset.type, assetName: asset.name }
+                        };
+                        setAuditEvents(prev => [auditEvent, ...prev]);
+                      }}
+                      onExport={() => {
+                        console.log('Exporting catalog...');
+                        // Log audit event
+                        const auditEvent = {
+                          id: `evt-${Date.now()}`,
+                          timestamp: new Date().toISOString(),
+                          eventType: 'migration',
+                          action: 'asset_catalog_exported',
+                          resourceType: 'asset_catalog',
+                          success: true,
+                          details: { exportFormat: 'json', assetCount: discoveredResources.length }
+                        };
+                        setAuditEvents(prev => [auditEvent, ...prev]);
+                      }}
+                    />
+                    <MigrationAuditComponent 
+                      events={auditEvents}
+                      onExportLogs={() => {
+                        console.log('Exporting audit logs...');
+                        // Create downloadable audit log export
+                        const exportData = {
+                          exportDate: new Date().toISOString(),
+                          eventCount: auditEvents.length,
+                          events: auditEvents
+                        };
+                        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `migration-audit-${new Date().toISOString().split('T')[0]}.json`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                      }}
+                      onEventSelect={(event) => {
+                        console.log('Audit event selected:', event);
+                      }}
+                    />
+                    {userAgreementApproved && securityValidated && (
+                      <PlanStep 
+                        onComplete={(artifact) => {
+                          console.log('PlanStep completed with artifact:', artifact);
+                          // Log audit event
+                          const auditEvent = {
+                            id: `evt-${Date.now()}`,
+                            timestamp: new Date().toISOString(),
+                            eventType: 'migration',
+                            action: 'migration_plan_completed',
+                            resourceType: 'migration_plan',
+                            userId: 'user-001',
+                            userName: 'john.doe@company.com',
+                            success: true,
+                            details: { 
+                              artifactGenerated: true,
+                              artifactName: artifact?.name,
+                              securityValidated: true,
+                              userAgreementApproved: true
+                            }
+                          };
+                          setAuditEvents(prev => [auditEvent, ...prev]);
+                          handleStepComplete(currentStep, artifact);
+                        }}
+                      />
+                    )}
+                    {(!userAgreementApproved || !securityValidated) && (
+                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                        <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span className="font-medium">Prerequisites Required</span>
+                        </div>
+                        <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-1">
+                          Please complete user agreements and ensure all security protocols are validated before proceeding with the migration plan.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {currentStep === 'specify' && (
