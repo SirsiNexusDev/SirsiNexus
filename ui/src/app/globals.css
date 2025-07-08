@@ -114,6 +114,17 @@
       inset 0 2px 0 rgba(255, 255, 255, 0.9) !important;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   }
+
+  .dark .glass-strong {
+    background: rgba(31, 41, 55, 0.85) !important;
+    backdrop-filter: blur(30px) saturate(300%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(300%) !important;
+    border: 2px solid rgba(139, 69, 195, 0.4) !important;
+    box-shadow: 
+      0 25px 60px rgba(0, 0, 0, 0.6) !important,
+      0 15px 35px rgba(139, 69, 195, 0.3) !important,
+      inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+  }
   
   .glass-subtle {
     background: rgba(255, 255, 255, 0.6);
@@ -163,6 +174,12 @@
     backdrop-filter: blur(16px);
   }
 
+  .dark .gradient-card {
+    background: linear-gradient(145deg, rgba(31, 41, 55, 0.95) 0%, rgba(55, 65, 81, 0.85) 100%);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+    backdrop-filter: blur(16px);
+  }
+
   .gradient-button {
     background: linear-gradient(145deg, hsl(var(--primary)) 0%, hsl(142 76% 45%) 100%);
     box-shadow: 
@@ -189,12 +206,29 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  .dark .card-3d {
+    background: linear-gradient(145deg, #1f2937 0%, #374151 100%);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 1px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(75, 85, 99, 0.6);
+  }
+
   .card-3d:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow: 
       0 20px 40px rgba(0, 0, 0, 0.15),
       0 4px 12px rgba(0, 0, 0, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .dark .card-3d:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
   /* Enhanced shadows */
@@ -280,6 +314,15 @@
     font-weight: 600;
   }
 
+  .dark .btn-modern {
+    background: linear-gradient(145deg, #374151 0%, #4b5563 100%);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    color: #f3f4f6;
+  }
+
   /* Focus states */
   .focus-ring {
     background: rgba(255, 255, 255, 0.98);
@@ -335,6 +378,14 @@
       0 2px 8px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transition: all 0.2s ease;
+  }
+
+  .dark .list-item-3d {
+    background: linear-gradient(145deg, #1f2937 0%, #374151 100%);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .list-item-3d:hover {
