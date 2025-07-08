@@ -37,6 +37,23 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
+// Error fallback component
+const ErrorFallback = ({ error, resetErrorBoundary }: any) => (
+  <Card className="p-6 glass border-0">
+    <div className="text-center">
+      <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">Something went wrong</h3>
+      <p className="text-slate-600 dark:text-slate-400 mb-4">Unable to load observability data</p>
+      <button
+        onClick={resetErrorBoundary}
+        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+  </Card>
+);
+
 // Types for observability data
 interface SystemOverview {
   cpu_usage_percent: number;
@@ -86,7 +103,7 @@ interface AgentMetricsData {
   custom_metrics: Record<string, string>;
 }
 
-const ObservabilityDashboard: React.FC = () => {
+const ObservabilityDashboard: React.FC = React.memo(() => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [agentMetrics, setAgentMetrics] = useState<AgentMetricsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,15 +158,17 @@ const ObservabilityDashboard: React.FC = () => {
     }
   });
 
-  // Performance chart data
-  const performanceData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${String(i).padStart(2, '0')}:00`,
-    cpu: 30 + Math.random() * 40,
-    memory: 50 + Math.random() * 30,
-    response_time: 100 + Math.random() * 200,
-    requests: 20 + Math.random() * 60,
-    errors: Math.random() * 5,
-  }));
+  // Performance chart data - memoized for performance
+  const performanceData = React.useMemo(() => {
+    return Array.from({ length: 24 }, (_, i) => ({
+      time: `${String(i).padStart(2, '0')}:00`,
+      cpu: 30 + Math.random() * 40,
+      memory: 50 + Math.random() * 30,
+      response_time: 100 + Math.random() * 200,
+      requests: 20 + Math.random() * 60,
+      errors: Math.random() * 5,
+    }));
+  }, []); // Static data, no dependencies needed
 
   // Fetch data function with real API calls
   const fetchData = useCallback(async () => {
@@ -186,28 +205,30 @@ const ObservabilityDashboard: React.FC = () => {
   // Auto-refresh effect
   useEffect(() => {
     fetchData();
-    
+  }, [fetchData]); // Run when fetchData changes
+  
+  useEffect(() => {
     if (autoRefresh) {
       const interval = setInterval(fetchData, 5000); // Refresh every 5 seconds
       return () => clearInterval(interval);
     }
-  }, [autoRefresh, fetchData]);
+  }, [autoRefresh, fetchData]); // Include fetchData dependency
 
   const getHealthColor = (status: string) => {
     switch (status) {
-      case 'Healthy': return 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900';
-      case 'Degraded': return 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900';
-      case 'Unhealthy': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
-      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
+      case 'Healthy': return 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/30';
+      case 'Degraded': return 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30';
+      case 'Unhealthy': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/30';
+      default: return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
     }
   };
 
   const getAlertColor = (severity: string) => {
     switch (severity) {
-      case 'Critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30 border-red-200 dark:text-red-400 dark:bg-red-900 dark:border-red-800';
-      case 'Warning': return 'text-amber-600 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-900 dark:border-amber-800';
-      case 'Info': return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:border-blue-800';
-      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700';
+      case 'Critical': return 'text-red-600 bg-red-100 border-red-200 dark:text-red-400 dark:bg-red-900/30 dark:border-red-800';
+      case 'Warning': return 'text-amber-600 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-900/30 dark:border-amber-800';
+      case 'Info': return 'text-blue-600 bg-blue-100 border-blue-200 dark:text-blue-400 dark:bg-blue-900/30 dark:border-blue-800';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700';
     }
   };
 
@@ -253,7 +274,7 @@ const ObservabilityDashboard: React.FC = () => {
               onClick={() => setAutoRefresh(!autoRefresh)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 autoRefresh 
-                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800' 
+                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' 
                   : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
               }`}
             >
@@ -323,7 +344,7 @@ const ObservabilityDashboard: React.FC = () => {
           <TabsContent value="overview" className="space-y-6">
             {/* System Metrics */}
             {dashboardData && (
-              <>
+              <React.Fragment>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* CPU Usage */}
                   <Card className="p-6 glass border-0">
@@ -412,36 +433,38 @@ const ObservabilityDashboard: React.FC = () => {
                 <Card className="p-6 glass border-0">
                   <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">System Performance (24h)</h3>
                   <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={performanceData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="time" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Area 
-                          type="monotone" 
-                          dataKey="cpu" 
-                          stackId="1" 
-                          stroke="#10b981" 
-                          fill="#10b981" 
-                          fillOpacity={0.1}
-                          name="CPU %" 
-                        />
-                        <Area 
-                          type="monotone" 
-                          dataKey="memory" 
-                          stackId="2" 
-                          stroke="#3b82f6" 
-                          fill="#3b82f6" 
-                          fillOpacity={0.1}
-                          name="Memory %" 
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                    <React.Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div></div>}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={performanceData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="time" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Area 
+                            type="monotone" 
+                            dataKey="cpu" 
+                            stackId="1" 
+                            stroke="#10b981" 
+                            fill="#10b981" 
+                            fillOpacity={0.1}
+                            name="CPU %" 
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="memory" 
+                            stackId="2" 
+                            stroke="#3b82f6" 
+                            fill="#3b82f6" 
+                            fillOpacity={0.1}
+                            name="Memory %" 
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </React.Suspense>
                   </div>
                 </Card>
-              </>
+              </React.Fragment>
             )}
           </TabsContent>
 
@@ -506,39 +529,43 @@ const ObservabilityDashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Response Time Chart */}
               <Card className="p-6 glass border-0">
-                <h3 className="text-lg font-semibold text-slate-800 mb-6">Response Time Trends</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Response Time Trends</h3>
                 <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={performanceData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line 
-                        type="monotone" 
-                        dataKey="response_time" 
-                        stroke="#10b981" 
-                        strokeWidth={2}
-                        name="Response Time (ms)"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <React.Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div></div>}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={performanceData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line 
+                          type="monotone" 
+                          dataKey="response_time" 
+                          stroke="#10b981" 
+                          strokeWidth={2}
+                          name="Response Time (ms)"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </React.Suspense>
                 </div>
               </Card>
 
               {/* Request Volume Chart */}
               <Card className="p-6 glass border-0">
-                <h3 className="text-lg font-semibold text-slate-800 mb-6">Request Volume</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Request Volume</h3>
                 <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={performanceData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="requests" fill="#3b82f6" name="Requests/min" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <React.Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div></div>}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={performanceData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="requests" fill="#3b82f6" name="Requests/min" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </React.Suspense>
                 </div>
               </Card>
             </div>
@@ -578,6 +605,42 @@ const ObservabilityDashboard: React.FC = () => {
       </div>
     </div>
   );
+});
+
+// Wrap with error boundary
+const ObservabilityDashboardWithErrorBoundary: React.FC = () => {
+  const [hasError, setHasError] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+
+  React.useEffect(() => {
+    const handleError = (error: ErrorEvent) => {
+      console.error('ObservabilityDashboard Error:', error);
+      setError(new Error(error.message));
+      setHasError(true);
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <ErrorFallback 
+            error={error} 
+            resetErrorBoundary={() => {
+              setHasError(false);
+              setError(null);
+              window.location.reload();
+            }} 
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return <ObservabilityDashboard />;
 };
 
-export default ObservabilityDashboard;
+export default ObservabilityDashboardWithErrorBoundary;
