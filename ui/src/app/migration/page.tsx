@@ -153,7 +153,7 @@ export default function WizardPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-2xl mx-auto text-center bg-white rounded-2xl shadow-xl p-8"
+          className="max-w-2xl mx-auto text-center bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -170,7 +170,7 @@ export default function WizardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl font-bold text-gray-900 mb-4"
+            className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4"
           >
 Migration Completed Successfully!
           </motion.h1>
@@ -179,7 +179,7 @@ Migration Completed Successfully!
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg text-gray-600 mb-8"
+            className="text-lg text-gray-600 dark:text-gray-400 mb-8"
           >
             Your migration has been completed successfully. All resources have been transferred and validated.
           </motion.p>
@@ -191,20 +191,20 @@ Migration Completed Successfully!
               transition={{ delay: 0.5 }}
               className="mb-8"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Generated Artifacts</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Generated Artifacts</h3>
               <div className="space-y-3">
                 {artifacts.map((artifact) => (
                   <div
                     key={artifact.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border"
+                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700 rounded-lg border dark:border-slate-600"
                   >
                     <div className="flex items-center space-x-3">
                       <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
                         <FileText className="h-4 w-4 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{artifact.name}</h4>
-                        <p className="text-sm text-gray-600">{artifact.type} • {artifact.size}</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">{artifact.name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{artifact.type} • {artifact.size}</p>
                       </div>
                     </div>
                     <button
