@@ -69,6 +69,7 @@ struct SirsiNexusPlatform {
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)] // These fields are for future service tracking functionality
 struct ServiceStatus {
     name: String,
     status: String,
@@ -337,17 +338,17 @@ impl SirsiNexusPlatform {
         Ok(())
     }
 
-    async fn start_websocket_service(port: u16, config: &AppConfig) -> anyhow::Result<()> {
+    async fn start_websocket_service(_port: u16, _config: &AppConfig) -> anyhow::Result<()> {
         // WebSocket implementation for real-time infrastructure updates
         Ok(())
     }
 
-    async fn start_analytics_engine(config: &AppConfig) -> anyhow::Result<()> {
+    async fn start_analytics_engine(_config: &AppConfig) -> anyhow::Result<()> {
         // Analytics engine for infrastructure insights
         Ok(())
     }
 
-    async fn start_security_engine(config: &AppConfig) -> anyhow::Result<()> {
+    async fn start_security_engine(_config: &AppConfig) -> anyhow::Result<()> {
         // Security monitoring and compliance engine
         Ok(())
     }
@@ -436,7 +437,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Handle commands
     match cli.command {
-        Some(Commands::Start { port }) => {
+        Some(Commands::Start { port: _ }) => {
             let mut platform = SirsiNexusPlatform::new(config);
             platform.start().await?;
         },

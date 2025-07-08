@@ -12,6 +12,7 @@ use crate::proto::sirsi::agent::v1::{agent_service_server::*, *};
 #[derive(Clone)]
 pub struct AgentServiceImpl {
     agent_manager: Arc<RwLock<AgentManager>>,
+    #[allow(dead_code)] // Context store for future agent context management
     context_store: Arc<ContextStore>,
 }
 

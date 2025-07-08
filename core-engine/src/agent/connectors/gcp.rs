@@ -40,6 +40,7 @@ pub struct GcpDiscoveryResult {
 
 pub struct GcpAgent {
     config: GcpConfig,
+    #[allow(dead_code)] // Storage client for future GCP Storage integration
     storage_client: Option<StorageClient>,
     http_client: Option<HttpClient>,
     gcp_authenticated: bool,
@@ -175,6 +176,7 @@ impl GcpAgent {
         Ok(vec![resource])
     }
     
+    #[allow(dead_code)] // Helper method for future GCP Storage integration
     fn bucket_to_resource(&self, bucket_name: &str) -> Option<GcpResource> {
         let mut metadata = HashMap::new();
         metadata.insert("storage_class".to_string(), "STANDARD".to_string());

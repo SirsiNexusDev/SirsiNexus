@@ -44,6 +44,7 @@ pub struct AzureAgent {
     config: AzureConfig,
     credential: Option<Arc<DefaultAzureCredential>>,
     compute_client: Option<ComputeClient>,
+    #[allow(dead_code)] // Storage client for future Azure Storage integration
     storage_client: Option<StorageClient>,
     resource_client: Option<ResourcesClient>,
     http_client: Option<HttpClient>,
@@ -359,6 +360,7 @@ impl AzureAgent {
     }
     
     // Keep the original simple mock for backwards compatibility
+    #[allow(dead_code)] // Mock method for development/testing
     async fn discover_virtual_machines_mock(&self) -> AppResult<Vec<AzureResource>> {
         let resource_group = self.config.resource_group.as_deref().unwrap_or("mock-rg");
         
@@ -438,6 +440,7 @@ impl AzureAgent {
 
     // Helper methods for real Azure SDK integration
     
+    #[allow(dead_code)] // Helper method for future real Azure integration
     async fn get_all_resource_groups(&self) -> AppResult<Vec<String>> {
         // Phase 1: Always return default for compilation
         Ok(vec![self.config.resource_group.clone().unwrap_or_else(|| "default-rg".to_string())])
@@ -468,6 +471,7 @@ impl AzureAgent {
         */
     }
     
+    #[allow(dead_code)] // Helper method for real Azure SDK integration
     fn vm_to_azure_resource(&self, vm: &azure_mgmt_compute::models::VirtualMachine, resource_group: &str) -> Option<AzureResource> {
         let vm_name = vm.resource.name.as_ref()?;
         let location = vm.resource.location.clone();
@@ -525,6 +529,7 @@ impl AzureAgent {
         })
     }
     
+    #[allow(dead_code)] // Helper method for parsing Azure resource IDs
     fn extract_resource_group_from_id(&self, resource_id: &str) -> String {
         // Azure resource IDs follow pattern: /subscriptions/{sub}/resourceGroups/{rg}/...
         if let Some(rg_start) = resource_id.find("/resourceGroups/") {

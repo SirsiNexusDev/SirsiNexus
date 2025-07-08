@@ -83,11 +83,13 @@ struct AgentState {
     status: String,
     metrics: HashMap<String, String>,
     capabilities: AgentCapabilities,
+    #[allow(dead_code)] // Role system for future agent hierarchy
     role: AgentRole,
     parent_agent_id: Option<String>,
     sub_agent_ids: Vec<String>,
     implementation: AgentImplementation,
     context_store: Arc<ContextStore>,
+    #[allow(dead_code)] // Memory system for future agent persistence
     memory: HashMap<String, String>,
 }
 

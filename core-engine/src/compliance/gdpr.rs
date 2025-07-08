@@ -75,6 +75,7 @@ pub struct DataRetentionPolicy {
 
 #[derive(Debug)]
 pub struct GdprComplianceManager {
+    #[allow(dead_code)] // Database pool for future GDPR data operations
     pool: PgPool,
     audit_logger: AuditLogger,
     retention_policies: HashMap<String, DataRetentionPolicy>,

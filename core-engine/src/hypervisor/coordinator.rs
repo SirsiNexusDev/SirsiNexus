@@ -132,6 +132,7 @@ pub struct HypervisorCoordinator {
     orchestration_plans: Arc<RwLock<HashMap<String, OrchestrationPlan>>>,
     
     /// Event receiver for coordination
+    #[allow(dead_code)] // Event receiver for future agent event coordination
     event_receiver: Option<broadcast::Receiver<AgentEvent>>,
     
     /// System resource limits

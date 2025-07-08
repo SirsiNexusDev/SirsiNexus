@@ -148,6 +148,7 @@ pub enum DecisionError {
 
 #[derive(Debug)]
 pub struct MCDMSolver {
+    #[allow(dead_code)] // MCDM methods for future advanced decision algorithms
     methods: Vec<MCDMMethod>,
 }
 
@@ -175,7 +176,9 @@ pub trait MLModel: std::fmt::Debug {
 #[derive(Debug)]
 pub struct KnowledgeGraph {
     // Simplified knowledge graph for decision support
+    #[allow(dead_code)] // Entity storage for future knowledge graph functionality
     entities: HashMap<String, Entity>,
+    #[allow(dead_code)] // Relationship storage for future knowledge graph functionality
     relationships: Vec<Relationship>,
 }
 
@@ -207,6 +210,7 @@ pub struct SafetyRule {
 pub struct DecisionEngine {
     mcdm_solver: MCDMSolver,
     ml_models: Arc<RwLock<MLModels>>,
+    #[allow(dead_code)] // Knowledge graph for future advanced decision support
     knowledge_graph: KnowledgeGraph,
     safety_checker: SafetyChecker,
     decision_history: Arc<RwLock<Vec<Decision>>>,

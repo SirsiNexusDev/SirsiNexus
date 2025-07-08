@@ -12,7 +12,9 @@ use uuid::Uuid;
 pub struct HypervisorIntegration {
     feature_registry: FeatureRegistry,
     active_sessions: RwLock<HashMap<String, HypervisorSession>>,
+    #[allow(dead_code)] // Execution policies for future safety system
     execution_policies: ExecutionPolicies,
+    #[allow(dead_code)] // Safety constraints for future safety system
     safety_constraints: SafetyConstraints,
 }
 
