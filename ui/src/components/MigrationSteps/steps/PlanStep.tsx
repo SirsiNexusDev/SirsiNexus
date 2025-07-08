@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Resource } from '@/types/migration';
+import ResourceDependencyGraph from '@/components/ui/resource-dependency-graph';
+import { aiService } from '@/lib/ai-services';
+import { trackResourceDiscovery, trackUserInteraction } from '@/lib/analytics';
 
 interface ResourceTypeCount {
   type: string;
@@ -691,6 +694,24 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
         </div>
       </div>
 
+{/* Resource Dependency Visualization */}
+      {resources.length > 0 && (
+        <div className="p-6">
+          <ResourceDependencyGraph
+            resources={resources.map(r => ({
+              id: r.id,
+              name: r.name,
+              type: r.type as 'compute' | 'database' | 'network' | 'storage' | 'security',
+              status: 'healthy' as const,
+              dependencies: [],
+              metadata: r.metadata
+            }))}
+            showMigrationPath
+            onNodeClick={node => trackUserInteraction('resource_node_click', 'ResourceDependencyGraph', { nodeId: node.id, nodeType: node.type })}
+          />
+        </div>
+      )}
+      
       {/* Resource List */}
       {resources.length > 0 && (
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">

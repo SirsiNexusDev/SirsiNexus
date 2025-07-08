@@ -6,6 +6,7 @@ import {
   ArrowRight, Database, Server, HardDrive, AlertTriangle, CheckCircle, Loader,
   Network, Shield, Settings
 } from 'lucide-react';
+import { trackMigrationStep, trackUserInteraction, trackError, trackPerformance } from '@/lib/analytics';
 
 interface TransferStepProps {
   onComplete: (artifact?: {name: string; type: string; size: string; content?: string}) => void;
@@ -14,6 +15,13 @@ interface TransferStepProps {
 export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
   const [isTransferring, setIsTransferring] = useState(false);
   const [completedResources, setCompletedResources] = useState<string[]>([]);
+  const [transferProgress, setTransferProgress] = useState<Record<string, number>>({});
+  const [transferMetrics, setTransferMetrics] = useState<any>(null);
+  const [aiOptimizations, setAiOptimizations] = useState<any[]>([]);
+  const [networkLatency, setNetworkLatency] = useState<number>(0);
+  const [throughput, setThroughput] = useState<string>('0 MB/s');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [transferStartTime, setTransferStartTime] = useState<number>(0);
 
   const basicResources = [
     { id: 'database', name: 'Main Database', icon: Database, size: '2.5TB' },
@@ -26,12 +34,52 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
   const startTransfer = async () => {
     setIsTransferring(true);
     setCompletedResources([]);
+    setTransferStartTime(Date.now());
+    trackMigrationStep('transfer_started', { resourceCount: basicResources.length });
 
     for (const resource of basicResources) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setCompletedResources(prev => [...prev, resource.id]);
+      try {
+        // Initialize progress tracking
+        setTransferProgress(prev => ({ ...prev, [resource.id]: 0 }));
+        
+        // Simulate realistic transfer with progress updates
+        for (let progress = 0; progress <= 100; progress += 10) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+          setTransferProgress(prev => ({ ...prev, [resource.id]: progress }));
+          
+          // Simulate network metrics
+          setNetworkLatency(Math.floor(Math.random() * 50) + 10);
+          setThroughput(`${(Math.random() * 100 + 50).toFixed(1)} MB/s`);
+        }
+        
+        setCompletedResources(prev => [...prev, resource.id]);
+        
+        // Track transfer metrics
+        setTransferMetrics(prev => ({
+          ...prev,
+          [resource.id]: {
+            transferTime: Date.now() - transferStartTime,
+            size: resource.size,
+            throughput: throughput,
+            latency: networkLatency
+          }
+        }));
+        
+        trackUserInteraction('resource_transfer', 'TransferStep', { 
+          resourceId: resource.id,
+          size: resource.size,
+          latency: networkLatency
+        });
+
+      } catch (error) {
+        trackError(new Error('Transfer failed for ' + resource.id), {
+          component: 'TransferStep',
+          resource: resource.id
+        });
+      }
     }
 
+    trackMigrationStep('transfer_completed', { completedCount: completedResources.length });
     setIsTransferring(false);
   };
 
@@ -42,7 +90,7 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
       <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Transfer Infrastructure</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-          Transfer selected infrastructure components to the target environment
+          Transfer selected infrastructure components to the target environment using AI-recommended optimizations and strategies
         </p>
         
         <button
@@ -77,13 +125,37 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
                     </p>
                   </div>
                 </div>
-                {isCompleted ? (
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                ) : isCurrent ? (
-                  <Loader className="h-5 w-5 animate-spin text-blue-500" />
-                ) : (
-                  <ArrowRight className="h-5 w-5 text-gray-400" />
-                )}
+                <div className="flex flex-col items-end">
+                  {/* Status indicator */}
+                  {isCompleted ? (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  ) : isCurrent ? (
+                    <Loader className="h-5 w-5 animate-spin text-blue-500" />
+                  ) : (
+                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                  )}
+                  
+                  {/* Progress bar for current transfer */}
+                  {isCurrent && transferProgress[resource.id] !== undefined && (
+                    <div className="mt-2 w-24">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${transferProgress[resource.id]}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">{transferProgress[resource.id]}%</p>
+                    </div>
+                  )}
+                  
+                  {/* Transfer metrics */}
+                  {isCompleted && transferMetrics?.[resource.id] && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      <p>Latency: {transferMetrics[resource.id].latency}ms</p>
+                      <p>Throughput: {transferMetrics[resource.id].throughput}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           );

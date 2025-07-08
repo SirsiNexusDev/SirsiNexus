@@ -15,6 +15,9 @@ import {
   Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { aiService } from '@/lib/ai-services';
+import { trackMigrationStep, trackUserInteraction, trackError, trackPerformance } from '@/lib/analytics';
+import ResourceDependencyGraph from '@/components/ui/resource-dependency-graph';
 
 interface ValidationCheck {
   id: string;
@@ -39,6 +42,9 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
   const [isValidating, setIsValidating] = useState(false);
   const [validationError, setValidationError] = useState<{ checkId: string; message: string } | null>(null);
   const [showErrorResolution, setShowErrorResolution] = useState(false);
+  const [aiInsights, setAiInsights] = useState<any[]>([]);
+  const [performanceBaseline, setPerformanceBaseline] = useState<any>(null);
+  const [validationStartTime, setValidationStartTime] = useState<number>(0);
   const [validationChecks, setValidationChecks] = useState<ValidationCheck[]>([
     {
       id: 'perf-1',
@@ -238,7 +244,48 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
   const startValidation = async () => {
     setValidationError(null);
     setShowErrorResolution(false);
-    await continueWithChecks(validationChecks);
+    setValidationStartTime(Date.now());
+    
+    trackMigrationStep('validation_started', { checksCount: validationChecks.length });
+    
+    // Capture performance baseline
+    const baseline = {
+      startTime: Date.now(),
+      userAgent: navigator.userAgent,
+      viewport: `${window.innerWidth}x${window.innerHeight}`
+    };
+    setPerformanceBaseline(baseline);
+    
+    try {
+      // Get AI insights for validation optimization
+      const insights = await aiService.analyzeResources({
+        resources: [], // Mock resources for validation context
+        context: {
+          environment: 'validation'
+        }
+      });
+      
+      setAiInsights(insights.insights || []);
+      
+      await continueWithChecks(validationChecks);
+      
+      // Track performance metrics
+      const validationDuration = Date.now() - validationStartTime;
+      trackPerformance({
+        pageLoadTime: validationDuration,
+        componentRenderTime: 0,
+        apiResponseTime: 0,
+        userInteractionLatency: 0
+      });
+      
+      trackMigrationStep('validation_completed', { 
+        duration: validationDuration,
+        checksCompleted: validationChecks.filter(c => c.status === 'passed').length
+      });
+      
+    } catch (error) {
+      trackError(error as Error, { component: 'ValidateStep', action: 'startValidation' });
+    }
   };
 
   const getStatusBadge = (status: ValidationCheck['status']) => {

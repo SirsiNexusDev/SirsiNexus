@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Server, Database, Cloud, Settings, CheckCircle, Loader } from 'lucide-react';
+import { Play, CheckCircle, AlertTriangle, Loader, Activity, Zap, Cloud, Database, Server, Settings } from 'lucide-react';
+import { trackMigrationStep, trackUserInteraction, trackError, trackPerformance } from '@/lib/analytics';
 
 interface BuildStepProps {
   onComplete: (artifact?: {name: string; type: string; size: string; content?: string}) => void;
@@ -11,6 +12,8 @@ interface BuildStepProps {
 export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
   const [isBuilding, setIsBuilding] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
+  const [buildStartTime, setBuildStartTime] = useState<number>(0);
+  const [buildMetrics, setBuildMetrics] = useState<any>(null);
 
   const buildTasks = [
     { id: 'network', name: 'Network Configuration', icon: Cloud },
@@ -21,6 +24,49 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
 
   const startBuilding = async () => {
     setIsBuilding(true);
+    setCompletedTasks([]);
+    setBuildStartTime(Date.now());
+    trackMigrationStep('build_started', { tasksCount: buildTasks.length });
+
+    try {
+      for (const task of buildTasks) {
+        // Simulate realistic build times with progress tracking
+        await new Promise(resolve => setTimeout(resolve, 2500));
+        setCompletedTasks(prev => [...prev, task.id]);
+        
+        trackUserInteraction('build_task_completed', 'BuildStep', { taskId: task.id });
+        
+        // Capture build metrics
+        const taskDuration = Date.now() - buildStartTime;
+        setBuildMetrics(prev => ({
+          ...prev,
+          [task.id]: {
+            duration: taskDuration,
+            status: 'completed',
+            timestamp: new Date().toISOString()
+          }
+        }));
+      }
+      
+      const totalDuration = Date.now() - buildStartTime;
+      trackMigrationStep('build_completed', { 
+        duration: totalDuration,
+        tasksCompleted: buildTasks.length
+      });
+      
+      // Track performance metrics
+      trackPerformance({
+        pageLoadTime: 0,
+        componentRenderTime: 0,
+        apiResponseTime: totalDuration,
+        userInteractionLatency: 0
+      });
+      
+    } catch (error) {
+      trackError(error as Error, { component: 'BuildStep', action: 'startBuilding' });
+    } finally {
+      setIsBuilding(false);
+    }
     setCompletedTasks([]);
 
     for (const task of buildTasks) {

@@ -10,7 +10,13 @@ import {
   Check,
   BarChart,
   Settings,
+  Brain,
+  Target,
+  Clock
 } from 'lucide-react';
+import { aiService, type AIRecommendation } from '@/lib/ai-services';
+import { trackMigrationStep, trackOptimizationRecommendation, trackUserInteraction, trackError } from '@/lib/analytics';
+import ResourceDependencyGraph from '@/components/ui/resource-dependency-graph';
 
 interface Optimization {
   id: string;
@@ -34,6 +40,9 @@ interface OptimizeStepProps {
 export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [selectedOptimizations, setSelectedOptimizations] = useState<string[]>([]);
+  const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation[]>([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [optimizationProgress, setOptimizationProgress] = useState(0);
 
   const [optimizations, setOptimizations] = useState<Optimization[]>([
     {
@@ -138,6 +147,28 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
         ? prev.filter((optId) => optId !== id)
         : [...prev, id]
     );
+    trackUserInteraction('optimization_toggle', 'OptimizeStep', { optimizationId: id });
+  };
+
+  const generateAIRecommendations = async () => {
+    setIsLoadingAI(true);
+    trackMigrationStep('ai_recommendations_requested');
+    
+    try {
+      const analysis = await aiService.analyzeResources({
+        resources: [],
+        context: {
+          environment: 'optimization'
+        }
+      });
+      
+      setAiRecommendations(analysis.recommendations || []);
+      trackMigrationStep('ai_recommendations_received', { count: analysis.recommendations?.length || 0 });
+    } catch (error) {
+      trackError(error as Error, { component: 'OptimizeStep', action: 'generateAIRecommendations' });
+    } finally {
+      setIsLoadingAI(false);
+    }
   };
 
   return (

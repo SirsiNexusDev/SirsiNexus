@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Resource, RiskAssessment } from '@/types/migration';
+import { aiService, type AIRecommendation } from '@/lib/ai-services';
+import { trackMigrationStep, trackOptimizationRecommendation, trackUserInteraction, trackError } from '@/lib/analytics';
+import ResourceDependencyGraph from '@/components/ui/resource-dependency-graph';
 
 interface SpecifyStepProps {
   resources: Resource[];
@@ -47,6 +50,9 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
     savings: 15,
   });
   const [backendAnalysis, setBackendAnalysis] = useState<any>(null);
+  const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation[]>([]);
+  const [selectedRecommendations, setSelectedRecommendations] = useState<string[]>([]);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
   const [riskAssessment, setRiskAssessment] = useState<RiskAssessment>({
     score: 75,
@@ -69,28 +75,49 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
 
   const runBackendAnalysis = async () => {
     setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    trackMigrationStep('specify_analysis_started', { resourceCount: resources.length });
+    
     try {
-      const response = await fetch('/api/migration/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          resources,
-          requirements,
-        }),
+      // Progress simulation
+      const progressInterval = setInterval(() => {
+        setAnalysisProgress(prev => Math.min(prev + 10, 90));
+      }, 200);
+
+      // Enhanced AI analysis
+      const aiAnalysis = await aiService.analyzeResources({
+        resources,
+        requirements,
+        context: {
+          entity: new URLSearchParams(window.location.search).get('entity') || 'default',
+          journey: new URLSearchParams(window.location.search).get('demo') || 'migration',
+          environment: 'specification'
+        }
+      });
+
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+
+      // Update state with AI analysis results
+      setAiRecommendations(aiAnalysis.recommendations);
+      setCostEstimate(aiAnalysis.costEstimate);
+      setRiskAssessment({
+        score: aiAnalysis.riskScore,
+        level: aiAnalysis.riskScore > 80 ? 'high' : aiAnalysis.riskScore > 60 ? 'medium' : 'low',
+        findings: riskAssessment.findings // Keep existing for UI consistency
+      });
+      setBackendAnalysis(aiAnalysis);
+      
+      trackMigrationStep('specify_analysis_completed', { 
+        recommendationsCount: aiAnalysis.recommendations.length,
+        riskScore: aiAnalysis.riskScore,
+        estimatedCost: aiAnalysis.costEstimate.monthly
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          setBackendAnalysis(result.data);
-          setCostEstimate(result.data.costEstimate);
-          setRiskAssessment(result.data.riskAssessment);
-        }
-      }
     } catch (error) {
-      console.warn('Backend analysis failed, using mock data:', error);
+      console.warn('AI analysis failed, using fallback:', error);
+      trackError(error as Error, { component: 'SpecifyStep', action: 'runBackendAnalysis' });
+      setAnalysisProgress(100);
     } finally {
       setIsAnalyzing(false);
     }
@@ -381,6 +408,57 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
                     </div>
                   </div>
                 </div>
+                
+                {/* AI Recommendations */}
+                {aiRecommendations.length > 0 && (
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Sparkles className="h-5 w-5 text-purple-500" />
+                      <span className="font-medium text-gray-900 dark:text-gray-100">AI-Powered Recommendations</span>
+                    </div>
+                    <div className="space-y-3">
+                      {aiRecommendations.slice(0, 3).map((rec) => (
+                        <div key={rec.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h6 className="font-medium text-gray-900 dark:text-gray-100">{rec.title}</h6>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">{rec.description}</p>
+                            </div>
+                            <span className={`px-2 py-1 rounded text-xs ${
+                              rec.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' :
+                              rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                              'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                            }`}>
+                              {rec.priority}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600 dark:text-gray-400">Impact: {rec.impact}</span>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-gray-500 dark:text-gray-400">Confidence: {Math.round(rec.confidence * 100)}%</span>
+                              <button
+                                onClick={() => {
+                                  const isSelected = selectedRecommendations.includes(rec.id);
+                                  setSelectedRecommendations(prev => 
+                                    isSelected ? prev.filter(id => id !== rec.id) : [...prev, rec.id]
+                                  );
+                                  trackOptimizationRecommendation(rec, !isSelected);
+                                }}
+                                className={`px-2 py-1 rounded text-xs ${
+                                  selectedRecommendations.includes(rec.id) 
+                                    ? 'bg-sirsi-500 text-white' 
+                                    : 'bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300'
+                                }`}
+                              >
+                                {selectedRecommendations.includes(rec.id) ? 'Selected' : 'Select'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 {/* Performance Insights */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
