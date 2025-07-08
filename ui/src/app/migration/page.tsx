@@ -149,11 +149,11 @@ export default function WizardPage() {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:to-gray-800 dark:from-gray-900 dark:from-green-900 dark:to-blue-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-2xl mx-auto text-center bg-white dark:bg-gray-800 dark:bg-slate-800 rounded-2xl shadow-xl p-8"
+          className="max-w-2xl mx-auto text-center bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -170,7 +170,7 @@ export default function WizardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-4"
+            className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4"
           >
 Migration Completed Successfully!
           </motion.h1>
@@ -179,7 +179,7 @@ Migration Completed Successfully!
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg text-gray-600 dark:text-gray-400 dark:text-gray-400 mb-8"
+            className="text-lg text-gray-600 dark:text-gray-400 mb-8"
           >
             Your migration has been completed successfully. All resources have been transferred and validated.
           </motion.p>
@@ -191,20 +191,20 @@ Migration Completed Successfully!
               transition={{ delay: 0.5 }}
               className="mb-8"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-4">Generated Artifacts</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Generated Artifacts</h3>
               <div className="space-y-3">
                 {artifacts.map((artifact) => (
                   <div
                     key={artifact.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 dark:bg-slate-700 rounded-lg border dark:border-slate-600"
+                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
                   >
                     <div className="flex items-center space-x-3">
                       <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
                         <FileText className="h-4 w-4 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">{artifact.name}</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">{artifact.type} • {artifact.size}</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">{artifact.name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{artifact.type} • {artifact.size}</p>
                       </div>
                     </div>
                     <button
@@ -249,7 +249,7 @@ Start New Migration
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Step Navigation */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Migration Steps</h2>
               <div className="space-y-3">
                 {steps.map((step, index) => {
@@ -314,7 +314,7 @@ Start New Migration
                   {artifacts.slice(-3).map((artifact) => (
                     <div
                       key={artifact.id}
-                      className="flex items-center justify-between p-2 bg-white dark:bg-gray-800 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-600 text-xs"
+                      className="flex items-center justify-between p-2 bg-white dark:bg-gray-800 rounded border border-slate-200 dark:border-slate-600 text-xs"
                     >
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -340,7 +340,7 @@ Start New Migration
 
           {/* Step Content */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
               <div className="mb-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full">
@@ -470,7 +470,7 @@ Start New Migration
 
           {/* Artifacts Detail Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center">
                 <FileText className="h-5 w-5 mr-2" />
                 Migration Artifacts

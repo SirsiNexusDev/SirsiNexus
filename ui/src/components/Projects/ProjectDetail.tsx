@@ -56,13 +56,13 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'active':
-        return 'bg-green-500';
+        return 'bg-green-50 dark:bg-green-900/200';
       case 'completed':
-        return 'bg-blue-500';
+        return 'bg-blue-50 dark:bg-blue-900/200';
       case 'archived':
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
     }
   };
 
@@ -71,7 +71,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
       <div className="flex justify-between items-start mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
-          <p className="text-gray-600 mb-4">{project.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{project.description}</p>
           <div className="flex items-center gap-4 mb-4">
             <Badge className={getStatusColor(project.status)}>
               {project.status}
@@ -109,7 +109,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
           <CardContent>
             <div className="space-y-2">
               <Progress value={completionPercentage} />
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {project.stats.completed} of {project.stats.tasks} tasks completed
               </p>
             </div>
@@ -148,7 +148,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
                   </AvatarFallback>
                 </Avatar>
               )) || (
-                <p className="text-sm text-gray-500">No team members yet</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">No team members yet</p>
               )}
               {(project.team?.length || 0) > 5 && (
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm">
@@ -184,19 +184,19 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold mb-1">Created</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {format(new Date(project.createdAt), 'PPP')}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {formatDistanceToNow(new Date(project.createdAt))} ago
                   </p>
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Last Updated</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {format(new Date(project.updatedAt), 'PPP')}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {formatDistanceToNow(new Date(project.updatedAt))} ago
                   </p>
                 </div>

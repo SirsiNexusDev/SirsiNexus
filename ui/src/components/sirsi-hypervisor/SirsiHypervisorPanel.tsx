@@ -247,21 +247,21 @@ const SirsiHypervisorPanel: React.FC = () => {
 
   const getHealthColor = (health: string) => {
     switch (health) {
-      case 'Optimal': return 'text-emerald-600 bg-emerald-100';
-      case 'Good': return 'text-green-600 bg-green-100';
+      case 'Optimal': return 'text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30';
+      case 'Good': return 'text-green-600 bg-green-100 dark:bg-green-900/30';
       case 'Warning': return 'text-amber-600 bg-amber-100';
-      case 'Critical': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'Critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800';
     }
   };
 
   const getSecurityColor = (level: string) => {
     switch (level) {
-      case 'Maximum': return 'text-purple-600 bg-purple-100';
-      case 'High': return 'text-blue-600 bg-blue-100';
-      case 'Normal': return 'text-green-600 bg-green-100';
+      case 'Maximum': return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30';
+      case 'High': return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30';
+      case 'Normal': return 'text-green-600 bg-green-100 dark:bg-green-900/30';
       case 'Maintenance': return 'text-amber-600 bg-amber-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800';
     }
   };
 
@@ -294,7 +294,7 @@ const SirsiHypervisorPanel: React.FC = () => {
             <div>
               <h1 className="text-4xl font-bold text-white flex items-center gap-3">
                 SIRSI
-                <Badge className="bg-gradient-to-r from-gold-400 to-amber-500 text-black font-bold">
+                <Badge className="bg-gradient-to-r from-gold-400 to-amber-500 text-black dark:text-white font-bold">
                   HYPERVISOR
                 </Badge>
               </h1>
@@ -313,7 +313,7 @@ const SirsiHypervisorPanel: React.FC = () => {
                   onCheckedChange={toggleHypervisorMode}
                   className="data-[state=checked]:bg-gold-500"
                 />
-                <Badge className={hypervisorMode ? 'bg-gold-500 text-black' : 'bg-gray-600 text-white'}>
+                <Badge className={hypervisorMode ? 'bg-gold-500 text-black dark:text-white' : 'bg-gray-600 text-white'}>
                   {hypervisorMode ? 'ACTIVE' : 'STANDBY'}
                 </Badge>
               </div>

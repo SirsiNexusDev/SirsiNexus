@@ -91,12 +91,12 @@ export const AIProviderSelector: React.FC<AIProviderSelectorProps> = ({
     dropdown: 'bg-slate-800 border-slate-600',
     shadow: 'shadow-xl shadow-black/20'
   } : {
-    bg: 'bg-white',
-    border: 'border-gray-200',
-    text: 'text-gray-900',
-    textSecondary: 'text-gray-600',
-    hover: 'hover:bg-gray-50',
-    dropdown: 'bg-white border-gray-200',
+    bg: 'bg-white dark:bg-gray-800',
+    border: 'border-gray-200 dark:border-gray-700',
+    text: 'text-gray-900 dark:text-gray-100',
+    textSecondary: 'text-gray-600 dark:text-gray-400',
+    hover: 'hover:bg-gray-50 dark:bg-gray-900',
+    dropdown: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700',
     shadow: 'shadow-lg'
   };
 
@@ -177,7 +177,7 @@ export const AIProviderSelector: React.FC<AIProviderSelectorProps> = ({
                     disabled={!isAvailable}
                     className={`w-full px-3 py-3 text-left transition-colors ${
                       isAvailable ? themeClasses.hover : 'opacity-50 cursor-not-allowed'
-                    } ${isSelected ? (isDarkMode ? 'bg-slate-700' : 'bg-gray-100') : ''}`}
+                    } ${isSelected ? (isDarkMode ? 'bg-slate-700' : 'bg-gray-100 dark:bg-gray-800') : ''}`}
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getProviderColor(provider.id, isDarkMode)} border flex items-center justify-center`}>

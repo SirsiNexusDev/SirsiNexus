@@ -142,11 +142,11 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-medium">Resource Optimization</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="text-lg font-medium dark:text-gray-100">Resource Optimization</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Select optimizations to apply to your migrated resources
             </p>
           </div>
@@ -170,8 +170,8 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
                 transition={{ delay: index * 0.1 }}
                 className={`rounded-lg border p-4 ${
                   selectedOptimizations.includes(optimization.id)
-                    ? 'border-sirsi-500 bg-sirsi-50'
-                    : 'border-gray-100 bg-gray-50'
+                    ? 'border-sirsi-500 bg-sirsi-50 dark:bg-sirsi-900/20'
+                    : 'border-gray-100 dark:border-gray-700 bg-gray-100 dark:bg-gray-800'
                 }`}
               >
                 <div className="mb-4 flex items-start justify-between">
@@ -182,13 +182,13 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
                         checked={selectedOptimizations.includes(optimization.id)}
                         onChange={() => toggleOptimization(optimization.id)}
                         disabled={optimization.status !== 'pending'}
-                        className="h-4 w-4 rounded border-gray-300 text-sirsi-500 focus:ring-sirsi-500"
+                        className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-sirsi-500 focus:ring-sirsi-500"
                       />
                     </div>
                     <div>
                       <div className="flex items-center">
                         <CategoryIcon className="mr-2 h-5 w-5 text-sirsi-500" />
-                        <h4 className="font-medium">{optimization.name}</h4>
+                        <h4 className="font-medium dark:text-gray-100">{optimization.name}</h4>
                         <span
                           className={`ml-2 rounded-full px-2 py-1 text-xs ${
                             impactColors[optimization.impact]
@@ -197,7 +197,7 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
                           {optimization.impact} impact
                         </span>
                       </div>
-                      <p className="mt-1 text-sm text-gray-600">
+                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {optimization.description}
                       </p>
                     </div>
@@ -206,8 +206,8 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
                     <span
                       className={`flex items-center rounded-full px-2 py-1 text-xs ${
                         optimization.status === 'applied'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300'
                       }`}
                     >
                       {optimization.status === 'applied' && (
@@ -219,29 +219,29 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-4">
-                  <div className="rounded border border-gray-100 bg-white p-3">
-                    <div className="text-xs text-gray-500">Before</div>
-                    <div className="mt-1 font-medium">
+                  <div className="rounded border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Before</div>
+                    <div className="mt-1 font-medium dark:text-gray-100">
                       {optimization.metrics.before}
                     </div>
                   </div>
-                  <div className="rounded border border-gray-100 bg-white p-3">
-                    <div className="text-xs text-gray-500">After</div>
-                    <div className="mt-1 font-medium">
+                  <div className="rounded border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">After</div>
+                    <div className="mt-1 font-medium dark:text-gray-100">
                       {optimization.metrics.after}
                     </div>
                   </div>
-                  <div className="rounded border border-gray-100 bg-white p-3">
-                    <div className="text-xs text-gray-500">Improvement</div>
+                  <div className="rounded border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Improvement</div>
                     <div className="mt-1 font-medium text-green-500">
                       {optimization.metrics.improvement}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-start rounded-lg bg-gray-50 p-3">
-                  <Settings className="mr-2 mt-0.5 h-4 w-4 text-gray-400" />
-                  <p className="text-sm text-gray-600">
+                <div className="mt-4 flex items-start rounded-lg bg-gray-50 dark:bg-gray-700 p-3">
+                  <Settings className="mr-2 mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     {optimization.recommendation}
                   </p>
                 </div>
@@ -253,36 +253,36 @@ export const OptimizeStep: React.FC<OptimizeStepProps> = ({ onComplete }) => {
 
       {/* Optimization Summary */}
       {optimizations.some((opt) => opt.status !== 'pending') && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 text-lg font-medium">Optimization Impact</h3>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+          <h3 className="mb-4 text-lg font-medium dark:text-gray-100">Optimization Impact</h3>
           <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4">
               <div className="flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5 text-sirsi-500" />
-                <h4 className="font-medium">Performance</h4>
+                <h4 className="font-medium dark:text-gray-100">Performance</h4>
               </div>
               <div className="mt-2 text-2xl font-bold text-sirsi-500">58%</div>
-              <div className="text-sm text-gray-600">Average improvement</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Average improvement</div>
             </div>
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4">
               <div className="flex items-center">
                 <DollarSign className="mr-2 h-5 w-5 text-sirsi-500" />
-                <h4 className="font-medium">Cost Savings</h4>
+                <h4 className="font-medium dark:text-gray-100">Cost Savings</h4>
               </div>
               <div className="mt-2 text-2xl font-bold text-sirsi-500">
                 $45/mo
               </div>
-              <div className="text-sm text-gray-600">Projected savings</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Projected savings</div>
             </div>
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4">
               <div className="flex items-center">
                 <Leaf className="mr-2 h-5 w-5 text-sirsi-500" />
-                <h4 className="font-medium">Sustainability</h4>
+                <h4 className="font-medium dark:text-gray-100">Sustainability</h4>
               </div>
               <div className="mt-2 text-2xl font-bold text-sirsi-500">
                 0.7 tons
               </div>
-              <div className="text-sm text-gray-600">CO₂ reduction/year</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">CO₂ reduction/year</div>
             </div>
           </div>
         </div>

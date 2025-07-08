@@ -292,31 +292,31 @@ export default function FeaturesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'stable': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-800';
-      case 'beta': return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-800';
+      case 'stable': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-800';
+      case 'beta': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-800';
       case 'experimental': return 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900 dark:text-amber-200 dark:border-amber-800';
-      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700';
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700';
     }
   };
 
   const getPhaseColor = (phase: number) => {
     switch (phase) {
-      case 1: return 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800';
-      case 2: return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-800';
-      case 3: return 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-800';
-      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700';
+      case 1: return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800';
+      case 2: return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-800';
+      case 3: return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-800';
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700';
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 dark:to-gray-800 dark:from-gray-900 to-gray-100 dark:to-gray-800 dark:from-gray-900 dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 dark:from-gray-900 dark:to-gray-800 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             SirsiNexus Feature Hub
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 dark:text-gray-400 mb-6">
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
             Explore all platform capabilities with integrated documentation, tutorials, and AI guidance
           </p>
 
@@ -327,10 +327,10 @@ export default function FeaturesPage() {
               placeholder="Search features..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Monitor className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <Monitor className="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
             </div>
           </div>
         </div>
@@ -366,7 +366,7 @@ export default function FeaturesPage() {
             if (!isSelected && selectedGroup !== 'all') return null;
 
             return (
-              <div key={group.id} className="bg-white dark:bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 overflow-hidden">
+              <div key={group.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 {/* Group Header */}
                 <div className={`bg-${group.color}-50 dark:bg-${group.color}-900 border-b border-${group.color}-200 dark:border-${group.color}-800 p-6`}>
                   <div className="flex items-center gap-4">
@@ -374,8 +374,8 @@ export default function FeaturesPage() {
                       <GroupIcon className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">{group.name}</h2>
-                      <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">{group.description}</p>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{group.name}</h2>
+                      <p className="text-gray-600 dark:text-gray-400">{group.description}</p>
                     </div>
                   </div>
                 </div>
@@ -389,7 +389,7 @@ export default function FeaturesPage() {
                       return (
                         <div
                           key={feature.id}
-                          className="bg-gray-50 dark:bg-gray-900 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 dark:border-gray-600 p-6 hover:shadow-md transition-shadow"
+                          className="bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
                         >
                           {/* Feature Header */}
                           <div className="flex items-start justify-between mb-4">
@@ -398,7 +398,7 @@ export default function FeaturesPage() {
                                 <FeatureIcon className="h-5 w-5 text-white" />
                               </div>
                               <div>
-                                <h3 className="font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100">{feature.name}</h3>
+                                <h3 className="font-semibold text-gray-900 dark:text-gray-100">{feature.name}</h3>
                                 <div className="flex items-center gap-2 mt-1">
                                   <span className={`px-2 py-1 text-xs rounded border ${getStatusColor(feature.status)}`}>
                                     {feature.status}
@@ -411,7 +411,7 @@ export default function FeaturesPage() {
                             </div>
                           </div>
 
-                          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 text-sm mb-4">{feature.description}</p>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{feature.description}</p>
 
                           {/* Feature Resources */}
                           <div className="space-y-3">
@@ -426,7 +426,7 @@ export default function FeaturesPage() {
                               {feature.hasDocumentation && (
                                 <a
                                   href={`${feature.path}/docs`}
-                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100"
+                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
                                 >
                                   <FileText className="h-4 w-4" />
                                   Docs
@@ -436,7 +436,7 @@ export default function FeaturesPage() {
                               {feature.hasTutorial && (
                                 <a
                                   href={`${feature.path}/tutorial`}
-                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100"
+                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
                                 >
                                   <Play className="h-4 w-4" />
                                   Tutorial
@@ -448,7 +448,7 @@ export default function FeaturesPage() {
                               {feature.hasFAQ && (
                                 <a
                                   href={`${feature.path}/faq`}
-                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100"
+                                  className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
                                 >
                                   <HelpCircle className="h-4 w-4" />
                                   FAQ
@@ -458,7 +458,7 @@ export default function FeaturesPage() {
                               {feature.aiAware && (
                                 <button
                                   onClick={() => window.open(`${feature.path}/ai-guide`, '_blank')}
-                                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 dark:from-purple-600 dark:to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 dark:hover:from-purple-700 dark:hover:to-pink-700 text-sm"
+                                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-50 dark:from-gray-900 dark:to-gray-8000 dark:from-purple-600 dark:to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 dark:hover:from-purple-700 dark:hover:to-pink-700 text-sm"
                                 >
                                   <Brain className="h-4 w-4" />
                                   AI Guide
@@ -477,14 +477,14 @@ export default function FeaturesPage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="mt-12 bg-white dark:bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 dark:border-gray-700 p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-4">Platform Overview</h3>
+        <div className="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Platform Overview</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                 {featureGroups.reduce((acc, group) => acc + group.features.length, 0)}
               </div>
-              <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Total Features</div>
+              <div className="text-gray-600 dark:text-gray-400">Total Features</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">
@@ -492,7 +492,7 @@ export default function FeaturesPage() {
                   acc + group.features.filter(f => f.status === 'stable').length, 0
                 )}
               </div>
-              <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Stable Features</div>
+              <div className="text-gray-600 dark:text-gray-400">Stable Features</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
@@ -500,11 +500,11 @@ export default function FeaturesPage() {
                   acc + group.features.filter(f => f.aiAware).length, 0
                 )}
               </div>
-              <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">AI-Aware Features</div>
+              <div className="text-gray-600 dark:text-gray-400">AI-Aware Features</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">100%</div>
-              <div className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Documentation Coverage</div>
+              <div className="text-gray-600 dark:text-gray-400">Documentation Coverage</div>
             </div>
           </div>
         </div>

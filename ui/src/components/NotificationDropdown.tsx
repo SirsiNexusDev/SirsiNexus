@@ -72,7 +72,7 @@ export const NotificationDropdown: React.FC = () => {
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500" />
+          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-50 dark:bg-red-900/200" />
         )}
       </button>
 
@@ -85,12 +85,12 @@ export const NotificationDropdown: React.FC = () => {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-sm border border-slate-200 z-20 animate-slide-up">
+          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-slate-200 z-20 animate-slide-up">
               <div className="p-3 border-b border-slate-200">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-slate-900">Notifications</h3>
                   {unreadCount > 0 && (
-                    <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded">
+                    <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium px-2 py-0.5 rounded">
                       {unreadCount} new
                     </span>
                   )}
@@ -108,8 +108,8 @@ export const NotificationDropdown: React.FC = () => {
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`p-4 hover:bg-gray-50 transition-colors ${
-                          !notification.read ? 'bg-blue-50/50' : ''
+                        className={`p-4 hover:bg-gray-50 dark:bg-gray-900 transition-colors ${
+                          !notification.read ? 'bg-blue-50 dark:bg-blue-900/20/50' : ''
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -117,28 +117,28 @@ export const NotificationDropdown: React.FC = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                               <h4 className={`text-sm font-medium ${
-                                !notification.read ? 'text-gray-900' : 'text-gray-700'
+                                !notification.read ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'
                               }`}>
                                 {notification.title}
                               </h4>
                               <button
                                 onClick={() => removeNotification(notification.id)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 hover:text-gray-600 dark:text-gray-400"
                               >
                                 <X className="h-4 w-4" />
                               </button>
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                               {notification.message}
                             </p>
                             <div className="flex items-center justify-between mt-2">
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {notification.timestamp}
                               </span>
                               {!notification.read && (
                                 <button
                                   onClick={() => markAsRead(notification.id)}
-                                  className="text-xs text-blue-600 hover:text-blue-800"
+                                  className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-300"
                                 >
                                   Mark as read
                                 </button>
@@ -153,8 +153,8 @@ export const NotificationDropdown: React.FC = () => {
               </div>
 
               {notifications.length > 0 && (
-                <div className="p-3 border-t border-gray-200">
-                  <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
+                <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+                  <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300 font-medium">
                     View all notifications
                   </button>
                 </div>

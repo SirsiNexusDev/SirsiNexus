@@ -191,7 +191,7 @@ export default function AccountSettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:to-gray-800 dark:from-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -212,7 +212,7 @@ export default function AccountSettingsPage() {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
                           : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >
@@ -232,7 +232,7 @@ export default function AccountSettingsPage() {
               {activeTab === 'profile' && (
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-50 dark:to-gray-800 dark:from-gray-9000 to-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-50 dark:from-gray-900 dark:to-gray-8000 to-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
                       {user?.email?.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -264,8 +264,8 @@ export default function AccountSettingsPage() {
                       <div className="flex items-center gap-2">
                         <span className={`px-3 py-2 rounded-lg text-sm font-medium ${
                           user?.role === 'admin' 
-                            ? 'bg-purple-100 text-purple-700' 
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' 
+                            : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                         }`}>
                           {user?.role === 'admin' ? 'Administrator' : 'User'}
                         </span>
@@ -452,7 +452,7 @@ export default function AccountSettingsPage() {
                             onChange={(e) => setSecuritySettings(prev => ({ ...prev, loginAlerts: e.target.checked }))}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:bg-gray-800 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:bg-gray-800 after:border-gray-300 dark:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
                     </div>
@@ -487,7 +487,7 @@ export default function AccountSettingsPage() {
                             onChange={(e) => setNotifications(prev => ({ ...prev, [key]: e.target.checked }))}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:bg-gray-800 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:bg-gray-800 after:border-gray-300 dark:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
                     ))}
@@ -517,12 +517,12 @@ export default function AccountSettingsPage() {
                       </div>
                     </div>
 
-                    <div className="border border-red-200 rounded-lg p-4 bg-red-50">
+                    <div className="border border-red-200 dark:border-red-700 rounded-lg p-4 bg-red-50 dark:bg-red-900/20">
                       <div className="flex items-start gap-3">
                         <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
                         <div className="flex-1">
                           <h3 className="font-medium text-red-900">Delete Account</h3>
-                          <p className="text-sm text-red-700 mt-1">
+                          <p className="text-sm text-red-700 dark:text-red-300 mt-1">
                             Permanently delete your account and all associated data. This action cannot be undone.
                           </p>
                           <button className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">

@@ -135,9 +135,9 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
 
   const getConnectionColor = () => {
     switch (connectionState) {
-      case 'connected': return 'bg-green-500';
-      case 'connecting': return 'bg-yellow-500';
-      case 'error': return 'bg-red-500';
+      case 'connected': return 'bg-green-50 dark:bg-green-900/200';
+      case 'connecting': return 'bg-yellow-50 dark:bg-yellow-900/200';
+      case 'error': return 'bg-red-50 dark:bg-red-900/200';
       default: return 'bg-gray-400';
     }
   };
@@ -170,7 +170,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
       case 'migration':
         return <RotateCw className="h-3 w-3 text-purple-500" />;
       default:
-        return <Bot className="h-3 w-3 text-gray-500" />;
+        return <Bot className="h-3 w-3 text-gray-500 dark:text-gray-400" />;
     }
   };
 
@@ -189,7 +189,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
   }
 
   return (
-    <div className={`rounded-lg border border-gray-200 bg-white p-4 ${className}`}>
+    <div className={`rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 ${className}`}>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-medium">Agent System Status</h3>
         <div className="flex items-center space-x-2">
@@ -202,11 +202,11 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 rounded-lg bg-red-50 border border-red-200 p-3"
+          className="mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 p-3"
         >
           <div className="flex items-center">
             <AlertCircle className="h-4 w-4 text-red-500 mr-2" />
-            <span className="text-sm text-red-700">{error}</span>
+            <span className="text-sm text-red-700 dark:text-red-300">{error}</span>
           </div>
         </motion.div>
       )}
@@ -259,14 +259,14 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 rounded-lg bg-green-50 border border-green-200 p-3"
+          className="mb-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 p-3"
         >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-green-800">Active Session</div>
+              <div className="text-sm font-medium text-green-800 dark:text-green-300">Active Session</div>
               <div className="text-xs text-green-600">ID: {activeSession.sessionId.slice(0, 8)}...</div>
             </div>
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
+            <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
               {activeSession.state}
             </Badge>
           </div>
@@ -307,7 +307,7 @@ export const AgentStatus: React.FC<AgentStatusProps> = ({
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 10 }}
-                  className="flex items-center justify-between rounded-md bg-gray-50 p-2"
+                  className="flex items-center justify-between rounded-md bg-gray-50 dark:bg-gray-900 p-2"
                 >
                   <div className="flex items-center space-x-2">
                     {getAgentTypeIcon(agent.agentType)}

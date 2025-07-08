@@ -198,16 +198,16 @@ const ObservabilityDashboard: React.FC = () => {
       case 'Healthy': return 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900';
       case 'Degraded': return 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900';
       case 'Unhealthy': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
-      default: return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
     }
   };
 
   const getAlertColor = (severity: string) => {
     switch (severity) {
-      case 'Critical': return 'text-red-600 bg-red-100 border-red-200 dark:text-red-400 dark:bg-red-900 dark:border-red-800';
+      case 'Critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30 border-red-200 dark:text-red-400 dark:bg-red-900 dark:border-red-800';
       case 'Warning': return 'text-amber-600 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-900 dark:border-amber-800';
-      case 'Info': return 'text-blue-600 bg-blue-100 border-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:border-blue-800';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700';
+      case 'Info': return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:border-blue-800';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700';
     }
   };
 
@@ -253,7 +253,7 @@ const ObservabilityDashboard: React.FC = () => {
               onClick={() => setAutoRefresh(!autoRefresh)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 autoRefresh 
-                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800' 
+                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800' 
                   : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
               }`}
             >

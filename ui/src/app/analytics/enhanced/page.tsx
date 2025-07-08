@@ -165,9 +165,9 @@ const EnhancedAnalytics = () => {
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'low': return 'text-green-600 bg-green-50 border-green-200';
+      case 'high': return 'text-red-600 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700';
+      case 'medium': return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700';
+      case 'low': return 'text-green-600 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700';
       default: return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700';
     }
   };
@@ -201,7 +201,7 @@ const EnhancedAnalytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:to-gray-800 dark:from-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -210,7 +210,7 @@ const EnhancedAnalytics = () => {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
                 <Brain className="h-8 w-8 text-purple-600" />
                 Enhanced Analytics
-                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                <Badge className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-700">
                   <Sparkles className="h-3 w-3 mr-1" />
                   AI-Powered
                 </Badge>
@@ -270,7 +270,7 @@ const EnhancedAnalytics = () => {
                       </span>
                     </div>
                     <div className="pt-2">
-                      <div className="flex justify-between text-xs text-gray-500 mb-1">
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                         <span>Confidence</span>
                         <span>{metric.confidence}%</span>
                       </div>
@@ -308,28 +308,28 @@ const EnhancedAnalytics = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <div>
                         <p className="font-medium text-green-900">Cost Optimization</p>
-                        <p className="text-sm text-green-700">12% reduction predicted</p>
+                        <p className="text-sm text-green-700 dark:text-green-300">12% reduction predicted</p>
                       </div>
-                      <Badge className="bg-green-100 text-green-800">Excellent</Badge>
+                      <Badge className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">Excellent</Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <div>
                         <p className="font-medium text-blue-900">Performance Score</p>
-                        <p className="text-sm text-blue-700">Above industry average</p>
+                        <p className="text-sm text-blue-700 dark:text-blue-300">Above industry average</p>
                       </div>
-                      <Badge className="bg-blue-100 text-blue-800">Good</Badge>
+                      <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">Good</Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                       <div>
                         <p className="font-medium text-yellow-900">Resource Utilization</p>
-                        <p className="text-sm text-yellow-700">Room for improvement</p>
+                        <p className="text-sm text-yellow-700 dark:text-yellow-300">Room for improvement</p>
                       </div>
-                      <Badge className="bg-yellow-100 text-yellow-800">Fair</Badge>
+                      <Badge className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">Fair</Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -344,16 +344,16 @@ const EnhancedAnalytics = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="p-3 border border-purple-200 rounded-lg bg-purple-50">
+                    <div className="p-3 border border-purple-200 dark:border-purple-700 rounded-lg bg-purple-50 dark:bg-purple-900/20">
                       <p className="font-medium text-purple-900">Auto-scaling Opportunity</p>
-                      <p className="text-sm text-purple-700 mt-1">
+                      <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
                         Configure auto-scaling for your web tier to improve efficiency by 23%
                       </p>
                     </div>
                     
-                    <div className="p-3 border border-emerald-200 rounded-lg bg-emerald-50">
+                    <div className="p-3 border border-emerald-200 dark:border-emerald-700 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
                       <p className="font-medium text-emerald-900">Reserved Instance Savings</p>
-                      <p className="text-sm text-emerald-700 mt-1">
+                      <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
                         Switch to reserved instances to save $456/month on consistent workloads
                       </p>
                     </div>
@@ -399,7 +399,7 @@ const EnhancedAnalytics = () => {
                               </span>
                             )}
                             {suggestion.implementationTime && (
-                              <span className="text-gray-500">
+                              <span className="text-gray-500 dark:text-gray-400">
                                 ~{suggestion.implementationTime}
                               </span>
                             )}
@@ -451,7 +451,7 @@ const EnhancedAnalytics = () => {
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
                           <div 
-                            className={`h-2 rounded-full ${health.average > 80 ? 'bg-red-500' : health.average > 60 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                            className={`h-2 rounded-full ${health.average > 80 ? 'bg-red-50 dark:bg-red-900/200' : health.average > 60 ? 'bg-yellow-50 dark:bg-yellow-900/200' : 'bg-green-50 dark:bg-green-900/200'}`}
                             style={{ width: `${health.average}%` }}
                           ></div>
                         </div>
@@ -492,7 +492,7 @@ const EnhancedAnalytics = () => {
                             )}
                           </div>
                           <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{anomaly.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                             <span>{anomaly.timestamp}</span>
                             <span>Confidence: {anomaly.confidence}%</span>
                           </div>

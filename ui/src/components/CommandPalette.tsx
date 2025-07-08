@@ -268,7 +268,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                           >
                             <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
                               isSelected
-                                ? 'bg-white/20 scale-110'
+                                ? 'bg-white dark:bg-gray-800/20 scale-110'
                                 : 'glass-subtle'
                             }`}>
                               <Icon className="h-5 w-5" />

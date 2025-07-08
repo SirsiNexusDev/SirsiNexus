@@ -193,7 +193,7 @@ export const MigrationSteps: React.FC<ExtendedMigrationStepsProps> = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={`cursor-pointer rounded-lg border p-4 shadow-sm transition-colors ${
-                isActive ? 'border-sirsi-500 bg-sirsi-50' : 'border-gray-200 hover:border-sirsi-200'
+                isActive ? 'border-sirsi-500 bg-sirsi-50' : 'border-gray-200 dark:border-gray-700 hover:border-sirsi-200'
               }`}
               onClick={() => onStepClick(step)}
             >
@@ -219,14 +219,14 @@ export const MigrationSteps: React.FC<ExtendedMigrationStepsProps> = ({
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-4 border-t pt-4"
                 >
-                  <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-4">
+                  <div className="flex items-center justify-between rounded-lg border border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 p-4">
                     <div className="flex items-center space-x-3">
-                      <div className="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
+                      <div className="flex items-center justify-center w-8 h-8 bg-green-50 dark:bg-green-900/200 rounded-full">
                         <FileText className="h-4 w-4 text-white" />
                       </div>
                       <div>
                         <h4 className="font-medium text-green-900">{stepArtifacts[step]!.name}</h4>
-                        <p className="text-sm text-green-700">{stepArtifacts[step]!.type} • {stepArtifacts[step]!.size}</p>
+                        <p className="text-sm text-green-700 dark:text-green-300">{stepArtifacts[step]!.type} • {stepArtifacts[step]!.size}</p>
                       </div>
                     </div>
                     <button

@@ -137,7 +137,7 @@
   }
   
   .glass-ultra {
-    background: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(50px) saturate(400%) !important;
     -webkit-backdrop-filter: blur(50px) saturate(400%) !important;
     border: 3px solid rgba(34, 197, 94, 0.8) !important;
@@ -147,6 +147,18 @@
       inset 0 3px 0 rgba(255, 255, 255, 1) !important,
       0 0 40px rgba(34, 197, 94, 0.3) !important;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+  
+  .dark .glass-ultra {
+    background: rgba(31, 41, 55, 0.95) !important;
+    backdrop-filter: blur(50px) saturate(400%) !important;
+    -webkit-backdrop-filter: blur(50px) saturate(400%) !important;
+    border: 3px solid rgba(139, 69, 195, 0.8) !important;
+    box-shadow: 
+      0 35px 70px rgba(0, 0, 0, 0.8) !important,
+      0 25px 50px rgba(139, 69, 195, 0.6) !important,
+      inset 0 3px 0 rgba(255, 255, 255, 0.1) !important,
+      0 0 40px rgba(139, 69, 195, 0.3) !important;
   }
   
   /* Interactive Glass */
@@ -736,6 +748,14 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.6);
     border-radius: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .dark .card-professional {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(71, 85, 105, 0.6);
   }
   
   .card-professional:hover {

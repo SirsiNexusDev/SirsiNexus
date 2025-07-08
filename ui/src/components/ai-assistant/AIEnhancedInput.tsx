@@ -125,7 +125,7 @@ export default function AIEnhancedInput({
     if (focused) {
       return 'border-blue-300 focus:border-blue-500 focus:ring-blue-200';
     }
-    return 'border-gray-300 focus:border-blue-500 focus:ring-blue-200';
+    return 'border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-200';
   };
 
   const renderInput = () => {
@@ -133,7 +133,7 @@ export default function AIEnhancedInput({
       w-full px-3 py-2 rounded-lg transition-all duration-200
       ${getInputBorderClass()}
       focus:outline-none focus:ring-2
-      ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
+      ${disabled ? 'bg-gray-100 dark:bg-gray-800 cursor-not-allowed' : 'bg-white dark:bg-gray-800'}
       ${className}
     `;
 
@@ -177,7 +177,7 @@ export default function AIEnhancedInput({
       {/* Label */}
       {label && (
         <div className="flex items-center justify-between">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -187,8 +187,8 @@ export default function AIEnhancedInput({
               onClick={toggleAiHelp}
               className={`p-1 rounded-full transition-all duration-200 ${
                 showAiHelp 
-                  ? 'bg-purple-100 text-purple-600' 
-                  : 'text-gray-400 hover:text-purple-600 hover:bg-purple-50'
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' 
+                  : 'text-gray-400 hover:text-purple-600 hover:bg-purple-50 dark:bg-purple-900/20'
               }`}
               title="Get AI assistance"
             >
@@ -200,7 +200,7 @@ export default function AIEnhancedInput({
 
       {/* Description */}
       {description && (
-        <p className="text-xs text-gray-500">{description}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
       )}
 
       {/* Input Container */}
@@ -211,9 +211,9 @@ export default function AIEnhancedInput({
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
           {isTyping && (
             <div className="flex space-x-1">
-              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
-              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-1 h-1 bg-blue-50 dark:bg-blue-900/200 rounded-full animate-bounce"></div>
+              <div className="w-1 h-1 bg-blue-50 dark:bg-blue-900/200 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-1 h-1 bg-blue-50 dark:bg-blue-900/200 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             </div>
           )}
           {!isTyping && getValidationIcon()}
@@ -221,13 +221,13 @@ export default function AIEnhancedInput({
 
         {/* Suggestions Dropdown */}
         {focused && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => applySuggestion(suggestion)}
-                className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm transition-colors"
+                className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:bg-gray-900 text-sm transition-colors"
               >
                 {suggestion}
               </button>
@@ -238,17 +238,17 @@ export default function AIEnhancedInput({
 
       {/* Validation Error */}
       {validationResult?.isValid === false && validationResult?.aiHelp && (
-        <div className="flex items-start space-x-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+        <div className="flex items-start space-x-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
           <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
           <div className="text-sm">
-            <p className="text-red-700 font-medium">{validationResult.aiHelp.message}</p>
+            <p className="text-red-700 dark:text-red-300 font-medium">{validationResult.aiHelp.message}</p>
             {validationResult.aiHelp.suggestions && validationResult.aiHelp.suggestions.length > 0 && (
               <div className="mt-1 space-x-2">
                 {validationResult.aiHelp.suggestions.map((suggestion, index) => (
                   <button
                     key={index}
                     type="button"
-                    className="text-xs text-red-600 hover:text-red-800 underline"
+                    className="text-xs text-red-600 hover:text-red-800 dark:text-red-300 underline"
                   >
                     {suggestion}
                   </button>
@@ -261,21 +261,21 @@ export default function AIEnhancedInput({
 
       {/* AI Help Panel */}
       {showAiHelp && aiHelp && (
-        <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
+        <Card className="border-purple-200 dark:border-purple-700 bg-gradient-to-r from-purple-50 to-pink-50">
           <CardContent className="p-3">
             <div className="flex items-start space-x-2">
               <Sparkles className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1 space-y-2">
-                <p className="text-sm text-gray-700">{aiHelp.message}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{aiHelp.message}</p>
                 
                 {/* Tips */}
                 {aiHelp.tips && aiHelp.tips.length > 0 && (
                   <div className="space-y-1">
                     <div className="flex items-center space-x-1">
                       <Lightbulb className="h-3 w-3 text-yellow-500" />
-                      <span className="text-xs font-medium text-gray-600">Tips:</span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Tips:</span>
                     </div>
-                    <ul className="text-xs text-gray-600 space-y-0.5 ml-4">
+                    <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5 ml-4">
                       {aiHelp.tips.map((tip, index) => (
                         <li key={index}>• {tip}</li>
                       ))}
@@ -305,7 +305,7 @@ export default function AIEnhancedInput({
                       <Badge
                         key={index}
                         variant="outline"
-                        className="text-xs cursor-pointer hover:bg-purple-100 transition-colors"
+                        className="text-xs cursor-pointer hover:bg-purple-100 dark:bg-purple-900/30 transition-colors"
                         onClick={() => console.log('AI suggestion:', suggestion)}
                       >
                         {suggestion}
@@ -318,7 +318,7 @@ export default function AIEnhancedInput({
                 <button
                   type="button"
                   onClick={() => setShowAiHelp(false)}
-                  className="text-xs text-gray-500 hover:text-gray-700 mt-2"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 mt-2"
                 >
                   Dismiss
                 </button>

@@ -13,7 +13,7 @@ import {
 
 export default function MigrationSpecPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-cyan-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-cyan-50 dark:to-gray-800 dark:from-gray-900 dark:via-gray-800 dark:to-cyan-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -55,7 +55,7 @@ export default function MigrationSpecPage() {
                   items: ["VPN", "Direct Connect", "Encrypted Storage"]
                 }
               ].map((spec, index) => (
-                <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div key={index} className="p-4 bg-gray-50 dark:bg-gray-900 dark:bg-gray-700 rounded-lg">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-cyan-100 dark:bg-cyan-900">
                       <spec.icon className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
@@ -73,7 +73,7 @@ export default function MigrationSpecPage() {
                     {spec.items.map((item, idx) => (
                       <span 
                         key={idx}
-                        className="px-2 py-1 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300"
+                        className="px-2 py-1 bg-white dark:bg-gray-800 dark:bg-gray-600 border border-gray-200 dark:border-gray-700 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300"
                       >
                         {item}
                       </span>

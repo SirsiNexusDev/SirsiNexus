@@ -3,27 +3,23 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { logout } from '@/store/slices/authSlice';
-import { useTheme } from 'next-themes';
 import {
   Bell,
   Settings,
   User,
-  Sun,
-  Moon,
   ChevronDown,
   LogOut,
-  Monitor,
   Search,
   Command,
 } from 'lucide-react';
 import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsDropDown } from './SettingsDropDown';
 import { GlobalSearch } from './GlobalSearch';
+import { ThemeToggle } from './ThemeToggle';
 import Image from 'next/image';
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { theme, setTheme } = useTheme();
   const user = useAppSelector((state) => state.auth.user);
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = React.useState(false);
@@ -34,13 +30,6 @@ export const Header: React.FC = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Debug theme changes
-  useEffect(() => {
-    if (mounted) {
-      console.log('Current theme:', theme);
-    }
-  }, [theme, mounted]);
 
   // Global search shortcut
   useEffect(() => {
@@ -55,11 +44,6 @@ export const Header: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleThemeToggle = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    console.log('Theme toggle:', { current: theme, new: newTheme });
-    setTheme(newTheme);
-  };
 
   if (!mounted) {
     return null;
@@ -70,7 +54,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
+    <header className="bg-white dark:bg-gray-800/95 dark:bg-slate-900/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
       <div className="max-w-full mx-auto px-6">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
@@ -87,7 +71,7 @@ export const Header: React.FC = () => {
                     v0.4.2
                   </span>
                   <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-emerald-50 dark:bg-emerald-900/200 rounded-full"></div>
                     <span className="text-xs text-slate-600 dark:text-slate-300">Live</span>
                   </div>
                 </div>
@@ -111,17 +95,7 @@ export const Header: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleThemeToggle}
-              className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            >
-              {theme === 'dark' ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </button>
+            <ThemeToggle variant="dropdown" />
 
             <NotificationDropdown />
 

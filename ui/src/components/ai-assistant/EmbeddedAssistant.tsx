@@ -134,14 +134,14 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
               exit={{ opacity: 0, height: 0 }}
               className="mt-2 overflow-hidden"
             >
-              <div className="p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
+              <div className="p-3 bg-white dark:bg-gray-800 border border-slate-200 rounded-lg shadow-sm">
                 <div className="space-y-2 mb-3 max-h-32 overflow-y-auto">
                   {messages.map((message, index) => (
                     <div
                       key={`compact-message-${message.id}-${index}`}
                       className={`text-xs p-2 rounded ${
                         message.sender === 'user'
-                          ? 'bg-indigo-100 text-indigo-800 ml-4'
+                          ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 ml-4'
                           : 'bg-slate-100 text-slate-700 mr-4'
                       }`}
                     >
@@ -202,13 +202,13 @@ export const EmbeddedAssistant: React.FC<EmbeddedAssistantProps> = ({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="w-80 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+            className="w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-slate-200 overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-white dark:bg-gray-800/20 rounded-lg flex items-center justify-center">
                     <Sparkles className="h-4 w-4 text-white" />
                   </div>
                   <div>

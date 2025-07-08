@@ -127,7 +127,7 @@ export default function BackendTestPage() {
         {testReport && (
           <button
             onClick={handleDownloadReport}
-            className="flex items-center space-x-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:bg-gray-900"
+            className="flex items-center space-x-2 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900"
           >
             <Download className="h-5 w-5" />
             <span>Download Report</span>
@@ -138,31 +138,31 @@ export default function BackendTestPage() {
       {/* Test Summary */}
       {testResults.length > 0 && (
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+          <div className="rounded-lg border border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 p-4">
             <div className="flex items-center">
               <CheckCircle className="h-6 w-6 text-green-600" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-green-800">Passed</p>
+                <p className="text-sm font-medium text-green-800 dark:text-green-300">Passed</p>
                 <p className="text-lg font-semibold text-green-900">{passedTests}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <div className="rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20 p-4">
             <div className="flex items-center">
               <XCircle className="h-6 w-6 text-red-600" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-red-800">Failed</p>
+                <p className="text-sm font-medium text-red-800 dark:text-red-300">Failed</p>
                 <p className="text-lg font-semibold text-red-900">{failedTests}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+          <div className="rounded-lg border border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 p-4">
             <div className="flex items-center">
               <Clock className="h-6 w-6 text-yellow-600" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-800">Pending</p>
+                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Pending</p>
                 <p className="text-lg font-semibold text-yellow-900">{pendingTests}</p>
               </div>
             </div>
@@ -177,10 +177,10 @@ export default function BackendTestPage() {
             key={index}
             className={`rounded-lg border p-4 ${
               result.status === 'passed'
-                ? 'border-green-200 bg-green-50'
+                ? 'border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20'
                 : result.status === 'failed'
-                ? 'border-red-200 bg-red-50'
-                : 'border-yellow-200 bg-yellow-50'
+                ? 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20'
+                : 'border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20'
             }`}
           >
             <div className="flex items-start justify-between">
@@ -191,7 +191,7 @@ export default function BackendTestPage() {
                 <div>
                   <h3 className="font-medium text-gray-900 dark:text-gray-100">{result.testName}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{result.message}</p>
-                  <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                  <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                     <span>
                       Completed: {result.timestamp.toLocaleTimeString()}
                     </span>
@@ -206,10 +206,10 @@ export default function BackendTestPage() {
                 <span
                   className={`text-sm font-medium capitalize ${
                     result.status === 'passed'
-                      ? 'text-green-800'
+                      ? 'text-green-800 dark:text-green-300'
                       : result.status === 'failed'
-                      ? 'text-red-800'
-                      : 'text-yellow-800'
+                      ? 'text-red-800 dark:text-red-300'
+                      : 'text-yellow-800 dark:text-yellow-300'
                   }`}
                 >
                   {result.status}

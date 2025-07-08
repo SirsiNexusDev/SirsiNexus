@@ -73,11 +73,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Project Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Project Name</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Project Name</label>
         <input
           type="text"
           {...register('name')}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -86,11 +86,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
         <textarea
           {...register('description')}
           rows={3}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
@@ -99,10 +99,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
 
       {/* Source Platform */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Source Platform</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Source Platform</label>
         <select
           {...register('sourceType')}
-          className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
         >
           <option value="">Select source platform</option>
           {platformOptions.map((platform) => (
@@ -118,10 +118,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
 
       {/* Target Platform */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Target Platform</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Target Platform</label>
         <select
           {...register('targetType')}
-          className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
         >
           <option value="">Select target platform</option>
           {platformOptions
@@ -139,10 +139,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ onSubmit }) => {
 
       {/* Environment Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Environment</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Environment</label>
         <select
           {...register('environmentType')}
-          className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 pl-3 pr-10 shadow-sm focus:border-sirsi-500 focus:outline-none focus:ring-1 focus:ring-sirsi-500"
         >
           <option value="">Select environment type</option>
           {environmentOptions.map((env) => (

@@ -18,7 +18,7 @@ export default function AgentsDocsPage() {
         <div className="flex items-center gap-4 mb-8">
           <Link 
             href="/agents" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Agents
@@ -108,17 +108,17 @@ export default function AgentsDocsPage() {
                 <div>
                   <h4 className="font-semibold mb-3">Core Components</h4>
                   <div className="grid md:grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <Bot className="h-6 w-6 mx-auto text-blue-600 mb-2" />
                       <h5 className="font-semibold">Agent Runtime</h5>
                       <p className="text-xs text-muted-foreground">Execution environment</p>
                     </div>
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <Code className="h-6 w-6 mx-auto text-green-600 mb-2" />
                       <h5 className="font-semibold">Task Engine</h5>
                       <p className="text-xs text-muted-foreground">Workflow processing</p>
                     </div>
-                    <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                       <Network className="h-6 w-6 mx-auto text-purple-600 mb-2" />
                       <h5 className="font-semibold">Communication Layer</h5>
                       <p className="text-xs text-muted-foreground">Secure messaging</p>
@@ -366,7 +366,7 @@ tasks:
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="border-l-4 border-green-500 pl-4">
-                    <h4 className="font-semibold text-green-700">Security Best Practices</h4>
+                    <h4 className="font-semibold text-green-700 dark:text-green-300">Security Best Practices</h4>
                     <ul className="text-sm text-muted-foreground space-y-1 mt-2">
                       <li>✓ Use TLS encryption for all communications</li>
                       <li>✓ Rotate API keys regularly</li>
@@ -379,7 +379,7 @@ tasks:
                 </div>
                 <div className="space-y-4">
                   <div className="border-l-4 border-blue-500 pl-4">
-                    <h4 className="font-semibold text-blue-700">Operational Best Practices</h4>
+                    <h4 className="font-semibold text-blue-700 dark:text-blue-300">Operational Best Practices</h4>
                     <ul className="text-sm text-muted-foreground space-y-1 mt-2">
                       <li>✓ Deploy agents in high-availability pairs</li>
                       <li>✓ Set appropriate resource limits</li>

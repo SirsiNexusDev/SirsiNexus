@@ -288,9 +288,9 @@ export default function SettingsPage() {
     text: isDarkMode ? 'text-white' : 'text-gray-900 dark:text-gray-100',
     textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600 dark:text-gray-400',
     border: isDarkMode ? 'border-gray-700' : 'border-gray-200 dark:border-gray-700',
-    input: isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white dark:bg-gray-800 border-gray-300 text-gray-900 dark:text-gray-100',
-    sidebarActive: isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700',
-    sidebarInactive: isDarkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:bg-gray-900'
+    input: isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100',
+    sidebarActive: isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300',
+    sidebarInactive: isDarkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:bg-gray-900'
   };
 
   if (!mounted) {
@@ -302,7 +302,7 @@ export default function SettingsPage() {
       {/* Sidebar */}
       <div className={`w-64 ${themeClasses.sidebarBg} ${themeClasses.border} border-r flex flex-col`}>
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <h1 className={`text-xl font-semibold ${themeClasses.text}`}>Settings</h1>
         </div>
 
@@ -379,7 +379,7 @@ export default function SettingsPage() {
                   {/* User Profile Card */}
                   <div className={`p-6 rounded-lg ${themeClasses.border} border`}>
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-blue-50 dark:to-gray-800 dark:from-gray-9000 to-purple-600 rounded-full flex items-center justify-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-50 dark:from-gray-900 dark:to-gray-8000 to-purple-600 rounded-full flex items-center justify-center">
                         <span className="text-2xl font-bold text-white">
                           {user?.name?.charAt(0).toUpperCase() || 'U'}
                         </span>
@@ -394,12 +394,12 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             user?.role === 'admin' 
-                              ? 'bg-purple-100 text-purple-800' 
-                              : 'bg-blue-100 text-blue-800'
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300' 
+                              : 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                           }`}>
                             {user?.role?.toUpperCase() || 'USER'}
                           </span>
-                          <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                          <span className="text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
                             Active
                           </span>
                         </div>
@@ -407,7 +407,7 @@ export default function SettingsPage() {
                     </div>
                     
                     {/* Account Stats */}
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                       <div className="text-center">
                         <div className={`text-lg font-semibold ${themeClasses.text}`}>
                           {user?.createdAt ? Math.floor((new Date().getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) : 0}
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                     />
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Change Password</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
@@ -526,7 +526,7 @@ export default function SettingsPage() {
                       <span className={`font-mono text-sm ${themeClasses.textSecondary}`}>
                         v0.2025.01.07.08.36.stable_02
                       </span>
-                      <span className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-green-900 text-green-100' : 'bg-green-100 text-green-800'}`}>
+                      <span className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-green-900 text-green-100' : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'}`}>
                         Up to date
                       </span>
                     </div>
@@ -750,8 +750,8 @@ export default function SettingsPage() {
                           />
                           <div className={`w-4 h-4 rounded-full border-2 ${
                             theme === value 
-                              ? 'border-blue-500 bg-blue-500' 
-                              : isDarkMode ? 'border-gray-600' : 'border-gray-300'
+                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/200' 
+                              : isDarkMode ? 'border-gray-600' : 'border-gray-300 dark:border-gray-600'
                           }`}>
                             {theme === value && (
                               <div className="w-full h-full rounded-full bg-white dark:bg-gray-800 scale-50" />
@@ -828,7 +828,7 @@ export default function SettingsPage() {
                       ].map(({ key, label, description, warning }) => (
                         <div key={key} className={`p-4 rounded-lg border ${
                           warning 
-                            ? 'border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20' 
+                            ? 'border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20' 
                             : themeClasses.border
                         }`}>
                           <div className="flex items-center justify-between">
@@ -1029,7 +1029,7 @@ export default function SettingsPage() {
                     </select>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className={`font-medium ${themeClasses.text}`}>Export Data</h3>
@@ -1100,7 +1100,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex gap-3">
                       <Link href="/credentials" className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         <ExternalLink className="h-4 w-4" />
@@ -1408,7 +1408,7 @@ export default function SettingsPage() {
                         <span className={themeClasses.textSecondary}>Version</span>
                         <div className="flex items-center gap-2">
                           <span className={`font-mono text-sm ${themeClasses.text}`}>v0.5.2-alpha</span>
-                          <span className="px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 rounded">
+                          <span className="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:bg-green-900 dark:text-green-100 rounded">
                             Up to date
                           </span>
                         </div>
@@ -1426,7 +1426,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Platform Capabilities</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
@@ -1448,7 +1448,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Support</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -1472,7 +1472,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 className={`text-lg font-medium ${themeClasses.text} mb-4`}>Legal</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">

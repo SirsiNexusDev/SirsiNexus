@@ -49,10 +49,10 @@ export default function ProjectsPage() {
 
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Projects
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400">
             Manage your migration projects
           </p>
         </div>
@@ -89,10 +89,10 @@ export default function ProjectsPage() {
           >
             <div className="mb-4 flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                   {project.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {project.description}
                 </p>
               </div>
@@ -103,8 +103,8 @@ export default function ProjectsPage() {
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Progress</span>
-                <span className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">
                   {project.progress}%
                 </span>
               </div>
@@ -120,16 +120,16 @@ export default function ProjectsPage() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Cloud className="h-5 w-5 text-gray-400" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {project.source} → {project.target}
                   </span>
                 </div>
                 <span
                   className={`rounded-full px-3 py-1 text-xs ${
                     project.status === 'completed'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:bg-green-900/50 dark:text-green-400'
                       : project.status === 'in_progress'
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
                   }`}
                 >

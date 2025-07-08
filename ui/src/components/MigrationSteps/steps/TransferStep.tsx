@@ -138,7 +138,7 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-lg font-medium">Resource Transfer</h3>
           <button
@@ -162,14 +162,14 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
                 key={resource.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Icon className="mr-3 h-5 w-5 text-sirsi-500" />
                     <div>
                       <h4 className="font-medium">{resource.name}</h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {resource.metadata.type} • {resource.metadata.size}
                       </p>
                     </div>
@@ -186,11 +186,11 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
                 {isCurrent && (
                   <div className="mt-4">
                     <div className="mb-2 flex justify-between text-sm">
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 dark:text-gray-400">
                         {formatBytes(transferStatus.bytesTransferred)} of{' '}
                         {formatBytes(transferStatus.totalBytes)}
                       </span>
-                      <span className="text-gray-600">{transferStatus.speed}</span>
+                      <span className="text-gray-600 dark:text-gray-400">{transferStatus.speed}</span>
                     </div>
                     <div className="h-2 rounded-full bg-gray-200">
                       <motion.div
@@ -199,7 +199,7 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
                         animate={{ width: `${getProgress()}%` }}
                       />
                     </div>
-                    <p className="mt-2 text-sm text-gray-600">
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       Estimated time remaining: {transferStatus.estimatedTimeRemaining}
                     </p>
                   </div>
@@ -212,14 +212,14 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
 
       {/* Transfer Summary */}
       {completedResources.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <h3 className="mb-4 text-lg font-medium">Transfer Summary</h3>
           <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4">
               <div className="text-2xl font-bold">{completedResources.length}</div>
-              <div className="text-sm text-gray-600">Resources Transferred</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Resources Transferred</div>
             </div>
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4">
               <div className="text-2xl font-bold">
                 {formatBytes(
                   completedResources.reduce(
@@ -228,23 +228,23 @@ export const TransferStep: React.FC<TransferStepProps> = ({ onComplete }) => {
                   )
                 )}
               </div>
-              <div className="text-sm text-gray-600">Total Data Transferred</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Total Data Transferred</div>
             </div>
-            <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4">
               <div className="text-2xl font-bold text-green-500">100%</div>
-              <div className="text-sm text-gray-600">Success Rate</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Success Rate</div>
             </div>
           </div>
         </div>
       )}
 
       {transferStatus.errors.length > 0 && (
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+        <div className="rounded-lg border border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 p-4">
           <div className="flex items-center">
             <AlertTriangle className="mr-2 h-5 w-5 text-yellow-500" />
-            <h4 className="font-medium text-yellow-800">Transfer Warnings</h4>
+            <h4 className="font-medium text-yellow-800 dark:text-yellow-300">Transfer Warnings</h4>
           </div>
-          <ul className="mt-2 list-inside list-disc text-sm text-yellow-700">
+          <ul className="mt-2 list-inside list-disc text-sm text-yellow-700 dark:text-yellow-300">
             {transferStatus.errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}

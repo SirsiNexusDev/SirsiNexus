@@ -13,6 +13,7 @@ import {
   Sun,
   X
 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface SettingsDropDownProps {
   isOpen: boolean;
@@ -21,7 +22,6 @@ interface SettingsDropDownProps {
 
 export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
-  const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
 
   const handleNavigateToSettings = () => {
@@ -44,38 +44,26 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute right-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-20"
+            className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-20"
           >
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Settings</h3>
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Settings</h3>
             </div>
 
             <div className="p-4 space-y-4">
               {/* Theme Toggle */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {darkMode ? <Moon className="h-4 w-4 text-gray-500" /> : <Sun className="h-4 w-4 text-gray-500" />}
-                  <span className="text-sm text-gray-700">Dark Mode</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Theme</span>
                 </div>
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    darkMode ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      darkMode ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
-                </button>
+                <ThemeToggle variant="dropdown" />
               </div>
 
               {/* Notifications Toggle */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Bell className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">Notifications</span>
+                  <Bell className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Notifications</span>
                 </div>
                 <button
                   onClick={() => setNotifications(!notifications)}
@@ -84,7 +72,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-gray-800 transition-transform ${
                       notifications ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
@@ -94,7 +82,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Account Settings */}
               <button 
                 onClick={handleNavigateToSettings}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 dark:bg-gray-900 rounded-lg"
               >
                 <User className="h-4 w-4 text-slate-600" />
                 Account Settings
@@ -103,7 +91,7 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Security */}
               <button 
                 onClick={handleNavigateToSettings}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 dark:bg-gray-900 rounded-lg"
               >
                 <Lock className="h-4 w-4 text-slate-600" />
                 Security & Privacy
@@ -112,17 +100,17 @@ export const SettingsDropDown: React.FC<SettingsDropDownProps> = ({ isOpen, onCl
               {/* Display */}
               <button 
                 onClick={handleNavigateToSettings}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 rounded-lg"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-800 font-medium hover:bg-gray-50 dark:bg-gray-900 rounded-lg"
               >
                 <Monitor className="h-4 w-4 text-slate-600" />
                 Display Settings
               </button>
             </div>
 
-            <div className="p-3 border-t border-gray-200">
+            <div className="p-3 border-t border-gray-200 dark:border-gray-700">
               <button 
                 onClick={handleNavigateToSettings}
-                className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300 font-medium"
               >
                 All Settings
               </button>

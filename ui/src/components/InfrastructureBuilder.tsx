@@ -2236,13 +2236,13 @@ const categories = [
 
 const providers = [
   { id: 'aws', name: 'AWS', color: 'bg-orange-100 text-orange-700', count: 1 },
-  { id: 'azure', name: 'Azure', color: 'bg-blue-100 text-blue-700', count: 1 },
-  { id: 'gcp', name: 'GCP', color: 'bg-green-100 text-green-700', count: 1 },
-  { id: 'kubernetes', name: 'Kubernetes', color: 'bg-purple-100 text-purple-700', count: 1 },
-  { id: 'multi', name: 'Multi-Cloud', color: 'bg-gray-100 text-gray-700', count: 2 },
-  { id: 'ibm', name: 'IBM Cloud', color: 'bg-indigo-100 text-indigo-700', count: 1 },
-  { id: 'oracle', name: 'Oracle Cloud', color: 'bg-red-100 text-red-700', count: 1 },
-  { id: 'alibaba', name: 'Alibaba Cloud', color: 'bg-yellow-100 text-yellow-700', count: 1 },
+  { id: 'azure', name: 'Azure', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', count: 1 },
+  { id: 'gcp', name: 'GCP', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', count: 1 },
+  { id: 'kubernetes', name: 'Kubernetes', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300', count: 1 },
+  { id: 'multi', name: 'Multi-Cloud', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300', count: 2 },
+  { id: 'ibm', name: 'IBM Cloud', color: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700', count: 1 },
+  { id: 'oracle', name: 'Oracle Cloud', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', count: 1 },
+  { id: 'alibaba', name: 'Alibaba Cloud', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300', count: 1 },
 ];
 
 const formats = [
@@ -2382,12 +2382,12 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
     button: 'bg-purple-600 hover:bg-purple-700',
     accent: 'text-purple-400'
   } : {
-    bg: 'bg-gray-50',
-    cardBg: 'bg-white',
-    border: 'border-gray-200',
-    text: 'text-gray-900',
-    textSecondary: 'text-gray-600',
-    input: 'bg-white border-gray-300 text-gray-900',
+    bg: 'bg-gray-50 dark:bg-gray-900',
+    cardBg: 'bg-white dark:bg-gray-800',
+    border: 'border-gray-200 dark:border-gray-700',
+    text: 'text-gray-900 dark:text-gray-100',
+    textSecondary: 'text-gray-600 dark:text-gray-400',
+    input: 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100',
     button: 'bg-emerald-600 hover:bg-emerald-700',
     accent: 'text-emerald-600'
   };
@@ -2547,8 +2547,8 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                         </div>
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           selectedCategory === category.id
-                            ? 'bg-white/20 text-white'
-                            : 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-400'
+                            ? 'bg-white dark:bg-gray-800/20 text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:bg-slate-700 dark:text-slate-400'
                         }`}>
                           {category.count}
                         </span>
@@ -2605,7 +2605,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                   <div className="flex items-start justify-between mb-2">
                     <h4 className={`font-medium ${themeClasses.text} text-sm`}>{template.name}</h4>
                     <span className={`text-xs px-2 py-1 rounded-full ${
-                      providers.find(p => p.id === template.provider)?.color || 'bg-gray-100 text-gray-600'
+                      providers.find(p => p.id === template.provider)?.color || 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                     }`}>
                       {providers.find(p => p.id === template.provider)?.name}
                     </span>
@@ -2615,9 +2615,9 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                   </p>
                   <div className="flex items-center gap-2 text-xs">
                     <span className={`px-2 py-0.5 rounded-full ${
-                      template.complexity === 'basic' ? 'bg-green-100 text-green-700' :
-                      template.complexity === 'intermediate' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-red-100 text-red-700'
+                      template.complexity === 'basic' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                      template.complexity === 'intermediate' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
+                      'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                     }`}>
                       {template.complexity}
                     </span>
@@ -2751,7 +2751,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                                 <AlertCircle className="h-4 w-4 text-red-500" />
                               )}
                               {request.status === 'pending' && (
-                                <Clock className="h-4 w-4 text-gray-500" />
+                                <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                               )}
                             </div>
                           </div>
@@ -2801,7 +2801,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     <div className={`${themeClasses.cardBg} ${themeClasses.border} border rounded-lg p-6 text-center`}>
-                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100' : 'bg-emerald-100'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
+                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100 dark:bg-purple-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
                         <Terminal className={`h-6 w-6 ${isDarkMode ? 'text-purple-600' : 'text-emerald-600'}`} />
                       </div>
                       <h3 className={`font-semibold ${themeClasses.text} mb-2`}>Natural Language</h3>
@@ -2811,7 +2811,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                     </div>
                     
                     <div className={`${themeClasses.cardBg} ${themeClasses.border} border rounded-lg p-6 text-center`}>
-                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100' : 'bg-emerald-100'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
+                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100 dark:bg-purple-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
                         <Code className={`h-6 w-6 ${isDarkMode ? 'text-purple-600' : 'text-emerald-600'}`} />
                       </div>
                       <h3 className={`font-semibold ${themeClasses.text} mb-2`}>Multiple Formats</h3>
@@ -2821,7 +2821,7 @@ export const InfrastructureBuilder: React.FC<InfrastructureBuilderProps> = ({
                     </div>
                     
                     <div className={`${themeClasses.cardBg} ${themeClasses.border} border rounded-lg p-6 text-center`}>
-                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100' : 'bg-emerald-100'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
+                      <div className={`w-12 h-12 ${isDarkMode ? 'bg-purple-100 dark:bg-purple-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'} rounded-lg flex items-center justify-center mx-auto mb-4`}>
                         <Cloud className={`h-6 w-6 ${isDarkMode ? 'text-purple-600' : 'text-emerald-600'}`} />
                       </div>
                       <h3 className={`font-semibold ${themeClasses.text} mb-2`}>Production Ready</h3>

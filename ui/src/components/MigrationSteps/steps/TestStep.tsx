@@ -225,7 +225,7 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
               </div>
             </TabsContent>
             <TabsContent value="diagram">
-              <div className="rounded-lg border bg-white p-4">
+              <div className="rounded-lg border bg-white dark:bg-gray-800 p-4">
                 <pre className="mermaid">{sampleDiagram}</pre>
               </div>
             </TabsContent>
@@ -270,9 +270,9 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium">{result.name}</h4>
-                    <p className="text-sm text-gray-600">{result.message}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{result.message}</p>
                     {result.details && (
-                      <p className="mt-1 text-xs text-gray-500">{result.details}</p>
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{result.details}</p>
                     )}
                   </div>
                   {getStatusBadge(result.status)}
@@ -308,7 +308,7 @@ export const TestStep: React.FC<TestStepProps> = ({ onComplete, requirements }) 
                   className="rounded-lg border p-4"
                 >
                   <div className="text-2xl font-bold">{count}</div>
-                  <div className="text-sm capitalize text-gray-600">{status}</div>
+                  <div className="text-sm capitalize text-gray-600 dark:text-gray-400">{status}</div>
                 </div>
               ))}
             </div>

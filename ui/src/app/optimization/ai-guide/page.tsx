@@ -109,7 +109,7 @@ export default function OptimizationAIGuidePage() {
         <div className="flex items-center gap-4 mb-8">
           <Link 
             href="/optimization" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Optimization
@@ -162,7 +162,7 @@ export default function OptimizationAIGuidePage() {
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                        <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                           {feature.accuracy} accurate
                         </Badge>
                       </div>
@@ -212,7 +212,7 @@ export default function OptimizationAIGuidePage() {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-sm mb-2 text-green-700">Pros:</h4>
+                        <h4 className="font-semibold text-sm mb-2 text-green-700 dark:text-green-300">Pros:</h4>
                         <ul className="space-y-1 text-sm text-green-600">
                           {strategy.pros.map((pro, proIndex) => (
                             <li key={proIndex}>✓ {pro}</li>
@@ -319,7 +319,7 @@ export default function OptimizationAIGuidePage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="border-l-4 border-green-500 pl-4">
-                    <h4 className="font-semibold text-green-700">Do's</h4>
+                    <h4 className="font-semibold text-green-700 dark:text-green-300">Do's</h4>
                     <ul className="space-y-1 text-sm text-muted-foreground mt-2">
                       <li>✓ Start with non-critical environments</li>
                       <li>✓ Monitor AI decisions closely initially</li>
@@ -332,7 +332,7 @@ export default function OptimizationAIGuidePage() {
                 </div>
                 <div className="space-y-4">
                   <div className="border-l-4 border-red-500 pl-4">
-                    <h4 className="font-semibold text-red-700">Don'ts</h4>
+                    <h4 className="font-semibold text-red-700 dark:text-red-300">Don'ts</h4>
                     <ul className="space-y-1 text-sm text-muted-foreground mt-2">
                       <li>✗ Enable full automation without testing</li>
                       <li>✗ Ignore AI confidence scores</li>
@@ -345,12 +345,12 @@ export default function OptimizationAIGuidePage() {
                 </div>
               </div>
 
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
                 <div className="flex items-start gap-2">
                   <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
                   <div>
                     <h4 className="font-medium text-blue-900">AI Safety Considerations</h4>
-                    <p className="text-blue-700 text-sm mt-1">
+                    <p className="text-blue-700 dark:text-blue-300 text-sm mt-1">
                       Always maintain human oversight for critical systems. The AI provides recommendations 
                       and can automate routine optimizations, but important architectural decisions should 
                       involve human review. Set appropriate confidence thresholds and safety limits.
@@ -371,17 +371,17 @@ export default function OptimizationAIGuidePage() {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">94.2%</div>
                   <div className="text-sm text-muted-foreground">Prediction Accuracy</div>
                   <div className="text-xs text-green-600 mt-1">↑ 2.1% from last month</div>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600">31%</div>
                   <div className="text-sm text-muted-foreground">Cost Reduction</div>
                   <div className="text-xs text-blue-600 mt-1">↑ 5% from last month</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-purple-600">12ms</div>
                   <div className="text-sm text-muted-foreground">Avg Response Time</div>
                   <div className="text-xs text-purple-600 mt-1">↓ 3ms from last month</div>

@@ -93,17 +93,17 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
                 SirsiNexus Documentation
                 {aiMode && <span className="text-blue-600 ml-2">(AI Assistant Mode)</span>}
               </h1>
-              <p className="text-xl text-gray-600 mt-2">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mt-2">
                 Comprehensive platform documentation and technical reference
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
           {/* Sidebar */}
           <div className="w-80 flex-shrink-0">
             {/* Search */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
@@ -132,14 +132,14 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
                   placeholder="Search documentation..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
 
             {/* Categories */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Categories</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Categories</h3>
               <ul className="space-y-2">
                 {categories.map((category) => (
                   <li key={category.id}>
@@ -147,12 +147,12 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
                       onClick={() => setSelectedCategory(category.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors ${
                         selectedCategory === category.id
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800'
                       }`}
                     >
                       <span>{category.name}</span>
-                      <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                      <span className="text-xs bg-gray-200 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full">
                         {category.count}
                       </span>
                     </button>
@@ -162,8 +162,8 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
             </div>
 
             {/* Document List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <h3 className="font-semibold text-gray-900 mb-4">Documents</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Documents</h3>
               <ul className="space-y-2 max-h-96 overflow-y-auto">
                 {filteredDocs.map((doc, index) => (
                   <li key={index}>
@@ -171,14 +171,14 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
                       onClick={() => loadDocumentContent(doc)}
                       className={`w-full flex items-start gap-3 px-3 py-3 rounded-lg text-left transition-colors ${
                         selectedDoc?.path === doc.path
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-900'
                       }`}
                     >
                       <FileText className="h-4 w-4 mt-0.5 flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <div className="font-medium text-sm">{doc.title}</div>
-                        <div className="text-xs text-gray-500 truncate">{doc.path}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{doc.path}</div>
                         <div className="text-xs text-gray-400">{doc.lastModified}</div>
                       </div>
                     </button>
@@ -190,12 +190,12 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8">
               {selectedDoc ? (
                 <div>
                   <div className="mb-6">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">{selectedDoc.title}</h2>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{selectedDoc.title}</h2>
+                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                       <span>Category: {selectedDoc.category}</span>
                       <span>•</span>
                       <span>Last modified: {selectedDoc.lastModified}</span>
@@ -207,11 +207,11 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
                   {isLoading ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                      <span className="ml-3 text-gray-600">Loading document...</span>
+                      <span className="ml-3 text-gray-600 dark:text-gray-400">Loading document...</span>
                     </div>
                   ) : (
                     <div className="prose prose-lg max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans text-gray-800 leading-relaxed">
+                      <pre className="whitespace-pre-wrap font-sans text-gray-800 dark:text-gray-200 leading-relaxed">
                         {selectedDoc.content}
                       </pre>
                     </div>
@@ -220,15 +220,15 @@ export default function DocumentationViewer({ aiMode = false }: DocumentationVie
               ) : (
                 <div className="text-center py-12">
                   <Book className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     Welcome to SirsiNexus Documentation
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
                     Select a document from the sidebar to view its contents.
                   </p>
                   {aiMode && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                      <p className="text-blue-800 text-sm">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 max-w-md mx-auto">
+                      <p className="text-blue-800 dark:text-blue-300 text-sm">
                         <strong>AI Assistant Mode:</strong> This interface provides comprehensive access 
                         to all SirsiNexus documentation for contextual AI responses.
                       </p>

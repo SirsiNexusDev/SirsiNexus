@@ -146,17 +146,17 @@ ALERT_THRESHOLDS='{
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:to-gray-800 dark:from-gray-900 to-indigo-100 dark:to-gray-800 dark:from-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:from-gray-900 dark:to-gray-800 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <a href="/ai-orchestration" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4">
+          <a href="/ai-orchestration" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-300 mb-4">
             <ArrowLeft className="h-4 w-4" />
             Back to AI Orchestration
           </a>
           
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/200 rounded-xl flex items-center justify-center">
               <Brain className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -173,14 +173,14 @@ ALERT_THRESHOLDS='{
             <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">Documentation</span>
             </a>
-            <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
               <Play className="h-4 w-4 text-blue-500" />
               <span className="font-medium text-blue-900">Tutorial</span>
             </a>
             <a href="/ai-orchestration/faq" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
               <span className="font-medium">FAQ</span>
             </a>
-            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 text-white p-3 rounded-lg">
+            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:from-gray-900 dark:to-gray-8000 text-white p-3 rounded-lg">
               <Brain className="h-4 w-4" />
               <span className="font-medium">AI Guide</span>
             </button>
@@ -195,7 +195,7 @@ ALERT_THRESHOLDS='{
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-50 dark:bg-blue-900/200 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
@@ -211,9 +211,9 @@ ALERT_THRESHOLDS='{
                 onClick={() => setCurrentStep(index)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
                   index === currentStep
-                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-300'
                     : step.completed
-                    ? 'bg-green-100 text-green-800 border-green-300'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300'
                     : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800'
                 }`}
               >
@@ -231,7 +231,7 @@ ALERT_THRESHOLDS='{
         {/* Current Step Content */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/200 rounded-lg flex items-center justify-center text-white font-bold">
               {currentStep + 1}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{currentStepData.title}</h2>
@@ -260,7 +260,7 @@ ALERT_THRESHOLDS='{
                 {currentStepData.command ? 'Expected Response' : 'Configuration'}
               </h4>
               <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
-                <pre className="text-sm text-gray-800 overflow-x-auto">
+                <pre className="text-sm text-gray-800 dark:text-gray-200 overflow-x-auto">
                   {currentStepData.code}
                 </pre>
               </div>
@@ -285,7 +285,7 @@ ALERT_THRESHOLDS='{
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Previous Step
             </button>
@@ -293,7 +293,7 @@ ALERT_THRESHOLDS='{
             <button
               onClick={() => markStepComplete(currentStep)}
               disabled={currentStepData.completed}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-green-50 dark:bg-green-900/200 text-white rounded-lg hover:bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed transition-colors"
             >
               {currentStepData.completed ? 'Completed ✓' : 'Mark Complete'}
             </button>
@@ -301,7 +301,7 @@ ALERT_THRESHOLDS='{
             <button
               onClick={nextStep}
               disabled={currentStep === steps.length - 1}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-blue-50 dark:bg-blue-900/200 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next Step
             </button>
@@ -310,7 +310,7 @@ ALERT_THRESHOLDS='{
 
         {/* Completion */}
         {steps.every(step => step.completed) && (
-          <div className="bg-gradient-to-r from-green-50 dark:to-gray-800 dark:from-gray-9000 to-emerald-600 rounded-xl shadow-lg text-white p-6">
+          <div className="bg-gradient-to-r from-green-50 dark:from-gray-900 dark:to-gray-8000 to-emerald-600 rounded-xl shadow-lg text-white p-6">
             <h3 className="text-xl font-bold mb-2">🎉 Tutorial Complete!</h3>
             <p className="mb-4">
               Congratulations! You've successfully completed the AI Orchestration tutorial. 

@@ -233,10 +233,10 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'critical': return 'text-red-600 bg-red-100 border-red-200';
+      case 'critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-700';
       case 'high': return 'text-orange-600 bg-orange-100 border-orange-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
-      default: return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-700';
+      default: return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700';
     }
   };
 
@@ -254,7 +254,7 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
     <div className="space-y-6">
       {/* AI Analysis Header */}
       <Card className="card-action-premium border-2 border-purple-500/30 hover:border-purple-500/60 group relative overflow-hidden">
-        <div className="card-action-glow bg-purple-500/10"></div>
+        <div className="card-action-glow bg-purple-50 dark:bg-purple-900/200/10"></div>
         <div className="relative z-10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 group-hover:text-purple-600 transition-colors">
@@ -288,11 +288,11 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
                 
                 {aiMetrics && (
                   <div className="flex items-center gap-3 text-sm">
-                    <Badge variant="outline" className="bg-green-100 text-green-800">
+                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       {aiMetrics.decision_accuracy}% Accuracy
                     </Badge>
-                    <Badge variant="outline" className="bg-blue-100 text-blue-800">
+                    <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                       <Clock className="h-3 w-3 mr-1" />
                       {aiMetrics.response_time}s Response
                     </Badge>
@@ -303,7 +303,7 @@ export const AIEnhancedStep: React.FC<AIEnhancedStepProps> = ({
               {aiMetrics && (
                 <div className="text-right">
                   <div className="text-sm text-slate-600">AI System Status</div>
-                  <Badge variant="outline" className="bg-emerald-100 text-emerald-800">
+                  <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
                     <Shield className="h-3 w-3 mr-1" />
                     Operational
                   </Badge>

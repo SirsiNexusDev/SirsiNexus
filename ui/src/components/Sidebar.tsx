@@ -167,16 +167,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
     input: 'bg-slate-800 border-slate-600 text-slate-100',
     button: 'bg-purple-600 hover:bg-purple-700'
   } : {
-    bg: 'bg-white/95',
+    bg: 'bg-white dark:bg-gray-800/95',
     border: 'border-slate-200',
     text: 'text-slate-900',
     textSecondary: 'text-slate-600',
-    input: 'bg-white border-slate-200 text-slate-900',
+    input: 'bg-white dark:bg-gray-800 border-slate-200 text-slate-900',
     button: 'bg-emerald-600 hover:bg-emerald-700'
   };
 
   return (
-    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 dark:border-slate-700">
+    <div className="bg-white dark:bg-gray-800/95 dark:bg-slate-900/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 dark:border-slate-700">
       <nav className="p-4 space-y-6">
         {/* Natural Language AI Assistant */}
         <div className="mb-6">
@@ -239,7 +239,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-indigo-100 dark:bg-purple-100">
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-indigo-100 dark:bg-purple-100 dark:bg-purple-900/30">
                   <Wand2 className="h-3 w-3 text-indigo-600 dark:text-purple-600" />
                 </div>
                 <span className="text-sm font-medium text-slate-900 dark:text-slate-100">Smart Wizards</span>
@@ -383,7 +383,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="w-full bg-emerald-600 dark:bg-purple-600 hover:bg-emerald-700 dark:hover:bg-purple-700 text-white rounded-lg p-3 transition-colors group mb-3"
           >
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-emerald-500 dark:bg-purple-500">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/200 dark:bg-purple-50 dark:bg-purple-900/200">
                 <Code className="h-3 w-3 text-white" />
               </div>
               <div className="text-left">

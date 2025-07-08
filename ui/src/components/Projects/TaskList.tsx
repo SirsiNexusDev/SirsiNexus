@@ -36,30 +36,30 @@ export const TaskList: React.FC<TaskListProps> = ({ projectId }) => {
   const getStatusColor = (status: Task['status']) => {
     switch (status) {
       case 'todo':
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
       case 'in_progress':
-        return 'bg-blue-500';
+        return 'bg-blue-50 dark:bg-blue-900/200';
       case 'completed':
-        return 'bg-green-500';
+        return 'bg-green-50 dark:bg-green-900/200';
       case 'blocked':
-        return 'bg-red-500';
+        return 'bg-red-50 dark:bg-red-900/200';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
     }
   };
 
   const getPriorityColor = (priority: Task['priority']) => {
     switch (priority) {
       case 'low':
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
       case 'medium':
-        return 'bg-yellow-500';
+        return 'bg-yellow-50 dark:bg-yellow-900/200';
       case 'high':
         return 'bg-orange-500';
       case 'urgent':
-        return 'bg-red-500';
+        return 'bg-red-50 dark:bg-red-900/200';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
     }
   };
 
@@ -80,7 +80,7 @@ export const TaskList: React.FC<TaskListProps> = ({ projectId }) => {
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
                   <h4 className="font-medium">{task.title}</h4>
-                  <p className="text-sm text-gray-600">{task.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
                   <div className="flex items-center gap-2">
                     <Badge className={getStatusColor(task.status)}>
                       {task.status.replace('_', ' ')}
@@ -122,7 +122,7 @@ export const TaskList: React.FC<TaskListProps> = ({ projectId }) => {
                       {task.assignee.name?.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {task.assignee.name}
                   </span>
                 </div>

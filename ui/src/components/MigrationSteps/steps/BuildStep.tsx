@@ -188,11 +188,11 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
   return (
     <div className="space-y-6">
       {/* Infrastructure Build */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-medium">Infrastructure Build</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="text-lg font-medium dark:text-gray-100">Infrastructure Build</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Deploy and configure infrastructure components
             </p>
           </div>
@@ -212,14 +212,14 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+              className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4"
             >
               <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <task.icon className="mr-3 h-5 w-5 text-sirsi-500" />
                   <div>
-                    <h4 className="font-medium">{task.name}</h4>
-                    <p className="text-sm text-gray-600">{task.description}</p>
+                    <h4 className="font-medium dark:text-gray-100">{task.name}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
                   </div>
                 </div>
                 {getStatusIcon(task.status)}
@@ -240,13 +240,13 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
               {task.status !== 'pending' && (
                 <div className="mt-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Progress</span>
-                    <span className="font-medium">{task.progress}%</span>
+                    <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                    <span className="font-medium dark:text-gray-100">{task.progress}%</span>
                   </div>
-                  <div className="mt-1 h-2 rounded-full bg-gray-200">
+                  <div className="mt-1 h-2 rounded-full bg-gray-200 dark:bg-gray-600">
                     <motion.div
                       className={`h-full rounded-full ${
-                        task.status === 'failed' ? 'bg-red-500' : 'bg-sirsi-500'
+                        task.status === 'failed' ? 'bg-red-50 dark:bg-red-900/200' : 'bg-sirsi-500'
                       }`}
                       initial={{ width: '0%' }}
                       animate={{ width: `${task.progress}%` }}
@@ -257,13 +257,13 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
               )}
 
               {task.status === 'failed' && buildError?.taskId === task.id && (
-                <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
                   <div className="flex items-center space-x-2 mb-2">
-                    <AlertTriangle className="h-5 w-5 text-red-500" />
-                    <span className="text-sm font-medium text-red-900">Build Error</span>
+                    <AlertTriangle className="h-5 w-5 text-red-500 dark:text-red-400" />
+                    <span className="text-sm font-medium text-red-900 dark:text-red-400">Build Error</span>
                   </div>
-                  <p className="text-sm text-red-800">{buildError.message}</p>
-                  <div className="mt-3 text-xs text-red-600">
+                  <p className="text-sm text-red-800 dark:text-red-300">{buildError.message}</p>
+                  <div className="mt-3 text-xs text-red-600 dark:text-red-400">
                     <p>• Retry: Attempts the failed task again with current settings</p>
                     <p>• Bypass: Skips this task and continues with a warning (may affect functionality)</p>
                   </div>
@@ -271,7 +271,7 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
               )}
 
               {task.dependencies && task.dependencies.length > 0 && (
-                <div className="mt-2 text-xs text-gray-500">
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   Dependencies:{' '}
                   {task.dependencies.map((dep, i) => (
                     <span key={dep}>
@@ -288,12 +288,12 @@ export const BuildStep: React.FC<BuildStepProps> = ({ onComplete }) => {
 
       {/* Error Summary */}
       {showErrorResolution && buildError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+        <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6">
           <div className="flex items-center space-x-2 mb-4">
-            <AlertTriangle className="h-6 w-6 text-red-500" />
-            <h3 className="text-lg font-medium text-red-900">Build Failed</h3>
+            <AlertTriangle className="h-6 w-6 text-red-500 dark:text-red-400" />
+            <h3 className="text-lg font-medium text-red-900 dark:text-red-400">Build Failed</h3>
           </div>
-          <p className="text-red-800 mb-4">
+          <p className="text-red-800 dark:text-red-300 mb-4">
             The infrastructure build encountered an error during the {buildError.taskId} phase.
             You can retry the failed task or bypass it to continue with the migration.
           </p>

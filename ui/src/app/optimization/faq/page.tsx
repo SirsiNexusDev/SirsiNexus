@@ -127,7 +127,7 @@ export default function OptimizationFAQPage() {
         <div className="flex items-center gap-4 mb-8">
           <Link 
             href="/optimization" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Optimization
@@ -212,15 +212,15 @@ export default function OptimizationFAQPage() {
                 <div className="space-y-3">
                   <h4 className="font-semibold">Documentation</h4>
                   <div className="space-y-2">
-                    <Link href="/optimization/docs" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/optimization/docs" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">Docs</Badge>
                       Complete Optimization Guide
                     </Link>
-                    <Link href="/optimization/tutorial" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/optimization/tutorial" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">Tutorial</Badge>
                       Step-by-step Tutorial
                     </Link>
-                    <Link href="/optimization/ai-guide" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/optimization/ai-guide" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">AI Guide</Badge>
                       AI Optimization Guide
                     </Link>
@@ -230,15 +230,15 @@ export default function OptimizationFAQPage() {
                 <div className="space-y-3">
                   <h4 className="font-semibold">Related Features</h4>
                   <div className="space-y-2">
-                    <Link href="/analytics" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/analytics" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">Analytics</Badge>
                       Performance Analytics
                     </Link>
-                    <Link href="/scaling" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/scaling" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">Scaling</Badge>
                       Auto-scaling Features
                     </Link>
-                    <Link href="/observability" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
+                    <Link href="/observability" className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-300">
                       <Badge variant="outline">Monitoring</Badge>
                       Observability Tools
                     </Link>

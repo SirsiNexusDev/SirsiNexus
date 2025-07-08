@@ -166,7 +166,7 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
           <Key className="h-10 w-10 text-white" />
         </div>
         <h2 className="text-display text-3xl mb-4">{config.title}</h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto font-medium">{config.description}</p>
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">{config.description}</p>
       </div>
 
       {/* Environment Configuration Status */}
@@ -184,16 +184,16 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {sourceCredential && (
               <div className="space-y-2">
-                <h4 className="font-medium text-gray-900">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">
                   {wizardType === 'migration' ? 'Source Environment' : 'Target Environment'}
                 </h4>
                 <div className="card-professional p-6 hover-lift">
                   <div className="flex items-center space-x-4">
                     <div className={`p-2 rounded-lg ${
-                      sourceCredential.type === 'aws' ? 'bg-orange-100 text-orange-700' :
-                      sourceCredential.type === 'azure' ? 'bg-blue-100 text-blue-700' :
-                      sourceCredential.type === 'gcp' ? 'bg-green-100 text-green-700' :
-                      'bg-purple-100 text-purple-700'
+                      sourceCredential.type === 'aws' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
+                      sourceCredential.type === 'azure' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                      sourceCredential.type === 'gcp' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                      'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
                     }`}>
                       {sourceCredential.type === 'vsphere' ? (
                         <Server className="h-5 w-5" />
@@ -202,8 +202,8 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
                       )}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{sourceCredential.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{sourceCredential.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {sourceCredential.type.toUpperCase()} • {sourceCredential.region || sourceCredential.subscription || sourceCredential.project}
                       </p>
                     </div>
@@ -214,19 +214,19 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
 
             {targetCredential && (
               <div className="space-y-2">
-                <h4 className="font-medium text-gray-900">Target Environment</h4>
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">Target Environment</h4>
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center space-x-3">
                     <div className={`p-2 rounded-lg ${
-                      targetCredential.type === 'aws' ? 'bg-orange-100 text-orange-700' :
-                      targetCredential.type === 'azure' ? 'bg-blue-100 text-blue-700' :
-                      'bg-green-100 text-green-700'
+                      targetCredential.type === 'aws' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
+                      targetCredential.type === 'azure' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                      'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                     }`}>
                       <Cloud className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{targetCredential.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{targetCredential.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {targetCredential.type.toUpperCase()} • {targetCredential.region || targetCredential.subscription || targetCredential.project}
                       </p>
                     </div>
@@ -272,13 +272,13 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
           className="notification-error slide-up"
         >
           <div className="flex items-center space-x-2 mb-3">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            <h4 className="font-medium text-red-900">Configuration Issues</h4>
+            <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <h4 className="font-medium text-red-900 dark:text-red-400">Configuration Issues</h4>
           </div>
           <ul className="space-y-1">
             {validationErrors.map((error, index) => (
-              <li key={index} className="text-sm text-red-800 flex items-center space-x-2">
-                <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+              <li key={index} className="text-sm text-red-800 dark:text-red-300 flex items-center space-x-2">
+                <span className="w-1 h-1 bg-red-600 dark:bg-red-400 rounded-full"></span>
                 <span>{error}</span>
               </li>
             ))}
@@ -293,8 +293,8 @@ export const EnvironmentSetupStep: React.FC<EnvironmentSetupStepProps> = ({
             <Lock className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h4 className="font-bold text-lg text-gray-900 mb-2">Security Notice</h4>
-            <p className="text-base text-gray-700 leading-relaxed">
+            <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">Security Notice</h4>
+            <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
               Your credentials are securely stored and encrypted. We only use the minimum required permissions 
               for {wizardType} operations. You can revoke access at any time through the Credentials Management page.
             </p>

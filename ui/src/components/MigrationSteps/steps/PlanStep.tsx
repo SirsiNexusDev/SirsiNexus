@@ -618,8 +618,8 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
   return (
     <div className="space-y-6">
       {/* Discovery Section */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-2xl font-bold text-slate-900">Resource Discovery</h3>
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+        <h3 className="mb-4 text-2xl font-bold text-slate-900 dark:text-gray-100">Resource Discovery</h3>
         
         <button
           onClick={startDiscovery}
@@ -637,13 +637,13 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
               key={rt.type}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+              className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4"
             >
               <div className="flex items-center">
                 <rt.icon className="mr-3 h-6 w-6 text-sirsi-500" />
                 <div>
-                  <p className="text-lg font-bold text-slate-900">{rt.type}</p>
-                  <p className="text-base text-slate-800 font-medium">{rt.count} found</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-gray-100">{rt.type}</p>
+                  <p className="text-base text-slate-800 dark:text-gray-300 font-medium">{rt.count} found</p>
                 </div>
               </div>
             </motion.div>
@@ -653,7 +653,7 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
 
       {/* Resource List */}
       {resources.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <h3 className="mb-4 text-2xl font-bold text-slate-900">Discovered Resources</h3>
           <div className="space-y-2">
             {resources.map((resource) => (
@@ -668,7 +668,7 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
                     <p className="text-lg font-bold text-slate-900">{resource.name}</p>
                     <p className="text-base text-slate-800 font-medium">{resource.type}</p>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     {Object.entries(resource.metadata).map(([key, value]) => (
                       <p key={key}>
                         {key}: <span className="font-medium">{value}</span>
@@ -738,7 +738,7 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
                 {!isDiscovering && resources.length > 0 && (
                   <div className="flex items-center space-x-1 mt-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-sm text-green-700">Discovery completed successfully</span>
+                    <span className="text-sm text-green-700 dark:text-green-300">Discovery completed successfully</span>
                   </div>
                 )}
               </div>
@@ -749,13 +749,13 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200"
+                className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700"
               >
                 <div className="flex items-center space-x-2 mb-3">
                   <AlertTriangle className="h-5 w-5 text-red-500" />
                   <span className="text-sm font-medium text-red-900">Discovery Error</span>
                 </div>
-                <p className="text-sm text-red-800 mb-4">{discoveryError}</p>
+                <p className="text-sm text-red-800 dark:text-red-300 mb-4">{discoveryError}</p>
                 <div className="flex space-x-3">
                   <Button
                     onClick={retryDiscovery}
@@ -788,13 +788,13 @@ export const PlanStep: React.FC<PlanStepProps> = ({ onComplete }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mt-4 p-3 bg-white rounded-lg border border-sirsi-100"
+                className="mt-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-sirsi-100"
               >
                 <div className="flex items-center space-x-2 mb-2">
                   <Sparkles className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-medium text-gray-900">AI Recommendations</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">AI Recommendations</span>
                 </div>
-                <div className="space-y-1 text-sm text-gray-700">
+                <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                   <p>• Consider migrating databases first to establish connectivity</p>
                   <p>• Group resources by region to optimize network transfer costs</p>
                   <p>• Schedule migration during low-traffic hours (2-4 AM EST)</p>

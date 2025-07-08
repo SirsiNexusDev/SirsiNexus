@@ -268,7 +268,7 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-lg font-medium">Migration Validation</h3>
           <button
@@ -289,14 +289,14 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4"
               >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <CategoryIcon className="mr-3 h-5 w-5 text-sirsi-500" />
                       <div>
                         <h4 className="font-medium">{check.name}</h4>
-                        <p className="text-sm text-gray-600">{check.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{check.description}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -317,12 +317,12 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                   </div>
 
                   {check.status === 'failed' && validationError?.checkId === check.id && (
-                    <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                    <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
                       <div className="flex items-center space-x-2 mb-2">
                         <AlertTriangle className="h-5 w-5 text-red-500" />
                         <span className="text-sm font-medium text-red-900">Validation Error</span>
                       </div>
-                      <p className="text-sm text-red-800">{validationError.message}</p>
+                      <p className="text-sm text-red-800 dark:text-red-300">{validationError.message}</p>
                       <div className="mt-3 text-xs text-red-600">
                         <p>• Retry: Attempts the failed validation again</p>
                         <p>• Bypass: Skips this validation with a warning (may indicate issues)</p>
@@ -335,9 +335,9 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                     {check.metrics.map((metric) => (
                       <div
                         key={metric.name}
-                        className="rounded border border-gray-100 bg-white p-3"
+                        className="rounded border border-gray-100 bg-white dark:bg-gray-800 p-3"
                       >
-                        <div className="text-sm text-gray-600">{metric.name}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{metric.name}</div>
                         <div className="mt-1 flex items-center justify-between">
                           <span
                             className={`font-medium ${getMetricStatusColor(
@@ -347,7 +347,7 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
                             {metric.value}
                           </span>
                           {metric.threshold && (
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
                               Target: {metric.threshold}
                             </span>
                           )}
@@ -364,7 +364,7 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
 
       {/* Validation Summary */}
       {!isValidating && validationChecks.some((check) => check.status !== 'pending') && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <h3 className="mb-4 text-lg font-medium">Validation Summary</h3>
           <div className="grid grid-cols-4 gap-4">
             {['passed', 'warning', 'failed'].map((status) => {
@@ -376,12 +376,12 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
               return (
                 <div
                   key={status}
-                  className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                  className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4"
                 >
                   <div className={`text-2xl font-bold ${statusColors[status as any]}`}>
                     {count}
                   </div>
-                  <div className="text-sm capitalize text-gray-600">
+                  <div className="text-sm capitalize text-gray-600 dark:text-gray-400">
                     {status} Checks
                   </div>
                 </div>
@@ -393,12 +393,12 @@ export const ValidateStep: React.FC<ValidateStepProps> = ({ onComplete }) => {
 
       {/* Error Summary */}
       {showErrorResolution && validationError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+        <div className="rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20 p-6">
           <div className="flex items-center space-x-2 mb-4">
             <AlertTriangle className="h-6 w-6 text-red-500" />
             <h3 className="text-lg font-medium text-red-900">Validation Failed</h3>
           </div>
-          <p className="text-red-800 mb-4">
+          <p className="text-red-800 dark:text-red-300 mb-4">
             A validation check failed during the migration verification process.
             You can retry the failed check or bypass it to continue.
           </p>

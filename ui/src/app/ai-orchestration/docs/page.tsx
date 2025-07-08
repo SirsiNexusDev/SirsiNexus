@@ -5,7 +5,7 @@ import { Brain, ArrowLeft, FileText, Code, Settings } from 'lucide-react';
 
 export default function AIOrchestrationDocsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:to-gray-800 dark:from-gray-900 to-indigo-100 dark:to-gray-800 dark:from-gray-900 dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 dark:from-gray-900 dark:to-gray-800 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -15,12 +15,12 @@ export default function AIOrchestrationDocsPage() {
           </a>
           
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-blue-500 dark:bg-blue-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/200 dark:bg-blue-600 rounded-xl flex items-center justify-center">
               <Brain className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100">AI Orchestration Engine</h1>
-              <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400">Documentation & Technical Specifications</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Orchestration Engine</h1>
+              <p className="text-gray-600 dark:text-gray-400">Documentation & Technical Specifications</p>
             </div>
           </div>
         </div>
@@ -29,19 +29,19 @@ export default function AIOrchestrationDocsPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Documentation Navigation</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <a href="/ai-orchestration/docs" className="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
               <FileText className="h-4 w-4 text-blue-500" />
               <span className="font-medium text-blue-900">Documentation</span>
             </a>
             <a href="/ai-orchestration/tutorial" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
-              <Code className="h-4 w-4 text-gray-500" />
+              <Code className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span className="font-medium">Tutorial</span>
             </a>
             <a href="/ai-orchestration/faq" className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:bg-gray-800">
-              <Settings className="h-4 w-4 text-gray-500" />
+              <Settings className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span className="font-medium">FAQ</span>
             </a>
-            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 text-white p-3 rounded-lg">
+            <button className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:from-gray-900 dark:to-gray-8000 text-white p-3 rounded-lg">
               <Brain className="h-4 w-4" />
               <span className="font-medium">AI Guide</span>
             </button>
@@ -86,22 +86,22 @@ export default function AIOrchestrationDocsPage() {
             <div className="space-y-4 mb-6">
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">POST</span>
+                  <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs rounded">POST</span>
                   <code className="text-sm">/api/ai/orchestrate</code>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">Start AI-driven orchestration workflow</p>
-                <div className="mt-2 text-xs text-gray-500">
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   <strong>Auth:</strong> Required | <strong>Response:</strong> OrchestrationResult
                 </div>
               </div>
 
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">GET</span>
+                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs rounded">GET</span>
                   <code className="text-sm">/api/ai/status</code>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">Get current orchestration status and metrics</p>
-                <div className="mt-2 text-xs text-gray-500">
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   <strong>Auth:</strong> Required | <strong>Response:</strong> StatusResult
                 </div>
               </div>
@@ -180,9 +180,9 @@ AGENT_MANAGER_URL=http://localhost:8081`}
               <li>Secure credential management for external system integration</li>
             </ul>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
               <h4 className="font-semibold text-blue-900 mb-2">💡 Pro Tip</h4>
-              <p className="text-blue-800 text-sm">
+              <p className="text-blue-800 dark:text-blue-300 text-sm">
                 For optimal performance, enable continuous learning mode and configure the decision engine 
                 with domain-specific weights based on your infrastructure requirements.
               </p>

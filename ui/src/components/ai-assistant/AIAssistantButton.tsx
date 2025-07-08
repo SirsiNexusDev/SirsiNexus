@@ -48,7 +48,7 @@ export default function AIAssistantButton({
           
           {/* Feature Indicator */}
           {currentFeature && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-50 dark:bg-green-900/200 rounded-full flex items-center justify-center">
               <HelpCircle className="h-2 w-2 text-white" />
             </div>
           )}
@@ -56,9 +56,9 @@ export default function AIAssistantButton({
         
         {/* Quick Help Hint */}
         {!isOpen && (
-          <div className="absolute -top-12 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none max-w-xs">
-            <p className="text-sm text-gray-700 font-medium">Need help?</p>
-            <p className="text-xs text-gray-500 mt-1">
+          <div className="absolute -top-12 right-0 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none max-w-xs">
+            <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">Need help?</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               I have complete knowledge of all platform features and can provide instant assistance.
             </p>
           </div>

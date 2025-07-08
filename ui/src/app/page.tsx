@@ -454,7 +454,7 @@ export default function DashboardPage() {
       
       {/* Welcome AI Assistant on Login - Only show after full authentication */}
       {showWelcomeAssistant && isAuthenticated && !authModalOpen && !journeySelectionModalOpen && (
-        <React.Suspense fallback={<div className="fixed bottom-4 right-4 w-12 h-12 bg-purple-500 rounded-full animate-pulse" />}>
+        <React.Suspense fallback={<div className="fixed bottom-4 right-4 w-12 h-12 bg-purple-50 dark:bg-purple-900/200 rounded-full animate-pulse" />}>
           <EmbeddedAssistant 
             position="floating" 
             showOnLogin={true} 

@@ -203,7 +203,7 @@ export default function AIContextToolbar({
 
   return (
     <div className={`${getPositionClasses()} z-50 max-w-md transition-all duration-300`}>
-      <Card className="border-purple-200 bg-white/95 backdrop-blur-sm shadow-lg">
+      <Card className="border-purple-200 dark:border-purple-700 bg-white dark:bg-gray-800/95 backdrop-blur-sm shadow-lg">
         <CardContent className="p-3">
           {/* Compact Header */}
           <div className="flex items-center justify-between mb-2">
@@ -211,36 +211,36 @@ export default function AIContextToolbar({
               <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                 <Brain className="h-3 w-3 text-white" />
               </div>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 AI Assistant
                 {!compact && (
-                  <span className="text-xs text-gray-500 ml-1">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
                     - {currentContext.split('/')[0]}
                   </span>
                 )}
               </span>
               {isLoading && (
                 <div className="flex space-x-1">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full animate-bounce"></div>
-                  <div className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-1 h-1 bg-purple-50 dark:bg-purple-900/200 rounded-full animate-bounce"></div>
+                  <div className="w-1 h-1 bg-purple-50 dark:bg-purple-900/200 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-1 h-1 bg-purple-50 dark:bg-purple-900/200 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
               )}
             </div>
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-1 rounded-full hover:bg-gray-100 dark:bg-gray-800 transition-colors"
                 title={isExpanded ? 'Collapse' : 'Expand'}
               >
-                <HelpCircle className="h-3 w-3 text-gray-500" />
+                <HelpCircle className="h-3 w-3 text-gray-500 dark:text-gray-400" />
               </button>
               <button
                 onClick={() => setIsVisible(false)}
-                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-1 rounded-full hover:bg-gray-100 dark:bg-gray-800 transition-colors"
                 title="Hide assistant"
               >
-                <X className="h-3 w-3 text-gray-500" />
+                <X className="h-3 w-3 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function AIContextToolbar({
               <Badge
                 key={`smart-suggestion-${index}-${suggestion.replace(/\s+/g, '-').toLowerCase()}`}
                 variant="outline"
-                className="text-xs cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-colors"
+                className="text-xs cursor-pointer hover:bg-purple-50 dark:bg-purple-900/20 hover:border-purple-300 transition-colors"
                 onClick={() => handleSuggestionClick(suggestion)}
               >
                 <Sparkles className="h-2 w-2 mr-1" />
@@ -261,7 +261,7 @@ export default function AIContextToolbar({
           </div>
 
           {/* Quick Actions Bar */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => handleSuggestionClick('Show me help')}
@@ -289,9 +289,9 @@ export default function AIContextToolbar({
 
           {/* Expanded Content */}
           {isExpanded && contextHelp && (
-            <div className="mt-3 pt-3 border-t border-gray-200 space-y-3">
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
               {/* AI Message */}
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
                 <div className="flex items-start space-x-2">
                   <Sparkles className="h-3 w-3 text-purple-500 mt-0.5 flex-shrink-0" />
                   <p>{contextHelp.message}</p>
@@ -301,13 +301,13 @@ export default function AIContextToolbar({
               {/* Suggestions */}
               {contextHelp.suggestions && contextHelp.suggestions.length > 0 && (
                 <div className="space-y-1">
-                  <div className="text-xs font-medium text-gray-600">Try asking:</div>
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Try asking:</div>
                   <div className="flex flex-wrap gap-1">
                     {contextHelp.suggestions.slice(0, 4).map((suggestion, index) => (
                       <button
                         key={`help-suggestion-${index}-${suggestion.replace(/\s+/g, '-').toLowerCase()}`}
                         onClick={() => handleSuggestionClick(suggestion)}
-                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                        className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-300 hover:underline transition-colors"
                       >
                         {suggestion}
                       </button>
@@ -319,13 +319,13 @@ export default function AIContextToolbar({
               {/* Actions */}
               {contextHelp.actions && contextHelp.actions.length > 0 && (
                 <div className="space-y-1">
-                  <div className="text-xs font-medium text-gray-600">Quick actions:</div>
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Quick actions:</div>
                   <div className="space-y-1">
                     {contextHelp.actions.slice(0, 3).map((action, index) => (
                       <button
                         key={`action-${action.id || index}-${action.label.replace(/\s+/g, '-').toLowerCase()}`}
                         onClick={() => executeAction(action)}
-                        className="flex items-center space-x-1 text-xs text-green-600 hover:text-green-800 transition-colors"
+                        className="flex items-center space-x-1 text-xs text-green-600 hover:text-green-800 dark:text-green-300 transition-colors"
                       >
                         <ArrowRight className="h-2 w-2" />
                         <span>{action.label}</span>
@@ -340,9 +340,9 @@ export default function AIContextToolbar({
                 <div className="space-y-1">
                   <div className="flex items-center space-x-1">
                     <Lightbulb className="h-3 w-3 text-yellow-500" />
-                    <span className="text-xs font-medium text-gray-600">Tips:</span>
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Tips:</span>
                   </div>
-                  <ul className="text-xs text-gray-600 space-y-0.5 ml-4">
+                  <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5 ml-4">
                     {contextHelp.tips.slice(0, 3).map((tip, index) => (
                       <li key={`tip-${index}-${tip.substring(0, 20).replace(/\s+/g, '-').toLowerCase()}`}>• {tip}</li>
                     ))}
@@ -368,7 +368,7 @@ export default function AIContextToolbar({
               {/* Documentation Links */}
               {contextHelp.documentation && contextHelp.documentation.length > 0 && (
                 <div className="text-xs">
-                  <span className="text-gray-600">Related docs: </span>
+                  <span className="text-gray-600 dark:text-gray-400">Related docs: </span>
                   {contextHelp.documentation.slice(0, 2).map((doc, index) => (
                     <span key={`doc-${index}-${doc.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`}>
                       <button

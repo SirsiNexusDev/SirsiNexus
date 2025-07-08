@@ -54,13 +54,13 @@ export const Projects: React.FC = () => {
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'active':
-        return 'bg-green-500';
+        return 'bg-green-50 dark:bg-green-900/200';
       case 'completed':
-        return 'bg-blue-500';
+        return 'bg-blue-50 dark:bg-blue-900/200';
       case 'archived':
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-50 dark:bg-gray-9000';
     }
   };
 
@@ -128,7 +128,7 @@ export const Projects: React.FC = () => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-semibold mb-2">{project.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">{project.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{project.description}</p>
               </div>
               <Badge className={getStatusColor(project.status)}>
                 {project.status}
@@ -143,7 +143,7 @@ export const Projects: React.FC = () => {
               ))}
             </div>
 
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               <p>Created {formatDistanceToNow(new Date(project.createdAt))} ago</p>
               <p>Last updated {formatDistanceToNow(new Date(project.updatedAt))} ago</p>
             </div>

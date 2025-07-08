@@ -46,12 +46,12 @@ export default function MigrationDocsPage() {
               </p>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Info className="h-6 w-6 text-blue-600" />
                 <h3 className="text-xl font-semibold text-blue-900">Key Benefits</h3>
               </div>
-              <ul className="space-y-2 text-blue-800">
+              <ul className="space-y-2 text-blue-800 dark:text-blue-300">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-blue-600" />
                   Reduces migration time by up to 70%
@@ -126,7 +126,7 @@ export default function MigrationDocsPage() {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">System Architecture</h3>
               <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
                 <div className="text-gray-600 dark:text-gray-400 mb-4">[Architecture Diagram]</div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Interactive architecture diagram showing Migration Wizard components
                 </p>
               </div>
@@ -244,7 +244,7 @@ export default function MigrationDocsPage() {
                   <p className="text-gray-600 dark:text-gray-400 mb-4">{section.description}</p>
                   <ul className="space-y-2">
                     {section.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-gray-700">
+                      <li key={i} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                         <CheckCircle className="h-4 w-4 text-green-600" />
                         {feature}
                       </li>
@@ -261,7 +261,7 @@ export default function MigrationDocsPage() {
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Security</h2>
             
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-6 w-6 text-red-600" />
                 <h3 className="text-xl font-semibold text-red-900">Security Features</h3>
@@ -269,7 +269,7 @@ export default function MigrationDocsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-red-900 mb-3">Data Protection</h4>
-                  <ul className="space-y-2 text-red-800">
+                  <ul className="space-y-2 text-red-800 dark:text-red-300">
                     <li>• End-to-end encryption</li>
                     <li>• Data anonymization</li>
                     <li>• Secure key management</li>
@@ -278,7 +278,7 @@ export default function MigrationDocsPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-red-900 mb-3">Access Control</h4>
-                  <ul className="space-y-2 text-red-800">
+                  <ul className="space-y-2 text-red-800 dark:text-red-300">
                     <li>• Multi-factor authentication</li>
                     <li>• Role-based permissions</li>
                     <li>• Audit logging</li>
@@ -318,7 +318,7 @@ export default function MigrationDocsPage() {
                 ].map((api, index) => (
                   <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <span className={`px-3 py-1 rounded text-sm font-mono ${
-                      api.method === 'GET' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                      api.method === 'GET' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
                     }`}>
                       {api.method}
                     </span>
@@ -360,7 +360,7 @@ export default function MigrationDocsPage() {
                         <div className="text-sm text-gray-600 dark:text-gray-400">{dep.version}</div>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded ${
-                        dep.status === 'Required' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+                        dep.status === 'Required' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                       }`}>
                         {dep.status}
                       </span>
@@ -379,7 +379,7 @@ export default function MigrationDocsPage() {
                   ].map((service, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div className="font-semibold text-gray-900 dark:text-gray-100">{service.name}</div>
-                      <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                      <span className="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded">
                         {service.type}
                       </span>
                     </div>
@@ -406,7 +406,7 @@ export default function MigrationDocsPage() {
                   <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{option.title}</h4>
                     <p className="text-gray-600 dark:text-gray-400 mb-3">{option.desc}</p>
-                    <code className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded block">{option.cmd}</code>
+                    <code className="text-xs bg-gray-50 dark:bg-gray-700 p-2 rounded block">{option.cmd}</code>
                   </div>
                 ))}
               </div>
@@ -518,7 +518,7 @@ migration:
                         onClick={() => setActiveSection(section.id)}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
                           activeSection === section.id
-                            ? 'bg-blue-100 text-blue-800'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800'
                         }`}
                       >

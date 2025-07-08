@@ -293,10 +293,10 @@ export const formatMetricValue = (value: number, type: 'percentage' | 'currency'
 
 export const getSeverityColor = (severity: string): string => {
   switch (severity) {
-    case 'critical': return 'text-red-600 bg-red-100 border-red-200';
+    case 'critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-700';
     case 'high': return 'text-orange-600 bg-orange-100 border-orange-200';
-    case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
-    default: return 'text-blue-600 bg-blue-100 border-blue-200';
+    case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-700';
+    default: return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700';
   }
 };
 

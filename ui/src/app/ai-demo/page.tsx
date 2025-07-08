@@ -33,13 +33,13 @@ export default function AIDemoPage() {
   const environmentSuggestions = ['development', 'staging', 'production'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 dark:to-gray-800 dark:from-gray-900 to-slate-100 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 dark:from-gray-900 dark:to-gray-800 to-slate-100 dark:from-gray-900 dark:to-gray-800 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:to-gray-800 dark:from-gray-9000 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-50 dark:from-gray-900 dark:to-gray-8000 rounded-xl">
                 <Brain className="h-8 w-8 text-white" />
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -58,16 +58,16 @@ export default function AIDemoPage() {
                   onClick={toggleAI}
                   className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm transition-all ${
                     isAIEnabled 
-                      ? 'bg-green-100 text-green-700 border border-green-300' 
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-300' 
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-green-500' : 'bg-gray-400'}`} />
+                  <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-green-50 dark:bg-green-900/200' : 'bg-gray-400'}`} />
                   {isAIEnabled ? 'Enabled' : 'Disabled'}
                 </button>
               </div>
               {isAIEnabled && (
-                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-300">
+                <Badge variant="outline" className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-300">
                   <Sparkles className="h-3 w-3 mr-1" />
                   Context-aware assistance active
                 </Badge>
@@ -210,7 +210,7 @@ export default function AIDemoPage() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-colors"
                   >
                     <RefreshCw className="h-4 w-4" />
                     Reset
@@ -287,8 +287,8 @@ export default function AIDemoPage() {
                 <p>• <strong>Toggle AI assistance</strong> on/off to compare the experience</p>
               </div>
               
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-700">
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   <strong>Note:</strong> This demonstrates the AI-enhanced interface experience. 
                   In production, the AI would be connected to real-time system data and provide 
                   even more intelligent assistance based on your infrastructure and usage patterns.

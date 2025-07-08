@@ -180,11 +180,11 @@ export const SupportStep: React.FC<SupportStepProps> = ({ onComplete }) => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-medium">Support & Monitoring</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Configure ongoing support and monitoring for your migrated resources
             </p>
           </div>
@@ -206,18 +206,18 @@ export const SupportStep: React.FC<SupportStepProps> = ({ onComplete }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center">
                     <Icon className="mr-3 h-5 w-5 text-sirsi-500" />
                     <div>
                       <h4 className="font-medium">{config.name}</h4>
-                      <p className="text-sm text-gray-600">{config.description}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{config.description}</p>
                     </div>
                   </div>
                   {config.status === 'configured' && (
-                    <span className="flex items-center rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
+                    <span className="flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2 py-1 text-xs text-green-800 dark:text-green-300">
                       <Check className="mr-1 h-3 w-3" />
                       Configured
                     </span>
@@ -228,18 +228,18 @@ export const SupportStep: React.FC<SupportStepProps> = ({ onComplete }) => {
                   {config.options.map((option) => (
                     <div
                       key={option.name}
-                      className="flex items-start rounded border border-gray-100 bg-white p-3"
+                      className="flex items-start rounded border border-gray-100 bg-white dark:bg-gray-800 p-3"
                     >
                       <input
                         type="checkbox"
                         checked={option.enabled}
                         onChange={() => toggleOption(config.id, option.name)}
                         disabled={config.status === 'configured'}
-                        className="mt-1 h-4 w-4 rounded border-gray-300 text-sirsi-500 focus:ring-sirsi-500"
+                        className="mt-1 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-sirsi-500 focus:ring-sirsi-500"
                       />
                       <div className="ml-3">
                         <div className="font-medium">{option.name}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
                           {option.value}
                         </div>
                       </div>
@@ -254,15 +254,15 @@ export const SupportStep: React.FC<SupportStepProps> = ({ onComplete }) => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-3 gap-4">
-        <button className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-gray-600 hover:border-sirsi-500 hover:text-sirsi-500">
+        <button className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-gray-600 dark:text-gray-400 hover:border-sirsi-500 hover:text-sirsi-500">
           <MessageSquare className="mr-2 h-5 w-5" />
           <span>Contact Support</span>
         </button>
-        <button className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-gray-600 hover:border-sirsi-500 hover:text-sirsi-500">
+        <button className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-gray-600 dark:text-gray-400 hover:border-sirsi-500 hover:text-sirsi-500">
           <PieChart className="mr-2 h-5 w-5" />
           <span>View Dashboard</span>
         </button>
-        <button className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-gray-600 hover:border-sirsi-500 hover:text-sirsi-500">
+        <button className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-gray-600 dark:text-gray-400 hover:border-sirsi-500 hover:text-sirsi-500">
           <PlayCircle className="mr-2 h-5 w-5" />
           <span>Watch Tutorial</span>
         </button>

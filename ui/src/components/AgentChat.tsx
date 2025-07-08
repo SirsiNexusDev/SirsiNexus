@@ -236,9 +236,9 @@ export const AgentChat: React.FC<AgentChatProps> = ({
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-20 right-4 h-[500px] w-[360px] rounded-lg bg-white shadow-xl animate-slide-up">
+        <div className="fixed bottom-20 right-4 h-[500px] w-[360px] rounded-lg bg-white dark:bg-gray-800 shadow-xl animate-slide-up">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-4 py-3">
               <div className="flex items-center space-x-2">
                 <h3 className="text-lg font-semibold text-sirsi-900">Agent Chat</h3>
                 <div className="flex items-center space-x-1">
@@ -262,7 +262,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1 text-gray-500 hover:bg-gray-100"
+                className="rounded-full p-1 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800"
               >
                 <X size={20} />
               </button>
@@ -271,9 +271,9 @@ export const AgentChat: React.FC<AgentChatProps> = ({
             {/* System Health Indicator */}
             {enableSystemHealth && systemHealth && (
               <div className={`mx-4 mt-2 rounded-lg p-2 text-xs ${
-                systemHealth.overallStatus === 'healthy' ? 'bg-green-50 text-green-700' :
-                systemHealth.overallStatus === 'degraded' ? 'bg-yellow-50 text-yellow-700' :
-                'bg-red-50 text-red-700'
+                systemHealth.overallStatus === 'healthy' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' :
+                systemHealth.overallStatus === 'degraded' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300' :
+                'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
               }`}>
                 <div className="flex items-center space-x-2">
                   <Info className="h-3 w-3" />
@@ -333,10 +333,10 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                       message.type === 'user'
                         ? 'bg-sirsi-500 text-white'
                         : message.type === 'error'
-                        ? 'bg-red-100 text-red-800'
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                         : message.type === 'system'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
@@ -346,9 +346,9 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                         )}
                         {message.priority && message.priority !== 'normal' && (
                           <span className={`text-xs px-1 py-0.5 rounded ${
-                            message.priority === 'critical' ? 'bg-red-200 text-red-800' :
+                            message.priority === 'critical' ? 'bg-red-200 text-red-800 dark:text-red-300' :
                             message.priority === 'high' ? 'bg-orange-200 text-orange-800' :
-                            'bg-blue-200 text-blue-800'
+                            'bg-blue-200 text-blue-800 dark:text-blue-300'
                           }`}>
                             {message.priority}
                           </span>
@@ -373,7 +373,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="flex max-w-[80%] items-center rounded-lg bg-gray-100 px-4 py-2 text-gray-800">
+                  <div className="flex max-w-[80%] items-center rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-2 text-gray-800 dark:text-gray-200">
                     <Loader className="mr-2 h-4 w-4 animate-spin" />
                     Thinking...
                   </div>
@@ -385,18 +385,18 @@ export const AgentChat: React.FC<AgentChatProps> = ({
             </div>
 
             {/* Input */}
-            <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white">
+            <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
               {/* Attachments Preview */}
               {attachments && attachments.length > 0 && (
                 <div className="border-b border-gray-100 p-2">
                   <div className="flex flex-wrap gap-2">
                     {attachments.map((file, index) => (
-                      <div key={`attachment-preview-${index}-${file.name}`} className="flex items-center space-x-2 bg-gray-100 rounded px-2 py-1 text-xs">
+                      <div key={`attachment-preview-${index}-${file.name}`} className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-800 rounded px-2 py-1 text-xs">
                         <Paperclip className="h-3 w-3" />
                         <span className="truncate max-w-20">{file.name}</span>
                         <button
                           onClick={() => removeAttachment(index)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 dark:text-red-300"
                           aria-label={`Remove ${file.name}`}
                         >
                           <X className="h-3 w-3" />
@@ -421,7 +421,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                       />
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100"
+                        className="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800"
                         aria-label="Attach files"
                       >
                         <Paperclip size={18} />
@@ -435,14 +435,14 @@ export const AgentChat: React.FC<AgentChatProps> = ({
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                     placeholder="Type your message..."
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-sirsi-500 focus:outline-none"
+                    className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 focus:border-sirsi-500 focus:outline-none"
                   />
                   
                   {/* Priority Selector */}
                   <select
                     value={messagePriority}
                     onChange={(e) => setMessagePriority(e.target.value as any)}
-                    className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-sirsi-500 focus:outline-none"
+                    className="rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs focus:border-sirsi-500 focus:outline-none"
                   >
                     <option value="low">Low</option>
                     <option value="normal">Normal</option>

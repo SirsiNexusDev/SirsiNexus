@@ -137,9 +137,9 @@ export default function MigrationStepsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+        return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700';
       case 'active':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700';
       case 'pending':
         return 'bg-slate-100 text-slate-600 border-slate-200';
       default:
@@ -191,8 +191,8 @@ export default function MigrationStepsPage() {
                       onClick={() => setSelectedStep(step)}
                       className={`w-full p-3 rounded-lg transition-all duration-200 text-left border ${
                         isSelected
-                          ? 'border-blue-200 bg-blue-50'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:bg-gray-900'
+                          ? 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:bg-gray-900'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -260,9 +260,9 @@ export default function MigrationStepsPage() {
                     >
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                         selectedStep.status === 'completed'
-                          ? 'bg-emerald-100 text-emerald-600'
+                          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
                           : selectedStep.status === 'active'
-                          ? 'bg-blue-100 text-blue-600'
+                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'
                           : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                       }`}>
                         {selectedStep.status === 'completed' ? (
@@ -299,13 +299,13 @@ export default function MigrationStepsPage() {
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4 text-center">
-                  <div className="p-3 bg-emerald-50 rounded-lg">
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
                     <div className="text-2xl font-bold text-emerald-600">
                       {migrationSteps.filter(s => s.status === 'completed').length}
                     </div>
                     <div className="text-sm text-emerald-600">Completed</div>
                   </div>
-                  <div className="p-3 bg-blue-50 rounded-lg">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="text-2xl font-bold text-blue-600">
                       {migrationSteps.filter(s => s.status === 'active').length}
                     </div>

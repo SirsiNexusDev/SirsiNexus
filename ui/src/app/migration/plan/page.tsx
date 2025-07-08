@@ -17,7 +17,7 @@ import {
 
 export default function MigrationPlanPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -113,12 +113,12 @@ export default function MigrationPlanPage() {
                   items: ["Security Policies", "Compliance Audit", "Access Control"]
                 }
               ].map((phase) => (
-                <div key={phase.phase} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div key={phase.phase} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-900 dark:bg-gray-700 rounded-lg">
                   <div className="flex-shrink-0">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       phase.status === 'completed' ? 'bg-emerald-100 dark:bg-emerald-900' :
                       phase.status === 'in-progress' ? 'bg-blue-100 dark:bg-blue-900' :
-                      'bg-gray-100 dark:bg-gray-600'
+                      'bg-gray-100 dark:bg-gray-800 dark:bg-gray-600'
                     }`}>
                       <phase.icon className={`h-5 w-5 ${
                         phase.status === 'completed' ? 'text-emerald-600 dark:text-emerald-400' :
@@ -139,9 +139,9 @@ export default function MigrationPlanPage() {
                           'outline'
                         }
                         className={
-                          phase.status === 'completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200' :
-                          phase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                          'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                          phase.status === 'completed' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200' :
+                          phase.status === 'in-progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                          'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                         }
                       >
                         {phase.status === 'completed' ? 'Completed' :
@@ -154,7 +154,7 @@ export default function MigrationPlanPage() {
                       {phase.items.map((item) => (
                         <span 
                           key={item}
-                          className="px-2 py-1 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300"
+                          className="px-2 py-1 bg-white dark:bg-gray-800 dark:bg-gray-600 border border-gray-200 dark:border-gray-700 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300"
                         >
                           {item}
                         </span>
@@ -172,7 +172,7 @@ export default function MigrationPlanPage() {
           <Button variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
             Back to Discovery
           </Button>
-          <Button className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-50 dark:bg-emerald-900/200 dark:hover:bg-emerald-600">
             Start Migration
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

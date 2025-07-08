@@ -157,15 +157,15 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
   const getProviderColor = (type: string) => {
     switch (type) {
       case 'aws':
-        return 'bg-orange-100 text-orange-700 border-orange-200';
+        return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700';
       case 'azure':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700';
       case 'gcp':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700';
       case 'vsphere':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
+        return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700';
     }
   };
 
@@ -178,19 +178,19 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
       case 'expired':
         return <Lock className="h-4 w-4 text-red-600" />;
       default:
-        return <Key className="h-4 w-4 text-gray-600" />;
+        return <Key className="h-4 w-4 text-gray-600 dark:text-gray-400" />;
     }
   };
 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">
           <Key className="h-5 w-5 mr-2 text-sirsi-500" />
           {title}
           {required && <span className="text-red-500 ml-1">*</span>}
         </h3>
-        <p className="text-sm text-gray-600 mt-1">{description}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
       </div>
 
       {/* Selected Credential Display */}
@@ -198,7 +198,7 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-sirsi-50 border border-sirsi-200 rounded-lg p-4"
+          className="bg-sirsi-50 dark:bg-sirsi-900/30 border border-sirsi-200 dark:border-sirsi-700 rounded-lg p-4"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -206,15 +206,15 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                 {React.createElement(getProviderIcon(selectedCredential.type), { className: 'h-5 w-5' })}
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">{selectedCredential.name}</h4>
-                <p className="text-sm text-gray-600">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">{selectedCredential.name}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {selectedCredential.type.toUpperCase()} - {selectedCredential.region || selectedCredential.subscription || selectedCredential.project}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               {getStatusIcon(selectedCredential.status)}
-              <span className="text-sm text-gray-600">Selected</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Selected</span>
             </div>
           </div>
         </motion.div>
@@ -233,8 +233,8 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
               animate={{ opacity: 1 }}
               className={`cursor-pointer rounded-lg border p-4 transition-all ${
                 isSelected 
-                  ? 'border-sirsi-500 bg-sirsi-50' 
-                  : 'border-gray-200 hover:border-sirsi-300 hover:bg-gray-50'
+                  ? 'border-sirsi-500 bg-sirsi-50 dark:bg-sirsi-900/30' 
+                  : 'border-gray-200 dark:border-gray-700 hover:border-sirsi-300 hover:bg-gray-50 dark:hover:bg-gray-800 bg-white dark:bg-gray-900'
               }`}
               onClick={() => onSelect(credential)}
             >
@@ -244,11 +244,11 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                     <ProviderIcon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">{credential.name}</h4>
-                    <p className="text-sm text-gray-600">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100">{credential.name}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {credential.type.toUpperCase()} • {credential.region || credential.subscription || credential.project}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       Last used: {credential.lastUsed} • Expires: {credential.expiresIn}
                     </p>
                   </div>
@@ -260,7 +260,7 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                       e.stopPropagation();
                       setShowDetails(showDetails === credential.id ? null : credential.id);
                     }}
-                    className="p-1 rounded hover:bg-gray-100"
+                    className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {showDetails === credential.id ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
@@ -277,21 +277,21 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-gray-200"
+                  className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="font-medium text-gray-700">Account/Project:</span>
-                      <p className="text-gray-600">
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Account/Project:</span>
+                      <p className="text-gray-600 dark:text-gray-400">
                         {credential.account || credential.subscription || credential.project || 'N/A'}
                       </p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Status:</span>
-                      <p className="text-gray-600 capitalize">{credential.status}</p>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Status:</span>
+                      <p className="text-gray-600 dark:text-gray-400 capitalize">{credential.status}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Health Check:</span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Health Check:</span>
                       <p className={`text-xs ${
                         credential.healthCheck.includes('Passed') ? 'text-green-600' :
                         credential.healthCheck.includes('Warning') ? 'text-yellow-600' :
@@ -299,11 +299,11 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                       }`}>{credential.healthCheck}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Encryption:</span>
-                      <p className="text-gray-600">{credential.encryptionStatus}</p>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Encryption:</span>
+                      <p className="text-gray-600 dark:text-gray-400">{credential.encryptionStatus}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Auto-Rotation:</span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Auto-Rotation:</span>
                       <div className="flex items-center space-x-1">
                         {credential.rotationEnabled ? (
                           <CheckCircle className="h-3 w-3 text-green-600" />
@@ -316,24 +316,24 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
                       </div>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Last Rotated:</span>
-                      <p className={`text-gray-600 ${credential.lastRotated === 'Never' ? 'text-yellow-600' : ''}`}>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Last Rotated:</span>
+                      <p className={`text-gray-600 dark:text-gray-400 ${credential.lastRotated === 'Never' ? 'text-yellow-600' : ''}`}>
                         {credential.lastRotated}
                       </p>
                     </div>
                     <div className="md:col-span-2">
-                      <span className="font-medium text-gray-700">Permissions:</span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Permissions:</span>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {credential.scopes.slice(0, 3).map((scope, idx) => (
                           <span
                             key={idx}
-                            className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                            className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 rounded"
                           >
                             {scope}
                           </span>
                         ))}
                         {credential.scopes.length > 3 && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             +{credential.scopes.length - 3} more
                           </span>
                         )}
@@ -351,12 +351,12 @@ export const CredentialSelector: React.FC<CredentialSelectorProps> = ({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="border border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-sirsi-300 hover:bg-sirsi-50 transition-all cursor-pointer"
+        className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:border-sirsi-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all cursor-pointer"
         onClick={() => window.location.href = '/credentials'}
       >
         <Plus className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-        <p className="text-sm font-medium text-gray-600">Add New Credentials</p>
-        <p className="text-xs text-gray-500">Configure additional cloud provider access</p>
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Add New Credentials</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Configure additional cloud provider access</p>
       </motion.div>
 
       {/* Validation Message */}

@@ -279,7 +279,7 @@ export default function AgentsPage() {
                       {/* Conversation */}
                       <div className="h-96 overflow-y-auto space-y-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                         {conversation.length === 0 ? (
-                          <p className="text-gray-500 text-center">
+                          <p className="text-gray-500 dark:text-gray-400 text-center">
                             Start a conversation with the {selectedAgent.agentType} agent
                           </p>
                         ) : (
@@ -361,7 +361,7 @@ export default function AgentsPage() {
                       </div>
                       <div>
                         <label className="text-sm font-medium">Agent ID</label>
-                        <p className="text-xs text-gray-500 font-mono break-all">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-mono break-all">
                           {selectedAgent.agentId}
                         </p>
                       </div>
@@ -374,7 +374,7 @@ export default function AgentsPage() {
                 <CardContent className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <Bot className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">Select an agent to start chatting</p>
+                    <p className="text-gray-500 dark:text-gray-400">Select an agent to start chatting</p>
                   </div>
                 </CardContent>
               </Card>
@@ -408,7 +408,7 @@ export default function AgentsPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">Select an agent to get suggestions</p>
+                    <p className="text-gray-500 dark:text-gray-400">Select an agent to get suggestions</p>
                   )}
                 </CardContent>
               </Card>
@@ -420,7 +420,7 @@ export default function AgentsPage() {
                 <CardContent>
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {suggestions.length === 0 ? (
-                      <p className="text-gray-500 text-sm">No suggestions available</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">No suggestions available</p>
                     ) : (
                       suggestions.map(suggestion => (
                         <div
@@ -526,7 +526,7 @@ export default function AgentsPage() {
           <CardContent className="flex items-center justify-center h-64">
             <div className="text-center">
               <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">Connect to the agent backend and start a session to begin</p>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">Connect to the agent backend and start a session to begin</p>
               {!webSocket.isConnected() && (
                 <p className="text-sm text-orange-600">
                   ⚠️ Agent backend not connected. Please ensure the backend service is running.

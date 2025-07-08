@@ -158,10 +158,10 @@ export const PulseDot: React.FC<{
   size?: 'sm' | 'md' | 'lg' 
 }> = ({ color = 'blue', size = 'md' }) => {
   const colorClasses = {
-    blue: 'bg-blue-500',
-    green: 'bg-emerald-500',
-    red: 'bg-red-500',
-    yellow: 'bg-yellow-500'
+    blue: 'bg-blue-50 dark:bg-blue-900/200',
+    green: 'bg-emerald-50 dark:bg-emerald-900/200',
+    red: 'bg-red-50 dark:bg-red-900/200',
+    yellow: 'bg-yellow-50 dark:bg-yellow-900/200'
   };
 
   const sizeClasses = {

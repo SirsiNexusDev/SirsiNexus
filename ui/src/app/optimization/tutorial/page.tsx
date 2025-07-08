@@ -98,10 +98,10 @@ export default function OptimizationTutorialPage() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Beginner': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'Intermediate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'Advanced': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+      case 'Beginner': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'Intermediate': return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'Advanced': return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:bg-red-900 dark:text-red-200';
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
     }
   };
 
@@ -112,7 +112,7 @@ export default function OptimizationTutorialPage() {
         <div className="flex items-center gap-4 mb-8">
           <Link 
             href="/optimization" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Optimization
@@ -173,7 +173,7 @@ export default function OptimizationTutorialPage() {
           {/* Tutorial Steps */}
           <div className="space-y-6">
             {steps.map((step, index) => (
-              <Card key={index} className={`transition-all ${step.completed ? 'border-green-200 bg-green-50/50' : ''}`}>
+              <Card key={index} className={`transition-all ${step.completed ? 'border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20/50' : ''}`}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
@@ -216,12 +216,12 @@ export default function OptimizationTutorialPage() {
                       ))}
                     </ul>
                     {!step.completed && (
-                      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
                         <div className="flex items-start gap-2">
                           <AlertTriangle className="h-4 w-4 text-blue-600 mt-0.5" />
                           <div className="text-sm">
                             <p className="font-medium text-blue-900">Next Step:</p>
-                            <p className="text-blue-700 mt-1">
+                            <p className="text-blue-700 dark:text-blue-300 mt-1">
                               Complete the tasks above to proceed with this optimization step. 
                               Use the AI Assistant for guidance on any specific configuration.
                             </p>

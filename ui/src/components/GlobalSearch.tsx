@@ -138,9 +138,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'pages': return 'text-blue-600 bg-blue-100';
-      case 'projects': return 'text-emerald-600 bg-emerald-100';
-      case 'settings': return 'text-purple-600 bg-purple-100';
+      case 'pages': return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30';
+      case 'projects': return 'text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30';
+      case 'settings': return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30';
       case 'recent': return 'text-orange-600 bg-orange-100';
       default: return 'text-slate-600 bg-slate-100';
     }
@@ -176,7 +176,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             className="relative w-full max-w-2xl mx-4"
           >
-            <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-slate-200 overflow-hidden">
               {/* Search Input */}
               <div className="flex items-center gap-3 p-4 border-b border-slate-200">
                 <Search className="h-5 w-5 text-slate-400" />
@@ -217,13 +217,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                           onClick={() => handleSelect(result)}
                           className={`w-full p-3 rounded-lg transition-colors text-left ${
                             isSelected 
-                              ? 'bg-emerald-50 border border-emerald-200' 
+                              ? 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700' 
                               : 'hover:bg-slate-50'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                              isSelected ? 'bg-emerald-100' : 'bg-slate-100'
+                              isSelected ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-slate-100'
                             }`}>
                               <Icon className="h-4 w-4 text-slate-600" />
                             </div>

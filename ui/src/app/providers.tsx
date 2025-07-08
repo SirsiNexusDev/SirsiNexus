@@ -10,7 +10,7 @@ export function Providers({ children }: PropsWithChildren) {
   return (
     <SessionProvider basePath="/api/auth" refetchInterval={0}>
       <Provider store={store}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} disableTransitionOnChange={false}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} disableTransitionOnChange={true}>
           {children}
         </ThemeProvider>
       </Provider>

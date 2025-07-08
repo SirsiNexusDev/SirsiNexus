@@ -193,7 +193,7 @@ export default function DemosPage() {
       case 'Low': return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900';
       case 'Medium': return 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900';
       case 'High': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
-      default: return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:text-gray-400 dark:bg-gray-800';
     }
   };
 
@@ -229,7 +229,7 @@ export default function DemosPage() {
                   className={`cursor-pointer rounded-lg border p-6 transition-all ${
                     isSelected
                       ? 'border-sirsi-500 bg-sirsi-50 dark:bg-sirsi-900/10'
-                      : 'border-gray-200 hover:border-sirsi-200 dark:border-gray-700'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-sirsi-200 dark:border-gray-700'
                   }`}
                   onClick={() => setSelectedEntity(entity)}
                 >
@@ -260,15 +260,15 @@ export default function DemosPage() {
                       
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <DollarSign className="h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                           <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.monthlySpend}/mo</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <Users className="h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                           <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.users}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Database className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                          <Database className="h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                           <span className="text-slate-800 dark:text-slate-200 font-medium">{entity.metrics.dataVolume}</span>
                         </div>
                       </div>
@@ -288,7 +288,7 @@ export default function DemosPage() {
           
           {!selectedEntity ? (
             <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
-              <Building2 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+              <Building2 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
               <p className="mt-2 text-sm text-slate-800 dark:text-slate-200 font-medium">
                 Select a business entity first to see available demo types
               </p>
@@ -310,7 +310,7 @@ export default function DemosPage() {
                     className={`cursor-pointer rounded-lg border p-6 transition-all ${
                       isSelected
                         ? 'border-sirsi-500 bg-sirsi-50 dark:bg-sirsi-900/10'
-                        : 'border-gray-200 hover:border-sirsi-200 dark:border-gray-700'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-sirsi-200 dark:border-gray-700'
                     }`}
                     onClick={() => setSelectedDemoType(type as DemoType)}
                   >

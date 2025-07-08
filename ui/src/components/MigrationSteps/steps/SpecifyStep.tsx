@@ -81,44 +81,44 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
     <div className="space-y-6">
       {/* Requirements Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 text-lg font-medium">Migration Requirements</h3>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+          <h3 className="mb-4 text-lg font-medium dark:text-gray-100">Migration Requirements</h3>
 
           {/* Resource Summary */}
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="flex items-center rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="flex items-center rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4">
               <Server className="mr-3 h-6 w-6 text-sirsi-500" />
               <div>
-                <p className="font-medium">Resources</p>
-                <p className="text-sm text-gray-600">{resources.length} total</p>
+                <p className="font-medium dark:text-gray-100">Resources</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{resources.length} total</p>
               </div>
             </div>
 
-            <div className="flex items-center rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="flex items-center rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4">
               <Clock className="mr-3 h-6 w-6 text-sirsi-500" />
               <div>
-                <p className="font-medium">Estimated Duration</p>
-                <p className="text-sm text-gray-600">4-6 hours</p>
+                <p className="font-medium dark:text-gray-100">Estimated Duration</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">4-6 hours</p>
               </div>
             </div>
 
-            <div className="flex items-center rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="flex items-center rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4">
               <Network className="mr-3 h-6 w-6 text-sirsi-500" />
               <div>
-                <p className="font-medium">Network Required</p>
-                <p className="text-sm text-gray-600">{requirements.networkBandwidth}</p>
+                <p className="font-medium dark:text-gray-100">Network Required</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{requirements.networkBandwidth}</p>
               </div>
             </div>
           </div>
 
           {/* Target Specifications */}
           <div className="mb-6">
-            <h4 className="mb-2 font-medium">Target Environment Specifications</h4>
+            <h4 className="mb-2 font-medium dark:text-gray-100">Target Environment Specifications</h4>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700">CPU</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CPU</label>
                 <select
-                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none dark:text-gray-100"
                   value={requirements.targetSpecs.cpu}
                   onChange={(e) =>
                     setRequirements({
@@ -134,9 +134,9 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Memory</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Memory</label>
                 <select
-                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none dark:text-gray-100"
                   value={requirements.targetSpecs.memory}
                   onChange={(e) =>
                     setRequirements({
@@ -152,9 +152,9 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Storage</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Storage</label>
                 <select
-                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 shadow-sm focus:border-sirsi-500 focus:outline-none dark:text-gray-100"
                   value={requirements.targetSpecs.storage}
                   onChange={(e) =>
                     setRequirements({
@@ -201,17 +201,17 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
         </div>
 
         {/* Risk Assessment */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <h3 className="mb-4 text-lg font-medium">Risk Assessment</h3>
           
           <div className="mb-6 flex items-center">
             <div
               className={`mr-4 h-16 w-16 rounded-full ${
                 riskAssessment.level === 'low'
-                  ? 'bg-green-100'
+                  ? 'bg-green-100 dark:bg-green-900/30'
                   : riskAssessment.level === 'medium'
-                  ? 'bg-yellow-100'
-                  : 'bg-red-100'
+                  ? 'bg-yellow-100 dark:bg-yellow-900/30'
+                  : 'bg-red-100 dark:bg-red-900/30'
               } flex items-center justify-center`}
             >
               <span
@@ -228,7 +228,7 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
             </div>
             <div>
               <h4 className="font-medium capitalize">{riskAssessment.level} Risk</h4>
-              <p className="text-sm text-gray-600">Overall assessment score</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Overall assessment score</p>
             </div>
           </div>
 
@@ -239,13 +239,13 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                className="rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4"
               >
                 <div className="flex items-start">
                   <AlertCircle className="mr-3 h-5 w-5 text-yellow-500" />
                   <div>
                     <h5 className="font-medium">{finding.category}</h5>
-                    <p className="mt-1 text-sm text-gray-600">{finding.description}</p>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{finding.description}</p>
                     <p className="mt-2 text-sm">
                       <strong>Impact:</strong> {finding.impact}
                     </p>
@@ -289,41 +289,41 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
               >
                 {/* Cost Estimation */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
                     <div className="flex items-center space-x-2 mb-2">
                       <DollarSign className="h-5 w-5 text-green-500" />
-                      <span className="font-medium text-gray-900">One-time Cost</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">One-time Cost</span>
                     </div>
                     <p className="text-2xl font-bold text-green-600">${costEstimate.oneTime.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">Migration execution</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Migration execution</p>
                   </div>
                   
-                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
                     <div className="flex items-center space-x-2 mb-2">
                       <TrendingUp className="h-5 w-5 text-blue-500" />
-                      <span className="font-medium text-gray-900">Monthly Cost</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Monthly Cost</span>
                     </div>
                     <p className="text-2xl font-bold text-blue-600">${costEstimate.monthly.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">Infrastructure running</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Infrastructure running</p>
                   </div>
                   
-                  <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
                     <div className="flex items-center space-x-2 mb-2">
                       <Sparkles className="h-5 w-5 text-purple-500" />
-                      <span className="font-medium text-gray-900">Savings</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Savings</span>
                     </div>
                     <p className="text-2xl font-bold text-purple-600">{costEstimate.savings}%</p>
-                    <p className="text-sm text-gray-600">Estimated reduction</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Estimated reduction</p>
                   </div>
                 </div>
                 
                 {/* AI Recommendations */}
-                <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
                   <div className="flex items-center space-x-2 mb-3">
                     <Zap className="h-5 w-5 text-yellow-500" />
-                    <span className="font-medium text-gray-900">AI Recommendations</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">AI Recommendations</span>
                   </div>
-                  <div className="space-y-2 text-sm text-gray-700">
+                  <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                     <div className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
                       <p>Consider using spot instances for development workloads to reduce costs by 60%</p>
@@ -340,21 +340,21 @@ export const SpecifyStep: React.FC<SpecifyStepProps> = ({ resources, onComplete 
                 </div>
                 
                 {/* Performance Insights */}
-                <div className="bg-white rounded-lg p-4 border border-sirsi-100">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-sirsi-100">
                   <div className="flex items-center space-x-2 mb-3">
                     <Shield className="h-5 w-5 text-blue-500" />
-                    <span className="font-medium text-gray-900">Performance & Security Insights</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">Performance & Security Insights</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <h6 className="font-medium text-gray-900 mb-1">Performance</h6>
-                      <p className="text-gray-700">Current configuration will handle 2x traffic growth</p>
-                      <p className="text-gray-700">Expected 25% performance improvement</p>
+                      <h6 className="font-medium text-gray-900 dark:text-gray-100 mb-1">Performance</h6>
+                      <p className="text-gray-700 dark:text-gray-300">Current configuration will handle 2x traffic growth</p>
+                      <p className="text-gray-700 dark:text-gray-300">Expected 25% performance improvement</p>
                     </div>
                     <div>
-                      <h6 className="font-medium text-gray-900 mb-1">Security</h6>
-                      <p className="text-gray-700">Encryption at rest and in transit enabled</p>
-                      <p className="text-gray-700">Compliance requirements satisfied</p>
+                      <h6 className="font-medium text-gray-900 dark:text-gray-100 mb-1">Security</h6>
+                      <p className="text-gray-700 dark:text-gray-300">Encryption at rest and in transit enabled</p>
+                      <p className="text-gray-700 dark:text-gray-300">Compliance requirements satisfied</p>
                     </div>
                   </div>
                 </div>

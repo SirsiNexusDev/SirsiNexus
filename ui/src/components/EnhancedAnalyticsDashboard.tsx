@@ -289,7 +289,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
   };
 
   const getTrendColor = (trend: 'up' | 'down' | 'stable', isPositive: boolean) => {
-    if (trend === 'stable') return 'text-gray-500';
+    if (trend === 'stable') return 'text-gray-500 dark:text-gray-400';
     const isGood = (trend === 'up' && isPositive) || (trend === 'down' && !isPositive);
     return isGood ? 'text-green-500' : 'text-red-500';
   };
@@ -299,7 +299,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-sirsi-500" />
-          <p className="text-gray-600">Loading analytics dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading analytics dashboard...</p>
         </div>
       </div>
     );
@@ -310,8 +310,8 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Analytics Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Real-time insights into system performance and optimization opportunities
           </p>
         </div>
@@ -331,7 +331,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={autoRefresh ? 'bg-green-50 text-green-700' : ''}
+            className={autoRefresh ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' : ''}
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />
             Auto Refresh
@@ -344,7 +344,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
       </div>
 
       {/* Last Updated */}
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-gray-500 dark:text-gray-400">
         Last updated: {lastUpdated.toLocaleTimeString()}
       </div>
 
@@ -375,14 +375,14 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                       </div>
                     </div>
                     <div className="mt-4">
-                      <div className="text-2xl font-bold text-gray-900">
+                      <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {metric.value}
                       </div>
-                      <div className="text-sm font-medium text-gray-700 mt-1">
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">
                         {metric.title}
                       </div>
                       {metric.description && (
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {metric.description}
                         </div>
                       )}
@@ -421,7 +421,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Overall Status</span>
-                      <Badge className={systemHealth.overallStatus === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                      <Badge className={systemHealth.overallStatus === 'healthy' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'}>
                         {systemHealth.overallStatus}
                       </Badge>
                     </div>
@@ -431,12 +431,12 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                         <div key={name} className="flex items-center justify-between">
                           <div className="flex items-center">
                             <div className={`w-2 h-2 rounded-full mr-3 ${
-                              component.status === 'healthy' ? 'bg-green-500' : 
-                              component.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'
+                              component.status === 'healthy' ? 'bg-green-50 dark:bg-green-900/200' : 
+                              component.status === 'degraded' ? 'bg-yellow-50 dark:bg-yellow-900/200' : 'bg-red-50 dark:bg-red-900/200'
                             }`} />
                             <span className="text-sm capitalize">{name.replace('_', ' ')}</span>
                           </div>
-                          <span className="text-xs text-gray-500 capitalize">{component.status}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">{component.status}</span>
                         </div>
                       ))}
                     </div>
@@ -461,18 +461,18 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                         <div className="text-2xl font-bold text-blue-600">
                           {analyticsData.agents.currently_active}
                         </div>
-                        <div className="text-sm text-gray-600">Active Agents</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Active Agents</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-green-600">
                           {analyticsData.agents.success_rate}%
                         </div>
-                        <div className="text-sm text-gray-600">Success Rate</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Success Rate</div>
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="text-sm font-medium text-gray-700">By Type</div>
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">By Type</div>
                       {Object.entries(analyticsData.agents.by_type).map(([type, count]) => (
                         <div key={type} className="flex items-center justify-between">
                           <span className="text-sm capitalize">{type}</span>
@@ -503,25 +503,25 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
             <CardContent>
               <div className="space-y-3">
                 {analyticsData?.errors.recent.map((error, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-900">
                     <div className="flex items-center">
                       <div className={`w-2 h-2 rounded-full mr-3 ${
-                        error.severity === 'critical' ? 'bg-red-500' :
+                        error.severity === 'critical' ? 'bg-red-50 dark:bg-red-900/200' :
                         error.severity === 'high' ? 'bg-orange-500' :
-                        error.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                        error.severity === 'medium' ? 'bg-yellow-50 dark:bg-yellow-900/200' : 'bg-blue-50 dark:bg-blue-900/200'
                       }`} />
                       <div>
                         <div className="text-sm font-medium">{error.message}</div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           {new Date(error.timestamp).toLocaleString()}
                         </div>
                       </div>
                     </div>
                     <Badge variant="outline" className={
-                      error.severity === 'critical' ? 'border-red-300 text-red-700' :
+                      error.severity === 'critical' ? 'border-red-300 text-red-700 dark:text-red-300' :
                       error.severity === 'high' ? 'border-orange-300 text-orange-700' :
-                      error.severity === 'medium' ? 'border-yellow-300 text-yellow-700' : 
-                      'border-blue-300 text-blue-700'
+                      error.severity === 'medium' ? 'border-yellow-300 text-yellow-700 dark:text-yellow-300' : 
+                      'border-blue-300 text-blue-700 dark:text-blue-300'
                     }>
                       {error.severity}
                     </Badge>
@@ -543,15 +543,15 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                 {analyticsData && (
                   <div className="space-y-6">
                     {[
-                      { label: 'CPU Usage', value: analyticsData.performance.cpu_usage, icon: Cpu, color: 'bg-blue-500' },
-                      { label: 'Memory Usage', value: analyticsData.performance.memory_usage, icon: Database, color: 'bg-green-500' },
-                      { label: 'Disk Usage', value: analyticsData.performance.disk_usage, icon: Layers, color: 'bg-purple-500' },
+                      { label: 'CPU Usage', value: analyticsData.performance.cpu_usage, icon: Cpu, color: 'bg-blue-50 dark:bg-blue-900/200' },
+                      { label: 'Memory Usage', value: analyticsData.performance.memory_usage, icon: Database, color: 'bg-green-50 dark:bg-green-900/200' },
+                      { label: 'Disk Usage', value: analyticsData.performance.disk_usage, icon: Layers, color: 'bg-purple-50 dark:bg-purple-900/200' },
                       { label: 'Network I/O', value: analyticsData.performance.network_io, icon: Network, color: 'bg-orange-500' }
                     ].map((metric) => (
                       <div key={metric.label} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            <metric.icon className="h-4 w-4 mr-2 text-gray-600" />
+                            <metric.icon className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
                             <span className="text-sm font-medium">{metric.label}</span>
                           </div>
                           <span className="text-sm font-bold">
@@ -578,16 +578,16 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                       <div className="text-3xl font-bold text-green-600">
                         {analyticsData.agents.avg_response_time}ms
                       </div>
-                      <div className="text-sm text-gray-600">Average Response Time</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Average Response Time</div>
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="text-sm font-medium text-gray-700">Recent Measurements</div>
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Recent Measurements</div>
                       <div className="grid grid-cols-5 gap-1">
                         {analyticsData.performance.response_times.map((time, index) => (
                           <div key={index} className="text-center">
                             <div className={`h-8 ${time > 180 ? 'bg-red-200' : time > 150 ? 'bg-yellow-200' : 'bg-green-200'} rounded mb-1`} />
-                            <div className="text-xs text-gray-600">{time}ms</div>
+                            <div className="text-xs text-gray-600 dark:text-gray-400">{time}ms</div>
                           </div>
                         ))}
                       </div>
@@ -613,10 +613,10 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                 {analyticsData && (
                   <div className="space-y-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">
+                      <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         ${analyticsData.costs.current_month.toLocaleString()}
                       </div>
-                      <div className="text-sm text-gray-600">Current Month</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Current Month</div>
                     </div>
                     
                     <div className="space-y-3">
@@ -676,7 +676,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                     <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{opportunity.title}</h4>
-                        <p className="text-sm text-gray-600">{opportunity.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{opportunity.description}</p>
                         <div className="flex items-center mt-2 space-x-4">
                           <Badge variant="outline" className="text-xs">
                             {opportunity.difficulty}
@@ -688,7 +688,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-lg font-bold text-green-600">{opportunity.savings}</div>
-                        <div className="text-xs text-gray-500">potential savings</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">potential savings</div>
                       </div>
                     </div>
                   ))}
@@ -705,7 +705,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
               <CardTitle>Agent Details Coming Soon</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Detailed agent analytics and management will be available here.</p>
+              <p className="text-gray-600 dark:text-gray-400">Detailed agent analytics and management will be available here.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -716,7 +716,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
               <CardTitle>Security Overview Coming Soon</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Security compliance and monitoring details will be available here.</p>
+              <p className="text-gray-600 dark:text-gray-400">Security compliance and monitoring details will be available here.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -727,7 +727,7 @@ export const EnhancedAnalyticsDashboard: React.FC = () => {
               <CardTitle>Error Analysis Coming Soon</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Detailed error analysis and troubleshooting will be available here.</p>
+              <p className="text-gray-600 dark:text-gray-400">Detailed error analysis and troubleshooting will be available here.</p>
             </CardContent>
           </Card>
         </TabsContent>

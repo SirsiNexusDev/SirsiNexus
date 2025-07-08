@@ -137,23 +137,23 @@ export default function WizardPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="mb-8 rounded-lg border border-green-200 bg-green-50 p-6"
+            className="mb-8 rounded-lg border border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 p-6"
           >
             <div className="flex items-center space-x-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-500 rounded-full">
+              <div className="flex items-center justify-center w-12 h-12 bg-green-50 dark:bg-green-900/200 rounded-full">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-green-900">Migration Completed Successfully!</h2>
-                <p className="text-green-800 font-medium">All migration steps have been completed. Your resources are now successfully migrated and optimized.</p>
+                <p className="text-green-800 dark:text-green-300 font-medium">All migration steps have been completed. Your resources are now successfully migrated and optimized.</p>
                 <div className="mt-4 flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-green-700 font-medium">{generatedArtifacts.length} Artifacts Generated</span>
+                    <span className="text-green-700 dark:text-green-300 font-medium">{generatedArtifacts.length} Artifacts Generated</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Sparkles className="h-5 w-5 text-green-600" />
-                    <span className="text-green-700 font-medium">Ready for Production</span>
+                    <span className="text-green-700 dark:text-green-300 font-medium">Ready for Production</span>
                   </div>
                 </div>
               </div>
@@ -164,7 +164,7 @@ export default function WizardPage() {
 
       {/* Generated Artifacts Panel */}
       {generatedArtifacts.length > 0 && (
-        <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+        <div className="mb-8 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h3 className="text-xl font-bold text-slate-900">Generated Artifacts</h3>
@@ -183,7 +183,7 @@ export default function WizardPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-4 hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-900 p-4 hover:bg-gray-100 dark:bg-gray-800 transition-colors"
               >
                 <div className="flex-1">
                   <h4 className="font-medium text-slate-900">{artifact.name}</h4>

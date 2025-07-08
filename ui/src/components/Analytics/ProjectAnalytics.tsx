@@ -93,7 +93,7 @@ export const ProjectAnalytics = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Project Analytics</h1>
-          <p className="text-gray-600">Overview of project and task performance</p>
+          <p className="text-gray-600 dark:text-gray-400">Overview of project and task performance</p>
         </div>
         <Button>
           <Icons.download className="h-4 w-4 mr-2" />
@@ -109,7 +109,7 @@ export const ProjectAnalytics = () => {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{data.projects.total}</div>
-            <div className="text-gray-600 mt-2">
+            <div className="text-gray-600 dark:text-gray-400 mt-2">
               Active: {data.projects.active} | Completed: {data.projects.completed}
             </div>
           </CardContent>
@@ -122,7 +122,7 @@ export const ProjectAnalytics = () => {
           <CardContent>
             <div className="text-3xl font-bold">{taskCompletionRate}%</div>
             <Progress value={taskCompletionRate} className="mt-2" />
-            <div className="text-gray-600 mt-2">
+            <div className="text-gray-600 dark:text-gray-400 mt-2">
               {data.tasks.completed} of {data.tasks.total} tasks completed
             </div>
           </CardContent>
@@ -134,7 +134,7 @@ export const ProjectAnalytics = () => {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{data.tasks.inProgress}</div>
-            <div className="text-gray-600 mt-2">
+            <div className="text-gray-600 dark:text-gray-400 mt-2">
               {data.tasks.blockers} tasks blocked
             </div>
           </CardContent>
@@ -148,7 +148,7 @@ export const ProjectAnalytics = () => {
             <div className="text-3xl font-bold">
               {Math.round((data.projects.active / data.projects.total) * 100)}%
             </div>
-            <div className="text-gray-600 mt-2">
+            <div className="text-gray-600 dark:text-gray-400 mt-2">
               Projects on track
             </div>
           </CardContent>

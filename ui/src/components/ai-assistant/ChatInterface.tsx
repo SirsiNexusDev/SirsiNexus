@@ -131,13 +131,13 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <div className={`bg-white rounded-xl shadow-2xl border border-gray-200 transition-all duration-300 ${
+      <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 transition-all duration-300 ${
         isMinimized ? 'w-80 h-16' : 'w-96 h-[500px]'
       }`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-xl">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-white dark:bg-gray-800 bg-opacity-20 rounded-lg flex items-center justify-center">
               <Brain className="h-4 w-4" />
             </div>
             <div>
@@ -150,13 +150,13 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsMinimized(!isMinimized)}
-              className="w-6 h-6 hover:bg-white hover:bg-opacity-20 rounded flex items-center justify-center transition-colors"
+              className="w-6 h-6 hover:bg-white dark:bg-gray-800 hover:bg-opacity-20 rounded flex items-center justify-center transition-colors"
             >
               {isMinimized ? <Maximize2 className="h-3 w-3" /> : <Minimize2 className="h-3 w-3" />}
             </button>
             <button
               onClick={onClose}
-              className="w-6 h-6 hover:bg-white hover:bg-opacity-20 rounded flex items-center justify-center transition-colors"
+              className="w-6 h-6 hover:bg-white dark:bg-gray-800 hover:bg-opacity-20 rounded flex items-center justify-center transition-colors"
             >
               <X className="h-3 w-3" />
             </button>
@@ -175,8 +175,8 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
                   >
                     <div className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
                       message.type === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-blue-50 dark:bg-blue-900/200 text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                     }`}>
                       {message.type === 'assistant' && (
                         <div className="flex items-center gap-2 mb-1">
@@ -186,7 +186,7 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
                       )}
                       <p className="text-sm">{message.content}</p>
                       <p className={`text-xs mt-1 ${
-                        message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+                        message.type === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
                       }`}>
                         {formatTime(message.timestamp)}
                       </p>
@@ -196,7 +196,7 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
                 
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 px-3 py-2 rounded-lg">
+                    <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
                       <div className="flex items-center gap-2">
                         <Sparkles className="h-3 w-3 text-purple-500" />
                         <span className="text-xs font-medium text-purple-600">AI Assistant</span>
@@ -218,19 +218,19 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
               <div className="flex gap-2 mb-3">
                 <button 
                   onClick={() => setInputValue("How do I get started?")}
-                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                  className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 rounded transition-colors"
                 >
                   Get Started
                 </button>
                 <button 
                   onClick={() => setInputValue("Show me the documentation")}
-                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                  className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 rounded transition-colors"
                 >
                   Docs
                 </button>
                 <button 
                   onClick={() => setInputValue("What are the system requirements?")}
-                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                  className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 rounded transition-colors"
                 >
                   Requirements
                 </button>
@@ -238,21 +238,21 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex gap-2">
                 <textarea
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask me anything about SirsiNexus..."
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   rows={1}
                   disabled={isLoading}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading}
-                  className="w-10 h-10 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors"
+                  className="w-10 h-10 bg-purple-50 dark:bg-purple-900/200 hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors"
                 >
                   <Send className="h-4 w-4" />
                 </button>

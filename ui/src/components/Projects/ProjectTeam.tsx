@@ -55,7 +55,7 @@ export const ProjectTeam: React.FC<ProjectTeamProps> = ({ projectId }) => {
                   </Avatar>
                   <div>
                     <p className="font-medium">{member.name}</p>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{member.role}</p>
                   </div>
                 </div>
 

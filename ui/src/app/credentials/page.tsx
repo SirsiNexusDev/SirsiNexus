@@ -197,7 +197,7 @@ export default function CredentialsPage() {
                 onClick={() => setFormData({ ...formData, provider: providerInfo.id })}
                 className={`p-4 border rounded-lg text-left transition-colors ${
                   provider === providerInfo.id
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300'
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
               >
@@ -475,7 +475,7 @@ export default function CredentialsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                 <Key className="h-4 w-4 text-emerald-600" />
               </div>
               <div>
@@ -486,7 +486,7 @@ export default function CredentialsPage() {
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                 <CheckCircle className="h-4 w-4 text-green-600" />
               </div>
               <div>
@@ -499,7 +499,7 @@ export default function CredentialsPage() {
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
                 <XCircle className="h-4 w-4 text-red-600" />
               </div>
               <div>
@@ -579,7 +579,7 @@ export default function CredentialsPage() {
                 <button
                   onClick={() => handleTestCredential(credential.id)}
                   disabled={testingCredentials.has(credential.id)}
-                  className="p-2 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-2 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 dark:bg-emerald-900/20 rounded-lg transition-colors disabled:opacity-50"
                   title="Test Connection"
                 >
                   <TestTube className={`h-4 w-4 ${testingCredentials.has(credential.id) ? 'animate-pulse' : ''}`} />
@@ -589,14 +589,14 @@ export default function CredentialsPage() {
                     setSelectedCredential(credential);
                     setShowEditModal(true);
                   }}
-                  className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-colors"
                   title="Edit"
                 >
                   <Edit3 className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => handleDeleteCredential(credential.id)}
-                  className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 dark:bg-red-900/20 rounded-lg transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="h-4 w-4" />

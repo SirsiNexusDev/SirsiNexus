@@ -207,14 +207,14 @@ const AutoScalingWizard = () => {
                       key={type.id}
                       className={`cursor-pointer transition-all hover:shadow-md ${
                         wizardData.resourceType === type.id 
-                          ? 'border-emerald-500 bg-emerald-50' 
+                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' 
                           : 'border-gray-200 dark:border-gray-700'
                       }`}
                       onClick={() => handleResourceTypeChange(type.id)}
                     >
                       <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                             <Icon className="h-6 w-6 text-emerald-600" />
                           </div>
                           <div>
@@ -245,14 +245,14 @@ const AutoScalingWizard = () => {
                       key={objective.id}
                       className={`cursor-pointer transition-all hover:shadow-md ${
                         isSelected 
-                          ? 'border-emerald-500 bg-emerald-50' 
+                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' 
                           : 'border-gray-200 dark:border-gray-700'
                       }`}
                       onClick={() => handleObjectiveToggle(objective.id)}
                     >
                       <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                             <Icon className="h-6 w-6 text-emerald-600" />
                           </div>
                           <div>
@@ -467,11 +467,11 @@ const AutoScalingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:to-gray-800 dark:from-gray-900 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-gray-900 dark:to-gray-800 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
             <Zap className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             Auto-Scaling Wizard
             <Badge className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-700">
@@ -479,7 +479,7 @@ const AutoScalingWizard = () => {
               AI-Powered
             </Badge>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Configure intelligent auto-scaling for your infrastructure
           </p>
         </div>
@@ -508,9 +508,9 @@ const AutoScalingWizard = () => {
                       <div className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${
                           currentStep === step.number
-                            ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                            ? 'bg-emerald-600 dark:bg-emerald-50 dark:bg-emerald-900/200 text-white'
                             : currentStep > step.number
-                            ? 'bg-green-600 dark:bg-green-500 text-white'
+                            ? 'bg-green-600 dark:bg-green-50 dark:bg-green-900/200 text-white'
                             : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-300'
                         }`}>
                           {currentStep > step.number ? <CheckCircle className="h-4 w-4" /> : step.number}
@@ -585,12 +585,12 @@ const AutoScalingWizard = () => {
                   
                   <div className="flex items-center gap-2">
                     {currentStep === steps.length ? (
-                      <Button className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                      <Button className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-50 dark:bg-emerald-900/200 dark:hover:bg-emerald-600">
                         <Play className="h-4 w-4 mr-2" />
                         Deploy Configuration
                       </Button>
                     ) : (
-                      <Button onClick={nextStep} className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                      <Button onClick={nextStep} className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-50 dark:bg-emerald-900/200 dark:hover:bg-emerald-600">
                         Next
                       </Button>
                     )}
@@ -614,11 +614,11 @@ const AutoScalingWizard = () => {
                       <div key={index} className="flex items-center justify-between p-3 border dark:border-gray-700 rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className={`w-3 h-3 rounded-full ${
-                            event.action === 'Scale Up' ? 'bg-green-500' : 'bg-blue-500'
+                            event.action === 'Scale Up' ? 'bg-green-50 dark:bg-green-900/200' : 'bg-blue-50 dark:bg-blue-900/200'
                           }`}></div>
                           <div>
                             <p className="font-medium text-sm dark:text-gray-200">{event.action}: {event.instances}</p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-400">{event.reason}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">{event.reason}</p>
                           </div>
                         </div>
                         <span className="text-xs text-gray-500 dark:text-gray-400">{event.time}</span>

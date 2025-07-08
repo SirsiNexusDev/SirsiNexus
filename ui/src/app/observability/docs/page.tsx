@@ -18,7 +18,7 @@ export default function ObservabilityDocsPage() {
         <div className="flex items-center gap-4 mb-8">
           <Link 
             href="/observability" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Observability
@@ -55,21 +55,21 @@ export default function ObservabilityDocsPage() {
               <div>
                 <h3 className="text-lg font-semibold mb-3">The Three Pillars</h3>
                 <div className="grid md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg bg-blue-50">
+                  <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-900/20">
                     <BarChart3 className="h-6 w-6 text-blue-600 mb-2" />
                     <h4 className="font-semibold text-blue-600 mb-2">Metrics</h4>
                     <p className="text-sm text-muted-foreground">
                       Time-series data for performance, resource utilization, and business KPIs
                     </p>
                   </div>
-                  <div className="p-4 border rounded-lg bg-green-50">
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-900/20">
                     <Database className="h-6 w-6 text-green-600 mb-2" />
                     <h4 className="font-semibold text-green-600 mb-2">Logs</h4>
                     <p className="text-sm text-muted-foreground">
                       Structured and unstructured log data for debugging and analysis
                     </p>
                   </div>
-                  <div className="p-4 border rounded-lg bg-purple-50">
+                  <div className="p-4 border rounded-lg bg-purple-50 dark:bg-purple-900/20">
                     <Activity className="h-6 w-6 text-purple-600 mb-2" />
                     <h4 className="font-semibold text-purple-600 mb-2">Traces</h4>
                     <p className="text-sm text-muted-foreground">
@@ -323,22 +323,22 @@ scrape_configs:
                 <div>
                   <h4 className="font-semibold mb-3">AI-Powered Anomaly Detection</h4>
                   <div className="space-y-3">
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h5 className="font-semibold text-blue-700 mb-2">Adaptive Thresholds</h5>
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <h5 className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Adaptive Thresholds</h5>
                       <p className="text-sm text-muted-foreground">
                         Machine learning algorithms automatically adjust alert thresholds based on historical patterns,
                         reducing false positives and improving signal-to-noise ratio.
                       </p>
                     </div>
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                      <h5 className="font-semibold text-green-700 mb-2">Pattern Recognition</h5>
+                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                      <h5 className="font-semibold text-green-700 dark:text-green-300 mb-2">Pattern Recognition</h5>
                       <p className="text-sm text-muted-foreground">
                         AI identifies complex patterns and correlations across multiple metrics to detect anomalies
                         that traditional rule-based systems might miss.
                       </p>
                     </div>
-                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                      <h5 className="font-semibold text-purple-700 mb-2">Predictive Alerting</h5>
+                    <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                      <h5 className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Predictive Alerting</h5>
                       <p className="text-sm text-muted-foreground">
                         Forecast potential issues before they occur based on trending data and historical incidents,
                         enabling proactive resolution.
@@ -396,7 +396,7 @@ scrape_configs:
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="border-l-4 border-green-500 pl-4">
-                    <h4 className="font-semibold text-green-700">Monitoring Best Practices</h4>
+                    <h4 className="font-semibold text-green-700 dark:text-green-300">Monitoring Best Practices</h4>
                     <ul className="text-sm text-muted-foreground space-y-1 mt-2">
                       <li>✓ Monitor the four golden signals (latency, traffic, errors, saturation)</li>
                       <li>✓ Set up Service Level Objectives (SLOs)</li>
@@ -409,7 +409,7 @@ scrape_configs:
                 </div>
                 <div className="space-y-4">
                   <div className="border-l-4 border-blue-500 pl-4">
-                    <h4 className="font-semibold text-blue-700">Logging Best Practices</h4>
+                    <h4 className="font-semibold text-blue-700 dark:text-blue-300">Logging Best Practices</h4>
                     <ul className="text-sm text-muted-foreground space-y-1 mt-2">
                       <li>✓ Use structured logging with consistent formats</li>
                       <li>✓ Include correlation IDs for request tracing</li>
