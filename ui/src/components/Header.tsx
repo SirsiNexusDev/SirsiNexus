@@ -16,6 +16,7 @@ import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsDropDown } from './SettingsDropDown';
 import { GlobalSearch } from './GlobalSearch';
 import { ThemeToggle } from './ThemeToggle';
+import { SirsiHeaderAssistant } from './SirsiHeaderAssistant';
 import Image from 'next/image';
 
 export const Header: React.FC = () => {
@@ -79,19 +80,9 @@ export const Header: React.FC = () => {
             </div>
           </div>
 
-          {/* Search Bar */}
+          {/* Sirsi AI Assistant */}
           <div className="flex-1 max-w-md mx-8">
-            <button
-              onClick={() => setShowSearch(true)}
-              className="w-full flex items-center gap-3 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors text-left"
-            >
-              <Search className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-              <span className="text-sm text-slate-500 dark:text-slate-400 flex-1">Search...</span>
-              <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
-                <Command className="h-3 w-3" />
-                <span>K</span>
-              </div>
-            </button>
+            <SirsiHeaderAssistant />
           </div>
 
           <div className="flex items-center gap-3">

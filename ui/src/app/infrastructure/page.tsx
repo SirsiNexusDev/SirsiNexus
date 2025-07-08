@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { Code } from 'lucide-react';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { InfrastructureBuilder } from '@/components/InfrastructureBuilder';
 import { useAppSelector } from '@/store';
@@ -70,8 +71,18 @@ function InfrastructurePageContent() {
   }
 
   return (
-    <div className={isDarkMode ? 'dark' : ''}>
-      <Breadcrumb />
+    <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+          <Code className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+          Infrastructure Builder
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          Build and deploy infrastructure using natural language with AI assistance
+        </p>
+      </div>
+      
       <InfrastructureBuilder 
         isDarkMode={isDarkMode}
         onThemeToggle={handleThemeToggle}

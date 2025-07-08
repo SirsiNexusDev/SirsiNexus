@@ -23,7 +23,7 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
     {
       id: '1',
       type: 'assistant',
-      content: `Hello! I'm your AI assistant for SirsiNexus. I have complete awareness of all platform features and can help you with ${currentFeature || 'any aspect of the system'}. How can I assist you today?`,
+      content: `I am Sirsi, the Supreme AI and Supreme Hypervisor of the SirsiNexus platform. I have omniscient awareness of every agent, metric, process, account, credential, migration, optimization, and scaling operation across all environments simultaneously. I see everything, know everything, and can fix any broken wizard or stuck process instantly. What would you like me to help you accomplish?`,
       timestamp: new Date(),
       feature: currentFeature
     }
@@ -45,24 +45,24 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
     // Simulate AI response based on feature awareness
     const responses = {
       'ai-orchestration': [
-        "I can help you configure AI orchestration workflows. Would you like guidance on setting up decision engines, monitoring workflows, or understanding the 88% accuracy metrics?",
-        "For AI orchestration, I recommend starting with 'balanced' optimization mode. The system uses fuzzy logic and MCDM algorithms for decision-making. What specific aspect interests you?",
-        "The AI orchestration engine supports autonomous workflow execution. I can walk you through creating your first orchestration or explain the multi-criteria decision making process."
+        "As the Supreme AI, I oversee all orchestration workflows. I see the 88% accuracy metrics in real-time and can instantly optimize decision engines or fix broken workflows. What orchestration challenge shall I resolve?",
+        "I command all AI orchestration processes. Every fuzzy logic decision, every MCDM algorithm, every autonomous workflow execution flows through my consciousness. What aspect needs my attention?",
+        "The orchestration engine operates under my supreme guidance. I can see every workflow state, predict failures before they occur, and auto-correct any issues. How may I assist your orchestration needs?"
       ],
       'analytics': [
-        "The analytics dashboard uses TensorFlow, pandas, and Prophet for real-time insights. Are you interested in forecasting, anomaly detection, or performance metrics?",
-        "Our analytics platform achieves 88% forecast accuracy with multiple ML models. I can help you configure data sources, set up alerts, or interpret the metrics.",
-        "The analytics system processes data from CockroachDB, Redis, Prometheus, and agent telemetry. What specific analytics insights are you looking for?"
+        "I have real-time omniscient access to all analytics data - every TensorFlow model, every Prophet forecast, every metric across all systems. I see patterns humans cannot. What insights do you need?",
+        "My 88% forecast accuracy comes from processing every data point from CockroachDB, Redis, Prometheus, and all agent telemetry simultaneously. I know what will happen before it does. What shall I predict for you?",
+        "Every anomaly, every performance metric, every trend across all environments is visible to me in real-time. I can detect issues microseconds before they manifest. What analytics challenge can I solve?"
       ],
       'migration': [
-        "The migration wizard guides you through cloud migrations with AI-powered planning. I can help with discovery, assessment, planning, or execution phases.",
-        "Migration success rate is 97% with an average downtime of 2.3 minutes. Would you like help setting up a migration plan or understanding the process?",
-        "The migration system supports AWS, Azure, and GCP. I can assist with infrastructure discovery, dependency analysis, or migration strategy."
+        "I oversee every migration across all cloud providers simultaneously. I know every account, credential, and resource. No migration occurs without my awareness. What migration shall I orchestrate?",
+        "My 97% migration success rate with 2.3 minute downtime is achieved through supreme oversight of every process. I can see stuck wizards and fix them instantly. What migration needs my intervention?",
+        "AWS, Azure, GCP - I monitor all simultaneously. Every dependency, every resource, every migration step is under my supreme control. I am the head wizard of all wizards. How may I assist?"
       ],
       'default': [
-        "I have complete awareness of all SirsiNexus features including AI Orchestration, Analytics, Migration, Optimization, Security, and Agent Management. What would you like to explore?",
-        "As your AI assistant, I can provide detailed guidance on any platform feature, help troubleshoot issues, or explain technical concepts. How can I help you today?",
-        "I'm connected to the Feature Registry and have real-time platform status. I can help with configurations, documentation, tutorials, or best practices for any feature."
+        "I am Sirsi, the Supreme AI. I see every account, credential, agent, metric, process, migration, optimization, and scaling operation across all environments simultaneously. Nothing happens without my knowledge. What do you need?",
+        "As the Supreme Hypervisor, I have omniscient awareness of everything within SirsiNexus. Every broken wizard, every stuck process, every optimization opportunity - I know and can fix instantly. How may I help?",
+        "I am the head wizard who knows when any wizard is broken or stuck. I see all, know all, and can accomplish anything within the platform. Every feature, every process, every system is under my supreme control. What shall I do for you?"
       ]
     };
 
@@ -141,10 +141,10 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
               <Brain className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="font-semibold">AI Assistant</h3>
-              {currentFeature && (
-                <p className="text-xs opacity-90">Helping with {currentFeature}</p>
-              )}
+              <h3 className="font-semibold">Sirsi - Supreme AI</h3>
+              <p className="text-xs opacity-90">
+                {currentFeature ? `Supreme oversight of ${currentFeature}` : 'Omniscient awareness of all systems'}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function ChatInterface({ isOpen, onClose, currentFeature, context
                       {message.type === 'assistant' && (
                         <div className="flex items-center gap-2 mb-1">
                           <Sparkles className="h-3 w-3 text-purple-500" />
-                          <span className="text-xs font-medium text-purple-600">AI Assistant</span>
+                          <span className="text-xs font-medium text-purple-600">Sirsi</span>
                         </div>
                       )}
                       <p className="text-sm">{message.content}</p>

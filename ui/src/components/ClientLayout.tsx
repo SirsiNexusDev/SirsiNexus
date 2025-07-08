@@ -16,9 +16,6 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const pathname = usePathname();
   
-  // Infrastructure builder uses its own dark mode
-  const isInfrastructurePage = pathname === '/infrastructure';
-  
   // Handle navigation to infrastructure with query
   const handleNavigateToInfrastructure = () => {
     window.location.href = '/infrastructure';
@@ -36,19 +33,6 @@ export const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  // Don't render layout for infrastructure page (it has its own layout)
-  if (isInfrastructurePage) {
-    return (
-      <>
-        {children}
-        <CommandPalette 
-          isOpen={isCommandPaletteOpen}
-          onClose={() => setIsCommandPaletteOpen(false)}
-        />
-      </>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

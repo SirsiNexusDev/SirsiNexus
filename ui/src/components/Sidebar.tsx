@@ -26,6 +26,13 @@ import {
   Code,
   Send,
   Command,
+  Menu,
+  X,
+  Minimize2,
+  Maximize2,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -93,8 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { theme } = useTheme();
   const [migrationStepsExpanded, setMigrationStepsExpanded] = React.useState(false);
   const [wizardsExpanded, setWizardsExpanded] = React.useState(true);
-  const [nlpQuery, setNlpQuery] = useState('');
-  const nlpInputRef = useRef<HTMLTextAreaElement>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
   // Use actual theme state instead of prop
   const isActuallyDarkMode = theme === 'dark';
@@ -133,20 +139,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const handleNlpSubmit = () => {
-    if (!nlpQuery.trim()) return;
-    
-    if (onNavigateToInfrastructure) {
-      onNavigateToInfrastructure();
-    } else {
-      window.location.href = `/infrastructure?query=${encodeURIComponent(nlpQuery)}`;
-    }
-    setNlpQuery('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      handleNlpSubmit();
+  // Simple navigation handler
+  const handleInfrastructureNavigation = () => {
+    if (pathname !== '/infrastructure') {
+      router.push('/infrastructure');
     }
   };
 
@@ -176,40 +172,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800/95 dark:bg-slate-900/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto hidden lg:block border-r border-slate-200 dark:border-slate-700">
-      <nav className="p-4 space-y-6">
-        {/* Natural Language AI Assistant */}
-        <div className="mb-6">
-          <div className="mb-3">
-            <label className="block text-xs font-semibold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2">
-              <Sparkles className="h-3 w-3" />
-              Sirsi AI Assistant
-            </label>
-            <div className="relative">
-              <textarea
-                ref={nlpInputRef}
-                value={nlpQuery}
-                onChange={(e) => setNlpQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask anything or describe what you need..."
-                className="w-full p-3 text-sm rounded-lg resize-none min-h-[60px] max-h-[120px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              />
-              <button
-                onClick={handleNlpSubmit}
-                disabled={!nlpQuery.trim()}
-                className="absolute bottom-2 right-2 p-1.5 bg-emerald-600 dark:bg-purple-600 hover:bg-emerald-700 dark:hover:bg-purple-700 text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send className="h-3 w-3" />
-              </button>
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-1">
-              <Command className="h-3 w-3" />
-              <span>Cmd+Enter to send</span>
-            </p>
-          </div>
-        </div>
+    <div className={`bg-white dark:bg-gray-800/95 dark:bg-slate-900/95 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-4rem)] ${isCollapsed ? 'w-16' : 'w-64'} hidden lg:flex flex-col border-r border-slate-200 dark:border-slate-700 transition-all duration-300`}>
+      {/* Collapse Toggle */}
+      <div className="p-2 border-b border-slate-200 dark:border-slate-700">
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="w-full p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex items-center justify-center"
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
+      </div>
 
-        {/* Overview Section */}
+      {!isCollapsed && (
+        <>
+          {/* Scrollable Navigation Content */}
+          <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+            {/* Overview Section */}
         <div className="mb-6">
           <button
             onClick={() => {
@@ -375,11 +353,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Quick Action CTA */}
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
           <button 
-            onClick={() => {
-              if (pathname !== '/infrastructure') {
-                router.push('/infrastructure');
-              }
-            }}
+            onClick={handleInfrastructureNavigation}
             className="w-full bg-emerald-600 dark:bg-purple-600 hover:bg-emerald-700 dark:hover:bg-purple-700 text-white rounded-lg p-3 transition-colors group mb-3"
           >
             <div className="flex items-center gap-3">
@@ -392,8 +366,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
           </button>
-        </div>
-      </nav>
+          </div>
+          </nav>
+        </>
+      )}
+      
+      {/* Collapsed Sidebar - Only show icons */}
+      {isCollapsed && (
+        <nav className="flex-1 p-2 space-y-2">
+          <div className="space-y-2">
+            <button
+              onClick={() => router.push('/')}
+              className={`w-full p-3 rounded-lg transition-colors ${pathname === '/' ? 'bg-emerald-100 dark:bg-purple-900/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+            >
+              <Home className="h-5 w-5 mx-auto text-slate-600 dark:text-slate-300" />
+            </button>
+            <button
+              onClick={() => router.push('/infrastructure')}
+              className={`w-full p-3 rounded-lg transition-colors ${pathname === '/infrastructure' ? 'bg-emerald-100 dark:bg-purple-900/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+            >
+              <Code className="h-5 w-5 mx-auto text-slate-600 dark:text-slate-300" />
+            </button>
+            <button
+              onClick={() => router.push('/analytics')}
+              className={`w-full p-3 rounded-lg transition-colors ${pathname === '/analytics' ? 'bg-emerald-100 dark:bg-purple-900/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+            >
+              <BarChart className="h-5 w-5 mx-auto text-slate-600 dark:text-slate-300" />
+            </button>
+            <button
+              onClick={() => router.push('/agents')}
+              className={`w-full p-3 rounded-lg transition-colors ${pathname === '/agents' ? 'bg-emerald-100 dark:bg-purple-900/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+            >
+              <Sparkles className="h-5 w-5 mx-auto text-slate-600 dark:text-slate-300" />
+            </button>
+          </div>
+        </nav>
+      )}
     </div>
   );
 };
