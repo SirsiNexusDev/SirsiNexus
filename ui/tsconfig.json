@@ -6,6 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
+    "types": [
+      "jest",
+      "@testing-library/jest-dom",
+      "@types/jest"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -32,9 +37,14 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "src/types/**/*.d.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**/*",
+    "cypress/**/*"
   ]
 }

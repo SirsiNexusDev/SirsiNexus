@@ -34,8 +34,9 @@ delete (window as any).location;
 global.MutationObserver = class {
   observe() {}
   disconnect() {}
+  takeRecords() { return []; }
   constructor(callback: any) {}
-};
+} as any;
 
 import AIContextToolbar from '../AIContextToolbar';
 import { aiContextService } from '../../../services/aiContextService';
