@@ -1,0 +1,96 @@
+Warning: Tracing subscriber already initialized: a global default trace dispatcher has already been set
+
+███████╗██╗██████╗ ███████╗██╗    ███╗   ██╗███████╗██╗  ██╗██╗   ██╗███████╗
+██╔════╝██║██╔══██╗██╔════╝██║    ████╗  ██║██╔════╝╚██╗██╔╝██║   ██║██╔════╝
+███████╗██║██████╔╝███████╗██║    ██╔██╗ ██║█████╗   ╚███╔╝ ██║   ██║███████╗
+╚════██║██║██╔══██╗╚════██║██║    ██║╚██╗██║██╔══╝   ██╔██╗ ██║   ██║╚════██║
+███████║██║██║  ██║███████║██║    ██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║
+╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝    ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+🌟 AI-Powered Infrastructure Management Platform v3.0.0
+📊 Optimization • Scaling • Security • Operations • Analytics
+
+[2m2025-07-10T03:11:10.875629Z[0m [32m INFO[0m 🚀 Starting SirsiNexus Infrastructure Management Platform v3.0.0
+[2m2025-07-10T03:11:10.875640Z[0m [32m INFO[0m 🔍 Running platform preflight checks...
+[2m2025-07-10T03:11:10.875644Z[0m [32m INFO[0m ✅ System requirements satisfied
+[2m2025-07-10T03:11:10.879310Z[0m [32m INFO[0m ✅ Database service ready
+[2m2025-07-10T03:11:10.880681Z[0m [32m INFO[0m ✅ Redis cache service ready
+[2m2025-07-10T03:11:10.880689Z[0m [32m INFO[0m ✅ Configuration validated
+[2m2025-07-10T03:11:10.880693Z[0m [32m INFO[0m ✅ All preflight checks passed
+[2m2025-07-10T03:11:10.880695Z[0m [32m INFO[0m 🌟 Starting all platform services...
+
+🎉 SirsiNexus Platform is ready!
+
+📡 Services running:
+   ✅ rest-api (running)
+   ✅ analytics (running)
+   ✅ websocket (running)
+   ✅ ai-agent (running)
+   ✅ security (running)
+
+🌐 Access your infrastructure management dashboard:
+   → http://localhost:3000
+
+📊 Platform capabilities available:
+   • Infrastructure optimization and scaling
+   • Security audits and compliance monitoring
+   • Database performance tuning
+   • Load balancing optimization
+   • Cost analysis and reduction
+   • Predictive maintenance
+   • Real-time infrastructure health
+
+⏹️  Press Ctrl+C to shutdown
+
+[2m2025-07-10T03:11:10.880771Z[0m [32m INFO[0m 🔌 WebSocket Service starting on port 8081
+[2m2025-07-10T03:11:10.880786Z[0m [32m INFO[0m 🔒 Security Engine starting...
+[2m2025-07-10T03:11:10.880798Z[0m [32m INFO[0m ✅ security service completed
+[2m2025-07-10T03:11:10.880778Z[0m [32m INFO[0m 📊 Analytics Engine starting...
+[2m2025-07-10T03:11:10.880813Z[0m [32m INFO[0m ✅ analytics service completed
+[2m2025-07-10T03:11:10.880789Z[0m [32m INFO[0m ✅ websocket service completed
+[2m2025-07-10T03:11:10.880739Z[0m [32m INFO[0m 🌐 REST API Service starting on port 8080
+[2m2025-07-10T03:11:10.880721Z[0m [32m INFO[0m 🤖 AI Infrastructure Agent starting on port 50051
+[2m2025-07-10T03:11:10.880853Z[0m [32m INFO[0m Starting gRPC server on 0.0.0.0:50051
+[2m2025-07-10T03:11:10.881913Z[0m [32m INFO[0m Redis connection established successfully
+[2m2025-07-10T03:11:10.882432Z[0m [32m INFO[0m ✅ Agent service initialized with real gRPC implementation
+[2m2025-07-10T03:11:18.871656Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T03:11:18.871827Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T03:11:18.874511Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T03:11:18.874561Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T03:11:18.874569Z[0m [32m INFO[0m AI health check requested
+[2m2025-07-10T18:13:49.690151Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T18:13:49.690559Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T18:13:49.690579Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T18:13:49.690589Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T18:13:49.690594Z[0m [32m INFO[0m AI health check requested
+[2m2025-07-10T18:13:49.715778Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T18:13:49.715822Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T18:13:49.715837Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T18:13:49.715845Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T18:13:49.715853Z[0m [32m INFO[0m Infrastructure generation requested for AWS using OpenAI
+[2m2025-07-10T18:13:49.715858Z[0m [32m INFO[0m Generating infrastructure for AWS using OpenAI
+[2m2025-07-10T18:13:49.859772Z[0m [31mERROR[0m Infrastructure generation failed: Some("invalid_request_error"): Incorrect API key provided: demo-inv****************ting. You can find your API key at https://platform.openai.com/account/api-keys.
+[2m2025-07-10T18:13:49.879378Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T18:13:49.879414Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T18:13:49.879424Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T18:13:49.879434Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T18:13:49.879440Z[0m [32m INFO[0m Infrastructure optimization requested for AWS provider
+[2m2025-07-10T18:13:49.879444Z[0m [32m INFO[0m Optimizing infrastructure using AI provider: OpenAI
+[2m2025-07-10T18:13:49.998102Z[0m [31mERROR[0m Infrastructure optimization failed: Some("invalid_request_error"): Incorrect API key provided: demo-inv****************ting. You can find your API key at https://platform.openai.com/account/api-keys.
+[2m2025-07-10T18:13:59.967025Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T18:13:59.967072Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T18:13:59.967086Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T18:13:59.967095Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T18:13:59.967102Z[0m [32m INFO[0m AI health check requested
+[2m2025-07-10T18:14:25.363608Z[0m [32m INFO[0m OpenAI API key found, enabling real AI integration
+[2m2025-07-10T18:14:25.363655Z[0m [32m INFO[0m Anthropic API key found, enabling Claude integration
+[2m2025-07-10T18:14:25.363668Z[0m [32m INFO[0m OpenAI API key found, enabling real AI optimization
+[2m2025-07-10T18:14:25.363677Z[0m [32m INFO[0m Anthropic API key found, enabling Claude optimization
+[2m2025-07-10T18:14:25.363683Z[0m [32m INFO[0m Infrastructure generation requested for AWS using OpenAI
+[2m2025-07-10T18:14:25.363688Z[0m [32m INFO[0m Generating infrastructure for AWS using OpenAI
+[2m2025-07-10T18:14:25.540641Z[0m [31mERROR[0m Infrastructure generation failed: Some("invalid_request_error"): Incorrect API key provided: demo-inv****************ting. You can find your API key at https://platform.openai.com/account/api-keys.
+[2m2025-07-10T18:15:30.054894Z[0m [32m INFO[0m 🛑 Received SIGTERM, initiating graceful shutdown
+[2m2025-07-10T18:15:30.054932Z[0m [32m INFO[0m 🛑 Shutting down all platform services...
+[2m2025-07-10T18:15:30.054938Z[0m [32m INFO[0m ✅ All services shut down gracefully
+
+👋 SirsiNexus Platform stopped. Thank you for using our infrastructure management platform!
