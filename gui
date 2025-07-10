@@ -1,5 +1,0 @@
-#!/bin/zsh
-
-# Simple GUI launcher - starts the Next.js frontend on port 3000
-cd "$(dirname "$0")/ui"
-npm run dev
