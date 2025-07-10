@@ -221,7 +221,7 @@ impl AIOptimizationService {
                 .build()?;
             
             let chat_request = CreateChatCompletionRequestArgs::default()
-                .model("gpt-4-turbo-preview")
+                .model("gpt-3.5-turbo")
                 .messages(vec![system_message.into(), user_message.into()])
                 .max_tokens(4000_u16)
                 .temperature(0.2)

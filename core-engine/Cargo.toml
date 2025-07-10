@@ -121,6 +121,7 @@ warp = "0.3"
 rand = "0.8"
 hostname = "0.3"
 toml = "0.8"
+dotenv = "0.15"
 
 # WASM Runtime for Dynamic Agent Loading
 wasmtime = "22.0"
