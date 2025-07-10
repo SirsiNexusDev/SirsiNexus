@@ -1,8 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "core-engine",
-    "core-engine/crates/core"
+    "core-engine"
 ]
 
 [workspace.package]

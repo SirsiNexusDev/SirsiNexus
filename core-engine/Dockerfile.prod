@@ -40,7 +40,7 @@ COPY proto ./proto
 RUN cargo build --release
 
 # Strip debug symbols for smaller binary
-RUN strip target/release/sirsi-core
+RUN strip target/release/sirsi-nexus
 
 ###########################################
 # Stage 3: Runtime image
@@ -60,7 +60,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy binary from builder stage
-COPY --from=builder /app/target/release/sirsi-core /usr/local/bin/sirsi-core
+COPY --from=builder /app/target/release/sirsi-nexus /usr/local/bin/sirsi-nexus
 
 # Copy configuration files if they exist
 COPY --from=builder /app/config/ ./config/ 2>/dev/null || :
@@ -85,4 +85,4 @@ ENV RUST_LOG=info
 ENV ENVIRONMENT=production
 
 # Command to run the application
-CMD ["sirsi-core"]
+CMD ["sirsi-nexus", "start"]

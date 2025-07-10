@@ -51,7 +51,7 @@ RUN useradd -m -u 1000 sirsi && \
     chown -R sirsi:sirsi /app
 
 # Copy binary from builder stage
-COPY --from=builder /app/target/release/sirsi-core /app/sirsi-core
+COPY --from=builder /app/target/release/sirsi-nexus /app/sirsi-nexus
 COPY --chown=sirsi:sirsi config/ /app/config/
 
 # Set working directory and user
@@ -60,7 +60,7 @@ USER sirsi
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD /app/sirsi-core --health-check || exit 1
+    CMD curl -f http://localhost:8080/health || exit 1
 
 # Expose ports
 EXPOSE 8080 50051 9090
@@ -71,4 +71,4 @@ ENV RUST_BACKTRACE=1
 ENV CONFIG_PATH=/app/config/production.yaml
 
 # Run the application
-CMD ["/app/sirsi-core"]
+CMD ["/app/sirsi-nexus", "start"]
