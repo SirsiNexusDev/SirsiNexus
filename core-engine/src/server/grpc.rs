@@ -8,6 +8,7 @@ use crate::agent::AgentManager;
 use crate::agent::context::ContextStore;
 use crate::error::{AppError, AppResult};
 use crate::server::agent_service_impl::AgentServiceImpl;
+use crate::proto::sirsi::agent::v1::agent_service_server::AgentServiceServer;
 
 pub struct GrpcServer {
     port: u16,
@@ -42,7 +43,7 @@ impl GrpcServer {
         info!("Redis connection established successfully");
 
         // Create the agent service
-        let _agent_service = AgentServiceImpl::new(
+        let agent_service = AgentServiceImpl::new(
             self.agent_manager.clone(),
             self.context_store.clone(),
         );
@@ -53,17 +54,11 @@ impl GrpcServer {
             .build()
             .map_err(|e| AppError::Configuration(format!("Failed to build reflection service: {}", e)))?;
 
-        info!("Agent service initialized, starting server...");
+        info!("✅ Agent service initialized with real gRPC implementation");
 
-        // Start the server
-        // Temporarily commented out due to protobuf service implementation being disabled
-        // TODO: Re-enable when tonic/axum compatibility is resolved
-        /*
-        let server = Server::builder()
-            .add_service(AgentServiceServer::new(agent_service))
-            .add_service(reflection_service)
-        */
+        // Start the server with both agent service and reflection
         let result = Server::builder()
+            .add_service(AgentServiceServer::new(agent_service))
             .add_service(reflection_service)
             .serve(addr)
             .await;

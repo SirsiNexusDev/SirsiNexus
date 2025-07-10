@@ -206,21 +206,23 @@ impl WebSocketHandler {
             .unwrap_or_else(|| Uuid::new_v4().to_string());
 
         match request.action.as_str() {
+            // Legacy compatibility actions
             "start_session" => self.handle_start_session(request, request_id, connection_id).await,
             "spawn_agent" => self.handle_spawn_agent(request, request_id).await,
             "send_message" => self.handle_send_message(request, request_id).await,
             "get_suggestions" => self.handle_get_suggestions(request, request_id).await,
             "get_status" => self.handle_get_status(request, request_id).await,
-            "stop_session" => {
-                // TODO: Implement stop_session when protobuf is updated
-                Ok(WebSocketResponse {
-                    request_id,
-                    action: "stop_session".to_string(),
-                    success: true,
-                    data: None,
-                    error: None,
-                })
-            }
+            "stop_session" => self.handle_stop_session(request, request_id).await,
+            
+            // New protobuf-compatible actions
+            "create_session" => self.handle_create_session(request, request_id, connection_id).await,
+            "create_agent" => self.handle_create_agent(request, request_id).await,
+            "get_agent_status" => self.handle_get_agent_status(request, request_id).await,
+            "list_agents" => self.handle_list_agents(request, request_id).await,
+            "delete_session" => self.handle_delete_session(request, request_id).await,
+            "delete_agent" => self.handle_delete_agent(request, request_id).await,
+            "get_system_health" => self.handle_get_system_health(request, request_id).await,
+            
             _ => {
                 let action = request.action.clone();
                 Ok(WebSocketResponse {
@@ -605,6 +607,239 @@ impl WebSocketHandler {
             action: "get_status".to_string(),
             success: true,
             data: Some(serde_json::to_value(agent_data)?),
+            error: None,
+        })
+    }
+
+    // New protobuf-compatible handlers
+    async fn handle_stop_session(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        let session_id = request.session_id.ok_or_else(|| 
+            AppError::Validation("Missing sessionId".to_string()))?;
+
+        let grpc_request = crate::proto::sirsi::agent::v1::DeleteSessionRequest {
+            session_id,
+        };
+
+        let _response = self.grpc_client.delete_session(tonic::Request::new(grpc_request)).await
+            .map_err(|e| AppError::Connection(format!("gRPC delete_session failed: {}", e)))?;
+
+        Ok(WebSocketResponse {
+            request_id,
+            action: "stop_session".to_string(),
+            success: true,
+            data: None,
+            error: None,
+        })
+    }
+
+    async fn handle_create_session(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+        connection_id: &str,
+    ) -> AppResult<WebSocketResponse> {
+        // Use the existing start_session implementation for backward compatibility
+        let response = self.handle_start_session(request, request_id, connection_id).await?;
+        
+        // Convert response action to create_session
+        Ok(WebSocketResponse {
+            request_id: response.request_id,
+            action: "create_session".to_string(),
+            success: response.success,
+            data: response.data,
+            error: response.error,
+        })
+    }
+
+    async fn handle_create_agent(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        // Use the existing spawn_agent implementation for backward compatibility
+        let response = self.handle_spawn_agent(request, request_id).await?;
+        
+        // Convert response action to create_agent
+        Ok(WebSocketResponse {
+            request_id: response.request_id,
+            action: "create_agent".to_string(),
+            success: response.success,
+            data: response.data,
+            error: response.error,
+        })
+    }
+
+    async fn handle_get_agent_status(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        // Use the existing get_status implementation for backward compatibility
+        let response = self.handle_get_status(request, request_id).await?;
+        
+        // Convert response action to get_agent_status
+        Ok(WebSocketResponse {
+            request_id: response.request_id,
+            action: "get_agent_status".to_string(),
+            success: response.success,
+            data: response.data,
+            error: response.error,
+        })
+    }
+
+    async fn handle_list_agents(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        let session_id = request.session_id.ok_or_else(|| 
+            AppError::Validation("Missing sessionId".to_string()))?;
+
+        let grpc_request = crate::proto::sirsi::agent::v1::ListAgentsRequest {
+            session_id,
+            page_size: 50,
+            page_token: String::new(),
+            filter: String::new(),
+        };
+
+        let response = self.grpc_client.list_agents(tonic::Request::new(grpc_request)).await
+            .map_err(|e| AppError::Connection(format!("gRPC list_agents failed: {}", e)))?;
+
+        let list_response = response.into_inner();
+
+        let agents_data: Vec<SubAgentData> = list_response.agents
+            .into_iter()
+            .map(|agent| SubAgentData {
+                agent_id: agent.agent_id,
+                agent_type: agent.agent_type,
+                status: match agent.state {
+                    1 => "initializing".to_string(),
+                    2 => "ready".to_string(),
+                    3 => "busy".to_string(),
+                    4 => "error".to_string(),
+                    5 => "terminated".to_string(),
+                    _ => "unknown".to_string(),
+                },
+                created_at: chrono::Utc::now().to_rfc3339(),
+                capabilities: vec!["basic".to_string()],
+                metrics: HashMap::new(),
+            })
+            .collect();
+
+        Ok(WebSocketResponse {
+            request_id,
+            action: "list_agents".to_string(),
+            success: true,
+            data: Some(serde_json::to_value(agents_data)?),
+            error: None,
+        })
+    }
+
+    async fn handle_delete_session(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        let session_id = request.session_id.ok_or_else(|| 
+            AppError::Validation("Missing sessionId".to_string()))?;
+
+        let grpc_request = crate::proto::sirsi::agent::v1::DeleteSessionRequest {
+            session_id,
+        };
+
+        let _response = self.grpc_client.delete_session(tonic::Request::new(grpc_request)).await
+            .map_err(|e| AppError::Connection(format!("gRPC delete_session failed: {}", e)))?;
+
+        Ok(WebSocketResponse {
+            request_id,
+            action: "delete_session".to_string(),
+            success: true,
+            data: None,
+            error: None,
+        })
+    }
+
+    async fn handle_delete_agent(
+        &mut self,
+        request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        let session_id = request.session_id.ok_or_else(|| 
+            AppError::Validation("Missing sessionId".to_string()))?;
+
+        let agent_id = request.agent_id.ok_or_else(|| 
+            AppError::Validation("Missing agentId".to_string()))?;
+
+        let grpc_request = crate::proto::sirsi::agent::v1::DeleteAgentRequest {
+            session_id,
+            agent_id,
+        };
+
+        let _response = self.grpc_client.delete_agent(tonic::Request::new(grpc_request)).await
+            .map_err(|e| AppError::Connection(format!("gRPC delete_agent failed: {}", e)))?;
+
+        Ok(WebSocketResponse {
+            request_id,
+            action: "delete_agent".to_string(),
+            success: true,
+            data: None,
+            error: None,
+        })
+    }
+
+    async fn handle_get_system_health(
+        &mut self,
+        _request: WebSocketRequest,
+        request_id: String,
+    ) -> AppResult<WebSocketResponse> {
+        let grpc_request = crate::proto::sirsi::agent::v1::GetSystemHealthRequest {
+            include_metrics: true,
+        };
+
+        let response = self.grpc_client.get_system_health(tonic::Request::new(grpc_request)).await
+            .map_err(|e| AppError::Connection(format!("gRPC get_system_health failed: {}", e)))?;
+
+        let health_response = response.into_inner();
+
+        // Convert protobuf response to JSON manually to avoid serialization issues
+        let health_status = health_response.health
+            .as_ref()
+            .map(|h| match h.overall_status {
+                1 => "healthy",
+                2 => "degraded",
+                3 => "unhealthy",
+                _ => "unknown",
+            })
+            .unwrap_or("unknown");
+
+        let metrics = health_response.metrics
+            .as_ref()
+            .map(|m| serde_json::json!({
+                "active_sessions": m.active_sessions,
+                "total_agents": m.total_agents,
+                "cpu_usage_percent": m.cpu_usage_percent,
+                "memory_usage_percent": m.memory_usage_percent,
+                "uptime_seconds": m.uptime_seconds,
+            }))
+            .unwrap_or(serde_json::json!({}));
+
+        let health_data = serde_json::json!({
+            "health": {
+                "status": health_status,
+                "message": "System health check completed",
+            },
+            "metrics": metrics,
+        });
+
+        Ok(WebSocketResponse {
+            request_id,
+            action: "get_system_health".to_string(),
+            success: true,
+            data: Some(health_data),
             error: None,
         })
     }

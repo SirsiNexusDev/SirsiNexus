@@ -151,6 +151,26 @@ impl AgentManager {
         ]
     }
     
+    /// Initialize a new session in the agent manager
+    pub async fn initialize_session(
+        &mut self,
+        session_id: &str,
+        user_id: &str,
+    ) -> AppResult<()> {
+        info!("🔧 Initializing session: {} for user: {}", session_id, user_id);
+        
+        let session_state = SessionState {
+            _user_id: user_id.to_string(),
+            agent_ids: Vec::new(),
+            _context: HashMap::new(),
+        };
+        
+        self.sessions.insert(session_id.to_string(), session_state);
+        
+        info!("✅ Session initialized successfully: {}", session_id);
+        Ok(())
+    }
+    
     pub async fn spawn_sub_agent(
         &mut self,
         parent_agent_id: &str,

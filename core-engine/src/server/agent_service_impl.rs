@@ -51,6 +51,23 @@ impl AgentService for AgentServiceImpl {
         let session_id = Uuid::new_v4().to_string();
         let now = Self::current_timestamp();
         
+        // Store session information in context store for later retrieval
+        if let Err(e) = self.context_store.store_session_info(
+            &session_id,
+            &req.user_id,
+            req.context.clone(),
+        ).await {
+            tracing::warn!("Failed to store session context: {}", e);
+        }
+        
+        // Initialize session in agent manager
+        {
+            let mut agent_manager = self.agent_manager.write().await;
+            if let Err(e) = agent_manager.initialize_session(&session_id, &req.user_id).await {
+                tracing::warn!("Failed to initialize session in agent manager: {}", e);
+            }
+        }
+        
         let available_agent_types = vec![
             AgentType {
                 type_id: "aws".to_string(),
@@ -80,7 +97,7 @@ impl AgentService for AgentServiceImpl {
         
         let session = Session {
             session_id: session_id.clone(),
-            user_id: req.user_id,
+            user_id: req.user_id.clone(),
             state: 1, // SESSION_STATE_ACTIVE
             created_at: now.clone(),
             updated_at: now.clone(),
@@ -103,6 +120,7 @@ impl AgentService for AgentServiceImpl {
             available_agent_types,
         };
 
+        info!("✅ Session created successfully: {} for user: {}", session_id, req.user_id);
         Ok(tonic::Response::new(response))
     }
 

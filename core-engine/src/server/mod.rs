@@ -5,3 +5,4 @@ pub mod http;
 
 pub use grpc::{start_grpc_server};
 pub use http::HttpServer;
+pub use websocket::start_websocket_server;

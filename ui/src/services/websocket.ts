@@ -188,7 +188,7 @@ export class AgentWebSocketService {
 
   constructor(config: Partial<WebSocketConfig> = {}) {
     this.config = {
-      url: config.url || 'ws://localhost:8080/agent-ws',
+      url: config.url || 'ws://localhost:8081',
       reconnectAttempts: config.reconnectAttempts || 5,
       reconnectDelay: config.reconnectDelay || 3000,
       heartbeatInterval: config.heartbeatInterval || 30000,
@@ -645,34 +645,48 @@ export class AgentWebSocketService {
       }
 
       const requestId = this.generateMessageId();
-      const requestWithId = { ...request, requestId };
+      
+      // Format request to match backend WebSocketRequest structure
+      const webSocketRequest = {
+        requestId,
+        action: request.action,
+        sessionId: request.sessionId,
+        agentId: request.agentId,
+        data: request.data,
+      };
 
       // Set up one-time listener for response
-      const responseHandler = (message: AgentMessage) => {
-        if (message.metadata?.requestId === requestId) {
-          this.off('agent_response', responseHandler);
-          try {
-            const response = JSON.parse(message.content) as AgentResponse;
-            resolve(response);
-          } catch (error) {
-            reject(new Error('Invalid response format from agent backend'));
+      const responseHandler = (event: MessageEvent) => {
+        try {
+          const response = JSON.parse(event.data);
+          if (response.requestId === requestId) {
+            this.ws!.removeEventListener('message', responseHandler);
+            resolve({
+              action: response.action,
+              success: response.success,
+              data: response.data,
+              error: response.error,
+            });
           }
+        } catch (error) {
+          console.error('Failed to parse WebSocket response:', error);
+          reject(new Error('Invalid response format from agent backend'));
         }
       };
 
-      this.on('agent_response', responseHandler);
+      this.ws!.addEventListener('message', responseHandler);
 
       // Send request
       try {
-        this.ws!.send(JSON.stringify(requestWithId));
+        this.ws!.send(JSON.stringify(webSocketRequest));
       } catch (error) {
-        this.off('agent_response', responseHandler);
+        this.ws!.removeEventListener('message', responseHandler);
         reject(new Error('Failed to send request to agent backend'));
       }
 
       // Set timeout for request
       setTimeout(() => {
-        this.off('agent_response', responseHandler);
+        this.ws!.removeEventListener('message', responseHandler);
         reject(new Error('Request timeout'));
       }, 30000); // 30 second timeout
     });

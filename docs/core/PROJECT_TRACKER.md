@@ -1,8 +1,8 @@
 # SirsiNexus Project Tracker
 
 **Last Updated:** July 9, 2025  
-**Current Version:** v0.5.8-alpha  
-**Overall Status:** ✅ **PRODUCTION READY - Phase 5.8 Complete with TypeScript & Testing**
+**Current Version:** v0.6.0-alpha  
+**Overall Status:** ✅ **PRODUCTION READY - Phase 6 Complete with Agent Backend Connectivity**
 
 ---
 

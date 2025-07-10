@@ -103,6 +103,26 @@ impl ContextStore {
 
         Ok(())
     }
+    
+    // Helper method for storing session context with individual parameters
+    pub async fn store_session_info(
+        &self,
+        session_id: &str,
+        user_id: &str,
+        metadata: HashMap<String, String>,
+    ) -> AppResult<()> {
+        let now = chrono::Utc::now();
+        let session_context = SessionContext {
+            session_id: session_id.to_string(),
+            user_id: user_id.to_string(),
+            agents: Vec::new(),
+            metadata,
+            created_at: now,
+            last_activity: now,
+        };
+        
+        self.store_session_context(&session_context).await
+    }
 
     pub async fn update_session_activity(&self, session_id: &str) -> AppResult<()> {
         let mut context = self.get_session_context(session_id).await?;
