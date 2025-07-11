@@ -80,6 +80,17 @@ core-engine/cockroach-data/
 sirsi-nexus
 sirsi-nexus-*
 
+# CockroachDB files
+**/EMERGENCY_BALLAST
+**/auxiliary/
+**/logs/
+**/temp/
+**/cockroach-data/
+*.wal
+*.db
+*.sqlite
+*.sqlite3
+
 # Logs
 *.log
 backend-server.log
