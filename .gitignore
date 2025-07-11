@@ -88,3 +88,46 @@ sirsi.log
 sirsi-launch.log
 dev.log
 dev-server.log
+
+# Security and sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+*.der
+secrets/
+keys/
+certs/
+.ssh/
+.gnupg/
+
+# Security scan results
+security-reports/
+vulnerability-reports/
+*.sarif
+*.json.security
+bandit-report.json
+trivy-results.sarif
+security-audit.log
+
+# Environment files with secrets
+.env.production
+.env.staging
+.env.secret
+.env.*.secret
+
+# Database dumps and backups
+*.sql.gz
+*.dump
+*.backup
+backups/
+
+# Development and testing files that might contain secrets
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

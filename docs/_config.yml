@@ -1,0 +1,79 @@
+# Site settings
+title: SirsiNexus
+description: >-
+  AI-Enhanced Cloud Infrastructure Platform
+  Real AI Integration • Multi-Cloud Support • Production Ready
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://sirsinexusdev.github.io" # Update this with your GitHub Pages URL
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Site navigation
+header_pages:
+  - index.md
+  - features.md
+  - documentation.md
+  - getting-started.md
+  - demos.md
+  - contact.md
+
+# Social links
+github_username: SirsiNexusDev
+twitter_username: sirsinexus # Update with actual handle if you have one
+
+# Google Analytics (optional)
+# google_analytics: UA-XXXXXXXX-X
+
+# SEO settings
+author: SirsiNexus Team
+logo: /assets/images/logo.png
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+  demos:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "SirsiNexus Team"
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "demos"
+    values:
+      layout: "demo"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .github/
+  - README.md
+
+# Include files
+include:
+  - _pages

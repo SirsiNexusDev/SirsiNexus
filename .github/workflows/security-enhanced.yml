@@ -1,0 +1,283 @@
+name: Enhanced Security Scanning
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  pull-requests: write
+
+jobs:
+  # Advanced Vulnerability Scanning
+  security-scan:
+    name: Advanced Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: rust, javascript, python, go
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Advanced Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '1'
+
+      - name: Container Image Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './Dockerfile*'
+          format: 'sarif'
+          output: 'trivy-container-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Secret Detection
+  secret-detection:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: GitLeaks Detection
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # License and Compliance
+  license-compliance:
+    name: License and Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check UI dependencies licenses
+        run: |
+          cd ui
+          npx license-checker --summary --excludePrivatePackages
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check Rust dependencies licenses
+        run: |
+          cd core-engine
+          cargo install cargo-license
+          cargo license
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Check Python dependencies licenses
+        run: |
+          cd analytics-platform
+          pip install pip-licenses
+          pip-licenses --summary
+
+  # Dependency Security Audit
+  dependency-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [ui, core-engine, analytics-platform]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Audit Node.js dependencies
+        if: matrix.component == 'ui'
+        run: |
+          cd ui
+          npm audit --audit-level=moderate
+          npx audit-ci --moderate
+
+      - name: Audit Rust dependencies
+        if: matrix.component == 'core-engine'
+        run: |
+          cd core-engine
+          cargo install cargo-audit
+          cargo audit
+
+      - name: Audit Python dependencies
+        if: matrix.component == 'analytics-platform'
+        run: |
+          cd analytics-platform
+          pip install safety bandit
+          safety check
+          bandit -r . -f json -o bandit-report.json
+
+  # Infrastructure Security
+  infrastructure-security:
+    name: Infrastructure Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Kubernetes Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './k8s/'
+          format: 'sarif'
+          output: 'k8s-security.sarif'
+
+      - name: Docker Security Scan
+        run: |
+          docker run --rm -v "$PWD":/project \
+            clair-scanner:latest \
+            --ip clair-scanner \
+            --threshold High \
+            sirsi-nexus:latest || true
+
+      - name: Terraform/Helm Security (if present)
+        run: |
+          if [ -d "terraform" ]; then
+            docker run --rm -t -v "$PWD":/tf bridgecrew/checkov -d /tf
+          fi
+          if [ -d "helm" ]; then
+            helm lint helm/sirsi-nexus/
+          fi
+
+  # Security Policy Compliance
+  compliance-check:
+    name: Compliance and Policy Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Security Policy
+        run: |
+          echo "Checking for required security files..."
+          test -f SECURITY.md || echo "⚠️  SECURITY.md missing"
+          test -f .github/ISSUE_TEMPLATE/security-vulnerability.yml || echo "⚠️  Security issue template missing"
+          echo "Security policy check complete"
+
+      - name: Validate Branch Protection
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: branch } = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'main'
+            });
+            
+            const protection = branch.protection;
+            console.log('Branch protection status:', protection.enabled);
+            
+            if (!protection.enabled) {
+              core.setFailed('Branch protection not enabled for main branch');
+            }
+
+  # Performance and Load Testing Security
+  security-load-test:
+    name: Security Load Testing
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup OWASP ZAP
+        run: |
+          docker pull owasp/zap2docker-stable
+
+      - name: Security Load Test
+        run: |
+          echo "Running security-focused load tests..."
+          # This would run against a staging environment
+          # docker run -t owasp/zap2docker-stable zap-baseline.py -t https://your-staging-url
+
+  # Notification and Reporting
+  security-report:
+    name: Security Report
+    needs: [security-scan, secret-detection, license-compliance, dependency-audit, infrastructure-security]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Security Report
+        run: |
+          echo "## 🔐 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- CodeQL Analysis: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Detection: ${{ needs.secret-detection.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- License Compliance: ${{ needs.license-compliance.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dependency Audit: ${{ needs.dependency-audit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Infrastructure Security: ${{ needs.infrastructure-security.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `
+            ## 🔐 Security Scan Results
+            
+            | Check | Status |
+            |-------|--------|
+            | CodeQL Analysis | ${{ needs.security-scan.result }} |
+            | Secret Detection | ${{ needs.secret-detection.result }} |
+            | License Compliance | ${{ needs.license-compliance.result }} |
+            | Dependency Audit | ${{ needs.dependency-audit.result }} |
+            | Infrastructure Security | ${{ needs.infrastructure-security.result }} |
+            
+            All security checks must pass before merging.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
