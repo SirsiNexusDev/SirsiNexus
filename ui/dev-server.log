@@ -1,18 +1,3 @@
-
-> @sirsi-nexus/ui@0.5.0-alpha dev
-> next dev
-
-   ▲ Next.js 15.3.4
-   - Local:        http://localhost:3000
-   - Network:      http://192.168.1.157:3000
-   - Environments: .env.local
-
- ✓ Starting...
- ✓ Ready in 885ms
- ✓ Compiled /middleware in 217ms (108 modules)
- ○ Compiling / ...
-(node:24503) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
-(Use `node --trace-warnings ...` to show where the warning was created)
- ✓ Compiled / in 2.8s (1736 modules)
- GET / 200 in 3119ms
-[?25h
+version https://git-lfs.github.com/spec/v1
+oid sha256:ec6ae0b7c7af15fd561e300e0c118b9be5283bca647f72970accd14e2448228b
+size 537
