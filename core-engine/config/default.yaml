@@ -1,0 +1,22 @@
+database:
+  host: "localhost"
+  port: 26257  # CockroachDB default port
+  username: "root"
+  password: ""  # Empty for insecure mode (development)
+  database: "sirsi_nexus"
+  max_connections: 20
+  ssl_ca_cert: null
+  sslmode: "disable"  # For development
+
+server:
+  http_addr: "0.0.0.0:8080"
+  grpc_addr: "0.0.0.0:50051"
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expiration: 1440  # 24 hours in minutes
+
+telemetry:
+  service_name: "sirsi-nexus"
+  environment: "development"
+  otlp_endpoint: "http://localhost:4317"

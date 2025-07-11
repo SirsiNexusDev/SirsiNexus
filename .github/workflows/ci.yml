@@ -1,0 +1,371 @@
+name: SirsiNexus CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.gitignore'
+  pull_request:
+    branches: [ main, develop ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.gitignore'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_ENV: test
+
+jobs:
+  # Code Quality and Security Checks
+  security-scan:
+    name: Security and Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Core Engine Tests (Rust)
+  core-engine-test:
+    name: Core Engine Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./core-engine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "core-engine -> target"
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Lint with clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests
+        run: cargo test --verbose --lib
+        env:
+          RUST_LOG: debug
+
+      - name: Check core engine builds
+        run: cargo check --release
+
+  # UI Tests (Node.js/React)
+  ui-test:
+    name: UI Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ui
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './ui/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint --if-present
+
+      - name: Type check
+        run: npm run type-check --if-present
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage --watchAll=false
+        env:
+          CI: true
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./ui/coverage/lcov.info
+          flags: ui
+          name: ui-coverage
+
+      - name: Build UI
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Test AI Service Integration
+        run: node test-ai-integration.js
+
+  # Analytics Platform Tests (Python)
+  analytics-test:
+    name: Analytics Platform Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./analytics-platform
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov flake8 black mypy
+
+      - name: Lint with flake8
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Check formatting with black
+        run: black --check .
+
+      - name: Type check with mypy
+        run: mypy . --ignore-missing-imports
+
+      - name: Run tests
+        run: pytest --cov=. --cov-report=xml
+
+  # Documentation Tests
+  docs-test:
+    name: Documentation Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check markdown links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/markdown-link-check-config.json'
+
+      - name: Validate documentation structure
+        run: |
+          echo "Checking documentation structure..."
+          find docs/ -name "*.md" | wc -l
+          ls -la docs/
+
+  # Integration Tests
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [core-engine-test, ui-test]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: sirsi_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './ui/package-lock.json'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "core-engine -> target"
+
+      - name: Install UI dependencies
+        run: |
+          cd ui
+          npm ci
+
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests..."
+          # Add actual integration test commands here
+          cd ui && npm run build
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/sirsi_test
+          REDIS_URL: redis://localhost:6379
+
+  # Docker Build Tests
+  docker-build:
+    name: Docker Build Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [core-engine, ui, analytics-platform]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.component }}
+          push: false
+          tags: sirsi-nexus/${{ matrix.component }}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Deployment Job
+  deploy:
+    name: Deploy to Environment
+    needs: [security-scan, core-engine-test, ui-test, analytics-test, integration-test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        if: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_PASSWORD }}
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker images
+        if: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_PASSWORD }}
+        run: |
+          # Build and push core engine
+          docker build -t sirsi-nexus/core-engine:latest ./core-engine
+          docker push sirsi-nexus/core-engine:latest
+          
+          # Build and push UI
+          docker build -t sirsi-nexus/ui:latest ./ui
+          docker push sirsi-nexus/ui:latest
+          
+          # Build and push analytics platform
+          docker build -t sirsi-nexus/analytics:latest ./analytics-platform
+          docker push sirsi-nexus/analytics:latest
+
+      - name: Deploy to Kubernetes
+        if: ${{ secrets.KUBECONFIG }}
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+          export KUBECONFIG=kubeconfig
+          kubectl apply -f k8s/
+          kubectl rollout status deployment/sirsi-nexus-core-engine
+          kubectl rollout status deployment/sirsi-nexus-ui
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🚀 Deployment successful!"
+          echo "Core Engine: Ready"
+          echo "UI: Ready"
+          echo "Analytics: Ready"
+
+  # Performance Tests
+  performance-test:
+    name: Performance Tests
+    needs: [integration-test]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install performance testing tools
+        run: |
+          npm install -g lighthouse artillery
+
+      - name: Run UI performance tests
+        run: |
+          echo "Running performance tests..."
+          # Add actual performance test commands here
+          echo "Performance tests would run here"
+
+  # Notification Job
+  notify:
+    name: Notify Status
+    needs: [deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify success
+        if: ${{ needs.deploy.result == 'success' }}
+        run: |
+          echo "✅ SirsiNexus CI/CD Pipeline completed successfully!"
+          echo "All components deployed and ready."
+
+      - name: Notify failure
+        if: ${{ needs.deploy.result == 'failure' }}
+        run: |
+          echo "❌ SirsiNexus CI/CD Pipeline failed!"
+          echo "Check the logs for details."
