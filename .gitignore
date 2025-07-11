@@ -70,29 +70,15 @@ yarn-error.log*
 *.out
 go.work
 
-# Database files
-node1/
-temp/
-core-engine/cockroach-data/
-*.log
-*.sst
-*.pprof
+# Built binaries
 sirsi-nexus
 sirsi-nexus-*
+*.pprof
 
-# CockroachDB files
-**/EMERGENCY_BALLAST
-**/auxiliary/
-**/logs/
-**/temp/
-**/cockroach-data/
-*.wal
-*.db
-*.sqlite
-*.sqlite3
+# Note: Database files are now tracked with Git LFS
+# See .gitattributes for LFS configuration
 
-# Logs
-*.log
+# Application logs (specific files, not *.log since LFS handles those)
 backend-server.log
 backend.log
 sirsi.log
